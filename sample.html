@@ -1,0 +1,27 @@
+<html>
+<style>
+  body {
+    counter-reset: linenumber;
+  }
+
+  code{
+    margin-left: 2em;
+    display: block;
+  }
+  code::before {
+    counter-increment: linenumber;
+    content: counter(linenumber);
+    display: inline-block;
+    text-align: center;
+    width: 2em;
+    margin-left: -2em;
+}
+</style>
+
+<body>
+  <code>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+    magna aliqua.</code>
+  <code>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.</code>
+</body>
+
+</html>
