@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (editor) {
 			let language = editor.document.languageId;
 			let text = editor.document.getText();
-			let html = hljs.highlightAuto(text);
+			// let html = hljs.highlightAuto(text);
 	}
 		vscode.window.showInformationMessage('Hello VS Code!');
 	});
