@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
-import "../node_modules/highlightjs/highlight.pack.js";
-import * as hljs from 'highlight.js';
+import * as hljs from "highlight.js";
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('VSC-PRINT ACTIVATED');
@@ -10,7 +9,8 @@ export function activate(context: vscode.ExtensionContext) {
 		if (editor) {
 			let language = editor.document.languageId;
 			let text = editor.document.getText();
-			// let html = hljs.highlightAuto(text);
+			let html = hljs.highlightAuto(text);
+			console.log(html);
 	}
 		vscode.window.showInformationMessage('Hello VS Code!');
 	});

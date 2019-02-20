@@ -46,6 +46,6 @@
 	},
 	"dependencies": {
 		"@types/highlight.js": "^9.12.3",
-		"highlightjs": "^9.12.3"
+		"highlight.js": "^9.14.2"
 	}
 }
