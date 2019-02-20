@@ -3,6 +3,11 @@
 	"displayName": "Print via browser",
 	"description": "",
 	"version": "0.0.1",
+	"author": {
+		"name": "Peter Wone",
+		"email": "peter.wone@outlook.com"
+	},
+	"publisher": "pdconsec",
 	"engines": {
 		"vscode": "^1.31.0"
 	},
