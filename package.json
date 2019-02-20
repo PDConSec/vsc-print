@@ -1,6 +1,6 @@
 {
 	"name": "print",
-	"displayName": "Print",
+	"displayName": "Print via browser",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
@@ -27,6 +27,13 @@
 					"command": "extension.print",
 					"group": "navigation"
 				}
+			],
+			"editor/title": [
+				{
+					"when": "resourceLangId",
+					"command": "extension.print",
+					"group": "navigation"
+				}
 			]
 		}
 	},
@@ -38,14 +45,16 @@
 		"test": "npm run compile && node ./node_modules/vscode/bin/test"
 	},
 	"devDependencies": {
-		"typescript": "^3.3.1",
-		"vscode": "^1.1.28",
+		"@types/mocha": "^2.2.42",
+		"@types/node": "^10.12.26",
 		"tslint": "^5.12.1",
-		"@types/node": "^10.12.21",
-		"@types/mocha": "^2.2.42"
+		"typescript": "^3.3.1",
+		"vscode": "^1.1.28"
 	},
 	"dependencies": {
 		"@types/highlight.js": "^9.12.3",
-		"highlight.js": "^9.14.2"
+		"@types/tmp": "0.0.34",
+		"highlight.js": "^9.14.2",
+		"tmp": "0.0.33"
 	}
 }
