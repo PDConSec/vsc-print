@@ -3,6 +3,7 @@ import * as hljs from "highlight.js";
 import { readFileSync, createReadStream } from 'fs';
 import * as http from "http";
 import * as child_process from "child_process";
+import { stringify } from 'querystring';
 
 export function activate(context: vscode.ExtensionContext) {
 	printConfig = vscode.workspace.getConfiguration("print", null);
@@ -31,14 +32,8 @@ function getFileText(fname: string): string {
 
 function getSourceCode(): string {
 	try {
-		var lines = getFileText(commandArgs.fsPath).split("\n");
-		var text = "";
-		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i];
-			text += `${i} ${line}`;
-		}
-		return text;
-		//return getFileText(commandArgs.fsPath);
+		return getFileText(commandArgs.fsPath).split("\n")
+			.map((line, i) => `${i} ${line}`).join("\n");
 	} catch (error) {
 		if (vscode.window.activeTextEditor) {
 			return vscode.window.activeTextEditor.document.getText();
