@@ -25,6 +25,59 @@
 				"title": "Print"
 			}
 		],
+		"configuration": [
+			{
+				"title": "Printing",
+				"properties": {
+					"print.indent": {
+						"type": "integer",
+						"description": "Spaces per indent",
+						"default": 2
+					},
+					"print.fontSize": {
+						"type": "integer",
+						"description": "Font size",
+						"default": "12pt"
+					},
+					"print.paperSize": {
+						"type": "string",
+						"description": "Paper size and orientation.",
+						"enum": [
+							"a3",
+							"a3Land",
+							"a4",
+							"a4Land",
+							"a5",
+							"a5Land",
+							"letter",
+							"letterLand",
+							"legal",
+							"legalLand"
+						],
+						"default": "a4"
+					},
+					"print.lineNumbers": {
+						"type": "string",
+						"description": "Include line numbers",
+						"enum": [
+							"on",
+							"off",
+							"inherit"
+						],
+						"default": "on"
+					},
+					"print.browserPath": {
+						"type": "string",
+						"description": "Browser executable path (empty for default)"
+					},
+					"print.port": {
+						"type": "integer",
+						"description": "Embedded webserver port",
+						"default": 5050
+					}
+				}
+			}
+		],
 		"menus": {
 			"explorer/context": [
 				{
@@ -60,6 +113,7 @@
 		"@types/highlight.js": "^9.12.3",
 		"@types/tmp": "0.0.34",
 		"highlight.js": "^9.14.2",
+		"n-readlines": "^1.0.0",
 		"tmp": "0.0.33"
 	}
 }
