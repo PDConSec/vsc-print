@@ -32,8 +32,7 @@ function getFileText(fname: string): string {
 
 function getSourceCode(): string {
 	try {
-		return getFileText(commandArgs.fsPath).split("\n")
-			.map((line, i) => `${i} ${line}`).join("\n");
+		return getFileText(commandArgs.fsPath);
 	} catch (error) {
 		if (vscode.window.activeTextEditor) {
 			return vscode.window.activeTextEditor.document.getText();
@@ -43,14 +42,34 @@ function getSourceCode(): string {
 	}
 }
 
+const lineNumberCss = `
+/* Line numbers */
+
+span.line-number {
+	display: inline-block;
+	margin-right:0.5em;
+	text-align: right;
+	width: 2em;
+}
+
+`;
+
 function getRenderedSourceCode(): string {
 	let x = vscode.extensions.getExtension("pdconsec.print");
-	if (!x) { throw new Error("Cannot resolve extension. Has the name changed?"); }
+	if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
 	let stylePath = `${x.extensionPath}/node_modules/highlight.js/styles`;
 	let defaultCss = getFileText(`${stylePath}/default.css`);
 	let swatchCss = getFileText(`${stylePath}/kimbie.light.css`);
 	let renderedCode = hljs.highlightAuto(getSourceCode()).value;
-	return `<html><head><style>${defaultCss}\r${swatchCss}</style></head><body style="font-family: Consolas, monospace;font-size:${printConfig.fontSize};" onload="window.print();window.close();"><pre><code>${renderedCode}</code></pre></body></html>`;
+	// TODO RESPECT VSCODE NUMBERING SETTINGS FOR FILE TYPES
+	var addLineNumbers = printConfig.lineNumbers === "on";
+	if (addLineNumbers) {
+		renderedCode = renderedCode
+			.split("\n")
+			.map((line, i) => `<span class="line-number">${i}</span>${line}`)
+			.join("\n");
+	}
+	return `<html><head><style>${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss : ""}</style></head><body style="font-family: Consolas, monospace;font-size:${printConfig.fontSize};" onload="window.print();window.close();"><pre><code>${renderedCode}</code></pre></body></html>`;
 }
 
 var server: http.Server | undefined;

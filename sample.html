@@ -4,10 +4,11 @@
     counter-reset: linenumber;
   }
 
-  code{
+  code {
     margin-left: 2em;
     display: block;
   }
+
   code::before {
     counter-increment: linenumber;
     content: counter(linenumber);
@@ -15,7 +16,7 @@
     text-align: center;
     width: 2em;
     margin-left: -2em;
-}
+  }
 </style>
 
 <body>
