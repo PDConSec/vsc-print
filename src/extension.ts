@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('extension.print', cmdArgs => {
 		commandArgs = cmdArgs;
 		startWebserver();
-		child_process.exec(`${printConfig.browserPath || browserMap[process.platform]} http://localhost:${printConfig.port}/`);
+		child_process.exec(`${printConfig.browserPath || browserLaunchMap[process.platform]} http://localhost:${printConfig.port}/`);
 	});
 	context.subscriptions.push(disposable);
 }
@@ -18,10 +18,16 @@ export function activate(context: vscode.ExtensionContext) {
 var commandArgs: any;
 var printConfig: vscode.WorkspaceConfiguration;
 
-const browserMap: any = {
+const browserLaunchMap: any = {
 	darwin: "open",
 	linux: "xdg-open",
 	win32: "start"
+};
+
+const paperWidthMap: any = {
+	A3: "297mm", A3L: "420mm",
+	A4: "210mm", A4L: "297mm",
+	Letter:"215mm", LetterL:"279mm"
 };
 
 function getFileText(fname: string): string {
@@ -45,13 +51,19 @@ function getSourceCode(): string {
 const lineNumberCss = `
 /* Line numbers */
 
-span.line-number {
+.line-number {
 	display: inline-block;
-	margin-right:0.5em;
 	text-align: right;
-	width: 2em;
+	vertical-align: top;
+	width: 3em;
 }
 
+.line-text {
+	margin-left: 0.5em;
+	display: inline-block;
+	width: 95%;
+	word-wrap: break-word;
+}
 `;
 
 function getRenderedSourceCode(): string {
@@ -66,10 +78,10 @@ function getRenderedSourceCode(): string {
 	if (addLineNumbers) {
 		renderedCode = renderedCode
 			.split("\n")
-			.map((line, i) => `<span class="line-number">${i}</span>${line}`)
+			.map((line, i) => `<span class="line"><span class="line-number">${i}</span><span class="line-text">${line}</span></span>`)
 			.join("\n");
 	}
-	return `<html><head><style>${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss : ""}</style></head><body style="font-family: Consolas, monospace;font-size:${printConfig.fontSize};" onload="window.print();window.close();"><pre><code>${renderedCode}</code></pre></body></html>`;
+	return `<html><head><style>${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss : ""}@page {size: ${paperWidthMap[printConfig.paperSize]};margin: 10mm;}</style></head><body style="font-family: Consolas, monospace;font-size:${printConfig.fontSize};" onload="window.print();window.close();"><div class="hljs"><pre><code>${renderedCode}</code></pre></div></body></html>`;
 }
 
 var server: http.Server | undefined;

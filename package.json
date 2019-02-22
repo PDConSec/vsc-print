@@ -43,22 +43,15 @@
 						"type": "string",
 						"description": "Paper size and orientation.",
 						"enum": [
-							"a3",
-							"a3Land",
-							"a4",
-							"a4Land",
-							"a5",
-							"a5Land",
-							"letter",
-							"letterLand",
-							"legal",
-							"legalLand"
+							"A3", "A3L",
+							"A4", "A4L",
+							"Letter", "LetterL"
 						],
-						"default": "a4"
+						"default": "A4"
 					},
 					"print.lineNumbers": {
 						"type": "string",
-						"description": "Include line numbers",
+						"description": "Line numbers",
 						"enum": [
 							"on",
 							"off",
