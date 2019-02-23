@@ -1,9 +1,8 @@
 import * as vscode from 'vscode';
 import * as hljs from "highlight.js";
-import { readFileSync, createReadStream } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import * as http from "http";
 import * as child_process from "child_process";
-import { stringify } from 'querystring';
 
 export function activate(context: vscode.ExtensionContext) {
 	printConfig = vscode.workspace.getConfiguration("print", null);
@@ -27,7 +26,7 @@ const browserLaunchMap: any = {
 const paperWidthMap: any = {
 	A3: "297mm", A3L: "420mm",
 	A4: "210mm", A4L: "297mm",
-	Letter:"215mm", LetterL:"279mm"
+	Letter: "215mm", LetterL: "279mm"
 };
 
 function getFileText(fname: string): string {
@@ -51,18 +50,20 @@ function getSourceCode(): string {
 const lineNumberCss = `
 /* Line numbers */
 
+.line {
+	display: flex;
+}
 .line-number {
-	display: inline-block;
+	border-right: thin solid silver;
+	padding-right: 0.3em;
 	text-align: right;
 	vertical-align: top;
-	width: 3em;
+	min-width: 3em;
 }
-
 .line-text {
-	margin-left: 0.5em;
-	display: inline-block;
-	width: 95%;
-	word-wrap: break-word;
+	margin-left: 0.7em;
+  padding-bottom: {lineSpacing};
+	white-space: pre-wrap;
 }
 `;
 
@@ -79,9 +80,14 @@ function getRenderedSourceCode(): string {
 		renderedCode = renderedCode
 			.split("\n")
 			.map((line, i) => `<span class="line"><span class="line-number">${i}</span><span class="line-text">${line}</span></span>`)
-			.join("\n");
+			.join("\n")
+			.replace("\n</span>","</span>")
+			;
 	}
-	return `<html><head><style>${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss : ""}@page {size: ${paperWidthMap[printConfig.paperSize]};margin: 10mm;}</style></head><body style="font-family: Consolas, monospace;font-size:${printConfig.fontSize};" onload="window.print();window.close();"><div class="hljs"><pre><code>${renderedCode}</code></pre></div></body></html>`;
+	let bodyCss=`body{margin:0;padding:0;font-family: Consolas, monospace;font-size:${printConfig.fontSize};}\n`;
+	let html = `<html><head><style>${bodyCss}${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss.replace("{lineSpacing}",printConfig.lineSpacing) : ""}@page {size: ${paperWidthMap[printConfig.paperSize]};margin: 10mm;}</style></head><body onload="window.print();window.close();"><div class="hljs">${renderedCode}</div></body></html>`;
+	// writeFileSync("k:/temp/linenumbers.html", html);
+	return html;
 }
 
 var server: http.Server | undefined;

@@ -1,28 +1,30 @@
-<html>
-<style>
-  body {
-    counter-reset: linenumber;
-  }
+<html><head><style>
 
-  code {
-    margin-left: 2em;
-    display: block;
-  }
-
-  code::before {
-    counter-increment: linenumber;
-    content: counter(linenumber);
-    display: inline-block;
-    text-align: center;
-    width: 2em;
-    margin-left: -2em;
-  }
-</style>
-
-<body>
-  <code>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-    magna aliqua.</code>
-  <code>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.</code>
-</body>
-
-</html>
+    /* Line numbers */
+    
+    .line {
+      display: flex;
+    }
+    .line-number {
+      border-right: thin solid silver;
+      padding-right: 0.3em;
+      text-align: right;
+      vertical-align: top;
+      min-width: 3em;
+    }
+    .line-text {
+      margin-left: 0.7em;
+      white-space: pre-wrap;
+    }
+    @page {size: 210mm;margin: 10mm;}</style></head><body style="font-family: Consolas, monospace;font-size:12pt;"><div class="hljs"><span class="line"><span class="line-number">0</span><span class="line-text">{</span></span>
+    <span class="line"><span class="line-number">1</span><span class="line-text">  <span class="hljs-attr">"Logging"</span>: {
+    </span></span>
+    <span class="line"><span class="line-number">2</span><span class="line-text">    <span class="hljs-attr">"LogLevel"</span>: {
+    </span></span>
+    <span class="line"><span class="line-number">3</span><span class="line-text">      <span class="hljs-attr">"Default"</span>: <span class="hljs-string">"Warning"</span>
+    </span></span>
+    <span class="line"><span class="line-number">4</span><span class="line-text">    }
+    </span></span>
+    <span class="line"><span class="line-number">5</span><span class="line-text">  },
+    </span></span>
+    <span class="line"><span class="line-number">11</span><span class="line-text">}</span></span></div></body></html>
