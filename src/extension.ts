@@ -16,6 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 var commandArgs: any;
 var printConfig: vscode.WorkspaceConfiguration;
+var fileName: string;
 
 const browserLaunchMap: any = {
 	darwin: "open",
@@ -37,9 +38,12 @@ function getFileText(fname: string): string {
 
 function getSourceCode(): string {
 	try {
-		return getFileText(commandArgs.fsPath);
+		let fileText = getFileText(commandArgs.fsPath);
+		fileName = commandArgs.fsPath;
+		return fileText;
 	} catch (error) {
 		if (vscode.window.activeTextEditor) {
+			fileName = vscode.window.activeTextEditor.document.fileName;
 			return vscode.window.activeTextEditor.document.getText();
 		} else {
 			throw new Error("Cannot access the specified file and there is no active editor");
@@ -62,7 +66,7 @@ table {
 }
 .line-text {
 	margin-left: 0.7em;
-  padding-bottom: {lineSpacing};
+  padding-bottom: {lineSpacing}em;
 	white-space: pre-wrap;
 }
 `;
@@ -76,7 +80,7 @@ function getRenderedSourceCode(): string {
 	let renderedCode = hljs.highlightAuto(getSourceCode()).value;
 	let pageCss = `\n@page {
 		size: ${paperWidthMap[printConfig.paperSize]};
-		margin: 10mm;
+		margin: ${printConfig.margin}mm;
 	}
 	.hljs {
 		max-width:100%;
@@ -88,11 +92,11 @@ function getRenderedSourceCode(): string {
 			.split("\n")
 			.map((line, i) => `<tr><td class="line-number">${i}</td><td class="line-text">${line}</td></tr>`)
 			.join("\n")
-			.replace("\n</td>","</td>")
+			.replace("\n</td>", "</td>")
 			;
 	}
-	let bodyCss=`body{margin:0;padding:0;font-family: Consolas, monospace;font-size:${printConfig.fontSize};}\n`;
-	let html = `<html><head><style>${pageCss}${bodyCss}${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss.replace("{lineSpacing}",printConfig.lineSpacing) : ""}</style></head><body onload="window.print();window.close();"><table class="hljs">${renderedCode}</table></body></html>`;
+	let bodyCss = `body{margin:0;padding:0;font-family: Consolas, monospace;font-size:${printConfig.fontSize};}\n`;
+	let html = `<html><head><title>${fileName}</title><style>${pageCss}${bodyCss}${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss.replace("{lineSpacing}", printConfig.lineSpacing) : ""}</style></head><body onload="window.print();window.close();"><table class="hljs">${renderedCode}</table></body></html>`;
 	try {
 		writeFileSync("k:/temp/linenumbers.html", html);
 

@@ -34,12 +34,12 @@
 						"enum":[1,1.5,2],
 						"enumDescriptions": ["Single spaced", "Line and a half", "Double spaced"],
 						"description": "Vertical spacing of lines",
-						"default": 1.5
+						"default": 1
 					},
-					"print.indent": {
+					"print.margin": {
 						"type": "integer",
-						"description": "Spaces per indent",
-						"default": 2
+						"description": "Margin (mm)",
+						"default": 10
 					},
 					"print.fontSize": {
 						"type": "string",
@@ -49,16 +49,16 @@
 					},
 					"print.paperSize": {
 						"type": "string",
-						"description": "Paper size and orientation.",
+						"description": "Paper size",
 						"enum": [
-							"A3", "A3L",
-							"A4", "A4L",
-							"Letter", "LetterL"
+							"A3", 
+							"A4", 
+							"Letter"
 						],
 						"enumDescriptions": [
-							"A3", "A3 paper in landscape mode",
-							"A4", "A4 paper in landscape mode",
-							"Letter", "US Letter paper in landscape mode"
+							"A3", 
+							"A4", 
+							"Letter"
 						],
 						"default": "A4"
 					},
