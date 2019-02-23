@@ -93,7 +93,12 @@ function getRenderedSourceCode(): string {
 	}
 	let bodyCss=`body{margin:0;padding:0;font-family: Consolas, monospace;font-size:${printConfig.fontSize};}\n`;
 	let html = `<html><head><style>${pageCss}${bodyCss}${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss.replace("{lineSpacing}",printConfig.lineSpacing) : ""}</style></head><body onload="window.print();window.close();"><table class="hljs">${renderedCode}</table></body></html>`;
-	writeFileSync("k:/temp/linenumbers.html", html);
+	try {
+		writeFileSync("k:/temp/linenumbers.html", html);
+
+	} catch (error) {
+		// don't barf on other people's systems
+	}
 	return html;
 }
 
