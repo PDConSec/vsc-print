@@ -50,15 +50,15 @@ function getSourceCode(): string {
 const lineNumberCss = `
 /* Line numbers */
 
-.line {
-	display: flex;
+table {
+	border: none;
+	border-collapse: collapse;
 }
 .line-number {
 	border-right: thin solid silver;
 	padding-right: 0.3em;
 	text-align: right;
 	vertical-align: top;
-	min-width: 3em;
 }
 .line-text {
 	margin-left: 0.7em;
@@ -74,19 +74,26 @@ function getRenderedSourceCode(): string {
 	let defaultCss = getFileText(`${stylePath}/default.css`);
 	let swatchCss = getFileText(`${stylePath}/kimbie.light.css`);
 	let renderedCode = hljs.highlightAuto(getSourceCode()).value;
+	let pageCss = `\n@page {
+		size: ${paperWidthMap[printConfig.paperSize]};
+		margin: 10mm;
+	}
+	.hljs {
+		max-width:100%;
+	}\n`;
 	// TODO RESPECT VSCODE NUMBERING SETTINGS FOR FILE TYPES
 	var addLineNumbers = printConfig.lineNumbers === "on";
 	if (addLineNumbers) {
 		renderedCode = renderedCode
 			.split("\n")
-			.map((line, i) => `<span class="line"><span class="line-number">${i}</span><span class="line-text">${line}</span></span>`)
+			.map((line, i) => `<tr><td class="line-number">${i}</td><td class="line-text">${line}</td></tr>`)
 			.join("\n")
-			.replace("\n</span>","</span>")
+			.replace("\n</td>","</td>")
 			;
 	}
 	let bodyCss=`body{margin:0;padding:0;font-family: Consolas, monospace;font-size:${printConfig.fontSize};}\n`;
-	let html = `<html><head><style>${bodyCss}${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss.replace("{lineSpacing}",printConfig.lineSpacing) : ""}@page {size: ${paperWidthMap[printConfig.paperSize]};margin: 10mm;}</style></head><body onload="window.print();window.close();"><div class="hljs">${renderedCode}</div></body></html>`;
-	// writeFileSync("k:/temp/linenumbers.html", html);
+	let html = `<html><head><style>${pageCss}${bodyCss}${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss.replace("{lineSpacing}",printConfig.lineSpacing) : ""}</style></head><body onload="window.print();window.close();"><table class="hljs">${renderedCode}</table></body></html>`;
+	writeFileSync("k:/temp/linenumbers.html", html);
 	return html;
 }
 

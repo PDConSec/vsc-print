@@ -45,7 +45,7 @@
 						"type": "string",
 						"enum": ["9pt","10pt","11pt","11.5pt","12pt","13pt"],
 						"description": "Font size",
-						"default": "9pt"
+						"default": "10pt"
 					},
 					"print.paperSize": {
 						"type": "string",
