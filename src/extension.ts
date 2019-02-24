@@ -6,14 +6,13 @@ import * as child_process from "child_process";
 
 var commandArgs: any;
 var selection: vscode.Selection | undefined;
-var fileName: string;
-
-const printConfig = vscode.workspace.getConfiguration("print", null);
+var printConfig: vscode.WorkspaceConfiguration;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('extension.print', cmdArgs => {
 		commandArgs = cmdArgs;
+		printConfig = vscode.workspace.getConfiguration("print", null);
 		let editor = vscode.window.activeTextEditor;
 		if (editor && editor.selection) {
 			selection = editor.selection;
@@ -23,7 +22,8 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 		startWebserver();
 		// vscode.window.showInformationMessage("vsc-print shelling browser");
-		child_process.exec(`"${printConfig.browserPath || browserLaunchMap[process.platform]}" http://localhost:${printConfig.port}/`);
+		let cmd = printConfig.browserPath ? `"${printConfig.browserPath}"` : browserLaunchMap[process.platform];
+		child_process.exec(`${cmd} http://localhost:${printConfig.port}/`);
 	});
 	context.subscriptions.push(disposable);
 }
@@ -55,7 +55,6 @@ function getSourceCode(): string {
 		case "FILE EXPLORER":
 			try {
 				let fileText = getFileText(commandArgs.fsPath);
-				fileName = commandArgs.fsPath;
 				return fileText;
 			} catch (error) {
 				throw new Error(`Cannot access ${commandArgs.fsPath}.\n${error.Message}`);
@@ -93,7 +92,7 @@ function getRenderedSourceCode(): string {
 	let defaultCss = getFileText(`${stylePath}/default.css`);
 	let swatchCss = getFileText(`${stylePath}/${printConfig.stylesheet}.css`);
 	let renderedCode = hljs.highlightAuto(getSourceCode()).value;
-	let pageCss = `\n@page {margin: ${printConfig.margin}mm;} .hljs {max-width:100%;}\n`;
+	let pageCss = `\n@page {margin: ${printConfig.margin}mm;} .hljs {max-width:100%;width:100%;}\n`;
 	var addLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && vscode.window.activeTextEditor && (vscode.window.activeTextEditor.options.lineNumbers || 0) > 0);
 	if (addLineNumbers) {
 		var startLine = selection && !(selection.isEmpty || selection.isSingleLine) ? selection.start.line + 1 : 1;
@@ -112,7 +111,7 @@ function getRenderedSourceCode(): string {
 			;
 	}
 	let bodyCss = `body{margin:0;padding:0;font-family: Consolas, monospace;font-size:${printConfig.fontSize};}\n`;
-	let html = `<html><head><title>${fileName}</title><style>${pageCss}${bodyCss}${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", printConfig.lineSpacing)}</style></head><body onload="window.print();window.close();"><table class="hljs">${renderedCode}</table></body></html>`;
+	let html = `<html><head><title>${commandArgs.fsPath}</title><style>${pageCss}${bodyCss}${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}</style></head><body onload="window.print();window.close();"><table class="hljs">${renderedCode}</table></body></html>`;
 	try {
 		writeFileSync("k:/temp/linenumbers.html", html);
 
