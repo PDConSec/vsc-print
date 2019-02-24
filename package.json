@@ -1,15 +1,19 @@
 {
-	"name": "print",
-	"displayName": "Print via browser",
-	"description": "",
+	"name": "vscode-print",
+	"displayName": "VS Code Printing",
+	"description": "Syntax-coloured line-numbered printing in VS Code. Check out contributions for customisation settings.",
 	"version": "0.0.1",
 	"author": {
 		"name": "Peter Wone",
 		"email": "peter.wone@outlook.com"
 	},
 	"publisher": "pdconsec",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/PeterWone/vsc-print"
+	},
 	"engines": {
-		"vscode": "^1.31.0"
+		"vscode": "^1.20.0"
 	},
 	"categories": [
 		"Other"
@@ -31,8 +35,16 @@
 				"properties": {
 					"print.lineSpacing": {
 						"type": "number",
-						"enum":[1,1.5,2],
-						"enumDescriptions": ["Single spaced", "Line and a half", "Double spaced"],
+						"enum": [
+							1,
+							1.5,
+							2
+						],
+						"enumDescriptions": [
+							"Single spaced",
+							"Line and a half",
+							"Double spaced"
+						],
 						"description": "Vertical spacing of lines",
 						"default": 1
 					},
@@ -43,24 +55,16 @@
 					},
 					"print.fontSize": {
 						"type": "string",
-						"enum": ["9pt","10pt","11pt","11.5pt","12pt","13pt"],
+						"enum": [
+							"9pt",
+							"10pt",
+							"11pt",
+							"11.5pt",
+							"12pt",
+							"13pt"
+						],
 						"description": "Font size",
 						"default": "10pt"
-					},
-					"print.paperSize": {
-						"type": "string",
-						"description": "Paper size",
-						"enum": [
-							"A3", 
-							"A4", 
-							"Letter"
-						],
-						"enumDescriptions": [
-							"A3", 
-							"A4", 
-							"Letter"
-						],
-						"default": "A4"
 					},
 					"print.lineNumbers": {
 						"type": "string",
@@ -70,7 +74,7 @@
 							"off",
 							"inherit"
 						],
-						"default": "on"
+						"default": "inherit"
 					},
 					"print.browserPath": {
 						"type": "string",
@@ -80,6 +84,19 @@
 						"type": "integer",
 						"description": "Embedded webserver port",
 						"default": 5050
+					},
+					"print.stylesheet": {
+						"type": "string",
+						"default": "vs2015",
+						"enum": [
+							"androidstudio",
+							"arduino-light",
+							"github",
+							"kimbie.dark",
+							"kimbie.light",
+							"monokai-sublime",
+							"vs2015"
+						]
 					}
 				}
 			}
@@ -93,6 +110,20 @@
 				}
 			],
 			"editor/title": [
+				{
+					"when": "resourceLangId",
+					"command": "extension.print",
+					"group": "navigation"
+				}
+			],
+			"editor/title/context": [
+				{
+					"when": "resourceLangId",
+					"command": "extension.print",
+					"group": "navigation"
+				}
+			],
+			"editor/context": [
 				{
 					"when": "resourceLangId",
 					"command": "extension.print",
@@ -119,7 +150,6 @@
 		"@types/highlight.js": "^9.12.3",
 		"@types/tmp": "0.0.34",
 		"highlight.js": "^9.14.2",
-		"n-readlines": "^1.0.0",
 		"tmp": "0.0.33"
 	}
 }

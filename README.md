@@ -1,23 +1,30 @@
-# vsc-print README
+# Visual Studio Code Printing
 
 ## Features
 
-Printing.
+Printing on Mac, Linux and Windows
+* No network or cloud dependencies
+* Syntax colouring in a wide selection of named colour schemes
+* Optional line numbering
+* Adjustable line spacing
+* Print a selection of code with line numbers matching the editor
+* Specify a browser other than your default (Edge won't automatically close after printing)
 
 ## Requirements
 
-A printer.
+You'll need access to a printer.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+* `print.margin`: the page margin in millimetres
+* `print.lineSpacing`: single, line-and-a-half or double spaced
+* `print.fontSize`: the font size 
+* `print.lineNumbers`: on, off or inherit (do same as editor)
+* `print.browserPath`: the path to a webbrowser, leave blank to use your default browser
+* `print.port`: the port used by the embedded webserver
+* `print.stylesheet`: the stylesheet used for colouring syntax
 
 ## Known Issues
 
@@ -29,29 +36,4 @@ Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Initial release of vscode.print

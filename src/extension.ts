@@ -4,51 +4,65 @@ import { readFileSync, writeFileSync } from 'fs';
 import * as http from "http";
 import * as child_process from "child_process";
 
+var commandArgs: any;
+var selection: vscode.Selection | undefined;
+var fileName: string;
+
+const printConfig = vscode.workspace.getConfiguration("print", null);
+const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
+
 export function activate(context: vscode.ExtensionContext) {
-	printConfig = vscode.workspace.getConfiguration("print", null);
 	let disposable = vscode.commands.registerCommand('extension.print', cmdArgs => {
 		commandArgs = cmdArgs;
+		let editor = vscode.window.activeTextEditor;
+		if (editor && editor.selection) {
+			selection = editor.selection;
+		}
+		else {
+			selection = undefined;
+		}
 		startWebserver();
-		child_process.exec(`${printConfig.browserPath || browserLaunchMap[process.platform]} http://localhost:${printConfig.port}/`);
+		// vscode.window.showInformationMessage("vsc-print shelling browser");
+		child_process.exec(`"${printConfig.browserPath || browserLaunchMap[process.platform]}" http://localhost:${printConfig.port}/`);
 	});
 	context.subscriptions.push(disposable);
 }
 
-var commandArgs: any;
-var printConfig: vscode.WorkspaceConfiguration;
-var fileName: string;
-
-const browserLaunchMap: any = {
-	darwin: "open",
-	linux: "xdg-open",
-	win32: "start"
-};
-
-const paperWidthMap: any = {
-	A3: "297mm", A3L: "420mm",
-	A4: "210mm", A4L: "297mm",
-	Letter: "215mm", LetterL: "279mm"
-};
-
 function getFileText(fname: string): string {
+	// vscode.window.showInformationMessage(`vsc-print get ${fname}`);
+
 	var text = readFileSync(fname).toString();
 	//strip BOM when present
+	// vscode.window.showInformationMessage(`vsc-print got ${fname}`);
 	return text.indexOf('\uFEFF') === 0 ? text.substring(1, text.length) : text;
 }
 
 function getSourceCode(): string {
-	try {
-		let fileText = getFileText(commandArgs.fsPath);
-		fileName = commandArgs.fsPath;
-		return fileText;
-	} catch (error) {
-		if (vscode.window.activeTextEditor) {
-			fileName = vscode.window.activeTextEditor.document.fileName;
-			return vscode.window.activeTextEditor.document.getText();
-		} else {
-			throw new Error("Cannot access the specified file and there is no active editor");
-		}
+	var sender = vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.uri.fsPath === commandArgs.fsPath ?
+		"ACTIVE TEXT EDITOR" :
+		"FILE EXPLORER";
+	let result = "THIS CAN'T HAPPEN";
+	switch (sender) {
+		case "ACTIVE TEXT EDITOR":
+			if (vscode.window.activeTextEditor) {
+				if (selection && !(selection.isEmpty || selection.isSingleLine)) {
+					result = vscode.window.activeTextEditor.document.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, ""); //rtrim;
+				} else {
+					result = vscode.window.activeTextEditor.document.getText();
+				}
+			}
+			break;
+		case "FILE EXPLORER":
+			try {
+				let fileText = getFileText(commandArgs.fsPath);
+				fileName = commandArgs.fsPath;
+				return fileText;
+			} catch (error) {
+				throw new Error(`Cannot access ${commandArgs.fsPath}.\n${error.Message}`);
+			}
+			break;
 	}
+	return result;
 }
 
 const lineNumberCss = `
@@ -72,37 +86,40 @@ table {
 `;
 
 function getRenderedSourceCode(): string {
-	let x = vscode.extensions.getExtension("pdconsec.print");
+	// vscode.window.showInformationMessage("vsc-print get rendered source");
+	let x = vscode.extensions.getExtension("pdconsec.vscode-print");
 	if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
 	let stylePath = `${x.extensionPath}/node_modules/highlight.js/styles`;
 	let defaultCss = getFileText(`${stylePath}/default.css`);
-	let swatchCss = getFileText(`${stylePath}/kimbie.light.css`);
+	let swatchCss = getFileText(`${stylePath}/${printConfig.stylesheet}.css`);
 	let renderedCode = hljs.highlightAuto(getSourceCode()).value;
-	let pageCss = `\n@page {
-		size: ${paperWidthMap[printConfig.paperSize]};
-		margin: ${printConfig.margin}mm;
-	}
-	.hljs {
-		max-width:100%;
-	}\n`;
-	// TODO RESPECT VSCODE NUMBERING SETTINGS FOR FILE TYPES
-	var addLineNumbers = printConfig.lineNumbers === "on";
+	let pageCss = `\n@page {margin: ${printConfig.margin}mm;} .hljs {max-width:100%;}\n`;
+	var addLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && vscode.window.activeTextEditor && (vscode.window.activeTextEditor.options.lineNumbers || 0) > 0);
 	if (addLineNumbers) {
+		var startLine = selection && !(selection.isEmpty || selection.isSingleLine) ? selection.start.line + 1 : 1;
 		renderedCode = renderedCode
 			.split("\n")
-			.map((line, i) => `<tr><td class="line-number">${i}</td><td class="line-text">${line}</td></tr>`)
+			.map((line, i) => `<tr><td class="line-number">${startLine + i}</td><td class="line-text">${line}</td></tr>`)
+			.join("\n")
+			.replace("\n</td>", "</td>")
+			;
+	} else {
+		renderedCode = renderedCode
+			.split("\n")
+			.map((line, i) => `<tr><td class="line-text">${line}</td></tr>`)
 			.join("\n")
 			.replace("\n</td>", "</td>")
 			;
 	}
 	let bodyCss = `body{margin:0;padding:0;font-family: Consolas, monospace;font-size:${printConfig.fontSize};}\n`;
-	let html = `<html><head><title>${fileName}</title><style>${pageCss}${bodyCss}${defaultCss}\r${swatchCss}\n${addLineNumbers ? lineNumberCss.replace("{lineSpacing}", printConfig.lineSpacing) : ""}</style></head><body onload="window.print();window.close();"><table class="hljs">${renderedCode}</table></body></html>`;
+	let html = `<html><head><title>${fileName}</title><style>${pageCss}${bodyCss}${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", printConfig.lineSpacing)}</style></head><body onload="window.print();window.close();"><table class="hljs">${renderedCode}</table></body></html>`;
 	try {
 		writeFileSync("k:/temp/linenumbers.html", html);
 
 	} catch (error) {
 		// don't barf on other people's systems
 	}
+	// vscode.window.showInformationMessage("vsc-print got rendered source");
 	return html;
 }
 
@@ -121,7 +138,7 @@ function startWebserver(): Promise<void> {
 			server = http.createServer((request, response) => {
 				if (request.url) {
 					let html = getRenderedSourceCode();
-					//response.setHeader("Content-Type", "text/html");
+					response.setHeader("Content-Type", "text/html");
 					response.end(html);
 				}
 			});
@@ -130,10 +147,10 @@ function startWebserver(): Promise<void> {
 				if (err) {
 					switch (err.code) {
 						case "EADDRINUSE":
-							vscode.window.showInformationMessage(`PORT ${printConfig.port} OCCUPIED. CHANGE WEBSERVER CONFIG.`);
+							// vscode.window.showInformationMessage(`PORT ${printConfig.port} OCCUPIED. CHANGE WEBSERVER CONFIG.`);
 							break;
 						case "EACCES":
-							vscode.window.showInformationMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
+							// vscode.window.showInformationMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
 							break;
 					}
 					if (server) {
