@@ -32,8 +32,10 @@ Calling out known issues can help limit users opening duplicate issues against y
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+Couldn't get icons to work outside of development environment so reverted to just text on title bar.
 
-### 1.0.0
+Direct printing will have to wait on changes to my related WebPrint project.
+
+### 0.2.0
 
 Initial release of vscode.print
