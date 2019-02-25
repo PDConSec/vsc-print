@@ -28,7 +28,7 @@ This extension contributes the following settings:
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+A problem with VS Code in handling large numbers of items in settings presented as pick lists meant that it was necessary to greatly shorten the list. The problem has been reported and when it is rectified the list will return to the full 90 stylesheets.
 
 ## Release Notes
 
