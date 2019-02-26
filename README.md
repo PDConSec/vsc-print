@@ -3,7 +3,7 @@
 ## Features
 
 Printing on Mac, Linux and Windows
-* No network or cloud dependencies
+* Does not depend on cloud services like CodeMirror
 * Syntax colouring in a wide selection of named colour schemes
 * Optional line numbering
 * Adjustable line spacing
@@ -28,14 +28,14 @@ This extension contributes the following settings:
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+The list of stylesheets had to be severely shortened to work around a problem with large lists in VS Code. When handling of large lists is improved the full list of 90 stylesheets will be restored.
 
 ## Release Notes
 
-Couldn't get icons to work outside of development environment so reverted to just text on title bar.
+Icons have been updated in both marketplace and the application.
 
 Direct printing will have to wait on changes to my related WebPrint project.
 
-### 0.2.0
+### 0.2.5
 
-Initial release of vscode.print
+Minor packaging fixes
