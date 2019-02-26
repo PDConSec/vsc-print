@@ -32,13 +32,14 @@ You'll need a web browser and access to a printer.
 
 This extension contributes the following settings:
 
-* `print.margin`: the page margin in millimetres
-* `print.lineSpacing`: single, line-and-a-half or double spaced
+* `print.alternateBrowser`: enable/disable an alternate browswer
+* `print.browserPath`: the path to a webbrowser
+* `print.colourScheme`: the stylesheet used for colouring syntax
 * `print.fontSize`: the font size 
+* `print.margin`: the page margin in millimetres
 * `print.lineNumbers`: on, off or inherit (do same as editor)
-* `print.browserPath`: the path to a webbrowser, leave blank to use your default browser
+* `print.lineSpacing`: single, line-and-a-half or double spaced
 * `print.port`: the port used by the embedded webserver
-* `print.stylesheet`: the stylesheet used for colouring syntax
 
 ## Known Issues
 
@@ -46,10 +47,8 @@ The list of stylesheets had to be severely shortened to work around a problem wi
 
 ## Release Notes
 
-Icons have been updated in both marketplace and the application.
-
 Direct printing will have to wait on changes to my related WebPrint project.
 
-### 0.2.5
+### 0.3.0
 
-Minor packaging fixes
+An option has been added to enable/disable the alternate browser so it can be disabled without losing the path. 

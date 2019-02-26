@@ -28,7 +28,7 @@
 			{
 				"command": "extension.print",
 				"title": "Print",
-				"icon":{
+				"icon": {
 					"dark": "./printer-icon-dog-ear-inverse.svg",
 					"light": "./printer-icon-dog-ear.svg"
 				}
@@ -81,16 +81,21 @@
 						],
 						"default": "inherit"
 					},
+					"print.alternateBrowser": {
+						"type": "boolean",
+						"description": "Use the alternate browser",
+						"default": true
+					},
 					"print.browserPath": {
 						"type": "string",
-						"description": "Browser executable path (empty for default)"
+						"description": "Path to the executable of an alternate browser"
 					},
 					"print.port": {
 						"type": "integer",
 						"description": "Embedded webserver port",
 						"default": 5050
 					},
-					"print.stylesheet": {
+					"print.colourScheme": {
 						"type": "string",
 						"default": "vs2015",
 						"enum": [
@@ -102,6 +107,11 @@
 							"monokai-sublime",
 							"vs2015"
 						]
+					},
+					"print.printAndClose": {
+						"type": "boolean",
+						"default": true,
+						"description": "Show the Print dialog when the browser is ready, and try to close the page after printing is done or cancelled"
 					}
 				}
 			}
@@ -153,8 +163,6 @@
 	},
 	"dependencies": {
 		"@types/highlight.js": "^9.12.3",
-		"@types/tmp": "0.0.34",
-		"highlight.js": "^9.14.2",
-		"tmp": "0.0.33"
+		"highlight.js": "^9.14.2"
 	}
 }

@@ -1,4 +1,4 @@
-					"print.stylesheet": {
+					"print.colourScheme": {
 						"type": "string",
 						"default": "ascetic",
 						"enum": [
