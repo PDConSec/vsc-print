@@ -4,7 +4,7 @@ Code listings are iconic in a sense older than graphical user interfaces. Say no
 
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
 
-Clicking on the print icon on the toolbar prints the document in the active editor.
+The print icon on the toolbar prints the document in the active editor.
 
 If you have a text selection that crosses at least one line-break you can right click and choose Print from the context menu to send just the selection to the printer. In the absence of a multi-line selection the entire document is printed.
 
