@@ -26,7 +26,7 @@ Printing on Mac, Linux and Windows
 
 ## Requirements
 
-You'll need access to a printer.
+You'll need a web browser and access to a printer.
 
 ## Extension Settings
 
