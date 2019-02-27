@@ -3,9 +3,9 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## 0.3.1
-- Fix page-breaking problem with Chrome, margin setting removed (now handled entirely by browser settings).
-- Port allocation is now dynamic.
+## 0.4.0
+- Fix page-breaking by dropping @page margins and delegating margin control to the browser.
+- Port allocation is now dynamic. 
 
 ## 0.3.0
 - An option has been added to enable/disable the alternate browser so it can be disabled without losing the path. 
