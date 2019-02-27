@@ -85,11 +85,6 @@
 						"type": "string",
 						"description": "Path to the executable of an alternate browser"
 					},
-					"print.port": {
-						"type": "integer",
-						"description": "Embedded webserver port",
-						"default": 5050
-					},
 					"print.colourScheme": {
 						"type": "string",
 						"default": "vs2015",

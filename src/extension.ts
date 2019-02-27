@@ -103,8 +103,7 @@ function getRenderedSourceCode(): string {
 			;
 	}
 	let printAndClose = printConfig.printAndClose ? " onload = \"window.print();window.close();\"" : "";
-	let bodyCss = `body{margin:0;padding:0;font-family: Consolas, monospace;font-size:${printConfig.fontSize};}\n`;
-	let html = `<html><head><title>${commandArgs.fsPath}</title><style>${bodyCss}${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs {max-width:100%;width:100%;}\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
+	let html = `<html><head><title>${commandArgs.fsPath}</title><style>body{margin:0;padding:0;}\n${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs { max-width:100%; width:100%; font-family: Consolas, monospace; font-size: ${printConfig.fontSize}; }\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
 	try {
 		writeFileSync("k:/temp/linenumbers.html", html);
 
@@ -115,25 +114,21 @@ function getRenderedSourceCode(): string {
 }
 
 var server: http.Server | undefined;
-var port: number = 0;
+var port: number = 49152;
 
 function startWebserver(): Promise<void> {
-	if (port === 0) {
-		port = printConfig.port;
-	}
 	return new Promise((resolve, reject) => {
 		// clean up unexpected stragglers
-		if (server !== undefined && printConfig.port !== port) {
-			server.close(() => { });
+		if (server) {
+			server.close();
 			server = undefined;
 		}
-		if (server === undefined) {
+		if (!server) {
 			// prepare to service an http request
 			server = http.createServer((request, response) => {
 				if (request.url) {
-					let html = getRenderedSourceCode();
 					response.setHeader("Content-Type", "text/html");
-					response.end(html);
+					response.end(getRenderedSourceCode());
 				}
 			});
 			// report exceptions
@@ -141,8 +136,12 @@ function startWebserver(): Promise<void> {
 				if (err) {
 					switch (err.code) {
 						case "EADDRINUSE":
-							vscode.window.showInformationMessage(`PORT ${port++} OCCUPIED, TRYING ${port}`);
-							if (server) { server.listen(port); }
+							if (server) {
+								if (++port > 49152 + 16834) {
+									port = 49152;
+								}
+								server.listen(port);
+							}
 							break;
 						case "EACCES":
 							vscode.window.showInformationMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
@@ -151,14 +150,16 @@ function startWebserver(): Promise<void> {
 					if (server) {
 						server.close();
 						server = undefined;
-						port = 0;
+						if (++port > 49152 + 16834) {
+							port = 49152;
+						}
 					}
 					reject();
 				}
 			});
 			// clean up after one request
 			server.on("request", (request: any, response: any) => {
-				response.on("finish", request.socket.destroy);
+				response.on("finish", () => request.socket.destroy());
 			});
 			server.listen(port);
 		}

@@ -38,7 +38,6 @@ This extension contributes the following settings:
 * `print.fontSize`: the font size 
 * `print.lineNumbers`: on, off or inherit (do same as editor)
 * `print.lineSpacing`: single, line-and-a-half or double spaced
-* `print.port`: the port used by the embedded web server
 
 ## Known Issues
 
@@ -51,3 +50,4 @@ Direct printing will have to wait on changes to my related WebPrint project.
 ### 0.3.1
 
 Fix page-breaking problem with Chrome, margin setting removed (now handled entirely by browser settings).
+Port allocation is now dynamic.
