@@ -1,7 +1,7 @@
 {
 	"name": "vscode-print",
 	"displayName": "VS Code Printing",
-	"description": "Syntax-coloured line-numbered printing in VS Code. Check out contributions for customisation settings.",
+	"description": "Syntax-coloured line-numbered printing in VS Code.",
 	"version": "0.3.0",
 	"icon": "PDCONSEC-zipper-PRINTER.png",
 	"author": {
@@ -52,11 +52,6 @@
 						],
 						"description": "Vertical spacing of lines",
 						"default": 1
-					},
-					"print.margin": {
-						"type": "integer",
-						"description": "Margin (mm)",
-						"default": 10
 					},
 					"print.fontSize": {
 						"type": "string",

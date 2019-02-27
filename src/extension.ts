@@ -14,16 +14,10 @@ export function activate(context: vscode.ExtensionContext) {
 		commandArgs = cmdArgs;
 		printConfig = vscode.workspace.getConfiguration("print", null);
 		let editor = vscode.window.activeTextEditor;
-		if (editor && editor.selection) {
-			selection = editor.selection;
-		}
-		else {
-			selection = undefined;
-		}
+		selection = editor && editor.selection ? editor.selection : undefined;
 		startWebserver();
-		// vscode.window.showInformationMessage("vsc-print shelling browser");
 		let cmd = printConfig.alternateBrowser && printConfig.browserPath ? `"${printConfig.browserPath}"` : browserLaunchMap[process.platform];
-		child_process.exec(`${cmd} http://localhost:${printConfig.port}/`);
+		child_process.exec(`${cmd} http://localhost:${port}/`);
 	});
 	context.subscriptions.push(disposable);
 }
@@ -32,7 +26,7 @@ function getFileText(fname: string): string {
 	// vscode.window.showInformationMessage(`vsc-print get ${fname}`);
 
 	var text = readFileSync(fname).toString();
-	//strip BOM when present
+	// strip BOM when present
 	// vscode.window.showInformationMessage(`vsc-print got ${fname}`);
 	return text.indexOf('\uFEFF') === 0 ? text.substring(1, text.length) : text;
 }
@@ -85,14 +79,12 @@ table {
 `;
 
 function getRenderedSourceCode(): string {
-	// vscode.window.showInformationMessage("vsc-print get rendered source");
 	let x = vscode.extensions.getExtension("pdconsec.vscode-print");
 	if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
 	let stylePath = `${x.extensionPath}/node_modules/highlight.js/styles`;
 	let defaultCss = getFileText(`${stylePath}/default.css`);
 	let swatchCss = getFileText(`${stylePath}/${printConfig.colourScheme}.css`);
 	let renderedCode = hljs.highlightAuto(getSourceCode()).value;
-	let pageCss = `\n@page {margin: ${printConfig.margin}mm;} .hljs {max-width:100%;width:100%;}\n`;
 	var addLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && vscode.window.activeTextEditor && (vscode.window.activeTextEditor.options.lineNumbers || 0) > 0);
 	if (addLineNumbers) {
 		var startLine = selection && !(selection.isEmpty || selection.isSingleLine) ? selection.start.line + 1 : 1;
@@ -112,21 +104,23 @@ function getRenderedSourceCode(): string {
 	}
 	let printAndClose = printConfig.printAndClose ? " onload = \"window.print();window.close();\"" : "";
 	let bodyCss = `body{margin:0;padding:0;font-family: Consolas, monospace;font-size:${printConfig.fontSize};}\n`;
-	let html = `<html><head><title>${commandArgs.fsPath}</title><style>${pageCss}${bodyCss}${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
+	let html = `<html><head><title>${commandArgs.fsPath}</title><style>${bodyCss}${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs {max-width:100%;width:100%;}\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
 	try {
 		writeFileSync("k:/temp/linenumbers.html", html);
 
 	} catch (error) {
 		// don't barf on other people's systems
 	}
-	// vscode.window.showInformationMessage("vsc-print got rendered source");
 	return html;
 }
 
 var server: http.Server | undefined;
-var port: number = 5050;
+var port: number = 0;
 
 function startWebserver(): Promise<void> {
+	if (port === 0) {
+		port = printConfig.port;
+	}
 	return new Promise((resolve, reject) => {
 		// clean up unexpected stragglers
 		if (server !== undefined && printConfig.port !== port) {
@@ -147,10 +141,11 @@ function startWebserver(): Promise<void> {
 				if (err) {
 					switch (err.code) {
 						case "EADDRINUSE":
-							// vscode.window.showInformationMessage(`PORT ${printConfig.port} OCCUPIED. CHANGE WEBSERVER CONFIG.`);
+							vscode.window.showInformationMessage(`PORT ${port++} OCCUPIED, TRYING ${port}`);
+							if (server) { server.listen(port); }
 							break;
 						case "EACCES":
-							// vscode.window.showInformationMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
+							vscode.window.showInformationMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
 							break;
 					}
 					if (server) {
@@ -163,11 +158,9 @@ function startWebserver(): Promise<void> {
 			});
 			// clean up after one request
 			server.on("request", (request: any, response: any) => {
-				response.on("finish", () => {
-					request.socket.destroy();
-				});
+				response.on("finish", request.socket.destroy);
 			});
-			server.listen(printConfig.port);
+			server.listen(port);
 		}
 		resolve();
 	});

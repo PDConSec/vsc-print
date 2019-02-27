@@ -17,12 +17,12 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 ## Features
 
 Printing on Mac, Linux and Windows
-* Does not depend on cloud services like CodeMirror
-* Syntax colouring in a wide selection of named colour schemes
+* Entirely local in operation, is not dependent on cloud services 
+* Syntax colouring in a selection of named colour schemes
 * Optional line numbering
-* Adjustable line spacing
+* Adjustable line spacing (1, 1.5, 2)
 * Print a selection of code with line numbers matching the editor
-* Specify a browser other than your default (Edge won't automatically close after printing)
+* Specify a browser other than your default 
 
 ## Requirements
 
@@ -32,14 +32,13 @@ You'll need a web browser and access to a printer.
 
 This extension contributes the following settings:
 
-* `print.alternateBrowser`: enable/disable an alternate browswer
-* `print.browserPath`: the path to a webbrowser
+* `print.alternateBrowser`: enable/disable an alternate browser
+* `print.browserPath`: the path to a web browser
 * `print.colourScheme`: the stylesheet used for colouring syntax
 * `print.fontSize`: the font size 
-* `print.margin`: the page margin in millimetres
 * `print.lineNumbers`: on, off or inherit (do same as editor)
 * `print.lineSpacing`: single, line-and-a-half or double spaced
-* `print.port`: the port used by the embedded webserver
+* `print.port`: the port used by the embedded web server
 
 ## Known Issues
 
@@ -49,6 +48,6 @@ The list of stylesheets had to be severely shortened to work around a problem wi
 
 Direct printing will have to wait on changes to my related WebPrint project.
 
-### 0.3.0
+### 0.3.1
 
-An option has been added to enable/disable the alternate browser so it can be disabled without losing the path. 
+Fix page-breaking problem with Chrome, margin setting removed (now handled entirely by browser settings).
