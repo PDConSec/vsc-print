@@ -43,11 +43,13 @@ This extension contributes the following settings:
 
 The list of stylesheets had to be severely shortened to work around a problem with large lists in VS Code. When handling of large lists is improved the full list of 90 stylesheets will be restored.
 
+Chrome has a tendency to remember too much about printers, paper sizes and margins especially if you abort. If you try another browser and a problem goes away, it's Chrome helping too much and the solution is to load a web page, change your settings and print something, then exit clean. 
+
 ## Release Notes
 
-Direct printing will have to wait on changes to my related WebPrint project.
+Problems are fewer and further between so the rate of change is dropping. If you notice glitches please don't hesitate to log an issue. Printing is something that should just work.
 
-### 0.3.1
+### 0.4.0
 
-Fix page-breaking problem with Chrome, margin setting removed (now handled entirely by browser settings).
+Fix page-breaking by dropping @page margins and delegating margin control to the browser. 
 Port allocation is now dynamic.
