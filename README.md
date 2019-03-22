@@ -2,7 +2,7 @@
 
 # Visual Studio Code Printing
 
-Code listings are iconic in a sense older than graphical user interfaces. Say no to millennial nonsense and print your code the way God intended (on paper with line numbers). Yes, I know, it really should be faded dot-matrix on blue-lined 15" fanfold paper but what can you do.
+Code listings are iconic in a sense older than graphical user interfaces. Say no to millennial nonsense and print your code the on paper with line numbers. Yes, I know it really should be faded dot-matrix on blue-lined 15" fanfold paper, but what can you do.
 
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
 
