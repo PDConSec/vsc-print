@@ -1,3 +1,5 @@
+> Could I have some feedback please? I find it hard to believe this software is perfect. And if it _is_ perfect please say so in a review so I can feel smug about it.
+
 # Visual Studio Code Printing
 
 Code listings are iconic in a sense older than graphical user interfaces. Say no to millennial nonsense and print your code the way God intended (on paper with line numbers). Yes, I know, it really should be faded dot-matrix on blue-lined 15" fanfold paper but what can you do.
