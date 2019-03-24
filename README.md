@@ -1,8 +1,8 @@
-> Could I have some feedback please? I find it hard to believe this software is perfect. And if it _is_ perfect please say so in a review so I can feel smug about it.
+> Could I have some feedback please? I find it hard to believe this software is perfect. In the unlikely event that it _is_ perfect please say so in a review so I can feel good about it.
 
 # Visual Studio Code Printing
 
-Code listings are iconic in a sense older than graphical user interfaces. Say no to millennial nonsense and print your code on paper with line numbers. Yes, I know it should be faded dot-matrix on blue-lined 15" fanfold paper, but what can you do.
+Code listings are iconic in a sense older than graphical user interfaces. I can't give you dot-matrix on blue-lined 15" fanfold paper, but I _can_ give you line numbers, and something _really_ old school that I always wanted but never saw anywhere in a code listing: double spacing to allow annotation with a pencil.
 
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
 
