@@ -66,6 +66,11 @@
 						"description": "Font size",
 						"default": "10pt"
 					},
+					"print.renderMarkdown": {
+						"type": "boolean",
+						"default": true,
+						"description": "Render markdown as HTML when printing"
+					},
 					"print.lineNumbers": {
 						"type": "string",
 						"description": "Line numbers",

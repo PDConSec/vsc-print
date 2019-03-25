@@ -40,6 +40,7 @@ This extension contributes the following settings:
 * `print.fontSize`: the font size 
 * `print.lineNumbers`: on, off or inherit (do same as editor)
 * `print.lineSpacing`: single, line-and-a-half or double spaced
+* `print.formatMarkdown`: render markdown as styled HTML when printing
 
 ## Known Issues
 
@@ -51,7 +52,6 @@ Chrome has a tendency to remember too much about printers, paper sizes and margi
 
 Problems are fewer and further between so the rate of change is dropping. If you notice glitches please don't hesitate to log an issue. Printing is something that should just work.
 
-### 0.4.0
+### 0.5.1
 
-Fix page-breaking by dropping @page margins and delegating margin control to the browser. 
-Port allocation is now dynamic.
+Render markdown when printing. Use font size, font face and line height from markdown preview settings. Markdown settings support a list of user supplied CSS files. If these are defined they will be applied while rendering markdown for printing. A Print: Format markdown setting default to true but set false to disable render for printing.

@@ -12,7 +12,7 @@ var printConfig: vscode.WorkspaceConfiguration;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('extension.print', cmdArgs => {
+  let disposable = vscode.commands.registerCommand('extension.print', (cmdArgs:any) => {
     commandArgs = cmdArgs;
     printConfig = vscode.workspace.getConfiguration("print", null);
     let editor = vscode.window.activeTextEditor;
@@ -81,14 +81,14 @@ table {
 `;
 
 function getRenderedSourceCode(): string {
-  if (commandArgs.fsPath.split('.').pop().toLowerCase() === "md") {
+  if (printConfig.renderMarkdown && commandArgs.fsPath.split('.').pop().toLowerCase() === "md") {
     let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
     return `<html><head><title>${commandArgs.fsPath}</title>
     <style>
     html, body {
-      font-family: ${markdownConfig.fontFamily};
-      font-size: ${markdownConfig.fontSize}px;
-      line-height: ${markdownConfig.lineHeight}em;
+      font-family: ${markdownConfig.preview.fontFamily};
+      font-size: ${markdownConfig.preview.fontSize}px;
+      line-height: ${markdownConfig.preview.lineHeight}em;
     }
     </style>
     ${markdownConfig.styles.map((cssFilename:string)=>`<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
