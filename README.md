@@ -19,12 +19,12 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 ## Features
 
 Printing on Mac, Linux and Windows
-* Entirely local in operation, is not dependent on cloud services 
+* Entirely local in operation, is not dependent on cloud services
 * Syntax colouring in a selection of named colour schemes
 * Optional line numbering
 * Adjustable line spacing (1, 1.5, 2)
 * Print a selection of code with line numbers matching the editor
-* Specify a browser other than your default 
+* Specify a browser other than your default
 
 ## Requirements
 
@@ -37,16 +37,18 @@ This extension contributes the following settings:
 * `print.alternateBrowser`: enable/disable an alternate browser
 * `print.browserPath`: the path to a web browser
 * `print.colourScheme`: the stylesheet used for colouring syntax
-* `print.fontSize`: the font size 
+* `print.fontSize`: the font size
 * `print.lineNumbers`: on, off or inherit (do same as editor)
 * `print.lineSpacing`: single, line-and-a-half or double spaced
 * `print.formatMarkdown`: render markdown as styled HTML when printing
 
 ## Known Issues
 
+The extension uses an internal web server to provide content to the browser. This webserver uses a port in the dynamic port range. When a port is already in use there is an automatic adjustment to the next port number but the failure is not detected until after the browser has been launched so manual retry is necessary. To mitigate this pending a fix for the retry problem, the initial port is no longer at the start of the dynamic port range. This should reduce the chance of collision.
+
 The list of stylesheets had to be severely shortened to work around a problem with large lists in VS Code. When handling of large lists is improved the full list of 90 stylesheets will be restored.
 
-Chrome has a tendency to remember too much about printers, paper sizes and margins especially if you abort. If you try another browser and a problem goes away, it's Chrome helping too much and the solution is to load a web page, change your settings and print something, then exit clean. 
+Chrome has a tendency to remember too much about printers, paper sizes and margins especially if you abort. If you try another browser and a problem goes away, it's Chrome helping too much and the solution is to load a web page, change your settings and print something, then exit clean.
 
 ## Release Notes
 

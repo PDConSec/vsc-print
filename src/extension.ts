@@ -81,6 +81,7 @@ table {
 `;
 
 function getRenderedSourceCode(): string {
+  let printAndClose = printConfig.printAndClose ? " onload = \"window.print();window.close();\"" : "";
   if (printConfig.renderMarkdown && commandArgs.fsPath.split('.').pop().toLowerCase() === "md") {
     let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
     return `<html><head><title>${commandArgs.fsPath}</title>
@@ -93,7 +94,7 @@ function getRenderedSourceCode(): string {
     </style>
     ${markdownConfig.styles.map((cssFilename:string)=>`<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
     </head>
-    <body>${marked(fs.readFileSync(commandArgs.fsPath).toString())}</body></html>`;
+    <body${printAndClose}>${marked(fs.readFileSync(commandArgs.fsPath).toString())}</body></html>`;
   }
   let x = vscode.extensions.getExtension("pdconsec.vscode-print");
   if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
@@ -118,7 +119,6 @@ function getRenderedSourceCode(): string {
       .replace("\n</td>", "</td>")
       ;
   }
-  let printAndClose = printConfig.printAndClose ? " onload = \"window.print();window.close();\"" : "";
   let html = `<html><head><title>${commandArgs.fsPath}</title><style>body{margin:0;padding:0;}\n${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs { max-width:100%; width:100%; font-family: Consolas, monospace; font-size: ${printConfig.fontSize}; }\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
   try {
     writeFileSync("k:/temp/linenumbers.html", html);
@@ -130,7 +130,7 @@ function getRenderedSourceCode(): string {
 }
 
 var server: http.Server | undefined;
-var port: number = 49152;
+var port: number = 49200;
 
 function startWebserver(): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -153,7 +153,7 @@ function startWebserver(): Promise<void> {
           switch (err.code) {
             case "EADDRINUSE":
               if (server) {
-                if (++port > 49152 + 16834) {
+                if (++port > 49200 + 16834) {
                   port = 49152;
                 }
                 server.listen(port);
