@@ -50,6 +50,9 @@ The list of stylesheets had to be severely shortened to work around a problem wi
 
 Chrome has a tendency to remember too much about printers, paper sizes and margins especially if you abort. If you try another browser and a problem goes away, it's Chrome helping too much and the solution is to load a web page, change your settings and print something, then exit clean.
 
+Microsoft Edge always prompts for permission to close the browser after printing, which can be annoying.
+Firefox doesn't prompt, it just plain doesn't close the browser, which is very annoying. As a result, Chrome is the recommended browser for printing.
+
 ## Release Notes
 
 Problems are fewer and further between so the rate of change is dropping. If you notice glitches please don't hesitate to log an issue. Printing is something that should just work.
