@@ -12,7 +12,7 @@ var printConfig: vscode.WorkspaceConfiguration;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('extension.print', (cmdArgs:any) => {
+  let disposable = vscode.commands.registerCommand('extension.print', (cmdArgs: any) => {
     commandArgs = cmdArgs;
     printConfig = vscode.workspace.getConfiguration("print", null);
     let editor = vscode.window.activeTextEditor;
@@ -33,25 +33,25 @@ function getFileText(fname: string): string {
   return text.indexOf('\uFEFF') === 0 ? text.substring(1, text.length) : text;
 }
 
-function getSourceCode(): string {
+async function getSourceCode(): Promise<string[]> {
   var sender = vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.uri.fsPath === commandArgs.fsPath ?
     "ACTIVE TEXT EDITOR" :
     "FILE EXPLORER";
-  let result = "THIS CAN'T HAPPEN";
+  let result = [];
   switch (sender) {
     case "ACTIVE TEXT EDITOR":
       if (vscode.window.activeTextEditor) {
-        if (selection && !(selection.isEmpty || selection.isSingleLine)) {
-          result = vscode.window.activeTextEditor.document.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, ""); //rtrim;
-        } else {
-          result = vscode.window.activeTextEditor.document.getText();
-        }
+        result.push(vscode.window.activeTextEditor.document.languageId);
+        result.push(selection && !(selection.isEmpty || selection.isSingleLine) ?
+          vscode.window.activeTextEditor.document.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "") :
+          vscode.window.activeTextEditor.document.getText());
       }
       break;
     case "FILE EXPLORER":
       try {
-        let fileText = getFileText(commandArgs.fsPath);
-        return fileText;
+        let otd = await vscode.workspace.openTextDocument(commandArgs.fsPath);
+        result.push(otd.languageId);
+        result.push(otd.getText());
       } catch (error) {
         throw new Error(`Cannot access ${commandArgs.fsPath}.\n${error.Message}`);
       }
@@ -80,7 +80,7 @@ table {
 }
 `;
 
-function getRenderedSourceCode(): string {
+async function getRenderedSourceCode(): Promise<string> {
   let printAndClose = printConfig.printAndClose ? " onload = \"window.print();window.close();\"" : "";
   if (printConfig.renderMarkdown && commandArgs.fsPath.split('.').pop().toLowerCase() === "md") {
     let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
@@ -92,7 +92,7 @@ function getRenderedSourceCode(): string {
       line-height: ${markdownConfig.preview.lineHeight}em;
     }
     </style>
-    ${markdownConfig.styles.map((cssFilename:string)=>`<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
+    ${markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
     </head>
     <body${printAndClose}>${marked(fs.readFileSync(commandArgs.fsPath).toString())}</body></html>`;
   }
@@ -101,7 +101,14 @@ function getRenderedSourceCode(): string {
   let stylePath = `${x.extensionPath}/node_modules/highlight.js/styles`;
   let defaultCss = getFileText(`${stylePath}/default.css`);
   let swatchCss = getFileText(`${stylePath}/${printConfig.colourScheme}.css`);
-  let renderedCode = hljs.highlightAuto(getSourceCode()).value;
+  let sourceCode = await getSourceCode();
+  let renderedCode = "";
+  try {
+    renderedCode = hljs.highlight(sourceCode[0], sourceCode[1]).value;
+  }
+  catch (err) {
+    debugger;
+  }
   var addLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && vscode.window.activeTextEditor && (vscode.window.activeTextEditor.options.lineNumbers || 0) > 0);
   if (addLineNumbers) {
     var startLine = selection && !(selection.isEmpty || selection.isSingleLine) ? selection.start.line + 1 : 1;
@@ -141,10 +148,10 @@ function startWebserver(): Promise<void> {
     }
     if (!server) {
       // prepare to service an http request
-      server = http.createServer((request, response) => {
+      server = http.createServer(async (request, response) => {
         if (request.url) {
           response.setHeader("Content-Type", "text/html");
-          response.end(getRenderedSourceCode());
+          response.end(await getRenderedSourceCode());
         }
       });
       // report exceptions
