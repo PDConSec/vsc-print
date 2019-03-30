@@ -10,12 +10,14 @@ import portfinder = require("portfinder");
 var commandArgs: any;
 var selection: vscode.Selection | undefined;
 var printConfig: vscode.WorkspaceConfiguration;
+var editorConfig: vscode.WorkspaceConfiguration;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand('extension.print', async (cmdArgs: any) => {
     commandArgs = cmdArgs;
     printConfig = vscode.workspace.getConfiguration("print", null);
+    editorConfig= vscode.workspace.getConfiguration("editor", null);
     let editor = vscode.window.activeTextEditor;
     selection = editor && editor.selection ? editor.selection : undefined;
     await startWebserver();
@@ -131,7 +133,7 @@ async function getRenderedSourceCode(): Promise<string> {
       .replace("\n</td>", "</td>")
       ;
   }
-  let html = `<html><head><title>${commandArgs.fsPath}</title><style>body{margin:0;padding:0;}\n${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs { max-width:100%; width:100%; font-family: Consolas, monospace; font-size: ${printConfig.fontSize}; }\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
+  let html = `<html><head><title>${commandArgs.fsPath}</title><style>body{margin:0;padding:0;tab-size:${editorConfig.tabSize}}\n${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs { max-width:100%; width:100%; font-family: Consolas, monospace; font-size: ${printConfig.fontSize}; }\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
   try {
     writeFileSync("k:/temp/linenumbers.html", html);
 

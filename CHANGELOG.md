@@ -3,6 +3,12 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.5.3
+Tab size respects editor setting.
+
+## 0.5.2
+Fixed free-port finder for embedded webserver.
+
 ## 0.5.1
 - Apply styling to rendered markdown when printing.
 - Moved default internal webserver port away from the start of the dynamic port range to reduce the chance of collision. When a collision occurs there is an automatic adjustment but there is a bug requiring manual retry.

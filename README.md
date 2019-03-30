@@ -43,6 +43,7 @@ This extension contributes the following settings:
 * `print.lineSpacing`: single, line-and-a-half or double spaced
 
 ## Known Issues
+Tab size is now governed by the editor tab size setting. This exploits the experimental CSS `tab-size` property, which works on Opera, Firefox and Chrome, but **not** Edge. When Edge starts using the Chromium engine this will change.
 
 The list of stylesheets had to be severely shortened to work around a problem with large lists in VS Code. When handling of large lists is improved the full list of 90 stylesheets will be restored. I reported this issue when first releasing VSCode Print, and the VS Code team believes it is corrected in the current Insider build so this should be resolved soon.
 
@@ -57,6 +58,6 @@ Also addressed is [issue #17](https://github.com/PeterWone/vsc-print/issues/17) 
 Microsoft Edge always prompts for permission to close the browser after printing, which can be annoying.
 Firefox doesn't prompt, it just plain doesn't close the browser, which is beyond annoying. As a result, Chrome is the recommended browser for printing.
 
-### 0.5.2
+## 0.5.3
 
-Fixed free-port finder for embedded webserver.
+Tab size respects editor setting.
