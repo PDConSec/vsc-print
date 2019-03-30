@@ -5,6 +5,7 @@ import * as http from "http";
 import * as child_process from "child_process";
 import * as fs from "fs";
 import marked = require('marked');
+import portfinder = require("portfinder");
 
 var commandArgs: any;
 var selection: vscode.Selection | undefined;
@@ -12,16 +13,20 @@ var printConfig: vscode.WorkspaceConfiguration;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('extension.print', (cmdArgs: any) => {
+  let disposable = vscode.commands.registerCommand('extension.print', async (cmdArgs: any) => {
     commandArgs = cmdArgs;
     printConfig = vscode.workspace.getConfiguration("print", null);
     let editor = vscode.window.activeTextEditor;
     selection = editor && editor.selection ? editor.selection : undefined;
-    startWebserver();
+    await startWebserver();
     let cmd = printConfig.alternateBrowser && printConfig.browserPath ? `"${printConfig.browserPath}"` : browserLaunchMap[process.platform];
     child_process.exec(`${cmd} http://localhost:${port}/`);
   });
   context.subscriptions.push(disposable);
+}
+
+async function getPort():Promise<number>{
+  return portfinder.getPortPromise();
 }
 
 function getFileText(fname: string): string {
@@ -137,10 +142,10 @@ async function getRenderedSourceCode(): Promise<string> {
 }
 
 var server: http.Server | undefined;
-var port: number = 49200;
+var port: number;
 
 function startWebserver(): Promise<void> {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     // clean up unexpected stragglers
     if (server) {
       server.close();
@@ -158,33 +163,20 @@ function startWebserver(): Promise<void> {
       server.on("error", (err: any) => {
         if (err) {
           switch (err.code) {
-            case "EADDRINUSE":
-              if (server) {
-                if (++port > 49200 + 16834) {
-                  port = 49152;
-                }
-                server.listen(port);
-              }
-              break;
             case "EACCES":
-              vscode.window.showInformationMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
+              vscode.window.showErrorMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
               break;
+            default:
+              vscode.window.showErrorMessage(`UNEXPECTED ERROR: ${err.code}`);
           }
-          if (server) {
-            server.close();
-            server = undefined;
-            if (++port > 49152 + 16834) {
-              port = 49152;
-            }
-          }
-          reject();
         }
       });
       // clean up after one request
       server.on("request", (request: any, response: any) => {
         response.on("finish", () => request.socket.destroy());
       });
-      server.listen(port);
+      server.listen(port = await getPort());
+      resolve();
     }
     resolve();
   });

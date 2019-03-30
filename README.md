@@ -38,25 +38,25 @@ This extension contributes the following settings:
 * `print.browserPath`: the path to a web browser
 * `print.colourScheme`: the stylesheet used for colouring syntax
 * `print.fontSize`: the font size
+* `print.formatMarkdown`: render markdown as styled HTML when printing
 * `print.lineNumbers`: on, off or inherit (do same as editor)
 * `print.lineSpacing`: single, line-and-a-half or double spaced
-* `print.formatMarkdown`: render markdown as styled HTML when printing
 
 ## Known Issues
 
-The extension uses an internal web server to provide content to the browser. This webserver uses a port in the dynamic port range. When a port is already in use there is an automatic adjustment to the next port number but the failure is not detected until after the browser has been launched so manual retry is necessary. To mitigate this pending a fix for the retry problem, the initial port is no longer at the start of the dynamic port range. This should reduce the chance of collision.
-
-The list of stylesheets had to be severely shortened to work around a problem with large lists in VS Code. When handling of large lists is improved the full list of 90 stylesheets will be restored.
+The list of stylesheets had to be severely shortened to work around a problem with large lists in VS Code. When handling of large lists is improved the full list of 90 stylesheets will be restored. I reported this issue when first releasing VSCode Print, and the VS Code team believes it is corrected in the current Insider build so this should be resolved soon.
 
 Chrome has a tendency to remember too much about printers, paper sizes and margins especially if you abort. If you try another browser and a problem goes away, it's Chrome helping too much and the solution is to load a web page, change your settings and print something, then exit clean.
 
-Microsoft Edge always prompts for permission to close the browser after printing, which can be annoying.
-Firefox doesn't prompt, it just plain doesn't close the browser, which is very annoying. As a result, Chrome is the recommended browser for printing.
-
 ## Release Notes
 
-Problems are fewer and further between so the rate of change is dropping. If you notice glitches please don't hesitate to log an issue. Printing is something that should just work.
+Earlier versions occasionally had problems with port collisions causing printing to fail. A manual retry or three always fixed it but this was ugly. Correcting the problem was the primary focus of this release, and I am pleased to finally remove it from known issues.
 
-### 0.5.1
+Also addressed is [issue #17](https://github.com/PeterWone/vsc-print/issues/17) which moves responsibility for language detection from highlightjs (the library used for syntax colouring) to VS Code.
 
-Render markdown when printing. Use font size, font face and line height from markdown preview settings. Markdown settings support a list of user supplied CSS files. If these are defined they will be applied while rendering markdown for printing. A Print: Format markdown setting default to true but set false to disable render for printing.
+Microsoft Edge always prompts for permission to close the browser after printing, which can be annoying.
+Firefox doesn't prompt, it just plain doesn't close the browser, which is beyond annoying. As a result, Chrome is the recommended browser for printing.
+
+### 0.5.2
+
+Fixed free-port finder for embedded webserver.
