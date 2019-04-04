@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
         let p = f[0].fsPath;
         var newValue = p.substring(p.lastIndexOf("\\") + 1, p.lastIndexOf("."));
         try {
-          vscode.workspace.getConfiguration().update("print.colourScheme", newValue).then(() => {
+          vscode.workspace.getConfiguration().update("print.colourScheme", newValue, vscode.ConfigurationTarget.Global).then(() => {
             printConfig=vscode.workspace.getConfiguration("print");
           }, (err) => {
             debugger;
