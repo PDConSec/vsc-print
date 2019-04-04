@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand('extension.print', async (cmdArgs: any) => {
     commandArgs = cmdArgs;
     printConfig = vscode.workspace.getConfiguration("print", null);
-    editorConfig= vscode.workspace.getConfiguration("editor", null);
+    editorConfig = vscode.workspace.getConfiguration("editor", null);
     let editor = vscode.window.activeTextEditor;
     selection = editor && editor.selection ? editor.selection : undefined;
     await startWebserver();
@@ -25,9 +25,29 @@ export function activate(context: vscode.ExtensionContext) {
     child_process.exec(`${cmd} http://localhost:${port}/`);
   });
   context.subscriptions.push(disposable);
+  disposable = vscode.commands.registerCommand('extension.browse', async (cmdArgs: any) => {
+    commandArgs = cmdArgs;
+    printConfig = vscode.workspace.getConfiguration("print", null);
+    let x = vscode.extensions.getExtension("pdconsec.vscode-print");
+    if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
+    let stylePath = `${x.extensionPath}/node_modules/highlight.js/styles`;
+    vscode.window.showOpenDialog({
+      canSelectFiles: true,
+      canSelectMany: false,
+      defaultUri: vscode.Uri.file(printConfig.colourScheme || stylePath),
+      filters: {
+        Stylesheet: ['*.css']
+      }
+    }).then(f => {
+      if (f) {
+        printConfig.update("colourScheme",f[0].fsPath);
+      }
+    });
+  });
+  context.subscriptions.push(disposable);
 }
 
-async function getPort():Promise<number>{
+async function getPort(): Promise<number> {
   return portfinder.getPortPromise();
 }
 

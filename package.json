@@ -32,6 +32,10 @@
 					"dark": "./printer-icon-dog-ear-inverse.svg",
 					"light": "./printer-icon-dog-ear.svg"
 				}
+			},
+			{
+				"command": "extension.browse",
+				"title": "Browse for stylesheet"
 			}
 		],
 		"configuration": [
@@ -88,11 +92,12 @@
 					},
 					"print.browserPath": {
 						"type": "string",
-						"description": "Path to the executable of an alternate browser"
+						"description": "Path to the executable of an alternate browser."
 					},
 					"print.colourScheme": {
 						"type": "string",
 						"default": "vs2015",
+						"description": "For more options including supplying your own stylesheet, press F1 and type \"Print: Browse for stylesheet\"",
 						"enum": [
 							"androidstudio",
 							"arduino-light",
