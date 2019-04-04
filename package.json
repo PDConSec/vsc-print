@@ -20,7 +20,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.print"
+		"onCommand:extension.print",
+		"onCommand:extension.browse"
 	],
 	"main": "./out/extension.js",
 	"contributes": {

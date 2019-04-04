@@ -34,13 +34,23 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showOpenDialog({
       canSelectFiles: true,
       canSelectMany: false,
-      defaultUri: vscode.Uri.file(printConfig.colourScheme || stylePath),
+      defaultUri: vscode.Uri.file(printConfig.colourScheme ? `{stylePath}/{printConfig.colourScheme}.css` : stylePath),
       filters: {
         Stylesheet: ['*.css']
       }
     }).then(f => {
       if (f) {
-        printConfig.update("colourScheme",f[0].fsPath);
+        let p = f[0].fsPath;
+        var newValue = p.substring(p.lastIndexOf("\\") + 1, p.lastIndexOf("."));
+        try {
+          vscode.workspace.getConfiguration().update("print.colourScheme", newValue).then(() => {
+            printConfig=vscode.workspace.getConfiguration("print");
+          }, (err) => {
+            debugger;
+          });
+        } catch (err) {
+          debugger;
+        }
       }
     });
   });
@@ -134,7 +144,7 @@ async function getRenderedSourceCode(): Promise<string> {
     renderedCode = hljs.highlight(sourceCode[0], sourceCode[1]).value;
   }
   catch (err) {
-    debugger;
+    renderedCode = hljs.highlightAuto(sourceCode[1]).value;
   }
   var addLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && vscode.window.activeTextEditor && (vscode.window.activeTextEditor.options.lineNumbers || 0) > 0);
   if (addLineNumbers) {
