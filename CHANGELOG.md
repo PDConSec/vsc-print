@@ -2,9 +2,13 @@
 All notable changes to the "VSCODE-PRINT" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## 0.6.0
+- Colour scheme stylesheet setting is no longer presented as a combo-box. Instead, there is a command that presents a file-browse dialog and updates the setting.
+- Language detection falls back to highlightjs when VS Code produces an incompatible language identifier.
 
 ## 0.5.3
-Tab size respects editor setting.
+- Tab size respects editor setting.
+- Responsibility for language detection moved from highlightjs to VS Code.
 
 ## 0.5.2
 Fixed free-port finder for embedded webserver.

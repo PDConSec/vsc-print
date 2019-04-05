@@ -98,16 +98,7 @@
 					"print.colourScheme": {
 						"type": "string",
 						"default": "vs2015",
-						"description": "For more options including supplying your own stylesheet, press F1 and type \"Print: Browse for stylesheet\"",
-						"enum": [
-							"androidstudio",
-							"arduino-light",
-							"github",
-							"kimbie.dark",
-							"kimbie.light",
-							"monokai-sublime",
-							"vs2015"
-						]
+						"markdownDescription": "Press `F1` then `Print: Browse for stylesheet` to choose a highlightjs compatible stylesheet. If you choose a file outside the stylesheet cache it will be copied to the cache. Paper is white so choose light themes for dark text."
 					},
 					"print.printAndClose": {
 						"type": "boolean",

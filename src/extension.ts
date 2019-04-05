@@ -6,45 +6,51 @@ import * as child_process from "child_process";
 import * as fs from "fs";
 import marked = require('marked');
 import portfinder = require("portfinder");
+import { deepStrictEqual } from 'assert';
 
 var commandArgs: any;
 var selection: vscode.Selection | undefined;
-var printConfig: vscode.WorkspaceConfiguration;
-var editorConfig: vscode.WorkspaceConfiguration;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand('extension.print', async (cmdArgs: any) => {
     commandArgs = cmdArgs;
-    printConfig = vscode.workspace.getConfiguration("print", null);
-    editorConfig = vscode.workspace.getConfiguration("editor", null);
     let editor = vscode.window.activeTextEditor;
     selection = editor && editor.selection ? editor.selection : undefined;
     await startWebserver();
+    let printConfig = vscode.workspace.getConfiguration("print", null);
     let cmd = printConfig.alternateBrowser && printConfig.browserPath ? `"${printConfig.browserPath}"` : browserLaunchMap[process.platform];
     child_process.exec(`${cmd} http://localhost:${port}/`);
   });
   context.subscriptions.push(disposable);
   disposable = vscode.commands.registerCommand('extension.browse', async (cmdArgs: any) => {
     commandArgs = cmdArgs;
-    printConfig = vscode.workspace.getConfiguration("print", null);
     let x = vscode.extensions.getExtension("pdconsec.vscode-print");
     if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
-    let stylePath = `${x.extensionPath}/node_modules/highlight.js/styles`;
+    var stylePath = `${x.extensionPath.replace(/\\/g,"/")}/node_modules/highlight.js/styles`;
+    let printConfig = vscode.workspace.getConfiguration("print", null);
+    let currentPath = `${stylePath}/${printConfig.colourScheme}.css`;
     vscode.window.showOpenDialog({
       canSelectFiles: true,
       canSelectMany: false,
-      defaultUri: vscode.Uri.file(printConfig.colourScheme ? `{stylePath}/{printConfig.colourScheme}.css` : stylePath),
+      defaultUri: vscode.Uri.file(fs.existsSync(currentPath) ? currentPath : stylePath),
       filters: {
-        Stylesheet: ['*.css']
+        Stylesheet: ['css']
       }
     }).then(f => {
       if (f) {
         let p = f[0].fsPath;
-        var newValue = p.substring(p.lastIndexOf("\\") + 1, p.lastIndexOf("."));
+        let lbs = p.lastIndexOf("\\");
+        var path = p.substring(0, lbs).replace(/\\/g,"/");
+        var newValue = p.substring(lbs + 1, p.lastIndexOf("."));
         try {
           vscode.workspace.getConfiguration().update("print.colourScheme", newValue, vscode.ConfigurationTarget.Global).then(() => {
-            printConfig=vscode.workspace.getConfiguration("print");
+            if (path !== stylePath) {
+              let newCachePath = `${stylePath}/${newValue}.css`;
+              fs.copyFile(p, newCachePath, err => {
+                vscode.window.showErrorMessage(err.message);
+              });
+            }
           }, (err) => {
             debugger;
           });
@@ -118,6 +124,7 @@ table {
 `;
 
 async function getRenderedSourceCode(): Promise<string> {
+  let printConfig = vscode.workspace.getConfiguration("print", null);
   let printAndClose = printConfig.printAndClose ? " onload = \"window.print();window.close();\"" : "";
   if (printConfig.renderMarkdown && commandArgs.fsPath.split('.').pop().toLowerCase() === "md") {
     let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
@@ -163,13 +170,8 @@ async function getRenderedSourceCode(): Promise<string> {
       .replace("\n</td>", "</td>")
       ;
   }
+  let editorConfig = vscode.workspace.getConfiguration("print", null);
   let html = `<html><head><title>${commandArgs.fsPath}</title><style>body{margin:0;padding:0;tab-size:${editorConfig.tabSize}}\n${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs { max-width:100%; width:100%; font-family: Consolas, monospace; font-size: ${printConfig.fontSize}; }\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
-  try {
-    writeFileSync("k:/temp/linenumbers.html", html);
-
-  } catch (error) {
-    // don't barf on other people's systems
-  }
   return html;
 }
 

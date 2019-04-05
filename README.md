@@ -43,6 +43,8 @@ This extension contributes the following settings:
 * `print.lineSpacing`: single, line-and-a-half or double spaced
 
 ## Known Issues
+An issue has been reported where multiple concurrent copies of VS Code (multi-monitor workaround) experience port collisions. This is currently being investigated.
+
 Tab size is now governed by the editor tab size setting. This exploits the experimental CSS `tab-size` property, which works on Opera, Firefox and Chrome, but **not** Edge. When Edge starts using the Chromium engine this will change.
 
 The list of stylesheets had to be severely shortened to work around a problem with large lists in VS Code. When handling of large lists is improved the full list of 90 stylesheets will be restored. I reported this issue when first releasing VSCode Print, and the VS Code team believes it is corrected in the current Insider build so this should be resolved soon.
@@ -51,13 +53,18 @@ Chrome has a tendency to remember too much about printers, paper sizes and margi
 
 ## Release Notes
 
-Earlier versions occasionally had problems with port collisions causing printing to fail. A manual retry or three always fixed it but this was ugly. Correcting the problem was the primary focus of this release, and I am pleased to finally remove it from known issues.
+Earlier versions occasionally had problems with port collisions causing printing to fail. A manual retry or three always fixed it but this was ugly. Correcting the problem was the primary focus of 0.5.3, and I am pleased to finally remove it from known issues.
 
-Also addressed is [issue #17](https://github.com/PeterWone/vsc-print/issues/17) which moves responsibility for language detection from highlightjs (the library used for syntax colouring) to VS Code.
+Also addressed is [issue #17](https://github.com/PeterWone/vsc-print/issues/17) which moves responsibility for language detection from highlightjs (the library used for syntax colouring) to VS Code, falling back to highlightjs when an incompatible language code is produced.
 
 Microsoft Edge always prompts for permission to close the browser after printing, which can be annoying.
 Firefox doesn't prompt, it just plain doesn't close the browser, which is beyond annoying. As a result, Chrome is the recommended browser for printing.
 
+## 0.6.0
+- Colour scheme stylesheet setting is no longer presented as a combo-box. Instead, there is a command that presents a file-browse dialog and updates the setting.
+- Language detection falls back to highlightjs when VS Code produces an incompatible language identifier.
+
 ## 0.5.3
 
-Tab size respects editor setting.
+- Tab size respects editor setting.
+- Responsibility for language detection moved from highlightjs to VS Code.
