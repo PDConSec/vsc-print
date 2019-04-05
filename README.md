@@ -51,6 +51,12 @@ Chrome has a tendency to remember too much about printers, paper sizes and margi
 
 ## Release Notes
 
+0.6.2 fixes command categories so they appear as
+* Print: Browse for stylesheet
+* Print: Print
+
+The commands are present and functional in 0.6.1 but are not correctly categorised.
+
 Colour scheme stylesheets are no longer selected from a combo-box. Instead there is a new command `Browse for stylesheet` that spawns a file-browse dialog and updates the setting. If you choose a file outside the stylesheet cache it is copied into the cache so you don't become dependent on network-local resources.
 
 Earlier versions occasionally had problems with port collisions causing printing to fail. A manual retry or three always fixed it but this was ugly. Correcting the problem was the primary focus of 0.5.3, and I am pleased to finally remove it from known issues.
@@ -59,6 +65,9 @@ Also addressed is [issue #17](https://github.com/PeterWone/vsc-print/issues/17) 
 
 Microsoft Edge always prompts for permission to close the browser after printing, which can be annoying.
 Firefox doesn't prompt, it just plain doesn't close the browser, which is beyond annoying. As a result, Chrome is the recommended browser for printing.
+
+## 0.6.2
+Apply categories to commands.
 
 ## 0.6.1
 Documentation tweak.
