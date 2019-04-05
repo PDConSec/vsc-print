@@ -2,6 +2,9 @@
 All notable changes to the "VSCODE-PRINT" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## 0.6.1
+Documentation tweak.
+
 ## 0.6.0
 - Colour scheme stylesheet setting is no longer presented as a combo-box. Instead, there is a command that presents a file-browse dialog and updates the setting.
 - Language detection falls back to highlightjs when VS Code produces an incompatible language identifier.
