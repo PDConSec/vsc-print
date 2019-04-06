@@ -1,165 +1,179 @@
 {
-	"name": "vscode-print",
-	"displayName": "VS Code Printing",
-	"description": "Syntax-coloured line-numbered printing in VS Code.",
-	"version": "0.6.2",
-	"icon": "PDCONSEC-zipper-PRINTER.png",
-	"author": {
-		"name": "Peter Wone",
-		"email": "peter.wone@outlook.com"
-	},
-	"publisher": "pdconsec",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/PeterWone/vsc-print"
-	},
-	"engines": {
-		"vscode": "^1.20.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"onCommand:extension.print",
-		"onCommand:extension.browse"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
+  "name": "vscode-print",
+  "displayName": "VS Code Printing",
+  "description": "Syntax-coloured line-numbered printing in VS Code.",
+  "version": "0.6.5",
+  "icon": "PDCONSEC-zipper-PRINTER2.png",
+  "author": {
+    "name": "Peter Wone",
+    "email": "peter.wone@outlook.com"
+  },
+  "publisher": "pdconsec",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PeterWone/vsc-print"
+  },
+  "engines": {
+    "vscode": "^1.20.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
         "category": "Print",
-				"command": "extension.print",
-				"title": "Print",
-				"icon": {
-					"dark": "./printer-icon-dog-ear-inverse.svg",
-					"light": "./printer-icon-dog-ear.svg"
-				}
-			},
-			{
+        "command": "extension.print",
+        "title": "Print",
+        "icon": {
+          "dark": "./printer-icon-dog-ear-inverse.svg",
+          "light": "./printer-icon-dog-ear.svg"
+        }
+      },
+      {
         "category": "Print",
-				"command": "extension.browse",
+        "command": "extension.browse",
         "title": "Browse for stylesheet"
-			}
-		],
-		"configuration": [
-			{
-				"title": "Printing",
-				"properties": {
-					"print.lineSpacing": {
-						"type": "number",
-						"enum": [
-							1,
-							1.5,
-							2
-						],
-						"enumDescriptions": [
-							"Single spaced",
-							"Line and a half",
-							"Double spaced"
-						],
-						"description": "Vertical spacing of lines",
-						"default": 1
-					},
-					"print.fontSize": {
-						"type": "string",
-						"enum": [
-							"9pt",
-							"10pt",
-							"11pt",
-							"11.5pt",
-							"12pt",
-							"13pt"
-						],
-						"description": "Font size",
-						"default": "10pt"
-					},
-					"print.renderMarkdown": {
-						"type": "boolean",
-						"default": true,
-						"description": "Render markdown as HTML when printing"
-					},
-					"print.lineNumbers": {
-						"type": "string",
-						"description": "Line numbers",
-						"enum": [
-							"on",
-							"off",
-							"inherit"
-						],
-						"default": "inherit"
-					},
-					"print.alternateBrowser": {
-						"type": "boolean",
-						"description": "Use the alternate browser",
-						"default": true
-					},
-					"print.browserPath": {
-						"type": "string",
-						"description": "Path to the executable of an alternate browser."
-					},
-					"print.colourScheme": {
-						"type": "string",
-						"default": "vs2015",
-						"markdownDescription": "Press `F1` then `Print: Browse for stylesheet` to choose a highlightjs compatible stylesheet. If you choose a file outside the stylesheet cache it will be copied to the cache. Paper is white so choose light themes for dark text."
-					},
-					"print.printAndClose": {
-						"type": "boolean",
-						"default": true,
-						"description": "Show the Print dialog when the browser is ready, and try to close the page after printing is done or cancelled"
-					}
-				}
-			}
-		],
-		"menus": {
-			"explorer/context": [
-				{
-					"when": "resourceLangId",
-					"command": "extension.print",
-					"group": "navigation"
-				}
-			],
-			"editor/title": [
-				{
-					"when": "resourceLangId",
-					"command": "extension.print",
-					"group": "navigation"
-				}
-			],
-			"editor/title/context": [
-				{
-					"when": "resourceLangId",
-					"command": "extension.print",
-					"group": "navigation"
-				}
-			],
-			"editor/context": [
-				{
-					"when": "resourceLangId",
-					"command": "extension.print",
-					"group": "navigation"
-				}
-			]
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "npm run compile && node ./node_modules/vscode/bin/test"
-	},
-	"devDependencies": {
-		"@types/mocha": "^2.2.42",
-		"@types/node": "^10.12.26",
-		"tslint": "^5.12.1",
-		"typescript": "^3.3.1",
-		"vscode": "^1.1.28"
-	},
-	"dependencies": {
-		"@types/highlight.js": "^9.12.3",
-		"@types/marked": "^0.6.3",
-		"highlight.js": "^9.14.2",
-		"marked": "^0.6.1",
-		"portfinder": "^1.0.20"
-	}
+      }
+    ],
+    "configuration": [
+      {
+        "title": "Printing",
+        "properties": {
+          "print.lineSpacing": {
+            "type": "number",
+            "enum": [
+              1,
+              1.5,
+              2
+            ],
+            "enumDescriptions": [
+              "Single spaced",
+              "Line and a half",
+              "Double spaced"
+            ],
+            "description": "Vertical spacing of lines",
+            "default": 1
+          },
+          "print.fontSize": {
+            "type": "string",
+            "enum": [
+              "9pt",
+              "10pt",
+              "11pt",
+              "11.5pt",
+              "12pt",
+              "13pt"
+            ],
+            "description": "Font size",
+            "default": "10pt"
+          },
+          "print.renderMarkdown": {
+            "type": "boolean",
+            "default": true,
+            "description": "Render markdown as HTML when printing"
+          },
+          "print.lineNumbers": {
+            "type": "string",
+            "description": "Line numbers",
+            "enum": [
+              "on",
+              "off",
+              "inherit"
+            ],
+            "default": "inherit"
+          },
+          "print.alternateBrowser": {
+            "type": "boolean",
+            "description": "Use the alternate browser",
+            "default": true
+          },
+          "print.browserPath": {
+            "type": "string",
+            "description": "Path to the executable of an alternate browser."
+          },
+          "print.colourScheme": {
+            "type": "string",
+            "default": "vs2015",
+            "markdownDescription": "Press `F1` then `Print: Browse for stylesheet` to choose a highlightjs compatible stylesheet. If you choose a file outside the stylesheet cache it will be copied to the cache. Paper is white so choose light themes for dark text."
+          },
+          "print.printAndClose": {
+            "type": "boolean",
+            "default": true,
+            "description": "Show the Print dialog when the browser is ready, and try to close the page after printing is done or cancelled"
+          },
+          "print.editorContextMenuItemPosition": {
+            "default": "Top",
+            "type": "string",
+            "markdownDescription": "The position of `Print` in the editor context menu",
+            "enum": [
+              "Top",
+              "Bottom",
+              "None"
+            ]
+          }
+        }
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "resourceLangId",
+          "command": "extension.print",
+          "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "resourceLangId",
+          "command": "extension.print",
+          "group": "navigation"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "when": "resourceLangId",
+          "command": "extension.print",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "resourceLangId && ecmPrint == Top",
+          "command": "extension.print",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId && ecmPrint == Bottom",
+          "command": "extension.print",
+          "group": "Z_commands"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^10.12.26",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.1",
+    "vscode": "^1.1.28"
+  },
+  "dependencies": {
+    "@types/highlight.js": "^9.12.3",
+    "@types/marked": "^0.6.3",
+    "highlight.js": "^9.14.2",
+    "marked": "^0.6.1",
+    "portfinder": "^1.0.20"
+  }
 }

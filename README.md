@@ -37,6 +37,7 @@ This extension contributes the following settings:
 * `print.alternateBrowser`: enable/disable an alternate browser
 * `print.browserPath`: the path to a web browser
 * `print.colourScheme`: the stylesheet used for colouring syntax
+* `print.editorContextMenuItemPosition`: the position of `Print` in the editor context menu
 * `print.fontSize`: the font size
 * `print.formatMarkdown`: render markdown as styled HTML when printing
 * `print.lineNumbers`: on, off or inherit (do same as editor)
@@ -51,9 +52,13 @@ Chrome has a tendency to remember too much about printers, paper sizes and margi
 
 ## Release Notes
 
+## 0.6.5
+- Context menu position is now a setting.
+- New store graphics.
+
 0.6.2 fixes command categories so they appear as
-* Print: Browse for stylesheet
-* Print: Print
+- Print: Browse for stylesheet
+- Print: Print
 
 The commands are present and functional in 0.6.1 but are not correctly categorised.
 

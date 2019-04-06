@@ -6,13 +6,13 @@ import * as child_process from "child_process";
 import * as fs from "fs";
 import marked = require('marked');
 import portfinder = require("portfinder");
-import { deepStrictEqual } from 'assert';
 
 var commandArgs: any;
 var selection: vscode.Selection | undefined;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
-
 export function activate(context: vscode.ExtensionContext) {
+  let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition;
+  vscode.commands.executeCommand('setContext', 'ecmPrint', ecmPrint);
   let disposable = vscode.commands.registerCommand('extension.print', async (cmdArgs: any) => {
     commandArgs = cmdArgs;
     let editor = vscode.window.activeTextEditor;
@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
     commandArgs = cmdArgs;
     let x = vscode.extensions.getExtension("pdconsec.vscode-print");
     if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
-    var stylePath = `${x.extensionPath.replace(/\\/g,"/")}/node_modules/highlight.js/styles`;
+    var stylePath = `${x.extensionPath.replace(/\\/g, "/")}/node_modules/highlight.js/styles`;
     let printConfig = vscode.workspace.getConfiguration("print", null);
     let currentPath = `${stylePath}/${printConfig.colourScheme}.css`;
     vscode.window.showOpenDialog({
@@ -41,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
       if (f) {
         let p = f[0].fsPath;
         let lbs = p.lastIndexOf("\\");
-        var path = p.substring(0, lbs).replace(/\\/g,"/");
+        var path = p.substring(0, lbs).replace(/\\/g, "/");
         var newValue = p.substring(lbs + 1, p.lastIndexOf("."));
         try {
           vscode.workspace.getConfiguration().update("print.colourScheme", newValue, vscode.ConfigurationTarget.Global).then(() => {

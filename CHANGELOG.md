@@ -2,6 +2,10 @@
 All notable changes to the "VSCODE-PRINT" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## 0.6.5
+- Context menu position is now a setting.
+- New store graphics.
+
 ## 0.6.2
 Apply categories to commands.
 
