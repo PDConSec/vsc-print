@@ -12,8 +12,8 @@ var selection: vscode.Selection | undefined;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 export function activate(context: vscode.ExtensionContext) {
   let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition;
-  vscode.commands.executeCommand('setContext', 'ecmPrint', ecmPrint);
-  let disposable = vscode.commands.registerCommand('extension.print', async (cmdArgs: any) => {
+  vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
+  let disposable = vscode.commands.registerCommand("extension.print", async (cmdArgs: any) => {
     commandArgs = cmdArgs;
     let editor = vscode.window.activeTextEditor;
     selection = editor && editor.selection ? editor.selection : undefined;
@@ -210,6 +210,7 @@ function startWebserver(): Promise<void> {
         response.on("finish", () => request.socket.destroy());
       });
       server.listen(port = await getPort());
+      vscode.window.showInformationMessage(`Printing acquired port ${port}`);
       resolve();
     }
     resolve();

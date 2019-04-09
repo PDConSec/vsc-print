@@ -1,4 +1,4 @@
-> The star rating you give is the first and often _only_ thing people read. When rating the app, please think about the implications of comparing it favourably with another app but giving it a lower star rating than the other app. And don't forget you can revise your rating if the app improves in response to your review feedback.
+> In a review (thank you for writing one!) a port collision was reported when running multiple instances of VS Code (the multi-monitor workaround). I have not been able to reproduce this problem in the current version and unfortunately the report did not include version information. This release instruments port acquisition. No telemetry, but _you_ can see what port it tries to use. If anyone experiences this with a current build please tell me about it in as much detail as you can with an issue on the repo.
 
 # Visual Studio Code Printing
 
@@ -44,19 +44,21 @@ This extension contributes the following settings:
 * `print.lineSpacing`: single, line-and-a-half or double spaced
 
 ## Known Issues
-An issue has been reported where multiple concurrent copies of VS Code (multi-monitor workaround) experience port collisions. This is currently being investigated.
-
 Tab size is now governed by the editor tab size setting. This exploits the experimental CSS `tab-size` property, which works on Opera, Firefox and Chrome, but **not** Edge. When Edge starts using the Chromium engine this will change.
 
 Chrome has a tendency to remember too much about printers, paper sizes and margins especially if you abort. If you try another browser and a problem goes away, it's Chrome helping too much and the solution is to load a web page, change your settings and print something, then exit clean.
 
 ## Release Notes
 
+## 0.6.7
+Report acquired port to user with toast.
+
 ## 0.6.5
 - Context menu position is now a setting.
 - New store graphics.
 
-0.6.2 fixes command categories so they appear as
+## 0.6.2
+Fixes command categories so they appear as
 - Print: Browse for stylesheet
 - Print: Print
 
