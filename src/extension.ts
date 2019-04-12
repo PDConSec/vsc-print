@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import * as http from "http";
 import * as child_process from "child_process";
 import * as fs from "fs";
-import marked = require('marked');
+import * as markdown_it from "markdown-it";
 import portfinder = require("portfinder");
 
 var commandArgs: any;
@@ -138,7 +138,7 @@ async function getRenderedSourceCode(): Promise<string> {
     </style>
     ${markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
     </head>
-    <body${printAndClose}>${marked(fs.readFileSync(commandArgs.fsPath).toString())}</body></html>`;
+    <body${printAndClose}>${markdown_it().render(fs.readFileSync(commandArgs.fsPath).toString())}</body></html>`;
   }
   let x = vscode.extensions.getExtension("pdconsec.vscode-print");
   if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }

@@ -1,4 +1,4 @@
-> In a review (thank you for writing one!) a port collision was reported when running multiple instances of VS Code (the multi-monitor workaround). I have not been able to reproduce this problem in the current version and unfortunately the report did not include version information. This release instruments port acquisition. No telemetry, but _you_ can see what port it tries to use. If anyone experiences this with a current build please tell me about it in as much detail as you can with an issue on the repo.
+> We're considering switching to a markdown engine that supports KaTeX. This will allow those of you preparing documents containing mathematical formulae to print them directly from your editor. If you have specific preferences, library recommendations or feature requests now is the time to talk about it in our repository issues.
 
 # Visual Studio Code Printing
 
@@ -25,6 +25,7 @@ Printing on Mac, Linux and Windows
 * Adjustable line spacing (1, 1.5, 2)
 * Print a selection of code with line numbers matching the editor
 * Specify a browser other than your default
+* Markdown documents are rendered when you print them (or not, there's a setting)
 
 ## Requirements
 
