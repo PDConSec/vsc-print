@@ -1,4 +1,4 @@
-> We're considering switching to a markdown engine that supports KaTeX. This will allow those of you preparing documents containing mathematical formulae to print them directly from your editor. If you have specific preferences, library recommendations or feature requests now is the time to talk about it in our repository issues.
+> With no remaining bugs, we are taking feature requests on GitHub.
 
 # Visual Studio Code Printing
 
@@ -8,7 +8,7 @@ Code listings are iconic in a sense older than graphical user interfaces. I can'
 
 The print icon on the toolbar prints the document in the active editor.
 
-If you have a text selection that crosses at least one line-break you can right click and choose Print from the context menu to send just the selection to the printer. In the absence of a multi-line selection the entire document is printed.
+If you have a text selection that crosses at least one line-break you can right click and choose Print from the context menu to send just the selection to the printer. In the absence of a multi-line selection the entire document is printed. You can control the position of Print in this menu, or remove it altogether.
 
 ![context-menu-editor](https://user-images.githubusercontent.com/5498936/53408378-05a08280-3a0a-11e9-8e88-0088089e0d07.png)
 
@@ -36,6 +36,7 @@ You'll need a web browser and access to a printer.
 This extension contributes the following settings:
 
 * `print.alternateBrowser`: enable/disable an alternate browser
+* `print.announcePortAcquisition`: make the embedded web server tell you what port it uses
 * `print.browserPath`: the path to a web browser
 * `print.colourScheme`: the stylesheet used for colouring syntax
 * `print.editorContextMenuItemPosition`: the position of `Print` in the editor context menu
@@ -45,20 +46,23 @@ This extension contributes the following settings:
 * `print.lineSpacing`: single, line-and-a-half or double spaced
 
 ## Known Issues
-Tab size is now governed by the editor tab size setting. This exploits the experimental CSS `tab-size` property, which works on Opera, Firefox and Chrome, but **not** Edge. When Edge starts using the Chromium engine this will change.
+Making printed tabs respect the editor tab size setting depends on the experimental CSS `tab-size` property. This doesn't work on Edge. When Edge starts using the Chromium engine the problem will go away.
 
-Chrome has a tendency to remember too much about printers, paper sizes and margins especially if you abort. If you try another browser and a problem goes away, it's Chrome helping too much and the solution is to load a web page, change your settings and print something, then exit clean.
+Chrome remembers too much about printers, paper sizes and margins especially if you abort.
 
 ## Release Notes
+### 0.6.8
+- Control whether the embedded web server announces which port it acquires (off by default).
+- Render Markdown with the same engine VS Code uses for preview.
 
-## 0.6.7
+### 0.6.7
 Report acquired port to user with toast.
 
-## 0.6.5
+### 0.6.5
 - Context menu position is now a setting.
 - New store graphics.
 
-## 0.6.2
+### 0.6.2
 Fixes command categories so they appear as
 - Print: Browse for stylesheet
 - Print: Print
@@ -74,17 +78,17 @@ Also addressed is [issue #17](https://github.com/PeterWone/vsc-print/issues/17) 
 Microsoft Edge always prompts for permission to close the browser after printing, which can be annoying.
 Firefox doesn't prompt, it just plain doesn't close the browser, which is beyond annoying. As a result, Chrome is the recommended browser for printing.
 
-## 0.6.2
+### 0.6.2
 Apply categories to commands.
 
-## 0.6.1
+### 0.6.1
 Documentation tweak.
 
-## 0.6.0
+### 0.6.0
 - Colour scheme stylesheet setting is no longer presented as a combo-box. Instead, there is a command that presents a file-browse dialog and updates the setting.
 - Language detection falls back to highlightjs when VS Code produces an incompatible language identifier.
 
-## 0.5.3
+### 0.5.3
 
 - Tab size respects editor setting.
 - Responsibility for language detection moved from highlightjs to VS Code.
