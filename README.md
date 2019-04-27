@@ -1,4 +1,4 @@
-> With no remaining bugs, we are taking feature requests on GitHub.
+> Thanks to [ac WEB DESIGN](http://www.ac-webdesign.ch/) for reporting both the issues corrected in this release and for furnishing suitable test content.
 
 # Visual Studio Code Printing
 
@@ -51,6 +51,10 @@ Making printed tabs respect the editor tab size setting depends on the experimen
 Chrome remembers too much about printers, paper sizes and margins especially if you abort.
 
 ## Release Notes
+### 0.6.9
+- UTF-8 for extended charsets.
+- Support images on local paths.
+
 ### 0.6.8
 - Control whether the embedded web server announces which port it acquires (off by default).
 - Render Markdown with the same engine VS Code uses for preview.

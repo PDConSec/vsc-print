@@ -3,6 +3,10 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## 0.6.9
+- UTF-8 for extended charsets.
+- Support images on local paths.
+
 ## 0.6.8
 - Control whether the embedded web server announces which port it acquires (off by default).
 - Render Markdown with the same engine VS Code uses for preview.

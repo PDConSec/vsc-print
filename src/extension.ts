@@ -128,12 +128,16 @@ async function getRenderedSourceCode(): Promise<string> {
   let printAndClose = printConfig.printAndClose ? " onload = \"window.print();window.close();\"" : "";
   if (printConfig.renderMarkdown && commandArgs.fsPath.split('.').pop().toLowerCase() === "md") {
     let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
-    return `<html><head><title>${commandArgs.fsPath}</title>
+    return `<!DOCTYPE html><html><head><title>${commandArgs.fsPath}</title>
+    <meta charset="utf-8"/>
     <style>
     html, body {
       font-family: ${markdownConfig.preview.fontFamily};
       font-size: ${markdownConfig.preview.fontSize}px;
       line-height: ${markdownConfig.preview.lineHeight}em;
+    }
+    img {
+      max-width: 100%;
     }
     </style>
     ${markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
@@ -189,8 +193,24 @@ function startWebserver(): Promise<void> {
       // prepare to service an http request
       server = http.createServer(async (request, response) => {
         if (request.url) {
-          response.setHeader("Content-Type", "text/html");
-          response.end(await getRenderedSourceCode());
+          if (request.url === "/") {
+            response.setHeader("Content-Type", "text/html");
+            response.end(await getRenderedSourceCode());
+          } else {
+            try {
+              let filePath: string = commandArgs.fsPath.replace(/\\/g, "/");
+              let lastSlashPosition = filePath.lastIndexOf('/');
+              let basePath = filePath.substr(0, lastSlashPosition);
+              filePath = `${basePath}${request.url}`;
+              let cb = fs.statSync(filePath).size;
+              response.setHeader("Content-Type", `image/${request.url.substr(request.url.lastIndexOf('.'))}`);
+              response.setHeader("Content-Length", cb);
+              fs.createReadStream(filePath).pipe(response);
+            } catch {
+              //fail
+              response.end();
+            }
+          }
         }
       });
       // report exceptions
@@ -209,8 +229,14 @@ function startWebserver(): Promise<void> {
       server.on("request", (request: any, response: any) => {
         response.on("finish", () => request.socket.destroy());
       });
-      server.listen(port = await getPort());
-      vscode.window.showInformationMessage(`Printing acquired port ${port}`);
+      let printConfig = vscode.workspace.getConfiguration("print", null);
+      if (!port) {
+        port = await getPort();
+        if (printConfig.announcePortAcquisition) {
+          vscode.window.showInformationMessage(`Printing acquired port ${port}`);
+        }
+      }
+      server.listen(port);
       resolve();
     }
     resolve();

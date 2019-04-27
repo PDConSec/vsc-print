@@ -45,7 +45,7 @@
         "title": "Printing",
         "properties": {
           "print.announcePortAcquisition": {
-            "type":"boolean",
+            "type": "boolean",
             "default": false,
             "markdownDescription": "Tell me what port the embedded web server acquires"
           },
