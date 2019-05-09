@@ -135,6 +135,10 @@ async function getRenderedSourceCode(): Promise<string> {
       font-size: ${markdownConfig.preview.fontSize}px;
       line-height: ${markdownConfig.preview.lineHeight}em;
     }
+    h1,h2,h3,h4,h5,h6 {
+      page-break-after:avoid;
+      page-break-inside:avoid;
+    }
     </style>
     ${markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
     </head>
