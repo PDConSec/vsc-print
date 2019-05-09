@@ -139,6 +139,10 @@ async function getRenderedSourceCode(): Promise<string> {
     img {
       max-width: 100%;
     }
+    h1,h2,h3,h4,h5,h6 {
+      page-break-after:avoid;
+      page-break-inside:avoid;
+    }
     </style>
     ${markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
     </head>
