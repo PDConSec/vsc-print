@@ -33,7 +33,7 @@ You'll need a web browser and access to a printer.
 
 ## Extension Settings
 
-This extension contributes the following settings:
+This extension has the following settings, which can be modified by going to Code > Preferences > Settings > Extensions > Printing:
 
 * `print.alternateBrowser`: enable/disable an alternate browser
 * `print.announcePortAcquisition`: make the embedded web server tell you what port it uses
