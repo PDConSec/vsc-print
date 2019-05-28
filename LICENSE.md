@@ -9,7 +9,7 @@ to use, copy, modify, merge, publish, or distribute copies of the Software,
 and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-* When making public a derivative work, you must publicly and conspicuously 
+* When making public a derivative work, you must conspicuously 
 acknowledge that it is a derivative of this work.
 * You may not sell or charge a fee for use of this software or derivative work.
 * The above copyright notice and this permission notice shall be included in all
