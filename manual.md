@@ -12,6 +12,22 @@ Line numbers in your printout are aligned with the line numbers in the editor wh
 ### A file (without opening it)
 To print a file other than the active document, find it in the EXPLORER pane and right-click on it. In the file context menu `Print` always appears at or near the top of the menu. This prints the entire file.
 
+## Settings
+This extension has the following settings, which can be modified by going to Code > Preferences > Settings > Extensions > Printing:
+
+* `print.alternateBrowser`: enable/disable an alternate browser
+* `print.announcePortAcquisition`: make the embedded web server tell you what port it uses
+* `print.browserPath`: the path to a web browser
+* `print.colourScheme`: the stylesheet used for colouring syntax
+* `print.editorContextMenuItemPosition`: the position of `Print` in the editor context menu
+* `print.fontSize`: the font size (options from 9 to 13 pt)
+* `print.formatMarkdown`: render markdown as styled HTML when printing
+* `print.lineNumbers`: on, off or inherit (do same as editor)
+* `print.lineSpacing`: single, line-and-a-half or double spaced
+
+### Choosing the font face
+While font _size_ is controlled by the settings, font _face_ is determined by your editor settings. If you see Fira Code on screen, that's what will be printed.
+
 ## Markdown
 You probably want Markdown print-jobs rendered and styled, and this is the default behaviour. If, for your own ineffable reasons, you wish to print the raw text, you can un-check the setting `Print: Render Markdown`.
 
@@ -31,6 +47,3 @@ To set up an alternate browser you must do two things:
 The colours used for syntax highlighting can be styled by supplying a CSS stylesheet. Press `F1` and type `browse stylesheet` to find the command for setting this. Invoking it will open a file browse dialog that defaults to the folder containing VS Code Printing's cache of stylesheets. If you browse to somewhere else and choose a CSS file, it will be imported to the cache folder (potentially overwriting a file of the same name).
 
  The setting points at the the cached copy, so if you make changes you must repeat the import process.
-
- ## Choose a font size
- Font _face_ is determined by your editor settings but font _size_ is independently controlled by the setting `Print Font Size` which gives you options from 9pt to 13pt. You can use any unit you like so long as it's points.

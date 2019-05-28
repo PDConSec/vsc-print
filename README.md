@@ -33,19 +33,10 @@ You'll need a web browser and access to a printer.
 
 ## Extension Settings
 
-This extension has the following settings, which can be modified by going to Code > Preferences > Settings > Extensions > Printing:
+VS Code Printing is highly configurable. Settings can be modified by going to Code > Preferences > Settings > Extensions > Printing.
 
-* `print.alternateBrowser`: enable/disable an alternate browser
-* `print.announcePortAcquisition`: make the embedded web server tell you what port it uses
-* `print.browserPath`: the path to a web browser
-* `print.colourScheme`: the stylesheet used for colouring syntax
-* `print.dynamicPortMax`: the high bound of the range in which the embedded webserver will choose ports 
-* `print.dynamicPortMin`: the low bound of the range in which the embedded webserver will choose ports
-* `print.editorContextMenuItemPosition`: the position of `Print` in the editor context menu
-* `print.fontSize`: the font size
-* `print.formatMarkdown`: render markdown as styled HTML when printing
-* `print.lineNumbers`: on, off or inherit (do same as editor)
-* `print.lineSpacing`: single, line-and-a-half or double spaced
+A detailed breakdown of these settings can be found in [the manual](https://github.com/PeterWone/vsc-print/blob/master/manual.md).
+=======
 
 ## Known Issues
 Making printed tabs respect the editor tab size setting depends on the experimental CSS `tab-size` property. This doesn't work on Edge. When Edge starts using the Chromium engine the problem will go away.
