@@ -3,6 +3,10 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.6.12
+- Settings to allow the user to move the range in which the embedded webserver chooses ports
+- Moved default port range into the correct range for dynamic ports (was library default)
+
 ## 0.6.9
 - UTF-8 for extended charsets.
 - Support images on local paths.
