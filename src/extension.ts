@@ -64,7 +64,12 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 async function getPort(): Promise<number> {
-  return portfinder.getPortPromise();
+  let printConfig = vscode.workspace.getConfiguration("print", null);
+  portfinder.basePort = printConfig.dynamicPortMin;
+  return portfinder.getPortPromise({
+    startPort: printConfig.dynamicPortMin, 
+    stopPort: printConfig.dynamicPortMax
+  });
 }
 
 function getFileText(fname: string): string {

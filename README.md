@@ -39,6 +39,8 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.announcePortAcquisition`: make the embedded web server tell you what port it uses
 * `print.browserPath`: the path to a web browser
 * `print.colourScheme`: the stylesheet used for colouring syntax
+* `print.dynamicPortMax`: the high bound of the range in which the embedded webserver will choose ports 
+* `print.dynamicPortMin`: the low bound of the range in which the embedded webserver will choose ports
 * `print.editorContextMenuItemPosition`: the position of `Print` in the editor context menu
 * `print.fontSize`: the font size
 * `print.formatMarkdown`: render markdown as styled HTML when printing
@@ -51,6 +53,10 @@ Making printed tabs respect the editor tab size setting depends on the experimen
 Chrome remembers too much about printers, paper sizes and margins especially if you abort.
 
 ## Release Notes
+### 0.6.12
+- Settings to allow the user to move the range in which the embedded webserver chooses ports
+- Moved default port range into the correct range for dynamic ports (was library default)
+
 ### 0.6.9
 - UTF-8 for extended charsets.
 - Support images on local paths.

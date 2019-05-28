@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "VS Code Printing",
   "description": "Syntax-coloured line-numbered printing in VS Code.",
-  "version": "0.6.9",
+  "version": "0.6.12",
   "icon": "PDCONSEC-zipper-PRINTER2.png",
   "author": {
     "name": "Peter Wone",
@@ -120,6 +120,16 @@
               "Bottom",
               "None"
             ]
+          },
+          "print.dynamicPortMin": {
+            "type": "integer",
+            "default": 49203,
+            "description": "Start of the range in which a free port will be sought"
+          },
+          "print.dynamicPortMax": {
+            "type": "integer",
+            "default": 65535,
+            "description": "End of the range in which a free port will be sought"
           }
         }
       }
