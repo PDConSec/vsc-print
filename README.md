@@ -35,8 +35,7 @@ You'll need a web browser and access to a printer.
 
 VS Code Printing is highly configurable. Settings can be modified by going to Code > Preferences > Settings > Extensions > Printing.
 
-A detailed breakdown of these settings can be found in [the manual](https://github.com/PeterWone/vsc-print/blob/master/manual.md).
-=======
+**A detailed breakdown of these settings can be found in [the manual](https://github.com/PeterWone/vsc-print/blob/master/manual.md).**
 
 ## Known Issues
 Making printed tabs respect the editor tab size setting depends on the experimental CSS `tab-size` property. This doesn't work on Edge. When Edge starts using the Chromium engine the problem will go away.
