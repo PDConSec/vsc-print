@@ -19,6 +19,8 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.announcePortAcquisition`: make the embedded web server tell you what port it uses
 * `print.browserPath`: the path to a web browser
 * `print.colourScheme`: the stylesheet used for colouring syntax
+* `print.dynamicPortMax`: the high bound of the range in which the embedded webserver will choose ports 
+* `print.dynamicPortMin`: the low bound of the range in which the embedded webserver will choose ports
 * `print.editorContextMenuItemPosition`: the position of `Print` in the editor context menu
 * `print.fontSize`: the font size (options from 9 to 13 pt)
 * `print.formatMarkdown`: render markdown as styled HTML when printing
@@ -30,6 +32,13 @@ While font _size_ is controlled by the settings, font _face_ is determined by yo
 
 ## Markdown
 You probably want Markdown print-jobs rendered and styled, and this is the default behaviour. If, for your own ineffable reasons, you wish to print the raw text, you can un-check the setting `Print: Render Markdown`.
+
+## Changing the dynamic port range
+The browser gets content from an embedded webserver. This webserver probes for an unused port, which is how it is possible to run multiple instances of VS Code and this extension without a port conflict. Third party software may be less accommodating, and it may be desirable to move the range in which VS Code chooses ports. You can do this by specifying 
+* `print.dynamicPortMax`: the high bound of the range in which the embedded webserver will choose ports 
+* `print.dynamicPortMin`: the low bound of the range in which the embedded webserver will choose ports
+By default, versions earlier than 0.6.12 began probing for a free port from 8000 because this was the default behaviour of the libray 
+in use. Under Windows, the dynamic port range is 49152 to 65535 and the port scan is now confined to this range. You shouldn't need to move it but you can.
 
 ## Alternate browser
 You can print with a browser other than your default browser.
