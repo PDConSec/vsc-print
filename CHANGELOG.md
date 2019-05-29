@@ -6,6 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### 0.6.12
 - Settings to allow the user to move the range in which the embedded webserver chooses ports
 - Moved default port range into the correct range for dynamic ports (was library default)
+- Separate manual in MANUAL.md thanks to #24 @natkuhn
 
 ## 0.6.9
 - UTF-8 for extended charsets.
