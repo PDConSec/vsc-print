@@ -37,8 +37,9 @@ You probably want Markdown print-jobs rendered and styled, and this is the defau
 The browser gets content from an embedded webserver. This webserver probes for an unused port, which is how it is possible to run multiple instances of VS Code and this extension without a port conflict. Third party software may be less accommodating, and it may be desirable to move the range in which VS Code chooses ports. You can do this by specifying 
 * `print.dynamicPortMax`: the high bound of the range in which the embedded webserver will choose ports 
 * `print.dynamicPortMin`: the low bound of the range in which the embedded webserver will choose ports
+
 By default, versions earlier than 0.6.12 began probing for a free port from 8000 because this was the default behaviour of the libray 
-in use. Under Windows, the dynamic port range is 49152 to 65535 and the port scan is now confined to this range. You shouldn't need to move it but you can.
+in use. Under Windows, the official dynamic port range is 49152 to 65535 and the port scan is now confined to this range. It may be necessary for users on other platforms to alter the port range.
 
 ## Alternate browser
 You can print with a browser other than your default browser.
