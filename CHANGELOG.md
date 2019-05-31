@@ -3,10 +3,16 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.7.0
+- Support extended character sets and mixed languages in printed source code (#29) with thanks to Ekgart Vikentiy for reporting this.
+
+### 0.6.13
+Stub release because there's no other way to make the marketplace update the readme file.
+
 ### 0.6.12
 - Settings to allow the user to move the range in which the embedded webserver chooses ports
 - Moved default port range into the correct range for dynamic ports (was library default)
-- Separate manual in MANUAL.md thanks to #24 @natkuhn
+- Separate manual thanks to Nat Kuhn
 
 ## 0.6.9
 - UTF-8 for extended charsets.

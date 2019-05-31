@@ -1,5 +1,3 @@
-> Thanks to [ac WEB DESIGN](http://www.ac-webdesign.ch/) for reporting both the issues corrected in this release and for furnishing suitable test content.
-
 # Visual Studio Code Printing
 
 Code listings are iconic in a sense older than graphical user interfaces. I can't give you dot-matrix on blue-lined 15" fanfold paper, but I _can_ give you line numbers, and double spacing to allow annotation with a pencil.
@@ -43,14 +41,19 @@ Making printed tabs respect the editor tab size setting depends on the experimen
 Chrome remembers too much about printers, paper sizes and margins especially if you abort.
 
 ## Release Notes
+### 0.6.13
+Stub release because there's no other way to patch the readme.
+
 ### 0.6.12
 - Settings to allow the user to move the range in which the embedded webserver chooses ports
 - Moved default port range into the correct range for dynamic ports (was library default)
-- Separate manual in MANUAL.md thanks to #24 @natkuhn
+- Separate manual thanks to Nat Kuhn
 
 ### 0.6.9
 - UTF-8 for extended charsets.
 - Support images on local paths.
+
+[ac WEB DESIGN](http://www.ac-webdesign.ch/) reported both these issues and provided test content.
 
 ### 0.6.8
 - Control whether the embedded web server announces which port it acquires (off by default).
@@ -93,3 +96,30 @@ Documentation tweak.
 
 - Tab size respects editor setting.
 - Responsibility for language detection moved from highlightjs to VS Code.
+
+# Samples in extended character sets
+## Cyrillic
+После распада СССР от кириллицы в пользу латиницы к настоящему времени отказались Молдавия, Азербайджан, Узбекистан, Туркменистан. Казахстан планирует переход на латиницу (для казахского языка) к 2025 году.
+
+## Arabic
+
+<span style="direction:rtl">
+
+تختلف الحروف المستخدمة في الأبجدية السريلية من لغة سلافية إلى أخرى. على سبيل المثال تفتقد السريلية البلغارية المعاصرة ما يقرب من عشرين حرفاً من الحروف السريلية القديمة (مثل يات ѣ / ять )، يوس ѫ / юс) وغيرها.
+
+</span>
+
+## German
+Während die bulgarische Kyrilliza sich in der Form der Buchstaben weitgehend an die russische anlehnte und in der Orthographie zunächst zum großen Teil etymologischen Kriterien folgte, wurde die serbische Kyrilliza durch Vuk Karadžić radikal reformiert, um eine konsequent phonologische Schreibweise des Serbischen zu ermöglichen. Ende des 19. beziehungsweise Anfang des 20.
+
+## Japanese
+ウィキペディアには現在この名前の項目はありません。
+
+## Chinese
+鋦是一種銀白色的堅硬高密度金屬，熔點和沸點是錒系元素中較高的。
+
+## Thai
+คูเรียม (อังกฤษ: Curium) คือธาตุที่มีหมายเลขอะตอม 96 และสัญลักษณ์คือ Cm คูเรียมเป็นธาตุโลหะกัมมันตภาพรังสี เป็นธาตุที่สังเคราะห์ขึ้นโดยการยิงพลูโตเนียมด้วยอนุภาคแอลฟ่า (ฮีเลียมไอออน) คูเรียมเป็นธาตุในกลุ่มแอกทิไนด์ (actinide) คูเรียมตั้งชื่อตามมารี กูรีและสามีของเธอ ปิแอร์ กูรี
+
+### markdown extensions
+H~2~O
