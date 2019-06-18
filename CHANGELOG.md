@@ -3,8 +3,15 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.7.1
+Now using VS Code's markdown rendering pipeline.
+- faster load
+- smaller memory footprint
+- markdown extensions like [Markdown+Math](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath) take effect when printing
+
 ### 0.7.0
-- Support extended character sets and mixed languages in printed source code (#29) with thanks to Ekgart Vikentiy for reporting this.
+- Bump minor version as 0.6.13 introduced new settings changing the UX
+- Fix support for extended character sets and mixed languages in printed source code (#29) with thanks to Ekgart Vikentiy for reporting this.
 
 ### 0.6.13
 Stub release because there's no other way to make the marketplace update the readme file.

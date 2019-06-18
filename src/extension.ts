@@ -4,15 +4,13 @@ import { readFileSync, writeFileSync } from 'fs';
 import * as http from "http";
 import * as child_process from "child_process";
 import * as fs from "fs";
-import * as markdown_it from "markdown-it";
 import portfinder = require("portfinder");
 
-var md: markdown_it;
+var md: any;
 var commandArgs: any;
 var selection: vscode.Selection | undefined;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 export function activate(context: vscode.ExtensionContext) {
-	md = md || markdown_it();
 	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition;
 	vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
 	let disposable = vscode.commands.registerCommand("extension.print", async (cmdArgs: any) => {
@@ -63,6 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 	});
 	context.subscriptions.push(disposable);
+	return { extendMarkdownIt(mdparam: any) { return md = mdparam; } };
 }
 
 async function getPort(): Promise<number> {
