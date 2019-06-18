@@ -79,7 +79,7 @@ This depends on CSS and fonts from the web. To get printing to work you must add
 		]
 
 Here are some samples to help you check your configuration.
-
+```
 $$
 \begin{alignedat}{2}
    10&x+ &3&y = 2 \\
@@ -94,3 +94,4 @@ x = \begin{cases}
    c &\text{if } d
 \end{cases}
 $$
+```
