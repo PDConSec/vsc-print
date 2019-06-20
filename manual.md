@@ -24,8 +24,8 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.announcePortAcquisition` : make the embedded web server tell you what port it uses
 * `print.browserPath` : the path to a web browser
 * `print.colourScheme` : the stylesheet used for colouring syntax
-* `print.dynamicPortMax` : the high bound of the range in which the embedded webserver will choose ports
-* `print.dynamicPortMin` : the low bound of the range in which the embedded webserver will choose ports
+* `print.dynamicPortMax` : the upper bound of the range in which the embedded webserver will choose ports
+* `print.dynamicPortMin` : the lower bound of the range in which the embedded webserver will choose ports
 * `print.editorContextMenuItemPosition` : the position of `Print` in the editor context menu
 * `print.fontSize` : the font size (options from 9 to 13 pt)
 * `print.formatMarkdown` : render markdown as styled HTML when printing

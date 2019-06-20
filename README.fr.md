@@ -9,7 +9,7 @@
 
 L'icône d'impression sur la barre d'outils imprime le document dans l'éditeur actif.
 
-Si vous avez une sélection de texte qui traverse au moins une ligne-break, vous pouvez cliquer à droite et choisir «Imprimer» dans le menu contextuel pour envoyer seulement la sélection à l'imprimante. En l'absence d'une sélection multi-lignes, l'intégralité du document est imprimée. Vous pouvez contrôler la position de 'Print' dans ce menu, ou le supprimer complètement.
+Si vous avez une sélection de texte qui traverse au moins une ligne-break, vous pouvez cliquer à droite et choisir «Imprimer» dans le menu contextuel pour envoyer seulement la sélection à l'imprimante. En l'absence d'une sélection multi-lignes, le document entière est imprimée. Vous pouvez contrôler la position de 'Print' dans ce menu, ou le supprimer complètement.
 
 ![context-menu-editor](https://user-images.githubusercontent.com/5498936/53408378-05a08280-3a0a-11e9-8e88-0088089e0d07.png)
 
@@ -37,7 +37,7 @@ Vous aurez besoin d'un navigateur Web et d'un accès à une imprimante.
 
 L'impression de code VS est hautement configurable. Les paramètres peuvent être modifiés en allant dans Code > Préférences > Paramètres > Extensions > Impression.
 
-**L'examen détaillé de ces paramètres se trouve dans [le manuel](https://github.com/PeterWone/vsc-print/blob/master/manual.md).**
+**L'examen détaillé de ces paramètres se trouve dans [le manuel](https://github.com/PeterWone/vsc-print/blob/master/manual.fr.md).**
 
 ## Problèmes connus
 

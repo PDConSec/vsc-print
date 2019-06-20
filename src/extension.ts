@@ -5,6 +5,7 @@ import * as http from "http";
 import * as child_process from "child_process";
 import * as fs from "fs";
 import portfinder = require("portfinder");
+import * as nls from 'vscode-nls';
 
 var md: any;
 var commandArgs: any;

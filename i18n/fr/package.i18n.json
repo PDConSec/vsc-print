@@ -1,0 +1,15 @@
+{
+	"print": "Imprimer",
+	"extension.print.title": "Imprimer",
+	"extension.browse.title": "Parcourir les fouilles de style",
+	"print.renderMarkdown":"imprimer.rendreMarkdown",
+	"print.lineNumbers": "imprimer.numérotage",
+	"print.alternateBrowser":"imprimer.navigateurAlternatif",
+	"print.browserPath":"cheminDeStockageDuNavigateur",
+	"print.colourScheme": "imprimer.couleurs",
+	"print.printAndClose": "imprimer.imprimerPuisFermer",
+	"print.editorContextMenuPosition": "positionAuMenuDuContextuelDeLEditeur",
+	"print.dynamicPortMax": "imprimer.portDynamiqueMax",
+	"print.dynamicPortMin": "imprimer.portDynamiqueMin",
+	"print."
+}

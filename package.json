@@ -27,18 +27,18 @@
 		"markdown.markdownItPlugins": true,
 		"commands": [
 			{
-				"category": "Print",
+				"category": "%category.print%",
 				"command": "extension.print",
-				"title": "Print",
+				"title": "%extension.print.title%",
 				"icon": {
 					"dark": "./printer-icon-dog-ear-inverse.svg",
 					"light": "./printer-icon-dog-ear.svg"
 				}
 			},
 			{
-				"category": "Print",
+				"category": "%category.print%",
 				"command": "extension.browse",
-				"title": "Browse for stylesheet"
+				"title": "%extension.browse.title%"
 			}
 		],
 		"configuration": [
@@ -78,12 +78,12 @@
 						"description": "Font size",
 						"default": "10pt"
 					},
-					"print.renderMarkdown": {
+					"%print.renderMarkdown%": {
 						"type": "boolean",
 						"default": true,
 						"description": "Render markdown as HTML when printing"
 					},
-					"print.lineNumbers": {
+					"%print.lineNumbers%": {
 						"type": "string",
 						"description": "Line numbers",
 						"enum": [
