@@ -19,7 +19,21 @@
 		{
 			"type": "npm",
 			"script": "install",
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+		{
+			"type": "gulp",
+			"task": "clean",
 			"problemMatcher": []
+		},
+		{
+			"type": "gulp",
+			"task": "build",
+			"problemMatcher": [
+				"$tsc"
+			]
 		}
 	]
 }

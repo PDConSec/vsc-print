@@ -7,6 +7,7 @@ import * as fs from "fs";
 import portfinder = require("portfinder");
 import * as nls from 'vscode-nls';
 
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 var md: any;
 var commandArgs: any;
 var selection: vscode.Selection | undefined;

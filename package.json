@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "VS Code Printing",
 	"description": "Syntax-coloured line-numbered printing in VS Code.",
-	"version": "0.7.1",
+	"version": "0.7.4",
 	"icon": "PDCONSEC-zipper-PRINTER2.png",
 	"author": {
 		"name": "Peter Wone",
@@ -27,30 +27,30 @@
 		"markdown.markdownItPlugins": true,
 		"commands": [
 			{
-				"category": "%category.print%",
+				"category": "%commands.category%",
 				"command": "extension.print",
-				"title": "%extension.print.title%",
+				"title": "%commands.title.print%",
 				"icon": {
 					"dark": "./printer-icon-dog-ear-inverse.svg",
 					"light": "./printer-icon-dog-ear.svg"
 				}
 			},
 			{
-				"category": "%category.print%",
+				"category": "%commands.category%",
 				"command": "extension.browse",
-				"title": "%extension.browse.title%"
+				"title": "%commands.title.browse%"
 			}
 		],
 		"configuration": [
 			{
-				"title": "%configuration.title%",
+				"title": "%configuration.title.print%",
 				"properties": {
-					"%print.announcePortAcquisition%": {
+					"print.announcePortAcquisition": {
 						"type": "boolean",
 						"default": false,
 						"markdownDescription": "%print.announcePortAcquisition.description%"
 					},
-					"%print.lineSpacing%": {
+					"print.lineSpacing": {
 						"type": "number",
 						"enum": [
 							1,
@@ -65,7 +65,8 @@
 						"description": "%print.lineSpacing.description%",
 						"default": 1
 					},
-					"%print.fontSize%": {
+					"print.fontSize": {
+						"title": "%print.fontSize.title%",
 						"type": "string",
 						"enum": [
 							"9pt",
@@ -75,15 +76,15 @@
 							"12pt",
 							"13pt"
 						],
-						"description": "%print.fontSize%",
+						"description": "%print.fontSize.description%",
 						"default": "10pt"
 					},
-					"%print.renderMarkdown%": {
+					"print.renderMarkdown": {
 						"type": "boolean",
 						"default": true,
 						"description": "%print.renderMarkdown.description%"
 					},
-					"%print.lineNumbers%": {
+					"print.lineNumbers": {
 						"type": "string",
 						"description": "%print.lineNumbers.description%",
 						"enum": [
@@ -93,41 +94,43 @@
 						],
 						"default": "inherit"
 					},
-					"%print.alternateBrowser%": {
+					"print.alternateBrowser": {
 						"type": "boolean",
 						"description": "%print.alternateBrowser.description%",
 						"default": true
 					},
-					"%print.browserPath%": {
+					"print.browserPath": {
 						"type": "string",
 						"description": "%print.browserPath.description%"
 					},
-					"%print.colourScheme%": {
+					"print.colourScheme": {
+						"title": "I'm calling this a potato",
 						"type": "string",
 						"default": "vs2015",
-						"markdownDescription": "%print.colourScheme.description%"
+						"markdownDescription": "%print.colourScheme.markdownDescription%"
 					},
-					"%print.printAndClose%": {
+					"print.printAndClose": {
 						"type": "boolean",
 						"default": true,
 						"description": "%print.printAndClose.description%"
 					},
-					"%print.editorContextMenuItemPosition%": {
+					"print.editorContextMenuItemPosition": {
 						"default": "Top",
 						"type": "string",
-						"markdownDescription": "%print.editorContextMenuItemPosition.description%",
+						"markdownDescription": "%print.editorContextMenuItemPosition.markdownDescription%",
 						"enum": [
 							"Top",
 							"Bottom",
 							"None"
 						]
 					},
-					"%print.dynamicPortMin%": {
+					"print.dynamicPortMin": {
+						"title": "dynoportmin",
 						"type": "integer",
 						"default": 49203,
 						"description": "%print.dynamicPortMin.description%"
 					},
-					"%print.dynamicPortMax%": {
+					"print.dynamicPortMax": {
 						"type": "integer",
 						"default": 65535,
 						"description": "%print.dynamicPortMax.description%"
@@ -181,14 +184,24 @@
 	"devDependencies": {
 		"@types/mocha": "^5.2.6",
 		"@types/node": "^11.13.4",
+		"del": "^4.1.1",
+		"event-stream": "^4.0.1",
+		"gulp": "^4.0.2",
+		"gulp-filter": "^5.1.0",
+		"gulp-sourcemaps": "^2.6.5",
+		"gulp-typescript": "^5.0.1",
+		"run-sequence": "^2.2.1",
 		"tslint": "^5.12.1",
-		"typescript": "^3.3.1",
+		"typescript": "^3.5.1",
+		"vsce": "^1.61.0",
+		"vscode-nls-dev": "^3.2.6",
 		"vscode": "^1.1.33"
 	},
 	"dependencies": {
 		"@types/highlight.js": "^9.12.3",
 		"@types/markdown-it": "0.0.7",
 		"highlight.js": "^9.14.2",
-		"portfinder": "^1.0.20"
+		"portfinder": "^1.0.20",
+		"vscode-nls": "^3.2.5"
 	}
 }
