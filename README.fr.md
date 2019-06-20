@@ -9,7 +9,7 @@
 
 L'icône d'impression sur la barre d'outils imprime le document dans l'éditeur actif.
 
-Si vous avez une sélection de texte qui traverse au moins une ligne-break, vous pouvez cliquer à droite et choisir «Imprimer» dans le menu contextuel pour envoyer seulement la sélection à l'imprimante. En l'absence d'une sélection multi-lignes, le document entière est imprimée. Vous pouvez contrôler la position de 'Print' dans ce menu, ou le supprimer complètement.
+Si vous avez une sélection de texte qui traverse au moins une ligne-break, vous pouvez cliquer à droite et choisir «Imprimer» dans le menu contextuel pour envoyer seulement la sélection à l'imprimante. En l'absence d'une sélection multi-lignes, le document entière est imprimée. Vous pouvez contrôler la position de `Imprimer` dans ce menu, ou le supprimer complètement.
 
 ![context-menu-editor](https://user-images.githubusercontent.com/5498936/53408378-05a08280-3a0a-11e9-8e88-0088089e0d07.png)
 
@@ -99,7 +99,7 @@ Correction aux catégories de commande afin qu'elles apparaissent comme
 
 Les commandes sont présentes et fonctionnelles en 0.6.1 mais ne sont pas correctement catégorisés.
 
-Les feuilles de style de schéma de couleurs ne sont plus sélectionnées à partir d'une boîte combo. Au lieu de cela, il ya une nouvelle commande `Imprimer: Parcourir pour la feuille de style` qui engendre un dialogue de fichiers-parcourir et met à jour le paramètre. Si vous choisissez un fichier en dehors du cache de feuille de style, il est copié dans le cache afin que vous ne devenez pas dépendant des ressources locales du réseau.
+Les feuilles de style de schéma de couleurs ne sont plus sélectionnées à partir d'une boîte combo. Au lieu de cela, il ya une nouvelle commande `Imprimer: Parcourir les feuilles de styles` qui engendre un dialogue de fichiers-parcourir et met à jour le paramètre. Si vous choisissez un fichier en dehors du cache de feuille de style, il est copié dans le cache afin que vous ne devenez pas dépendant des ressources locales du réseau.
 
 Les versions antérieures ont parfois eu des problèmes avec les collisions de bâbord causant l'impression à l'échec. Une réessayer manuel ou trois toujours fixé, mais c'était laid. La correction du problème était l'objectif principal de 0.5.3, et je suis heureux de l'enlever finalement des questions connues.
 

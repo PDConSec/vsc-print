@@ -27,14 +27,15 @@ Cette extension comporte les paramètres suivants, qui peuvent être modifiés e
 * `imprimer.portDynamiqueMax` : la limite supérieure de la plage dans laquelle le serveur web intégré choisira les ports
 * `imprimer.portDynamiqueMin` : la limite inférieure de la plage dans laquelle le serveur web intégré choisira les ports
 * `imprimer.positionAuMenuDuContextuelDeLEditeur` : la position de la commande `Imprimer` au menu contextuel de l'éditeur
-* `imprimer.tailleDeLaPolice` : la taille de la police (font) (options de 9 à 13 pt)
+* `imprimer.imprimerPuisFermer` : après l'impression, fermez le navigateur.
+* `imprimer.tailleDeLettrage` : la taille de lettrage (options de 9 à 13 pt)
 * `imprimer.rendreLeMarkdown` : rendre le markdown comme HTML stylé lors de l'impression
 * `imprimer.numérotage` : on, off ou inherit (faire la même chose que l'éditeur)
-* `imprimer.espacementDeLaLigne` : simple, ligne et demie ou double espacement
+* `imprimer.espacementDesLignes` : simple, ligne et demie ou double espacement
 
 ### Choix de caractère
 
-Bien que la taille de la police soit contrôlée par les paramètres, la _police de caractère_ est déterminée par les paramètres de votre éditeur. Si vous voyez Fira Code à l'écran, c'est ce qui sera imprimé.
+Bien que la taille de lettrage soit contrôlée par les paramètres, la _police de caractères_ est déterminée par les paramètres de votre éditeur. Si vous voyez Fira Code à l'écran, c'est ce qui sera imprimé.
 
 
 ## Markdown
@@ -72,7 +73,7 @@ Les couleurs utilisées pour la mise en surbrillance syntaxe peuvent être styli
 Le paramètre indique la copie mise en cache, donc si vous effectuez des modifications, vous devez répéter le processus d'importation.
 
 ## Extension de markdown de Katex
-Cela dépend de CSS et polices du web. Pour que l'impression fonctionne, vous devez ajouter la feuille de style requise à vos paramètres.
+Cela dépend de CSS et polices des caractères du web. Pour que l'impression fonctionne, vous devez ajouter la feuille de style requise à vos paramètres.
 
 		"markdown.styles": [
 			"https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css"

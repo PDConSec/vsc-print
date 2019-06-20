@@ -1,15 +1,42 @@
 {
-	"print": "Imprimer",
+	"configuration.title.printing": "Impression",
+
 	"extension.print.title": "Imprimer",
 	"extension.browse.title": "Parcourir les fouilles de style",
+
 	"print.renderMarkdown":"imprimer.rendreMarkdown",
+	"print.renderMarkdown.description":"Rendre Markdown en HTML lors de l'impression",
+
 	"print.lineNumbers": "imprimer.numérotage",
+
 	"print.alternateBrowser":"imprimer.navigateurAlternatif",
-	"print.browserPath":"cheminDeStockageDuNavigateur",
+	"print.alternateBrowser.description": "Utiliser le navigateur alternatif",
+
+	"print.browserPath":"imprimer.cheminDeStockageDuNavigateur",
+	"print.browserPath.description":"Chemin vers l'exécutable d'un autre navigateur",
+
 	"print.colourScheme": "imprimer.couleurs",
+	"print.colourScheme.description": "Appuyez sur `F1` puis `Imprinter:  Parcourir les fouilles de style` pour choisir une feuille de style compatible highlightjs. Si vous choisissez un fichier en dehors du cache de feuille de style, il sera copié sur le cache. Le papier est blanc alors choisissez des thèmes de lumière pour le texte sombre.",
+
 	"print.printAndClose": "imprimer.imprimerPuisFermer",
-	"print.editorContextMenuPosition": "positionAuMenuDuContextuelDeLEditeur",
+	"print.printAndClose.description": "Afficher le dialogue d'impression lorsque le navigateur est prêt, et essayer de fermer la page après l'impression est terminée ou annulée",
+
+	"print.editorContextMenuPosition": "imprimer.positionAuMenuDuContextuelDeLEditeur",
+	"print.editorContextMenuPosition.description": "La position de `Impresser` au menu contextuel de l'éditeur",
+
 	"print.dynamicPortMax": "imprimer.portDynamiqueMax",
+	"print.dynamicPortMax.description": "Fin de la plage dans laquelle un port libre sera recherché",
+
 	"print.dynamicPortMin": "imprimer.portDynamiqueMin",
-	"print."
+	"print.dynamicPortMin.description": "Début de la plage dans laquelle un port libre sera recherché",
+
+	"print.fontSize": "imprimer.tailleDeLettrage",
+	"print.fontSize.description": "Taille de lettrage",
+
+	"print.lineSpacing": "imprimer.espacementDesLignes",
+	"print.lineSpacing.description": "Espacement vertical des lignes",
+	"print.lineSpacing.single": "Espacement simple",
+	"print.lineSpacing.line-and-a-half": "Ligne et demie",
+	"print.lineSpacing.double": "Espacement double"
+
 }

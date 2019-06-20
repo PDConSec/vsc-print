@@ -43,14 +43,14 @@
 		],
 		"configuration": [
 			{
-				"title": "Printing",
+				"title": "%configuration.title%",
 				"properties": {
-					"print.announcePortAcquisition": {
+					"%print.announcePortAcquisition%": {
 						"type": "boolean",
 						"default": false,
-						"markdownDescription": "Tell me what port the embedded web server acquires"
+						"markdownDescription": "%print.announcePortAcquisition.description%"
 					},
-					"print.lineSpacing": {
+					"%print.lineSpacing%": {
 						"type": "number",
 						"enum": [
 							1,
@@ -58,14 +58,14 @@
 							2
 						],
 						"enumDescriptions": [
-							"Single spaced",
-							"Line and a half",
-							"Double spaced"
+							"%print.lineSpacing.single%",
+							"%print.lineSpacing.line-and-a-half%",
+							"%print.lineSpacing.double%"
 						],
-						"description": "Vertical spacing of lines",
+						"description": "%print.lineSpacing.description%",
 						"default": 1
 					},
-					"print.fontSize": {
+					"%print.fontSize%": {
 						"type": "string",
 						"enum": [
 							"9pt",
@@ -75,17 +75,17 @@
 							"12pt",
 							"13pt"
 						],
-						"description": "Font size",
+						"description": "%print.fontSize%",
 						"default": "10pt"
 					},
 					"%print.renderMarkdown%": {
 						"type": "boolean",
 						"default": true,
-						"description": "Render markdown as HTML when printing"
+						"description": "%print.renderMarkdown.description%"
 					},
 					"%print.lineNumbers%": {
 						"type": "string",
-						"description": "Line numbers",
+						"description": "%print.lineNumbers.description%",
 						"enum": [
 							"on",
 							"off",
@@ -93,44 +93,44 @@
 						],
 						"default": "inherit"
 					},
-					"print.alternateBrowser": {
+					"%print.alternateBrowser%": {
 						"type": "boolean",
-						"description": "Use the alternate browser",
+						"description": "%print.alternateBrowser.description%",
 						"default": true
 					},
-					"print.browserPath": {
+					"%print.browserPath%": {
 						"type": "string",
-						"description": "Path to the executable of an alternate browser."
+						"description": "%print.browserPath.description%"
 					},
-					"print.colourScheme": {
+					"%print.colourScheme%": {
 						"type": "string",
 						"default": "vs2015",
-						"markdownDescription": "Press `F1` then `Print: Browse for stylesheet` to choose a highlightjs compatible stylesheet. If you choose a file outside the stylesheet cache it will be copied to the cache. Paper is white so choose light themes for dark text."
+						"markdownDescription": "%print.colourScheme.description%"
 					},
-					"print.printAndClose": {
+					"%print.printAndClose%": {
 						"type": "boolean",
 						"default": true,
-						"description": "Show the Print dialog when the browser is ready, and try to close the page after printing is done or cancelled"
+						"description": "%print.printAndClose.description%"
 					},
-					"print.editorContextMenuItemPosition": {
+					"%print.editorContextMenuItemPosition%": {
 						"default": "Top",
 						"type": "string",
-						"markdownDescription": "The position of `Print` in the editor context menu",
+						"markdownDescription": "%print.editorContextMenuItemPosition.description%",
 						"enum": [
 							"Top",
 							"Bottom",
 							"None"
 						]
 					},
-					"print.dynamicPortMin": {
+					"%print.dynamicPortMin%": {
 						"type": "integer",
 						"default": 49203,
-						"description": "Start of the range in which a free port will be sought"
+						"description": "%print.dynamicPortMin.description%"
 					},
-					"print.dynamicPortMax": {
+					"%print.dynamicPortMax%": {
 						"type": "integer",
 						"default": 65535,
-						"description": "End of the range in which a free port will be sought"
+						"description": "%print.dynamicPortMax.description%"
 					}
 				}
 			}
