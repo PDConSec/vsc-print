@@ -2,7 +2,7 @@
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
-[ENGLISH](readme.md) | [FRENCH](readme.fra.md) | [РУССКИЕ](readme.rus.md) | [Add a language](how-to-add-a-language.md)
+[ENGLISH](../../readme.md) | [FRENCH](../../readme.fra.md) | [РУССКИЕ](../../readme.rus.md) | [Add a language](../../how-to-add-a-language.md)
 
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
 
