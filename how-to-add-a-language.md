@@ -16,5 +16,6 @@
 1. There's probably no point translating _this_ file unless you seriously expect translation from your language to another.
 1. Save, stage, commit and push your changes to your fork on GitHub.
 1. Raise a PR to tell me to merge your updates into the next release.
+1. Register your language in `gulpfile.js` so it will be built
 
 I encourage you to credit yourself for translation in a by-line at the start of each document under the main heading. It is possible to make your name a mail link but there is no need since people can use your fork to raise issues.
