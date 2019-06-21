@@ -2,9 +2,9 @@
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
-> NOW AVAILABLE IN ENGLISH, [FRENCH](readme.fra.md) AND [РУССКИЕ](readme.rus.md)
+> NOW AVAILABLE IN ENGLISH, [FRENCH](blob/master/readme.fra.md) AND [РУССКИЕ](blob/master/readme.rus.md)
 
-What about [unsupported language]? Don't look at _me_, I only speak English and French. But you can [add a language](how-to-add-a-language.md).
+What about [unsupported language]? Don't look at _me_, I only speak English and a bit of French. But you can [add a language](how-to-add-a-language.md).
 
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
 

@@ -1,5 +1,9 @@
 # Visual Studio Code Printing
 
+[English version](https://github.com/PeterWone/vsc-print) by Peter Wone
+
+[ENGLISH](blob/master/readme.md) | [FRENCH](blob/master/readme.fra.md) | [РУССКИЕ](blob/master/readme.rus.md) | [Add a language](blob/master/how-to-add-a-language.md)
+
 ## Printing
 
 ### The active document

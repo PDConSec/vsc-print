@@ -1,8 +1,9 @@
 # Visual Studio Code Printing
 
-> Je n'ai jamais Français parlé avec talent. Il s'agit essentiellement d'une traduction automatique avec des corrections manuelles où il était si mauvais, même je savais que c'était mal. Si vous êtes prêt et capable de faire un meilleur travail n'hésitez pas à faire un PR.
->
->En particulier, je ne connais pas les traductions idiomatiques pour les éléments d'interface utilisateur comme «Print», «Browse for stylesheet» ou «tab».
+[Version français](https://github.com/PeterWone/vsc-print) par Peter Wone
+
+[ENGLISH](blob/master/readme.md) | [FRENCH](blob/master/readme.fra.md) | [РУССКИЕ](blob/master/readme.rus.md) | [Add a language](blob/master/how-to-add-a-language.md)
+
 
 
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
