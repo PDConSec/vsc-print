@@ -1,5 +1,11 @@
 # Visual Studio Code Printing
 
+[English version](https://github.com/PeterWone/vsc-print) by Peter Wone
+
+> NOW AVAILABLE IN [FRENCH](readme.fra.md) AND [РУССКИЕ](readme.rus.md)
+
+What about [unsupported language]? Don't look at _me_, I only speak English and French. But you can [add a language](how-to-add-a-language.md).
+
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
 
 The print icon on the toolbar prints the document in the active editor.
@@ -121,36 +127,3 @@ Documentation tweak.
 - Tab size respects editor setting.
 - Responsibility for language detection moved from highlightjs to VS Code.
 
-# Samples in extended character sets
-
-## Cyrillic
-
-После распада СССР от кириллицы в пользу латиницы к настоящему времени отказались Молдавия, Азербайджан, Узбекистан, Туркменистан. Казахстан планирует переход на латиницу (для казахского языка) к 2025 году.
-
-## Arabic
-
-<span style="direction:rtl">
-
-تختلف الحروف المستخدمة في الأبجدية السريلية من لغة سلافية إلى أخرى. على سبيل المثال تفتقد السريلية البلغارية المعاصرة ما يقرب من عشرين حرفاً من الحروف السريلية القديمة (مثل يات ѣ / ять )، يوس ѫ / юс) وغيرها.
-
-</span>
-
-## German
-
-Während die bulgarische Kyrilliza sich in der Form der Buchstaben weitgehend an die russische anlehnte und in der Orthographie zunächst zum großen Teil etymologischen Kriterien folgte, wurde die serbische Kyrilliza durch Vuk Karadžić radikal reformiert, um eine konsequent phonologische Schreibweise des Serbischen zu ermöglichen. Ende des 19. beziehungsweise Anfang des 20.
-
-## Japanese
-
-ウィキペディアには現在この名前の項目はありません。
-
-## Chinese
-
-鋦是一種銀白色的堅硬高密度金屬， 熔點和沸點是錒系元素中較高的。
-
-## Thai
-
-คูเรียม (อังกฤษ: Curium) คือธาตุที่มีหมายเลขอะตอม 96 และสัญลักษณ์คือ Cm คูเรียมเป็นธาตุโลหะกัมมันตภาพรังสี เป็นธาตุที่สังเคราะห์ขึ้นโดยการยิงพลูโตเนียมด้วยอนุภาคแอลฟ่า (ฮีเลียมไอออน) คูเรียมเป็นธาตุในกลุ่มแอกทิไนด์ (actinide) คูเรียมตั้งชื่อตามมารี กูรีและสามีของเธอ ปิแอร์ กูรี
-
-### markdown extensions
-
-H~2~O
