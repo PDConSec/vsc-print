@@ -12,7 +12,7 @@
 1. Replace each English string with your translation.
    * Translation of jargon and technical terms is tricky but you are a subject matter expert, so ask yourself: What would I see in my source code? How would I write this in email to another programmer?
    * DO NOT translate the keys (the property names).
-1. Translate `readme.md` and `manual.md` to `readme.xyz.md` and `manual.xyz.md` where xyz is your language code.
+1. Translate `README.md` and `manual.md` to `README.xyz.md` and `manual.xyz.md` where xyz is your language code.
 1. There's probably no point translating _this_ file unless you seriously expect translation from your language to another.
 1. Save, stage, commit and push your changes to your fork on GitHub.
 1. Raise a PR to tell me to merge your updates into the next release.
