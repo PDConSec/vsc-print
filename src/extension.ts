@@ -187,7 +187,7 @@ async function getRenderedSourceCode(): Promise<string> {
 			.replace("\n</td>", "</td>")
 			;
 	}
-	let editorConfig = vscode.workspace.getConfiguration("print", null);
+	let editorConfig = vscode.workspace.getConfiguration("editor", null);
 	let html = `<html><head><title>${commandArgs.fsPath}</title><meta charset="utf-8"/><style>body{margin:0;padding:0;tab-size:${editorConfig.tabSize}}\n${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs { max-width:100%; width:100%; font-family: Consolas, monospace; font-size: ${printConfig.fontSize}; }\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
 	return html;
 }

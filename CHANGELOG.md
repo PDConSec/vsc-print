@@ -3,6 +3,14 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.7.7
+- The editor tab-size setting was incorrectly retrieved and therefore not respected. This has now been corrected.
+
+### 0.7.6
+- Localised to French. 
+- The Russian "localisation" is a stub (still in English) pending translations.
+- Menu and icon availability now determined from editorLangId rather than resourceLangId. This should allow printing of unsaved documents and unrecognised file types per issues 31 and 32.
+
 ### 0.7.1
 Now using VS Code's markdown rendering pipeline.
 - faster load

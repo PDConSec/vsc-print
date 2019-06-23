@@ -48,13 +48,25 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.7.7
+
+- The editor tab-size setting was incorrectly retrieved and therefore not respected. This has now been corrected.
+
+### 0.7.6
+
+- Localised to French. 
+- The Russian "localisation" is a stub (still in English) pending translations.
+- Menu and icon availability now determined from editorLangId rather than resourceLangId. This should allow printing of unsaved documents and unrecognised file types per issues 31 and 32.
+
 ### 0.7.1
+
 Now using VS Code's markdown rendering pipeline.
 - faster load
 - smaller memory footprint
 - markdown extensions like [Markdown+Math](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath) take effect when printing
 
 ### 0.7.0
+
 - Bump minor version as 0.6.13 introduced new settings changing the UX
 - Fix support for extended character sets and mixed languages in printed source code (#29) with thanks to Ekgart Vikentiy for reporting this.
 

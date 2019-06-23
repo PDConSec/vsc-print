@@ -50,6 +50,14 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.7.7
+- Le réglage de la taille de l'onglet de l'éditeur a été mal récupéré et n'a donc pas été respecté. Cela a maintenant été corrigé.
+
+### 0.7.6
+- Traduction à Français.
+- La "localisation" russe est un talon (toujours en anglais) en attente de traductions.
+- La disponibilité du menu et de l'icône est désormais déterminée à partir de `editorLangId` plutôt que de `resourceLangId`. Cela devrait permettre l'impression de documents non enregistrés et de types de fichiers non reconnus par #31 et #32.
+
 ### 0.7.1
 Utilise maintenant le convertisseur Markdown intégré.
 - charge plus rapide

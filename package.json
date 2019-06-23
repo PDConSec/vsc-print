@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "VS Code Printing",
 	"description": "Syntax-coloured line-numbered printing in VS Code.",
-	"version": "0.7.4",
+	"version": "0.7.6",
 	"icon": "PDCONSEC-zipper-PRINTER2.png",
 	"author": {
 		"name": "Peter Wone",
@@ -141,33 +141,33 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"when": "resourceLangId",
+          "when": "editorLangId",
 					"command": "extension.print",
 					"group": "navigation"
 				}
 			],
 			"editor/title": [
 				{
-					"when": "resourceLangId",
+					"when": "editorLangId",
 					"command": "extension.print",
 					"group": "navigation"
 				}
 			],
 			"editor/title/context": [
 				{
-					"when": "resourceLangId",
+					"when": "editorLangId",
 					"command": "extension.print",
 					"group": "navigation"
 				}
 			],
 			"editor/context": [
 				{
-					"when": "resourceLangId && ecmPrint == Top",
+					"when": "editorLangId && ecmPrint == Top",
 					"command": "extension.print",
 					"group": "navigation"
 				},
 				{
-					"when": "resourceLangId && ecmPrint == Bottom",
+					"when": "editorLangId && ecmPrint == Bottom",
 					"command": "extension.print",
 					"group": "Z_commands"
 				}
