@@ -85,9 +85,15 @@ function getFileText(fname: string): string {
 }
 
 async function getSourceCode(): Promise<string[]> {
-	var sender = vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.uri.fsPath === commandArgs.fsPath ?
-		"ACTIVE TEXT EDITOR" :
-		"FILE EXPLORER";
+
+	let sender = "NOT SET";
+	const commandArgsFsPath = commandArgs ? commandArgs.fsPath : undefined;
+	let editorFsPath = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri.fsPath : undefined;
+
+	sender = editorFsPath === commandArgsFsPath ? "ACTIVE TEXT EDITOR" : "FILE EXPLORER";
+	if (!commandArgs) {
+		commandArgs = { fsPath: commandArgsFsPath || editorFsPath };
+	}
 	let result = [];
 	switch (sender) {
 		case "ACTIVE TEXT EDITOR":
@@ -104,7 +110,7 @@ async function getSourceCode(): Promise<string[]> {
 				result.push(otd.languageId);
 				result.push(otd.getText());
 			} catch (error) {
-				throw new Error(`Cannot access ${commandArgs.fsPath}.\n${error.Message}`);
+				throw new Error(`Cannot access ${commandArgsFsPath}.\n${error.Message}`);
 			}
 			break;
 	}
@@ -134,9 +140,17 @@ table {
 async function getRenderedSourceCode(): Promise<string> {
 	let printConfig = vscode.workspace.getConfiguration("print", null);
 	let printAndClose = printConfig.printAndClose ? " onload = \"window.print();window.close();\"" : "";
-	if (printConfig.renderMarkdown && commandArgs.fsPath.split('.').pop().toLowerCase() === "md") {
+	let fsPath: string;
+	fsPath = "NOT SET";
+	if (commandArgs) {
+		fsPath = commandArgs.fsPath;
+	}
+	else if (vscode.window.activeTextEditor) {
+		fsPath = vscode.window.activeTextEditor.document.uri.fsPath;
+	}
+	if (printConfig.renderMarkdown && fsPath.toLowerCase().split('.').pop() === "md") {
 		let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
-		let result = `<!DOCTYPE html><html><head><title>${commandArgs.fsPath}</title>
+		let result = `<!DOCTYPE html><html><head><title>${fsPath}</title>
     <meta charset="utf-8"/>
     <style>
     html, body {
@@ -154,7 +168,7 @@ async function getRenderedSourceCode(): Promise<string> {
     </style>
     ${markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
     </head>
-		<body${printAndClose}>${md.render(fs.readFileSync(commandArgs.fsPath).toString())}</body></html>`;
+		<body${printAndClose}>${md.render(fs.readFileSync(fsPath).toString())}</body></html>`;
 		return result;
 	}
 	let x = vscode.extensions.getExtension("pdconsec.vscode-print");
@@ -188,7 +202,7 @@ async function getRenderedSourceCode(): Promise<string> {
 			;
 	}
 	let editorConfig = vscode.workspace.getConfiguration("editor", null);
-	let html = `<html><head><title>${commandArgs.fsPath}</title><meta charset="utf-8"/><style>body{margin:0;padding:0;tab-size:${editorConfig.tabSize}}\n${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs { max-width:100%; width:100%; font-family: Consolas, monospace; font-size: ${printConfig.fontSize}; }\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
+	let html = `<html><head><title>${fsPath}</title><meta charset="utf-8"/><style>body{margin:0;padding:0;tab-size:${editorConfig.tabSize}}\n${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs { max-width:100%; width:100%; font-family: Consolas, monospace; font-size: ${printConfig.fontSize}; }\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
 	return html;
 }
 

@@ -50,11 +50,12 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ### 0.7.7
 
-- The editor tab-size setting was incorrectly retrieved and therefore not respected. This has now been corrected.
+- #33 The editor tab-size setting was incorrectly retrieved and therefore not respected. This has now been corrected.
+- #34 Printing was failing for direct invocation (press `F1` then type Printing: Print finally press `Enter`). This has now been corrected.
 
 ### 0.7.6
 
-- Localised to French. 
+- Localised to French.
 - The Russian "localisation" is a stub (still in English) pending translations.
 - Menu and icon availability now determined from editorLangId rather than resourceLangId. This should allow printing of unsaved documents and unrecognised file types per issues 31 and 32.
 

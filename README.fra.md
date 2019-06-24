@@ -51,7 +51,8 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 ## Notes de version
 
 ### 0.7.7
-- Le réglage de la taille de l'onglet de l'éditeur a été mal récupéré et n'a donc pas été respecté. Cela a maintenant été corrigé.
+- #33 Le réglage de la taille de l'onglet de l'éditeur a été mal récupéré et n'a donc pas été respecté. Cela a maintenant été corrigé.
+- #34 L'impression était défaillante pour invocation directe (appuyez sur `F1` puis tapez Impression: Imprimer enfin puis appuyez sur `Enter`). Cela a maintenant été corrigé.
 
 ### 0.7.6
 - Traduction à Français.
