@@ -1,5 +1,7 @@
 # Visual Studio Code Printing
 
+[Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
+
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
 [ENGLISH](README.md) | [FRENCH](README.fra.md) | [РУССКИЕ](README.rus.md) | [Add a language](how-to-add-a-language.md)
