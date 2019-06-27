@@ -29,26 +29,26 @@ export function activate(context: vscode.ExtensionContext) {
 		commandArgs = cmdArgs;
 		let x = vscode.extensions.getExtension("pdconsec.vscode-print");
 		if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
-		var stylePath = `${x.extensionPath.replace(/\\/g, "/")}/node_modules/highlight.js/styles`;
+		var styleCachePath = `${x.extensionPath.replace(/\\/g, "/")}/node_modules/highlight.js/styles`;
 		let printConfig = vscode.workspace.getConfiguration("print", null);
-		let currentPath = `${stylePath}/${printConfig.colourScheme}.css`;
+		let currentPath = `${styleCachePath}/${printConfig.colourScheme}.css`;
 		vscode.window.showOpenDialog({
 			canSelectFiles: true,
 			canSelectMany: false,
-			defaultUri: vscode.Uri.file(fs.existsSync(currentPath) ? currentPath : stylePath),
+			defaultUri: vscode.Uri.file(fs.existsSync(currentPath) ? currentPath : styleCachePath),
 			filters: {
 				Stylesheet: ['css']
 			}
 		}).then(f => {
 			if (f) {
-				let p = f[0].fsPath;
-				let lbs = p.lastIndexOf("\\");
-				var path = p.substring(0, lbs).replace(/\\/g, "/");
-				var newValue = p.substring(lbs + 1, p.lastIndexOf("."));
+				let p = f[0].fsPath.replace(/\\/g, "/");
+				let lastSlashPosition = p.lastIndexOf("/");
+				var path = p.substring(0, lastSlashPosition);
+				var fileName = p.substring(lastSlashPosition + 1);
 				try {
-					vscode.workspace.getConfiguration().update("print.colourScheme", newValue, vscode.ConfigurationTarget.Global).then(() => {
-						if (path !== stylePath) {
-							let newCachePath = `${stylePath}/${newValue}.css`;
+					vscode.workspace.getConfiguration().update("print.colourScheme", fileName, vscode.ConfigurationTarget.Global).then(() => {
+						if (path !== styleCachePath) {
+							let newCachePath = `${styleCachePath}/${fileName}`;
 							fs.copyFile(p, newCachePath, err => {
 								vscode.window.showErrorMessage(err.message);
 							});
@@ -115,19 +115,19 @@ const lineNumberCss = `
 /* Line numbers */
 
 table {
-	border: none;
-	border-collapse: collapse;
+  border: none;
+  border-collapse: collapse;
 }
 .line-number {
-	border-right: thin solid silver;
-	padding-right: 0.3em;
-	text-align: right;
-	vertical-align: top;
+  border-right: thin solid silver;
+  padding-right: 0.3em;
+  text-align: right;
+  vertical-align: top;
 }
 .line-text {
-	margin-left: 0.7em;
+  margin-left: 0.7em;
   padding-bottom: {lineSpacing}em;
-	white-space: pre-wrap;
+  white-space: pre-wrap;
 }
 `;
 
@@ -154,7 +154,7 @@ async function getRenderedSourceCode(): Promise<string> {
     </style>
     ${markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
     </head>
-		<body${printAndClose}>${md.render(fs.readFileSync(commandArgs.fsPath).toString())}</body></html>`;
+    <body${printAndClose}>${md.render(fs.readFileSync(commandArgs.fsPath).toString())}</body></html>`;
 		return result;
 	}
 	let x = vscode.extensions.getExtension("pdconsec.vscode-print");
