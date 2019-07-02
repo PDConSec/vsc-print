@@ -150,6 +150,9 @@ async function getRenderedSourceCode(): Promise<string> {
 	}
 	if (printConfig.renderMarkdown && fsPath.toLowerCase().split('.').pop() === "md") {
 		let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
+		let raw =fs.readFileSync(fsPath).toString();
+		let content = md.render(raw);
+		content = content.replace(/vscode-resource:\//gi, "").replace(/:/gi, "COLON");
 		let result = `<!DOCTYPE html><html><head><title>${fsPath}</title>
     <meta charset="utf-8"/>
     <style>
@@ -168,7 +171,7 @@ async function getRenderedSourceCode(): Promise<string> {
     </style>
     ${markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
     </head>
-		<body${printAndClose}>${md.render(fs.readFileSync(fsPath).toString())}</body></html>`;
+		<body${printAndClose}>${content}</body></html>`;
 		return result;
 	}
 	let x = vscode.extensions.getExtension("pdconsec.vscode-print");
@@ -225,14 +228,13 @@ function startWebserver(): Promise<void> {
 						response.end(await getRenderedSourceCode());
 					} else {
 						try {
-							let filePath: string = commandArgs.fsPath.replace(/\\/g, "/");
-							let lastSlashPosition = filePath.lastIndexOf('/');
-							let basePath = filePath.substr(0, lastSlashPosition);
-							filePath = `${basePath}${request.url}`;
+							let filePath: string = request.url.substr(1).replace(/COLON/g, ":");
 							let cb = fs.statSync(filePath).size;
-							response.setHeader("Content-Type", `image/${request.url.substr(request.url.lastIndexOf('.'))}`);
+							let lastdotpos = request.url.lastIndexOf('.');
+							let fileExt = request.url.substr(lastdotpos + 1);
+							response.setHeader("Content-Type", `image/${fileExt}`);
 							response.setHeader("Content-Length", cb);
-							fs.createReadStream(filePath, { encoding: "utf8" }).pipe(response);
+							fs.createReadStream(filePath).pipe(response);
 						} catch {
 							//fail
 							response.end();

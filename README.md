@@ -50,6 +50,10 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.7.9
+
+- Issue 36 - corrected a problem with the internal rendering pipeline rewriting URLs to use a vscode internal protocol. This caused image references to work in the preview but fail in the browser.
+
 ### 0.7.8
 
 - Issue 35 - stylesheet cache path incorrectly constructed on non-Windows file systems. This has now been corrected.

@@ -1,8 +1,8 @@
 {
 	"name": "vscode-print",
-	"displayName": "VS Code Printing",
+	"displayName": "VS Code Printing Free",
 	"description": "Syntax-coloured line-numbered printing in VS Code.",
-	"version": "0.7.8",
+	"version": "0.7.9",
 	"icon": "PDCONSEC-zipper-PRINTER2.png",
 	"author": {
 		"name": "Peter Wone",
@@ -141,7 +141,7 @@
 		"menus": {
 			"explorer/context": [
 				{
-          "when": "editorLangId",
+					"when": "editorLangId",
 					"command": "extension.print",
 					"group": "navigation"
 				}

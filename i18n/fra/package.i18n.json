@@ -12,7 +12,7 @@
 	"print.renderMarkdown.description": "Rendre le Markdown en HTML lors de l'impression",
 
 	"print.lineNumbers.title": "Numérotage",
-	"print.lineNumbers.description": "",
+	"print.lineNumbers.description": "Imprimer avec des numéros de ligne",
 
 	"print.alternateBrowser.title": "Navigateur alternatif",
 	"print.alternateBrowser.description": "Utiliser le navigateur alternatif",

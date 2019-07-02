@@ -8,7 +8,7 @@
 	"print.renderMarkdown.title": "Render Markdown",
 	"print.renderMarkdown.description": "Render markdown as HTML when printing",
 	"print.lineNumbers.title": "print.lineNumbers",
-	"print.lineNumbers.description": "",
+	"print.lineNumbers.description": "Print with line numbers",
 	"print.alternateBrowser.title": "Alternate browser",
 	"print.alternateBrowser.description": "Use the alternate browser",
 	"print.browserPath.title": "Browser path",

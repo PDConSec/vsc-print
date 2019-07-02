@@ -50,6 +50,10 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.7.9
+
+- Problème 36 - le pipeline de rendu interne réécrivait des URL pour utiliser un protocole interne vscode. En effet, les références d'image ont fonctionné correctement avec la fenêtre de prévisualisation, mais pas avec le navigateur.
+
 ### 0.7.8 
 
 - Problème 35 - chemin de cache de stylesheet incorrectement construit sur les systèmes de fichiers non Windows. Ceci a été corrigé.

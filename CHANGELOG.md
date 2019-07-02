@@ -3,6 +3,10 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.7.9
+
+- Issue 36 - corrected a problem with the internal rendering pipeline rewriting URLs to use a vscode internal protocol. This caused image references to work in the preview but not in the browser.
+
 ### 0.7.8
 
 - Issue 35 - stylesheet cache path incorrectly constructed on non-Windows file systems. This has now been corrected.

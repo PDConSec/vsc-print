@@ -1,4 +1,4 @@
-# Visual Studio Code Printing
+# Visual Studio Code Печати
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
@@ -6,62 +6,65 @@
 
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
 
-The print icon on the toolbar prints the document in the active editor.
+Значок печати на панели инструментов печатает документ в активном редакторе.
 
-If you have a text selection that crosses at least one line-break you can right click and choose `Print` from the context menu to send just the selection to the printer. In the absence of a multi-line selection the entire document is printed. You can control the position of `Print` in this menu, or remove it altogether.
+Если у вас есть выбор текста, который пересекает по крайней мере одну строку-брейк, вы можете нажать право и выбрать `Печать` из контекстного меню, чтобы отправить только выбор принтеру. При отсутствии многолинейного выбора весь документ печатается. Вы можете контролировать положение `Печать` в этом меню, или удалить его вообще.
 
 ![context-menu-editor](https://user-images.githubusercontent.com/5498936/53408378-05a08280-3a0a-11e9-8e88-0088089e0d07.png)
 
-Or you can right-click on a file in the file explorer pane and choose Print from the context menu.
+Или вы можете нажать правой кнопкой мыши на файл в панели исследователя файла и выбрать печать из контекстного меню.
 
 ![context-menu-file-explorer](https://user-images.githubusercontent.com/5498936/53408376-05a08280-3a0a-11e9-9912-31e869db64d5.png)
 
-## Features
+## Функции
 
-Printing on Mac, Linux and Windows
+Печать на Mac, Linux и Windows
 
-* Entirely local in operation, no dependence on cloud services
-* Syntax colouring in a wide range of familiar colour schemes that you can import or modify
-* Optional line numbering
-* Adjustable line spacing (1, 1.5, 2)
-* Print a selection of code with line numbers matching the editor
-* Specify a browser other than your default
-* Markdown documents are rendered when you print them (or not, there's a setting)
+Полностью локальный в эксплуатации, отсутствие зависимости от облачных служб
+- Окраска Syntax в широком диапазоне знакомых цветовых схем, которые можно импортировать или изменять
+- Факультативная нумерование строк
+Регулируемый интервал линии (1; 1,5; 2)
+- Печать подборки кода с номерами строк, соответствующих редактору
+Укажите браузер, не встышую по умолчанию
+Документы разметки отображаются при их печати (или нет, есть параметр)
 
-## Requirements
+## Требования
 
-You'll need a web browser and access to a printer.
+Вам понадобится веб-браузер и доступ к принтеру.
 
-## Extension Settings
+## Настройки расширения
 
-VS Code Printing is highly configurable. Settings can be modified by going to Code > Preferences > Settings > Extensions > Printing.
+VS Code Printing очень настраиваема. Настройки могут быть изменены, перейдя в Код - Предпочтения - Настройки - Расширения и печать.
 
-**A detailed breakdown of these settings can be found in [the manual](https://github.com/PeterWone/vsc-print/blob/master/manual.md).**
+**Подробную разбивку этих настроек можно найти в [руководстве](https://github.com/PeterWone/vsc-print/blob/master/manual.rus.md).**
 
-## Known Issues
+## Известные проблемы
 
-Making printed tabs respect the editor tab size setting depends on the experimental CSS `tab-size` property. This doesn't work on Edge. When Edge starts using the Chromium engine the problem will go away.
-
+Заставить печатные вкладки уважать настройки размера вкладки редактора зависит от экспериментального свойства CSS `tab-size`. Это не работает на Эдж. Когда Edge начнет использовать двигатель Chromium проблема исчезнет.
 Chrome remembers too much about printers, paper sizes and margins especially if you abort.
 
-KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
+KaTeX требует подключения к Интернету. Необходимо также настроить ссылку на таблицу стилей. Подробности в руководстве.
 
-## Release Notes
+## Заметки о выпуске
+
+### 0.7.9
+
+- Проблема 36 - исправлена проблема с внутренним репилингом конвейера, переписающим URL-адреса для использования внутреннего протокола vscode. Это вызвало ссылки на изображения для работы в предварительном просмотре, но не в браузере.
 
 ### 0.7.8
 
-- Issue 35 - stylesheet cache path incorrectly constructed on non-Windows file systems. This has now been corrected.
+- Проблема 35 - путь кэша кэша таблицы стилей неправильно построен на файловых системах, не относяющихСя к Windows. Теперь это исправлено.
 
 ### 0.7.7
 
-- Issue 33 - the editor tab-size setting was incorrectly retrieved and therefore not respected. This has now been corrected.
-- Issue 34 - printing was failing for direct invocation (press `F1` then type Printing: Print finally press `Enter`). This has now been corrected.
+- Проблема 33 - настройка вкладки-размера редактора была неправильно извлечена и поэтому не соблюдается. Теперь это исправлено.
+- Проблема 34 - печать не удается для прямого вызова (нажмите `F1`, то тип печати: Печать, наконец, нажмите `Enter`). Теперь это исправлено.
 
 ### 0.7.6
 
-- Localised to French.
-- The Russian "localisation" is a stub (still in English) pending translations.
-- Menu and icon availability now determined from editorLangId rather than resourceLangId. This should allow printing of unsaved documents and unrecognised file types per issue 31 and 32.
+- Локализованна на французский язык.
+- Русская "локализация" - это заглушка (все еще на английском языке) в ожидании переводов.
+- Доступность меню и значка теперь определяется из editorLangId, а не с ресурсомLangId. Это должно позволить печатать несохраненные документы и непризнанные типы файлов в выпуске 31 и 32.
 
 ### 0.7.1
 
