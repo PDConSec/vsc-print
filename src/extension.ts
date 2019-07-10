@@ -152,7 +152,7 @@ async function getRenderedSourceCode(): Promise<string> {
 		let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
 		let raw =fs.readFileSync(fsPath).toString();
 		let content = md.render(raw);
-		content = content.replace(/vscode-resource:\//gi, "").replace(/:/gi, "COLON");
+		content = content.replace(/vscode-resource:\/([A-Za-z]):)/g, "$1COLON").replace(/vscode-resource:/g, "");
 		let result = `<!DOCTYPE html><html><head><title>${fsPath}</title>
     <meta charset="utf-8"/>
     <style>
