@@ -150,9 +150,15 @@ async function getRenderedSourceCode(): Promise<string> {
 	}
 	if (printConfig.renderMarkdown && fsPath.toLowerCase().split('.').pop() === "md") {
 		let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
-		let raw =fs.readFileSync(fsPath).toString();
+		let raw = fs.readFileSync(fsPath).toString();
 		let content = md.render(raw);
-		content = content.replace(/vscode-resource:\/([A-Za-z]):)/g, "$1COLON").replace(/vscode-resource:/g, "");
+		try {
+			content = content.replace(/vscode-resource:\/([A-Za-z]):/g, "$1COLON");
+			content = content.replace(/vscode-resource:/g, "");
+
+		} catch (error) {
+			debugger;
+		}
 		let result = `<!DOCTYPE html><html><head><title>${fsPath}</title>
     <meta charset="utf-8"/>
     <style>

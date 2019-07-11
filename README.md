@@ -34,6 +34,10 @@ Printing on Mac, Linux and Windows
 
 You'll need a web browser and access to a printer.
 
+This extension is tested with Windows 10 with current builds of Chrome, Edge and Firefox. 
+I can't test on a Mac because I don't own one. Likewise I don't have any systems running Windows XP, 7 or 8.
+If you use some other combination then report bugs with test documents and snaps of failed outcomes.
+
 ## Extension Settings
 
 VS Code Printing is highly configurable. Settings can be modified by going to Code > Preferences > Settings > Extensions > Printing.
@@ -49,6 +53,10 @@ Chrome remembers too much about printers, paper sizes and margins especially if 
 KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
+
+### 0.7.11
+
+- Issue 39 - correction to inappropriately scoped regular expression causing colons to be escaped in the entire document when they should be escaped only in URLs.
 
 ### 0.7.9
 
