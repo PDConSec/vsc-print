@@ -34,7 +34,7 @@ Impression sur Mac, Linux et Windows
 
 Vous aurez besoin d'un navigateur Web et d'un accès à une imprimante.
 
-Cette extension est testée avec Windows 10 avec les builds actuels de Chrome, Edge et Firefox. 
+Cette extension est testée avec Windows 10 avec les builds actuels de Chrome, Edge et Firefox.
 Je ne peux pas tester sur un Mac parce que je n'en possède pas. De même, je n'ai pas de systèmes fonctionnant sous Windows XP, 7 ou 8. Si vous utilisez une autre combinaison, signalez les bogues avec des documents de test et des photos de résultats échoués.
 
 ## Paramètres d'extension
@@ -53,6 +53,11 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.7.12
+
+- Problème 40 - empêcher l'extension de double fichier produisant une exception non gérée dans le générateur de page de caler le serveur Web intégré résultant en une fenêtre de navigateur blanc vide pour une charge de page qui ne se termine pas.
+- Problème 41 - gérer les exceptions inattendues dans le générateur de pages en livrant la pile d'erreurs comme le contenu de la page, améliorant ainsi considérablement les informations diagnostiques dans les questions.
+
 ### 0.7.11
 
 - Problème 39 - correction à l'expression régulière mal étendue causant des colons d'être échappé dans le document entier quand ils devraient être échappés seulement dans les URL.
@@ -61,7 +66,7 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 - Problème 36 - le pipeline de rendu interne réécrivait des URL pour utiliser un protocole interne vscode. En effet, les références d'image ont fonctionné correctement avec la fenêtre de prévisualisation, mais pas avec le navigateur.
 
-### 0.7.8 
+### 0.7.8
 
 - Problème 35 - chemin de cache de stylesheet incorrectement construit sur les systèmes de fichiers non Windows. Ceci a été corrigé.
 

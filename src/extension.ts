@@ -43,8 +43,12 @@ export function activate(context: vscode.ExtensionContext) {
 			if (f) {
 				let p = f[0].fsPath.replace(/\\/g, "/");
 				let lastSlashPosition = p.lastIndexOf("/");
+				let extensionSeparatorPosition = p.lastIndexOf(".");
+				if (extensionSeparatorPosition === -1) {
+					extensionSeparatorPosition = p.length;
+				}
 				var path = p.substring(0, lastSlashPosition);
-				var fileName = p.substring(lastSlashPosition + 1);
+				var fileName = p.substring(lastSlashPosition + 1, extensionSeparatorPosition);
 				try {
 					vscode.workspace.getConfiguration().update("print.colourScheme", fileName, vscode.ConfigurationTarget.Global).then(() => {
 						if (path !== styleCachePath) {
@@ -228,24 +232,25 @@ function startWebserver(): Promise<void> {
 		if (!server) {
 			// prepare to service an http request
 			server = http.createServer(async (request, response) => {
-				if (request.url) {
-					if (request.url === "/") {
-						response.setHeader("Content-Type", "text/html");
-						response.end(await getRenderedSourceCode());
-					} else {
-						try {
-							let filePath: string = request.url.substr(1).replace(/COLON/g, ":");
+				try {
+					if (request.url) {
+						if (request.url === "/") {
+							response.setHeader("Content-Type", "text/html");
+							response.end(await getRenderedSourceCode());
+						} else {
+							let filePath: string = request.url.substr(1).replace(/COLON)/g, ":");
 							let cb = fs.statSync(filePath).size;
 							let lastdotpos = request.url.lastIndexOf('.');
 							let fileExt = request.url.substr(lastdotpos + 1);
 							response.setHeader("Content-Type", `image/${fileExt}`);
 							response.setHeader("Content-Length", cb);
 							fs.createReadStream(filePath).pipe(response);
-						} catch {
-							//fail
-							response.end();
 						}
 					}
+				} catch (error) {
+					response.setHeader("Content-Type", "text/plain");
+					//let errorPage = `<pre>${error.stack}</pre>`;
+					response.end(error.stack);
 				}
 			});
 			// report exceptions
