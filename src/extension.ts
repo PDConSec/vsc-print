@@ -143,7 +143,7 @@ table {
 
 async function getRenderedSourceCode(): Promise<string> {
 	let printConfig = vscode.workspace.getConfiguration("print", null);
-	let printAndClose = printConfig.printAndClose ? " onload = \"window.print();window.close();\"" : "";
+	let printAndClose = printConfig.printAndClose ? " onload = \"window.print();\" onafterprint=\"window.close();\"" : "";
 	let fsPath: string;
 	fsPath = "NOT SET";
 	if (commandArgs) {
