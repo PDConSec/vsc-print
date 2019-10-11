@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "VS Code Printing Free",
 	"description": "Syntax-coloured line-numbered printing in VS Code.",
-	"version": "0.7.12",
+	"version": "0.7.13",
 	"icon": "PDCONSEC-zipper-PRINTER2.png",
 	"author": {
 		"name": "Peter Wone",
@@ -182,26 +182,26 @@
 		"test": "npm run compile && node ./node_modules/vscode/bin/test"
 	},
 	"devDependencies": {
-		"@types/mocha": "^5.2.6",
-		"@types/node": "^11.13.4",
-		"del": "^4.1.1",
+		"@types/mocha": "^5.2.7",
+		"@types/node": "^12.7.12",
+		"del": "^5.1.0",
 		"event-stream": "^4.0.1",
 		"gulp": "^4.0.2",
-		"gulp-filter": "^5.1.0",
+		"gulp-filter": "^6.0.0",
 		"gulp-sourcemaps": "^2.6.5",
 		"gulp-typescript": "^5.0.1",
 		"run-sequence": "^2.2.1",
-		"tslint": "^5.12.1",
-		"typescript": "^3.5.1",
-		"vsce": "^1.61.0",
-		"vscode-nls-dev": "^3.2.6",
-		"vscode": "^1.1.33"
+		"tslint": "^5.20.0",
+		"typescript": "^3.6.4",
+		"vsce": "^1.67.1",
+		"vscode-nls-dev": "^3.3.1",
+		"vscode": "^1.1.36"
 	},
 	"dependencies": {
 		"@types/highlight.js": "^9.12.3",
-		"@types/markdown-it": "0.0.7",
-		"highlight.js": "^9.14.2",
-		"portfinder": "^1.0.20",
-		"vscode-nls": "^3.2.5"
+		"@types/markdown-it": "0.0.9",
+		"highlight.js": "^9.15.10",
+		"portfinder": "^1.0.24",
+		"vscode-nls": "^4.1.1"
 	}
 }

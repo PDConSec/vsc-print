@@ -53,6 +53,11 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.7.13
+
+- Problème 48 - corriger MD problème de chemin d'image.
+- Mettre à jour les dépendances pour traiter les vulnérabilités connues.
+
 ### 0.7.12
 
 - Problème 40 - empêcher l'extension de double fichier produisant une exception non gérée dans le générateur de page de caler le serveur Web intégré résultant en une fenêtre de navigateur blanc vide pour une charge de page qui ne se termine pas.

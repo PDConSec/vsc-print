@@ -238,7 +238,7 @@ function startWebserver(): Promise<void> {
 							response.setHeader("Content-Type", "text/html");
 							response.end(await getRenderedSourceCode());
 						} else {
-							let filePath: string = request.url.substr(1).replace(/COLON)/g, ":");
+							let filePath: string = request.url.substr(1).replace(/COLON/g, ":");
 							let cb = fs.statSync(filePath).size;
 							let lastdotpos = request.url.lastIndexOf('.');
 							let fileExt = request.url.substr(lastdotpos + 1);

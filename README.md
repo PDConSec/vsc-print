@@ -54,6 +54,11 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.7.13
+
+- Problem 48 - fix MD image path glitch.
+- Update dependencies to address known vulnerabilities.
+
 ### 0.7.12
 
 - Issue 40 - prevent double file extension producing an unhandled exception in the page generator stalling the embedded webserver resulting in an empty white browser window for a page load that does not complete.
