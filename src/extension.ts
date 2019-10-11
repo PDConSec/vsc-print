@@ -236,9 +236,10 @@ function startWebserver(): Promise<void> {
 					if (request.url) {
 						if (request.url === "/") {
 							response.setHeader("Content-Type", "text/html");
-							response.end(await getRenderedSourceCode());
+							let html = await getRenderedSourceCode();
+							response.end(html);
 						} else {
-							let filePath: string = request.url.substr(1).replace(/COLON)/g, ":");
+							let filePath: string = request.url.substr(1).replace(/COLON/g, ":");
 							let cb = fs.statSync(filePath).size;
 							let lastdotpos = request.url.lastIndexOf('.');
 							let fileExt = request.url.substr(lastdotpos + 1);
