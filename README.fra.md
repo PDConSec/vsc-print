@@ -49,9 +49,14 @@ Rendre la tabulation imprimée respecter le paramètre de taille de tabulation d
 
 Chrome se souvient trop des imprimantes, de la taille du papier et des marges, surtout si vous avorez.
 
-KaTeX nécessite une connexion Internet. Vous devez également configurer une référence d'une feuille de style. Les détails sont dans le manuel.
+KaTeX nécessite une connexion Internet. Vous devez également configurer une référence d'une feuille de style. Les détails sont au manuel.
 
 ## Notes de version
+
+### 0.7.14
+
+- Problème 51 - ajouter configuration à l’appui de WSL, courtoisie de [sburlap] (https://github.com/sburlappp)
+- Problème 54 - respecter la police de caractères de l’éditeur lors de l’impression de code
 
 ### 0.7.13
 

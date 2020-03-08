@@ -54,7 +54,9 @@ export function activate(context: vscode.ExtensionContext) {
 						if (path !== styleCachePath) {
 							let newCachePath = `${styleCachePath}/${fileName}`;
 							fs.copyFile(p, newCachePath, err => {
-								vscode.window.showErrorMessage(err.message);
+								if (err) {
+									vscode.window.showErrorMessage(err.message);
+								}
 							});
 						}
 					}, (err) => {
@@ -215,7 +217,7 @@ async function getRenderedSourceCode(): Promise<string> {
 			;
 	}
 	let editorConfig = vscode.workspace.getConfiguration("editor", null);
-	let html = `<html><head><title>${fsPath}</title><meta charset="utf-8"/><style>body{margin:0;padding:0;tab-size:${editorConfig.tabSize}}\n${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs { max-width:100%; width:100%; font-family: Consolas, monospace; font-size: ${printConfig.fontSize}; }\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
+	let html = `<html><head><title>${fsPath}</title><meta charset="utf-8"/><style>body{margin:0;padding:0;tab-size:${editorConfig.tabSize}}\n${defaultCss}\r${swatchCss}\n${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}\n.hljs { max-width:100%; width:100%; font-family: "${editorConfig.fontFamily}", monospace; font-size: ${printConfig.fontSize}; }\n</style></head><body${printAndClose}><table class="hljs">${renderedCode}</table></body></html>`;
 	return html;
 }
 

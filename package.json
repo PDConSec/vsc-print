@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "VS Code Printing Free",
 	"description": "Syntax-coloured line-numbered printing in VS Code.",
-	"version": "0.7.13",
+	"version": "0.7.14",
 	"icon": "PDCONSEC-zipper-PRINTER2.png",
 	"author": {
 		"name": "Peter Wone",
@@ -24,7 +24,6 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"markdown.markdownItPlugins": true,
 		"commands": [
 			{
 				"category": "%commands.category%",
@@ -138,6 +137,7 @@
 				}
 			}
 		],
+		"markdown.markdownItPlugins": true,
 		"menus": {
 			"explorer/context": [
 				{
@@ -172,6 +172,9 @@
 					"group": "Z_commands"
 				}
 			]
+		},
+		"remote.extensionKind": {
+			"pdconsec.vscode-print": ["ui"]
 		}
 	},
 	"scripts": {

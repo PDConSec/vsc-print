@@ -54,9 +54,14 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.7.14
+
+- Issue 51 - add configuration in support of WSL, courtesy of [sburlap](https://github.com/sburlappp)
+- Issue 54 - respect editor font when printing code
+
 ### 0.7.13
 
-- Problem 48 - fix MD image path glitch.
+- Issue 48 - fix MD image path glitch.
 - Update dependencies to address known vulnerabilities.
 
 ### 0.7.12
