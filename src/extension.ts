@@ -15,6 +15,7 @@ const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start
 export function activate(context: vscode.ExtensionContext) {
 	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition;
 	vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
+    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
 	let disposable = vscode.commands.registerCommand("extension.print", async (cmdArgs: any) => {
 		commandArgs = cmdArgs;
 		let editor = vscode.window.activeTextEditor;
@@ -70,6 +71,16 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(disposable);
 	return { extendMarkdownIt(mdparam: any) { return md = mdparam; } };
+}
+
+const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
+    if(e.affectsConfiguration('print.editorContextMenuItemPosition'))
+    {
+        vscode.commands.executeCommand(
+            "setContext", "ecmPrint", 
+            vscode.workspace.getConfiguration("print", null)
+                            .get('editorContextMenuItemPosition') );
+    }
 }
 
 async function getPort(): Promise<number> {
