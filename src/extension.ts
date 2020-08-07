@@ -13,8 +13,10 @@ var commandArgs: any;
 var selection: vscode.Selection | undefined;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 export function activate(context: vscode.ExtensionContext) {
-	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition;
+	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
+        etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton;
 	vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
+	vscode.commands.executeCommand("setContext", "etmButton", etmButton);
     context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
 	let disposable = vscode.commands.registerCommand("extension.print", async (cmdArgs: any) => {
 		commandArgs = cmdArgs;
@@ -79,6 +81,12 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
             "setContext", "ecmPrint", 
             vscode.workspace.getConfiguration("print", null)
                             .get('editorContextMenuItemPosition') );
+    }
+    if(e.affectsConfiguration('print.editorTitleMenuButton')) {
+        vscode.commands.executeCommand(
+            "setContext", "etmButton", 
+            vscode.workspace.getConfiguration("print", null)
+                            .get<boolean>('editorTitleMenuButton') );
     }
 }
 
