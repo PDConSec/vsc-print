@@ -103,7 +103,7 @@
 						"description": "%print.browserPath.description%"
 					},
 					"print.colourScheme": {
-						"title": "I'm calling this a potato",
+						"title": "%print.colourScheme.title%",
 						"type": "string",
 						"default": "vs2015",
 						"markdownDescription": "%print.colourScheme.markdownDescription%"
