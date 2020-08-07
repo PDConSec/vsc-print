@@ -31,6 +31,7 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.dynamicPortMax` : the upper bound of the range in which the embedded webserver will choose ports
 * `print.dynamicPortMin` : the lower bound of the range in which the embedded webserver will choose ports
 * `print.editorContextMenuItemPosition` : the position of `Print` in the editor context menu
+* `print.editorTitleMenuButton` : show print button in the editor title menu
 * `print.fontSize` : the font size (options from 9 to 13 pt)
 * `print.formatMarkdown` : render markdown as styled HTML when printing
 * `print.lineNumbers` : on, off or inherit (do same as editor)
