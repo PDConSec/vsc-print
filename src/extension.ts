@@ -74,8 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
-    if(e.affectsConfiguration('print.editorContextMenuItemPosition'))
-    {
+    if(e.affectsConfiguration('print.editorContextMenuItemPosition')) {
         vscode.commands.executeCommand(
             "setContext", "ecmPrint", 
             vscode.workspace.getConfiguration("print", null)
