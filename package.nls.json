@@ -29,6 +29,8 @@
 	"print.editorContextMenuItemPosition.title": "Editor context-menu position",
 	"print.editorContextMenuItemPosition.markdownDescription": "The position of `Print` in the editor context menu",
 
+  "print.editorTitleMenuButton.description": "Show print button in the editor title menu",
+
 	"print.dynamicPortMax.title": "Maximum dynamic port",
 	"print.dynamicPortMax.description": "End of the range in which a free port will be sought",
 

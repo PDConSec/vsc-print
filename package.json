@@ -103,7 +103,7 @@
 						"description": "%print.browserPath.description%"
 					},
 					"print.colourScheme": {
-						"title": "I'm calling this a potato",
+						"title": "%print.colourScheme.title%",
 						"type": "string",
 						"default": "vs2015",
 						"markdownDescription": "%print.colourScheme.markdownDescription%"
@@ -122,6 +122,11 @@
 							"Bottom",
 							"None"
 						]
+					},
+					"print.editorTitleMenuButton": {
+						"default": true,
+						"type": "boolean",
+            "description": "%print.editorTitleMenuButton.description%"
 					},
 					"print.dynamicPortMin": {
 						"title": "dynoportmin",
@@ -148,7 +153,7 @@
 			],
 			"editor/title": [
 				{
-					"when": "editorLangId",
+					"when": "editorLangId && etmButton",
 					"command": "extension.print",
 					"group": "navigation"
 				}
