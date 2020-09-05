@@ -53,6 +53,10 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.7.15
+
+- Problème 64 - images locales ont été brisées parce que Microsoft a modifié VS Code. Le rendu de balisage ne réécrit plus les références de ressources aux chemins de fichiers préfixés, ils sont maintenant passés par inchangé. L’extension gère désormais le mappage au système de fichiers.
+
 ### 0.7.14
 
 - Problème 51 - ajouter configuration à l’appui de WSL, courtoisie de [sburlap] (https://github.com/sburlappp)

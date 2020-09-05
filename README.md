@@ -54,6 +54,10 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.7.15
+
+- Issue 64 - local images were broken because Microsoft changed VS Code. Markdown rendering no longer rewrites resource references to prefixed filepaths, they are now passed through unchanged. The extension now handles mapping to the filesystem.
+
 ### 0.7.14
 
 - Issue 51 - add configuration in support of WSL, courtesy of [sburlap](https://github.com/sburlappp)

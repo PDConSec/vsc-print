@@ -1,210 +1,212 @@
 {
-	"name": "vscode-print",
-	"displayName": "VS Code Printing Free",
-	"description": "Syntax-coloured line-numbered printing in VS Code.",
-	"version": "0.7.14",
-	"icon": "PDCONSEC-zipper-PRINTER2.png",
-	"author": {
-		"name": "Peter Wone",
-		"email": "peter.wone@outlook.com"
-	},
-	"publisher": "pdconsec",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/PeterWone/vsc-print"
-	},
-	"engines": {
-		"vscode": "^1.20.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"activationEvents": [
-		"*"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"category": "%commands.category%",
-				"command": "extension.print",
-				"title": "%commands.title.print%",
-				"icon": {
-					"dark": "./printer-icon-dog-ear-inverse.svg",
-					"light": "./printer-icon-dog-ear.svg"
-				}
-			},
-			{
-				"category": "%commands.category%",
-				"command": "extension.browse",
-				"title": "%commands.title.browse%"
-			}
-		],
-		"configuration": [
-			{
-				"title": "%configuration.title.print%",
-				"properties": {
-					"print.announcePortAcquisition": {
-						"type": "boolean",
-						"default": false,
-						"markdownDescription": "%print.announcePortAcquisition.description%"
-					},
-					"print.lineSpacing": {
-						"type": "number",
-						"enum": [
-							1,
-							1.5,
-							2
-						],
-						"enumDescriptions": [
-							"%print.lineSpacing.single%",
-							"%print.lineSpacing.line-and-a-half%",
-							"%print.lineSpacing.double%"
-						],
-						"description": "%print.lineSpacing.description%",
-						"default": 1
-					},
-					"print.fontSize": {
-						"title": "%print.fontSize.title%",
-						"type": "string",
-						"enum": [
-							"9pt",
-							"10pt",
-							"11pt",
-							"11.5pt",
-							"12pt",
-							"13pt"
-						],
-						"description": "%print.fontSize.description%",
-						"default": "10pt"
-					},
-					"print.renderMarkdown": {
-						"type": "boolean",
-						"default": true,
-						"description": "%print.renderMarkdown.description%"
-					},
-					"print.lineNumbers": {
-						"type": "string",
-						"description": "%print.lineNumbers.description%",
-						"enum": [
-							"on",
-							"off",
-							"inherit"
-						],
-						"default": "inherit"
-					},
-					"print.alternateBrowser": {
-						"type": "boolean",
-						"description": "%print.alternateBrowser.description%",
-						"default": true
-					},
-					"print.browserPath": {
-						"type": "string",
-						"description": "%print.browserPath.description%"
-					},
-					"print.colourScheme": {
-						"title": "I'm calling this a potato",
-						"type": "string",
-						"default": "vs2015",
-						"markdownDescription": "%print.colourScheme.markdownDescription%"
-					},
-					"print.printAndClose": {
-						"type": "boolean",
-						"default": true,
-						"description": "%print.printAndClose.description%"
-					},
-					"print.editorContextMenuItemPosition": {
-						"default": "Top",
-						"type": "string",
-						"markdownDescription": "%print.editorContextMenuItemPosition.markdownDescription%",
-						"enum": [
-							"Top",
-							"Bottom",
-							"None"
-						]
-					},
-					"print.dynamicPortMin": {
-						"title": "dynoportmin",
-						"type": "integer",
-						"default": 49203,
-						"description": "%print.dynamicPortMin.description%"
-					},
-					"print.dynamicPortMax": {
-						"type": "integer",
-						"default": 65535,
-						"description": "%print.dynamicPortMax.description%"
-					}
-				}
-			}
-		],
-		"markdown.markdownItPlugins": true,
-		"menus": {
-			"explorer/context": [
-				{
-					"when": "editorLangId",
-					"command": "extension.print",
-					"group": "navigation"
-				}
-			],
-			"editor/title": [
-				{
-					"when": "editorLangId",
-					"command": "extension.print",
-					"group": "navigation"
-				}
-			],
-			"editor/title/context": [
-				{
-					"when": "editorLangId",
-					"command": "extension.print",
-					"group": "navigation"
-				}
-			],
-			"editor/context": [
-				{
-					"when": "editorLangId && ecmPrint == Top",
-					"command": "extension.print",
-					"group": "navigation"
-				},
-				{
-					"when": "editorLangId && ecmPrint == Bottom",
-					"command": "extension.print",
-					"group": "Z_commands"
-				}
-			]
-		},
-		"remote.extensionKind": {
-			"pdconsec.vscode-print": ["ui"]
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "npm run compile && node ./node_modules/vscode/bin/test"
-	},
-	"devDependencies": {
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^12.7.12",
-		"del": "^5.1.0",
-		"event-stream": "^4.0.1",
-		"gulp": "^4.0.2",
-		"gulp-filter": "^6.0.0",
-		"gulp-sourcemaps": "^2.6.5",
-		"gulp-typescript": "^5.0.1",
-		"run-sequence": "^2.2.1",
-		"tslint": "^5.20.0",
-		"typescript": "^3.6.4",
-		"vsce": "^1.67.1",
-		"vscode-nls-dev": "^3.3.1",
-		"vscode": "^1.1.36"
-	},
-	"dependencies": {
-		"@types/highlight.js": "^9.12.3",
-		"@types/markdown-it": "0.0.9",
-		"highlight.js": "^9.15.10",
-		"portfinder": "^1.0.24",
-		"vscode-nls": "^4.1.1"
-	}
+  "name": "vscode-print",
+  "displayName": "VS Code Printing Free",
+  "description": "Syntax-coloured line-numbered printing in VS Code.",
+  "version": "0.7.15",
+  "icon": "PDCONSEC-zipper-PRINTER2.png",
+  "author": {
+    "name": "Peter Wone",
+    "email": "peter.wone@outlook.com"
+  },
+  "publisher": "pdconsec",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PeterWone/vsc-print"
+  },
+  "engines": {
+    "vscode": "^1.20.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "category": "%commands.category%",
+        "command": "extension.print",
+        "title": "%commands.title.print%",
+        "icon": {
+          "dark": "./printer-icon-dog-ear-inverse.svg",
+          "light": "./printer-icon-dog-ear.svg"
+        }
+      },
+      {
+        "category": "%commands.category%",
+        "command": "extension.browse",
+        "title": "%commands.title.browse%"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "%configuration.title.print%",
+        "properties": {
+          "print.announcePortAcquisition": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "%print.announcePortAcquisition.description%"
+          },
+          "print.lineSpacing": {
+            "type": "number",
+            "enum": [
+              1,
+              1.5,
+              2
+            ],
+            "enumDescriptions": [
+              "%print.lineSpacing.single%",
+              "%print.lineSpacing.line-and-a-half%",
+              "%print.lineSpacing.double%"
+            ],
+            "description": "%print.lineSpacing.description%",
+            "default": 1
+          },
+          "print.fontSize": {
+            "title": "%print.fontSize.title%",
+            "type": "string",
+            "enum": [
+              "9pt",
+              "10pt",
+              "11pt",
+              "11.5pt",
+              "12pt",
+              "13pt"
+            ],
+            "description": "%print.fontSize.description%",
+            "default": "10pt"
+          },
+          "print.renderMarkdown": {
+            "type": "boolean",
+            "default": true,
+            "description": "%print.renderMarkdown.description%"
+          },
+          "print.lineNumbers": {
+            "type": "string",
+            "description": "%print.lineNumbers.description%",
+            "enum": [
+              "on",
+              "off",
+              "inherit"
+            ],
+            "default": "inherit"
+          },
+          "print.alternateBrowser": {
+            "type": "boolean",
+            "description": "%print.alternateBrowser.description%",
+            "default": true
+          },
+          "print.browserPath": {
+            "type": "string",
+            "description": "%print.browserPath.description%"
+          },
+          "print.colourScheme": {
+            "title": "I'm calling this a potato",
+            "type": "string",
+            "default": "vs2015",
+            "markdownDescription": "%print.colourScheme.markdownDescription%"
+          },
+          "print.printAndClose": {
+            "type": "boolean",
+            "default": true,
+            "description": "%print.printAndClose.description%"
+          },
+          "print.editorContextMenuItemPosition": {
+            "default": "Top",
+            "type": "string",
+            "markdownDescription": "%print.editorContextMenuItemPosition.markdownDescription%",
+            "enum": [
+              "Top",
+              "Bottom",
+              "None"
+            ]
+          },
+          "print.dynamicPortMin": {
+            "title": "dynoportmin",
+            "type": "integer",
+            "default": 49203,
+            "description": "%print.dynamicPortMin.description%"
+          },
+          "print.dynamicPortMax": {
+            "type": "integer",
+            "default": 65535,
+            "description": "%print.dynamicPortMax.description%"
+          }
+        }
+      }
+    ],
+    "markdown.markdownItPlugins": true,
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "editorLangId",
+          "command": "extension.print",
+          "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "editorLangId",
+          "command": "extension.print",
+          "group": "navigation"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "when": "editorLangId",
+          "command": "extension.print",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "editorLangId && ecmPrint == Top",
+          "command": "extension.print",
+          "group": "navigation"
+        },
+        {
+          "when": "editorLangId && ecmPrint == Bottom",
+          "command": "extension.print",
+          "group": "Z_commands"
+        }
+      ]
+    },
+    "remote.extensionKind": {
+      "pdconsec.vscode-print": [
+        "ui"
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.12",
+    "del": "^5.1.0",
+    "event-stream": "^4.0.1",
+    "gulp": "^4.0.2",
+    "gulp-filter": "^6.0.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-typescript": "^5.0.1",
+    "run-sequence": "^2.2.1",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.4",
+    "vsce": "^1.67.1",
+    "vscode-nls-dev": "^3.3.1",
+    "vscode": "^1.1.36"
+  },
+  "dependencies": {
+    "@types/highlight.js": "^9.12.3",
+    "@types/markdown-it": "0.0.9",
+    "highlight.js": "^9.15.10",
+    "portfinder": "^1.0.24",
+    "vscode-nls": "^4.1.1"
+  }
 }

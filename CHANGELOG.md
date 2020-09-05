@@ -3,6 +3,10 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.7.15
+
+- Issue 64 - local images were broken because Microsoft changed VS Code. Markdown rendering no longer rewrites resource references to prefixed filepaths, they are now passed through unchanged. The extension now handles mapping to the filesystem.
+
 ### 0.7.14
 
 - Issue 51 - support for WSL courtesy of [sburlap](https://github.com/sburlappp)
