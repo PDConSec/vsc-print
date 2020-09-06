@@ -1,7 +1,7 @@
 # Regexes for parsing resource names
 
 ## Resources
-https://regex101.com/
+https://regex101.com/r/LAqRCb/1
 
 ### Test HTML
 ```HTML
