@@ -34,6 +34,7 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.formatMarkdown` : render markdown as styled HTML when printing
 * `print.lineNumbers` : on, off or inherit (do same as editor)
 * `print.lineSpacing` : single, line-and-a-half or double spaced
+* `print.printAndClose` : après l'impression, fermez le navigateur.
 
 ### Choosing the font face
 

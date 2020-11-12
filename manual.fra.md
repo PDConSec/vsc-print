@@ -24,18 +24,17 @@ Pour imprimer un fichier autre que le document actif, trouvez-le dans le volet E
 
 Cette extension comporte les paramètres suivants, qui peuvent être modifiés en allant dans le code Préférences > Paramètres > Extensions > Impression:
 
-* `imprimer.navigateurAlternatif` : activer/désactiver un navigateur alternatif
-* `imprimer.annoncerLAcquisitionDuPort` : faites en sorte que le serveur web intégré vous dise quel port il utilise
-* `imprimer.cheminDeStockageDuNavigateur` : le chemin (path) vers un navigateur web
-* `imprimer.couleurs` : la feuille de style utilisée pour colorier la syntaxe
-* `imprimer.portDynamiqueMax` : la limite supérieure de la plage dans laquelle le serveur web intégré choisira les ports
-* `imprimer.portDynamiqueMin` : la limite inférieure de la plage dans laquelle le serveur web intégré choisira les ports
-* `imprimer.positionAuMenuDuContextuelDeLEditeur` : la position de la commande `Imprimer` au menu contextuel de l'éditeur
-* `imprimer.imprimerPuisFermer` : après l'impression, fermez le navigateur.
-* `imprimer.tailleDeLettrage` : la taille de lettrage (options de 9 à 13 pt)
-* `imprimer.rendreLeMarkdown` : rendre le markdown comme HTML stylé lors de l'impression
-* `imprimer.numérotage` : on, off ou inherit (faire la même chose que l'éditeur)
-* `imprimer.espacementDesLignes` : simple, ligne et demie ou double espacement
+* `print.alternateBrowser` : activer/désactiver un navigateur alternatif
+* `print.announcePortAcquisition` : faites en sorte que le serveur web intégré vous dise quel port il utilise
+* `print.browserPath` : le chemin (path) vers un navigateur web
+* `print.colourScheme` : la feuille de style utilisée pour colorier la syntaxe
+* `print.editorContextMenuItemPosition` : la position de la commande `Imprimer` au menu contextuel de l'éditeur
+* `print.editorTitleMenuButton` : afficher le bouton Imprimer dans le menu titre de l’éditeur
+* `print.fontSize` : la taille de lettrage (options de 6 à 13 pt)
+* `print.formatMarkdown` : rendre le markdown comme HTML stylé lors de l'impression
+* `print.lineNumbers` : on, off ou inherit (faire la même chose que l'éditeur)
+* `print.lineSpacing` : simple, ligne et demie ou double espacement
+* `print.printAndClose` : après l'impression, fermez le navigateur.
 
 ### Choix de caractère
 
