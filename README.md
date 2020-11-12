@@ -46,13 +46,16 @@ VS Code Printing is highly configurable. Settings can be modified by going to Co
 
 ## Known Issues
 
-Making printed tabs respect the editor tab size setting depends on the experimental CSS `tab-size` property. This doesn't work on Edge Classic. When Edge starts using the Chromium engine the problem will go away.
+Making printed tabs respect the editor tab size setting depends on the experimental CSS `tab-size` property. This doesn't work on Edge Classic. 
 
 Chrome remembers too much about printers, paper sizes and margins especially if you abort.
 
 KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
+
+### 0.8.1
+- Because the host operating system now chooses the port for the embedded webserver, the webserver is created on first use and retained until the extension deactivates, so that the port allocation does not change. Code to decommissione the webserver after processing a request was not removed in 0.8.0 and is removed in 0.8.1 removing the risk of an unexpected change of port.
 
 ### 0.8.0
 - Various issues describing high CPU use at extension startup are resolved by use of Webpack. 

@@ -45,7 +45,7 @@ L'impression de code VS est hautement configurable. Les paramètres peuvent êtr
 
 ## Problèmes connus
 
-Rendre la tabulation imprimée respecter le paramètre de taille de tabulation de l'éditeur dépend de la propriété expérimentale `tab-size` CSS. Cela ne fonctionne pas sur Edge. Lorsque Edge commence à utiliser pour son coeur «Chromium», le problème disparaît.
+Rendre la tabulation imprimée respecter le paramètre de taille de tabulation de l'éditeur dépend de la propriété expérimentale `tab-size` CSS. Cela ne fonctionne pas sur Edge Classique. 
 
 Chrome se souvient trop des imprimantes, de la taille du papier et des marges, surtout si vous avorez.
 
@@ -53,7 +53,12 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.8.1
+
+- Étant donné que le système d’exploitation hôte choisit désormais le port du serveur web intégré, le serveur web est créé lors de la première utilisation et conservé jusqu’à ce que l’extension se désactive, de sorte que l’allocation de port ne change pas. Code pour déclasser le serveur Web après le traitement d’une demande n’a pas été supprimé dans 0.8.0 et est supprimé dans 0.8.1 supprimant le risque d’un changement inattendu de port.
+
 ### 0.8.0
+
 - Divers rapports de problème décrivant l’utilisation élevée de processeur au démarrage d’extension sont résolus par l’utilisation de Webpack. 
 - La sélection de port pour le serveur web intégré est maintenant entièrement déléguée au système d’exploitation hôte. Par conséquent, les paramètres de plage de sélection de ports ne sont plus nécessaires et ont été supprimés.
 - Ne plus dépendre du paquet npm portfinder.

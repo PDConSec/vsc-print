@@ -271,10 +271,6 @@ function startWebserver(): Promise<void> {
         }
       }
     });
-    // clean up after one request
-    server.on("request", (request: any, response: any) => {
-      response.on("finish", () => request.socket.destroy());
-    });
     server.on("listening", () => {
       port = (server!.address() as AddressInfo).port;
       resolve();

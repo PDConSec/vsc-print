@@ -3,6 +3,10 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.8.1
+
+- Because the host operating system now chooses the port for the embedded webserver, the webserver is created on first use and retained until the extension deactivates, so that the port allocation does not change. Code to decommissione the webserver after processing a request was not removed in 0.8.0 and is removed in 0.8.1 removing the risk of an unexpected change of port.
+
 ### 0.8.0
 
 - Various issues describing high CPU use at extension startup are resolved by use of Webpack. 
