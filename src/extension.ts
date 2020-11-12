@@ -1,13 +1,10 @@
 import * as vscode from 'vscode';
 import * as hljs from "highlight.js";
-import { readFileSync, writeFileSync } from 'fs';
 import * as http from "http";
 import * as child_process from "child_process";
 import * as fs from "fs";
-import portfinder = require("portfinder");
-import * as nls from 'vscode-nls';
+import { AddressInfo } from 'net';
 
-const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
 var md: any;
 var commandArgs: any;
 var selection: vscode.Selection | undefined;
@@ -88,21 +85,12 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
       vscode.workspace.getConfiguration("print", null)
         .get<boolean>('editorTitleMenuButton'));
   }
-}
-
-async function getPort(): Promise<number> {
-  let printConfig = vscode.workspace.getConfiguration("print", null);
-  portfinder.basePort = printConfig.dynamicPortMin;
-  return portfinder.getPortPromise({
-    startPort: printConfig.dynamicPortMin,
-    stopPort: printConfig.dynamicPortMax
-  });
-}
+};
 
 function getFileText(fname: string): string {
   // vscode.window.showInformationMessage(`vsc-print get ${fname}`);
 
-  var text = readFileSync(fname).toString();
+  var text = fs.readFileSync(fname).toString();
   // strip BOM when present
   // vscode.window.showInformationMessage(`vsc-print got ${fname}`);
   return text.indexOf('\uFEFF') === 0 ? text.substring(1, text.length) : text;
@@ -183,7 +171,7 @@ async function getRenderedSourceCode(): Promise<string> {
       let c = b.replace(/([a-z]):/i, "$1C/O/L/O/N"); // escape colon on Windows
       content = content.replace(/(img src=")(?!http[s]?)(?![a-z]:)([^"]+)/gi, `$1${c}/$2`);
       // 2 - escape colon in embedded file paths
-      content = content.replace(/(img src="[a-z]):([^"]*)/gi, `$1C/O/L/O/N/$2`)
+      content = content.replace(/(img src="[a-z]):([^"]*)/gi, `$1C/O/L/O/N/$2`);
     } catch (error) {
       debugger;
     }
@@ -248,64 +236,54 @@ var port: number;
 
 function startWebserver(): Promise<void> {
   return new Promise(async (resolve, reject) => {
-    // clean up unexpected stragglers
-    if (server) {
-      server.close();
-      server = undefined;
-    }
-    if (!server) {
-      // prepare to service an http request
-      server = http.createServer(async (request, response) => {
-        try {
-          if (request.url) {
-            if (request.url === "/") {
-              response.setHeader("Content-Type", "text/html");
-              let html = await getRenderedSourceCode();
-              response.end(html);
-            } else {
-              let filePath: string = request.url.substr(1).replace(/C\/O\/L\/O\/N/g, ":");
-              let cb = fs.statSync(filePath).size;
-              let lastdotpos = request.url.lastIndexOf('.');
-              let fileExt = request.url.substr(lastdotpos + 1);
-              response.setHeader("Content-Type", `image/${fileExt}`);
-              response.setHeader("Content-Length", cb);
-              fs.createReadStream(filePath).pipe(response);
-            }
-          }
-        } catch (error) {
-          response.setHeader("Content-Type", "text/plain");
-          //let errorPage = `<pre>${error.stack}</pre>`;
-          response.end(error.stack);
-        }
-      });
-      // report exceptions
-      server.on("error", (err: any) => {
-        if (err) {
-          switch (err.code) {
-            case "EACCES":
-              vscode.window.showErrorMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
-              break;
-            default:
-              vscode.window.showErrorMessage(`UNEXPECTED ERROR: ${err.code}`);
+    // prepare to service an http request
+    server = http.createServer(async (request, response) => {
+      try {
+        if (request.url) {
+          if (request.url === "/") {
+            response.setHeader("Content-Type", "text/html");
+            let html = await getRenderedSourceCode();
+            response.end(html);
+          } else {
+            let filePath: string = request.url.substr(1).replace(/C\/O\/L\/O\/N/g, ":");
+            let cb = fs.statSync(filePath).size;
+            let lastdotpos = request.url.lastIndexOf('.');
+            let fileExt = request.url.substr(lastdotpos + 1);
+            response.setHeader("Content-Type", `image/${fileExt}`);
+            response.setHeader("Content-Length", cb);
+            fs.createReadStream(filePath).pipe(response);
           }
         }
-      });
-      // clean up after one request
-      server.on("request", (request: any, response: any) => {
-        response.on("finish", () => request.socket.destroy());
-      });
-      let printConfig = vscode.workspace.getConfiguration("print", null);
-      if (!port) {
-        port = await getPort();
-        if (printConfig.announcePortAcquisition) {
-          vscode.window.showInformationMessage(`Printing acquired port ${port}`);
+      } catch (error) {
+        response.setHeader("Content-Type", "text/plain");
+        response.end(error.stack);
+      }
+    });
+    // report exceptions
+    server.on("error", (err: any) => {
+      if (err) {
+        switch (err.code) {
+          case "EACCES":
+            vscode.window.showErrorMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
+            break;
+          default:
+            vscode.window.showErrorMessage(`UNEXPECTED ERROR: ${err.code}`);
         }
       }
-      server.listen(port);
+    });
+    // clean up after one request
+    server.on("request", (request: any, response: any) => {
+      response.on("finish", () => request.socket.destroy());
+    });
+    server.on("listening", () => {
+      port = (server!.address() as AddressInfo).port;
       resolve();
-    }
-    resolve();
+    });
+    let printConfig = vscode.workspace.getConfiguration("print", null);
+    server.listen();
   });
 }
 
-export function deactivate() { }
+export function deactivate() {
+  if (server) { server.close(); }
+}

@@ -36,7 +36,7 @@ You'll need a web browser and access to a printer.
 
 This extension is tested with Windows 10 with current builds of Chrome, Edge and Firefox.
 I can't test on a Mac because I don't own one. Likewise I don't have any systems running Windows XP, 7 or 8.
-If you use some other combination then report bugs with test documents and snaps of failed outcomes.
+If you use an untested combination then report bugs with test documents and snaps of failed outcomes.
 
 ## Extension Settings
 
@@ -46,13 +46,18 @@ VS Code Printing is highly configurable. Settings can be modified by going to Co
 
 ## Known Issues
 
-Making printed tabs respect the editor tab size setting depends on the experimental CSS `tab-size` property. This doesn't work on Edge. When Edge starts using the Chromium engine the problem will go away.
+Making printed tabs respect the editor tab size setting depends on the experimental CSS `tab-size` property. This doesn't work on Edge Classic. When Edge starts using the Chromium engine the problem will go away.
 
 Chrome remembers too much about printers, paper sizes and margins especially if you abort.
 
 KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
+
+### 0.8.0
+- Various issues describing high CPU use at extension startup are resolved by use of Webpack. 
+- Port selection for the embedded webserver is now fully delegated to the host operating system. As a result the port range settings are no longer necessary and have been removed.
+- No longer dependent on the portfinder package.
 
 ### 0.7.15
 

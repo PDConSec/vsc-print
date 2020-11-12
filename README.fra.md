@@ -53,6 +53,11 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.8.0
+- Divers rapports de problème décrivant l’utilisation élevée de processeur au démarrage d’extension sont résolus par l’utilisation de Webpack. 
+- La sélection de port pour le serveur web intégré est maintenant entièrement déléguée au système d’exploitation hôte. Par conséquent, les paramètres de plage de sélection de ports ne sont plus nécessaires et ont été supprimés.
+- Ne plus dépendre du paquet npm portfinder.
+
 ### 0.7.15
 
 - Problème 64 - images locales ont été brisées parce que Microsoft a modifié VS Code. Le rendu de balisage ne réécrit plus les références de ressources aux chemins de fichiers préfixés, ils sont maintenant passés par inchangé. L’extension gère désormais le mappage au système de fichiers.

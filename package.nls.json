@@ -1,49 +1,30 @@
 {
-	"configuration.title.print": "Printing",
-
-	"commands.category": "Printing",
-	"commands.title.print": "Print",
-	"commands.title.browse": "Browse for stylesheets",
-
-	"print.announcePortAcquisition.title": "Announce port acquisition",
-	"print.announcePortAcquisition.description": "Tell me what port the embedded web server acquires",
-
-	"print.renderMarkdown.title": "Render Markdown",
-	"print.renderMarkdown.description": "Render markdown as HTML when printing",
-
-	"print.lineNumbers.title": "print.lineNumbers",
-	"print.lineNumbers.description": "",
-
-	"print.alternateBrowser.title":"Alternate browser",
-	"print.alternateBrowser.description": "Use an alternate browser when printing",
-
-	"print.browserPath.title":"Browser path",
-	"print.browserPath.description":"Path to the executable of an alternate browser",
-
-	"print.colourScheme.title": "Colour scheme",
-	"print.colourScheme.markdownDescription": "Press `F1` then `Print: Browse for stylesheet` to choose a highlightjs compatible stylesheet. If you choose a file outside the stylesheet cache it will be copied to the cache. Paper is white so choose light themes for dark text.",
-
-	"print.printAndClose.title": "Close after printing",
-	"print.printAndClose.description": "Show the Print dialog when the browser is ready, and try to close the page after printing is done or cancelled",
-
-	"print.editorContextMenuItemPosition.title": "Editor context-menu position",
-	"print.editorContextMenuItemPosition.markdownDescription": "The position of `Print` in the editor context menu",
-
+  "configuration.title.print": "Printing",
+  "commands.category": "Printing",
+  "commands.title.print": "Print",
+  "commands.title.browse": "Browse for stylesheets",
+  "print.announcePortAcquisition.title": "Announce port acquisition",
+  "print.announcePortAcquisition.description": "Tell me what port the embedded web server acquires",
+  "print.renderMarkdown.title": "Render Markdown",
+  "print.renderMarkdown.description": "Render markdown as HTML when printing",
+  "print.lineNumbers.title": "print.lineNumbers",
+  "print.lineNumbers.description": "",
+  "print.alternateBrowser.title": "Alternate browser",
+  "print.alternateBrowser.description": "Use an alternate browser when printing",
+  "print.browserPath.title": "Browser path",
+  "print.browserPath.description": "Path to the executable of an alternate browser",
+  "print.colourScheme.title": "Colour scheme",
+  "print.colourScheme.markdownDescription": "Press `F1` then `Print: Browse for stylesheet` to choose a highlightjs compatible stylesheet. If you choose a file outside the stylesheet cache it will be copied to the cache. Paper is white so choose light themes for dark text.",
+  "print.printAndClose.title": "Close after printing",
+  "print.printAndClose.description": "Show the Print dialog when the browser is ready, and try to close the page after printing is done or cancelled",
+  "print.editorContextMenuItemPosition.title": "Editor context-menu position",
+  "print.editorContextMenuItemPosition.markdownDescription": "The position of `Print` in the editor context menu",
   "print.editorTitleMenuButton.description": "Show print button in the editor title menu",
-
-	"print.dynamicPortMax.title": "Maximum dynamic port",
-	"print.dynamicPortMax.description": "End of the range in which a free port will be sought",
-
-	"print.dynamicPortMin.title": "Minimum dynamic port",
-	"print.dynamicPortMin.description": "Start of the range in which a free port will be sought",
-
-	"print.fontSize.title": "Font size",
-	"print.fontSize.description": "Font size, from 9 to 13 points",
-
-	"print.lineSpacing.title": "Line spacing",
-	"print.lineSpacing.description": "Vertical spacing of lines",
-	"print.lineSpacing.single": "Single spaced",
-	"print.lineSpacing.line-and-a-half": "Line and a half",
-	"print.lineSpacing.double": "Double spaced"
-
+  "print.fontSize.title": "Font size",
+  "print.fontSize.description": "Font size, from 6 to 13 points",
+  "print.lineSpacing.title": "Line spacing",
+  "print.lineSpacing.description": "Vertical spacing of lines",
+  "print.lineSpacing.single": "Single spaced",
+  "print.lineSpacing.line-and-a-half": "Line and a half",
+  "print.lineSpacing.double": "Double spaced"
 }
