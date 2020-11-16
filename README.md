@@ -54,7 +54,13 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.8.2
+
+- Removed port acquisition announcement setting as ports are no longer under user control.
+- Corrected issue 68, an exception occurring when printing an editor buffer that does not have a corresponding file on disk, by typing the command.
+
 ### 0.8.1
+
 - Because the host operating system now chooses the port for the embedded webserver, the webserver is created on first use and retained until the extension deactivates, so that the port allocation does not change. Code to decommissione the webserver after processing a request was not removed in 0.8.0 and is removed in 0.8.1 removing the risk of an unexpected change of port.
 
 ### 0.8.0

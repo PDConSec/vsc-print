@@ -3,8 +3,6 @@
 	"commands.category": "Impression",
 	"commands.title.print": "Imprimer",
 	"commands.title.browse": "Parcourir les fouilles de style",
-	"print.announcePortAcquisition.title": "Annoncer l'acquisition du port",
-	"print.announcePortAcquisition.description": "Dites-moi quel port le serveur web intégré acquiert",
 	"print.renderMarkdown.title": "Rendre le Markdown",
 	"print.renderMarkdown.description": "Rendre le Markdown en HTML lors de l'impression",
 	"print.lineNumbers.title": "Numérotage",

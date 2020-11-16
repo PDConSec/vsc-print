@@ -53,6 +53,11 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.8.2
+
+- Suppression du paramètre d’annonce d’acquisition de port car les ports ne sont plus sous le contrôle de l’utilisateur.
+- Problème corrigé 68, une exception se produisant lors de l’impression d’une mémoire tampon de l’éditeur qui n’a pas de fichier correspondant sur le disque, en tapant la commande.
+
 ### 0.8.1
 
 - Étant donné que le système d’exploitation hôte choisit désormais le port du serveur web intégré, le serveur web est créé lors de la première utilisation et conservé jusqu’à ce que l’extension se désactive, de sorte que l’allocation de port ne change pas. Code pour déclasser le serveur Web après le traitement d’une demande n’a pas été supprimé dans 0.8.0 et est supprimé dans 0.8.1 supprimant le risque d’un changement inattendu de port.

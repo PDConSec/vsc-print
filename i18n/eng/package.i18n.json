@@ -3,8 +3,6 @@
   "commands.category": "Printing",
   "commands.title.print": "Print",
   "commands.title.browse": "Browse for stylesheets",
-  "print.announcePortAcquisition.title": "Announce port acquisition",
-  "print.announcePortAcquisition.description": "Tell me what port the embedded web server acquires",
   "print.renderMarkdown.title": "Render Markdown",
   "print.renderMarkdown.description": "Render markdown as HTML when printing",
   "print.lineNumbers.title": "print.lineNumbers",

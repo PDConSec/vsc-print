@@ -97,12 +97,14 @@ function getFileText(fname: string): string {
 }
 
 async function getSourceCode(): Promise<string[]> {
-
   let sender = "NOT SET";
-  const commandArgsFsPath = commandArgs ? commandArgs.fsPath : undefined;
+  let commandArgsFsPath = commandArgs ? commandArgs.fsPath : undefined;
   let editorFsPath = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri.fsPath : undefined;
-
-  sender = editorFsPath === commandArgsFsPath ? "ACTIVE TEXT EDITOR" : "FILE EXPLORER";
+  // if command and editor fsPath match, or no commandArgs at all use the 
+  // in -memory document from the active editor
+  let pathsMatch = editorFsPath === commandArgsFsPath;
+  let noCommandArgs = typeof commandArgs === "undefined";
+  sender = (pathsMatch || noCommandArgs) ? "ACTIVE TEXT EDITOR" : "FILE EXPLORER";
   if (!commandArgs) {
     commandArgs = { fsPath: commandArgsFsPath || editorFsPath };
   }
