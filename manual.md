@@ -48,10 +48,6 @@ While font _size_ is controlled by the settings, font _face_ is determined by yo
 
 You probably want Markdown print-jobs rendered and styled, and this is the default behaviour. If, for your own ineffable reasons, you wish to print the raw text, you can un-check the setting `Print: Render Markdown` .
 
-## Ports used by the embedded webserver
-
-The browser gets content from an embedded webserver. As of 0.7.23 the port used by the embedded webserver is selected by the host operating system. A port selection range is no longer required or supported.
-
 ## Alternate browser
 
 You can print with a browser other than your default browser.

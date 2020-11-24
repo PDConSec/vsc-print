@@ -45,15 +45,6 @@ Bien que la taille de lettrage soit contrôlée par les paramètres, la _police 
 
 Lorsque vous Markdown vous voulez probablement qu'il soit rendu et stylisé, et c'est le comportement par défaut. Si, pour des raisons ineffables, vous souhaitez imprimer le texte brut, vous pouvez dévérifier le paramètre `imprimer.rendreLeMarkdown`.
 
-## Modification de la gamme de ports dynamique
-
-Le navigateur reçoit du contenu à partir d'un serveur Web intégré. Ce serveur web sonde pour un port inutilisé. Il s'agit du mécanisme par lequel il est possible d'exécuter plusieurs instances de code VS (et donc plusieurs serveurs Web intégrés) sans conflit de port. Les logiciels tiers peuvent être moins accommodants, et il peut être souhaitable de déplacer la plage dans laquelle VS Code choisit les ports. Vous pouvez le faire en spécifiant
-
-* `imprimer.portDynamiqueMax` : la limite supérieure de la plage dans laquelle le serveur web intégré choisira les ports
-* `imprimer.portDynamiqueMin` : la limite inférieure de la plage dans laquelle le serveur web intégré choisira les ports
-
-Par défaut, les versions plus tôt que 0.6.12 ont commencé à sonder pour un port libre à partir de 8000 parce que c'était le comportement par défaut de la bibliothèque en usage. Sous Windows, la plage de port dynamique officielle est de 49152 à 65535 et l'analyse portuaire est désormais limitée à cette plage. Il peut être nécessaire pour les utilisateurs sur d'autres plates-formes de modifier la portée du port.
-
 ## Navigateur alternatif
 
 Vous pouvez imprimer avec un navigateur autre que votre navigateur par défaut.

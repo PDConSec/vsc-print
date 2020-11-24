@@ -53,6 +53,12 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.8.3
+
+- Mise à jour `highlight.js` à la dernière version sur les conseils des gardiens de `highlight.js`.
+  - Suppression des vulnérabilités potentielles aux documents HTML contenant du script toxique
+  - Aborde les problèmes mineurs de colorisation (voir #63)
+
 ### 0.8.2
 
 - Suppression du paramètre d’annonce d’acquisition de port car les ports ne sont plus sous le contrôle de l’utilisateur.

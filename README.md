@@ -54,6 +54,12 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.8.3
+
+- Updated `highlight.js` to latest version on advice from the keepers of `highlight.js`.
+  - Removed potential vulnerabilities to HTML documents containing toxic script
+  - Addresses minor colourisation issues (see #63)
+
 ### 0.8.2
 
 - Removed port acquisition announcement setting as ports are no longer under user control.
