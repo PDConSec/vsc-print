@@ -4,6 +4,7 @@ import * as http from "http";
 import * as child_process from "child_process";
 import * as fs from "fs";
 import { AddressInfo } from 'net';
+import * as path from "path";
 
 var md: any;
 var commandArgs: any;
@@ -67,6 +68,13 @@ export function activate(context: vscode.ExtensionContext) {
         }
       }
     });
+  });
+  context.subscriptions.push(disposable);
+  // capture the extension path
+  disposable = vscode.commands.registerCommand('extension.help', async (cmdArgs: any) => {
+    let pathToManual = path.join(context.extensionPath, "manual.md");
+    let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
+    vscode.commands.executeCommand('markdown.showPreview', uriManual);
   });
   context.subscriptions.push(disposable);
   return { extendMarkdownIt(mdparam: any) { return md = mdparam; } };

@@ -3,6 +3,7 @@
   "commands.category": "Printing",
   "commands.title.print": "Print",
   "commands.title.browse": "Browse for stylesheets",
+  "commands.title.help": "Open the manual",
   "print.renderMarkdown.title": "Render Markdown",
   "print.renderMarkdown.description": "Render markdown as HTML when printing",
   "print.lineNumbers.title": "print.lineNumbers",

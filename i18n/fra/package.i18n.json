@@ -6,6 +6,7 @@
   "print.renderMarkdown.title": "Rendre le Markdown",
   "print.renderMarkdown.description": "Rendre le Markdown en HTML lors de l'impression",
   "print.lineNumbers.title": "Numérotage",
+  "commands.title.help": "Consulter la documentation",
   "print.lineNumbers.description": "Imprimer avec des numéros de ligne",
   "print.alternateBrowser.title": "Navigateur alternatif",
   "print.alternateBrowser.description": "Utiliser le navigateur alternatif",
