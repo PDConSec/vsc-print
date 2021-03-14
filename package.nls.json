@@ -2,6 +2,7 @@
   "configuration.title.print": "Printing",
   "commands.category": "Printing",
   "commands.title.print": "Print",
+  "commands.title.printFolder": "Print Folder",
   "commands.title.browse": "Browse for stylesheets",
   "commands.title.help": "Open the manual",
   "print.renderMarkdown.title": "Render Markdown",
@@ -25,5 +26,10 @@
   "print.lineSpacing.description": "Vertical spacing of lines",
   "print.lineSpacing.single": "Single spaced",
   "print.lineSpacing.line-and-a-half": "Line and a half",
-  "print.lineSpacing.double": "Double spaced"
+  "print.lineSpacing.double": "Double spaced",
+  "print.folder.fileNames.title": "Print file names",
+  "print.folder.fileNames.description": "Should file names be printed between each code file.",
+  "print.folder.include": "Pattern to include when printing. Empty includes everything.",
+  "print.folder.exclude": "Patterns to exclude when printing.",
+  "print.folder.maxLines": "Files with more lines than this will be ignored."
 }
