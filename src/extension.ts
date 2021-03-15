@@ -5,7 +5,7 @@ import * as child_process from "child_process";
 import * as fs from "fs";
 import { AddressInfo } from 'net';
 import * as path from "path";
-import * as glob from "glob";
+import * as globby from "globby";
 
 var md: any;
 var selection: vscode.Selection | undefined;
@@ -260,16 +260,27 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
   if (fs.statSync(filePath).isDirectory()) {
     const excludes = printConfig.folder.exclude;
     const include = printConfig.folder.include;
-    let pattern = include !== null ? include : "**/*.*";
-    if (excludes.length > 0) {
-      pattern += `!(${excludes.join("|")})`;
+    const gitignore = printConfig.folder.gitignore;
+
+    let patterns = [];
+    if (include.length === 0) {
+      patterns.push("**/*.*");
     }
-    const fullPattern = filePath + '/' + pattern;
+    else {
+      patterns.push(...include);
+    }
+
+    if (excludes.length > 0) {
+      patterns.push(...(excludes.map((x: string) => "!" + x)));
+    }
 
     const maxLineCount = printConfig.folder.maxLines;
     const matcher = (document: vscode.TextDocument): boolean => document.lineCount < maxLineCount;
 
-    codePromises = glob.sync(fullPattern).map(x => getSourceCode(x, matcher));
+    codePromises = await globby(patterns, {
+      gitignore,
+      cwd: filePath
+    }).then(x => x.map(y => getSourceCode(path.join(filePath, y), matcher)));
   } else {
     codePromises = [getSourceCode(filePath)];
   }
