@@ -36,6 +36,11 @@
       },
       {
         "category": "%commands.category%",
+        "command": "extension.printFolder",
+        "title": "%commands.title.printFolder%"
+      },
+      {
+        "category": "%commands.category%",
         "command": "extension.browse",
         "title": "%commands.title.browse%"
       },
@@ -130,6 +135,27 @@
             "default": true,
             "type": "boolean",
             "description": "%print.editorTitleMenuButton.description%"
+          },
+          "print.folder.fileNames": {
+            "default": true,
+            "type": "boolean",
+            "title": "%print.folder.fileNames.title%",
+            "description": "%print.folder.fileNames.description%"
+          },
+          "print.folder.include": {
+            "default": null,
+            "type": "string",
+            "description": "%print.folder.include%"
+          },
+          "print.folder.exclude": {
+            "default": ["node_modules/**", "dist/**"],
+            "type": "array",
+            "description": "%print.folder.exclude%"
+          },
+          "print.folder.maxLines": {
+            "default": 1200,
+            "type": "integer",
+            "description": "%print.folder.maxLines%"
           }
         }
       }
