@@ -29,7 +29,8 @@
   "print.lineSpacing.double": "Double spaced",
   "print.folder.fileNames.title": "Print file names",
   "print.folder.fileNames.description": "Should file names be printed between each code file.",
-  "print.folder.include": "Pattern to include when printing. Empty includes everything.",
+  "print.folder.include": "Patterns to include when printing. Empty includes everything.",
   "print.folder.exclude": "Patterns to exclude when printing.",
-  "print.folder.maxLines": "Files with more lines than this will be ignored."
+  "print.folder.maxLines": "Files with more lines than this will be ignored.",
+  "print.folder.gitignore": "If files from .gitignore should be ignored."
 }

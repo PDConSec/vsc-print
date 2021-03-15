@@ -143,12 +143,12 @@
             "description": "%print.folder.fileNames.description%"
           },
           "print.folder.include": {
-            "default": null,
-            "type": "string",
+            "default": [],
+            "type": "array",
             "description": "%print.folder.include%"
           },
           "print.folder.exclude": {
-            "default": ["node_modules/**", "dist/**"],
+            "default": [],
             "type": "array",
             "description": "%print.folder.exclude%"
           },
@@ -156,6 +156,11 @@
             "default": 1200,
             "type": "integer",
             "description": "%print.folder.maxLines%"
+          },
+          "print.folder.gitignore": {
+            "default": true,
+            "type": "boolean",
+            "description": "%print.folder.gitignore%"
           }
         }
       }
@@ -233,6 +238,7 @@
   "dependencies": {
     "@types/highlight.js": "^10.1.0",
     "@types/markdown-it": "0.0.9",
+    "globby": "^11.0.2",
     "highlight.js": "^10.4.1"
   }
 }
