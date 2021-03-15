@@ -108,7 +108,7 @@
           "print.colourScheme": {
             "title": "%print.colourScheme.title%",
             "type": "string",
-            "default": "vs2015",
+            "default": "atelier-dune-light",
             "markdownDescription": "%print.colourScheme.markdownDescription%"
           },
           "print.printAndClose": {
