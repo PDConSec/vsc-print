@@ -186,6 +186,45 @@ async function getSourceCode(file: string, fileMatcher: ((document: vscode.TextD
   }
 }
 
+// properly open/close syntax highlighting spans across line breaks
+// necessary for e.g. multiline comments, otherwise the span is broken across tr/td
+// maintains a stack of classes, and pushes/pops them upon seeing <span> and </span> tags
+// for each line, adds in the appropriate <span>s at the beginning and </span>s at the end
+function fixMultilineSpans(text: string) {
+  let classes: string[] = [];
+
+  // since this code runs on simple, well-behaved, escaped HTML, we can just
+  // use regex matching for the span tags and classes
+
+  // first capture group is if it's a closing tag, second is tag attributes
+  const spanRegex = /<(\/?)span(.*?)>/g;
+  // https://stackoverflow.com/questions/317053/regular-expression-for-extracting-tag-attributes
+  // matches single html attribute, first capture group is attr name and second is value
+  const tagAttrRegex = /(\S+)=["']?((?:.(?!["']?\s+(?:\S+)=|\s*\/?[>"']))+.)["']?/g;
+
+  return text.split("\n").map(line => {
+    const pre = classes.map(classVal => `<span class="${classVal}">`);
+
+    let spanMatch;
+    spanRegex.lastIndex = 0; // exec maintains state which we need to reset
+    while((spanMatch = spanRegex.exec(line)) !== null) {
+      if(spanMatch[1] !== "") {
+        classes.pop();
+        continue;
+      }
+      let attrMatch;
+      tagAttrRegex.lastIndex = 0;
+      while((attrMatch = tagAttrRegex.exec(spanMatch[2])) !== null) {
+        if(attrMatch[1].toLowerCase().trim() === "class") {
+          classes.push(attrMatch[2]);
+        }
+      }
+    }
+
+    return pre + line + "</span>".repeat(classes.length);
+  }).join("\n");
+}
+
 const lineNumberCss = `
 /* Line numbers */
 
@@ -312,6 +351,8 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
     catch (err) {
       renderedCode = hljs.highlightAuto(sourceCode.code).value;
     }
+
+    renderedCode = fixMultilineSpans(renderedCode);
 
     var addLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && vscode.window.activeTextEditor && (vscode.window.activeTextEditor.options.lineNumbers || 0) > 0);
     if (addLineNumbers) {
