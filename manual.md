@@ -8,7 +8,7 @@
 
 ### Print the active document
 
-To print the active document just click the printer icon to the right of the document tabs.
+To print the active document just click the printer icon to the right of the document tabs. Control for paper size, margins and page orientation is in the print dialog.
 
 ### Print a selection in the active document
 
@@ -36,9 +36,20 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.lineSpacing` : single, line-and-a-half or double spaced
 * `print.printAndClose` : après l'impression, fermez le navigateur.
 
-### Choosing the font face
+### Type face and size
 
-While font _size_ is controlled by the settings, font _face_ is determined by your editor settings. If you see Fira Code on screen, that's what will be printed. 
+Typeface is determined by VS Code editor settings. If you see Fira Code on screen, that's what will be printed. 
+
+The _size_ of printed text is a Print setting because the size that works best on screen may not be the size that works best on paper. 
+
+#### A note on nomenclature
+
+A font defines *all* of the folloing:
+* **typeface** eg Consolas or Fira Code
+* **treatment** eg bold, italic
+* **size** eg 12pt
+
+"Fira Code" is a typeface, not a font. "Fira Code 12pt Bold" is a font. Bold and italic are _treatments_. Yes, I know you download font files. In the days before TrueType there was a separate file per size and treatment combination and it really was a font file.
 
 #### If you want a font size other than the sizes listed in the picker
 1. Change the size using the picker to conveniently create an entry in the settings.
@@ -67,7 +78,9 @@ To set up an alternate browser you must do two things:
 
 The colours used for syntax highlighting can be styled by supplying a CSS stylesheet. Press `F1` and type `browse stylesheet` to find the command for setting this. Invoking it will open a file browse dialog that defaults to the folder containing VS Code Printing's cache of stylesheets. If you browse to somewhere else and choose a CSS file, it will be imported to the cache folder (potentially overwriting a file of the same name).
 
- The setting points at the the cached copy, so if you make changes you must repeat the import process.
+The setting points at the the cached copy, so if you make changes you must repeat the import process.
+
+Don't use dark theme stylesheets. Paper is white.
 
 ## Katex markdown extension
 This depends on CSS and fonts from the web. To get printing to work you must add the required stylesheet to your settings.

@@ -52,6 +52,11 @@ Chrome se souvient trop des imprimantes, de la taille du papier et des marges, s
 KaTeX nécessite une connexion Internet. Vous devez également configurer une référence d'une feuille de style. Les détails sont au manuel.
 
 ## Notes de version
+### 0.9.0
+- Diverses dépendances mises à jour pour atténuer les risques pour la sécurité.
+- Correction de coloration-syntactique pour chaînes (strings) et commentaires multi-lignes, grâce à [gji](https://github.com/gji) ferme #85 et #63
+- Modification de la feuille de style par défaut par rapport à 2015 (un thème sombre) en Atelier Dune.
+- Prise en charge supplémentaire de l’impression de dossiers entiers grâce à [alainx277](https://github.com/Alainx277).
 
 ### 0.8.3
 

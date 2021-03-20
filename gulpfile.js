@@ -23,58 +23,57 @@ const outDest = 'out';
 
 // If all VS Code languages are supported you can use nls.coreLanguages
 const languages = [
-	{ folderName: 'eng', id: 'en' },
-	{ folderName: 'rus', id: 'ru' },
-	{ folderName: 'fra', id: 'fr' }
+  { folderName: 'eng', id: 'en' },
+  { folderName: 'fra', id: 'fr' }
 ];
 
 const cleanTask = function () {
-	return del(['out/**', 'package.nls.*.json', 'i18n-sample*.vsix']);
+  return del(['out/**', 'package.nls.*.json', 'i18n-sample*.vsix']);
 }
 
 const internalCompileTask = function () {
-	return doCompile(false);
+  return doCompile(false);
 };
 
 const internalNlsCompileTask = function () {
-	return doCompile(true);
+  return doCompile(true);
 };
 
 const addI18nTask = function () {
-	return gulp.src(['package.nls.json'])
-		.pipe(nls.createAdditionalLanguageFiles(languages, 'i18n'))
-		.pipe(gulp.dest('.'));
+  return gulp.src(['package.nls.json'])
+    .pipe(nls.createAdditionalLanguageFiles(languages, 'i18n'))
+    .pipe(gulp.dest('.'));
 };
 
 const buildTask = gulp.series(cleanTask, internalNlsCompileTask, addI18nTask);
 
 const doCompile = function (buildNls) {
-	var r = tsProject.src()
-		.pipe(sourcemaps.init())
-		.pipe(tsProject()).js
-		.pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
-		.pipe(buildNls ? nls.createAdditionalLanguageFiles(languages, 'i18n', 'out') : es.through());
+  var r = tsProject.src()
+    .pipe(sourcemaps.init())
+    .pipe(tsProject()).js
+    .pipe(buildNls ? nls.rewriteLocalizeCalls() : es.through())
+    .pipe(buildNls ? nls.createAdditionalLanguageFiles(languages, 'i18n', 'out') : es.through());
 
-	if (inlineMap && inlineSource) {
-		r = r.pipe(sourcemaps.write());
-	} else {
-		r = r.pipe(sourcemaps.write("../out", {
-			// no inlined source
-			includeContent: inlineSource,
-			// Return relative source map root directories per file.
-			sourceRoot: "../src"
-		}));
-	}
+  if (inlineMap && inlineSource) {
+    r = r.pipe(sourcemaps.write());
+  } else {
+    r = r.pipe(sourcemaps.write("../out", {
+      // no inlined source
+      includeContent: inlineSource,
+      // Return relative source map root directories per file.
+      sourceRoot: "../src"
+    }));
+  }
 
-	return r.pipe(gulp.dest(outDest));
+  return r.pipe(gulp.dest(outDest));
 }
 
 const vscePublishTask = function () {
-	return vsce.publish();
+  return vsce.publish();
 };
 
 const vscePackageTask = function () {
-	return vsce.createVSIX();
+  return vsce.createVSIX();
 };
 
 gulp.task('default', buildTask);

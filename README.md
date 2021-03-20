@@ -4,7 +4,7 @@
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
-[ENGLISH](README.md) | [FRENCH](README.fra.md) | [РУССКИЕ](README.rus.md) | [Add a language](how-to-add-a-language.md)
+[ENGLISH](README.md) | [FRENCH](README.fra.md) | [Add a language](how-to-add-a-language.md)
 
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
 
@@ -53,6 +53,12 @@ Chrome remembers too much about printers, paper sizes and margins especially if 
 KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
+
+### 0.9.0
+- Various dependencies updated to mitigate security risks.
+- Syntax colouring fix for multi-line strings and comments, thanks to [gji](https://github.com/gji) closes #85 and #63
+- Changed default stylesheet from vs2015 (a dark theme) to Atelier Dune.
+- Added support for printing entire folders thanks to [alainx277](https://github.com/Alainx277).
 
 ### 0.8.3
 

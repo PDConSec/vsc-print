@@ -13,4 +13,4 @@ Otherwise, it's up to you to convince someone else of the value of your idea.
 7. Submit a PR with any information I'll need to update the changelog and the readme.
 
 # Submitting translations
-Unless you can find someone able to review your translations, skip to step three of submitting changes. There are instructions in the manual on how to translation material must be organised.
+Unless you can find someone able to review your translations, skip to step three of submitting changes. There are instructions in the manual on how  translation material must be organised.

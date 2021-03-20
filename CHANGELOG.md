@@ -3,6 +3,12 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.9.0
+- Various dependencies updated to mitigate security risks.
+- Syntax colouring fix for multi-line strings and comments, thanks to [gji](https://github.com/gji) closes #85 and #63
+- Changed default stylesheet from vs2015 (a dark theme) to Atelier Dune.
+- Added support for printing entire folders thanks to [alainx277](https://github.com/Alainx277).
+
 ### 0.8.2
 
 - Removed port acquisition announcement setting as ports are no longer under user control.
