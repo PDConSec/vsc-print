@@ -114,6 +114,10 @@ async function printFolderCommand(commandArgs: any) {
     directory = commandArgs.fsPath;
   }
   else if (editor) {
+    if (editor.document.isUntitled) {
+      vscode.window.showErrorMessage("File not saved to disk. Save the file or open a file saved to disk and try again.");
+      return;
+    }
     directory = path.dirname(editor.document.uri.fsPath);
   }
   else {
