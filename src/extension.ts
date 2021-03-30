@@ -363,6 +363,7 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
       var startLine = selection && !(selection.isEmpty || selection.isSingleLine) ? selection.start.line + 1 : 1;
       renderedCode = renderedCode
         .split("\n")
+        .map(line => line || "&nbsp;")
         .map((line, i) => `<tr><td class="line-number">${startLine + i}</td><td class="line-text">${line}</td></tr>`)
         .join("\n")
         .replace("\n</td>", "</td>")
@@ -370,6 +371,7 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
     } else {
       renderedCode = renderedCode
         .split("\n")
+        .map(line => line || "&nbsp;")
         .map((line, i) => `<tr><td class="line-text">${line}</td></tr>`)
         .join("\n")
         .replace("\n</td>", "</td>")
