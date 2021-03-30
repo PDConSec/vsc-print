@@ -114,6 +114,10 @@ async function printFolderCommand(commandArgs: any) {
     directory = commandArgs.fsPath;
   }
   else if (editor) {
+    if (editor.document.isUntitled) {
+      vscode.window.showErrorMessage("File not saved to disk. Save the file or open a file saved to disk and try again.");
+      return;
+    }
     directory = path.dirname(editor.document.uri.fsPath);
   }
   else {
@@ -160,7 +164,7 @@ async function getSourceCode(file: string, fileMatcher: ((document: vscode.TextD
   let pathsMatch = editorFsPath === file;
 
   try {
-    let otd = await vscode.workspace.openTextDocument(fileUri);
+    let otd = (editor && pathsMatch) ? editor.document : await vscode.workspace.openTextDocument(fileUri);
     if (fileMatcher !== null && !fileMatcher(otd)) {
       return null;
     }
@@ -181,8 +185,8 @@ async function getSourceCode(file: string, fileMatcher: ((document: vscode.TextD
 
     return new SourceCode(file, code, otd.languageId);
   }
-  catch {
-    return null;
+  catch (err) {
+    return err;
   }
 }
 
@@ -298,7 +302,7 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
 
   // Fetch source code for directory or single file
   let codePromises: Promise<SourceCode | null>[];
-  if (fs.statSync(filePath).isDirectory()) {
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
     const excludes = printConfig.folder.exclude;
     const include = printConfig.folder.include;
     const gitignore = printConfig.folder.gitignore;
@@ -361,6 +365,7 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
       var startLine = selection && !(selection.isEmpty || selection.isSingleLine) ? selection.start.line + 1 : 1;
       renderedCode = renderedCode
         .split("\n")
+        .map(line => line || "&nbsp;")
         .map((line, i) => `<tr><td class="line-number">${startLine + i}</td><td class="line-text">${line}</td></tr>`)
         .join("\n")
         .replace("\n</td>", "</td>")
@@ -368,6 +373,7 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
     } else {
       renderedCode = renderedCode
         .split("\n")
+        .map(line => line || "&nbsp;")
         .map((line, i) => `<tr><td class="line-text">${line}</td></tr>`)
         .join("\n")
         .replace("\n</td>", "</td>")
