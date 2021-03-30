@@ -181,8 +181,8 @@ async function getSourceCode(file: string, fileMatcher: ((document: vscode.TextD
 
     return new SourceCode(file, code, otd.languageId);
   }
-  catch {
-    return null;
+  catch (err) {
+    return err;
   }
 }
 
