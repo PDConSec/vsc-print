@@ -4,21 +4,24 @@
 
 [ENGLISH](manual.md) | [FRENCH](manual.fra.md) | [РУССКИЕ](manual.rus.md) | [Add a language](how-to-add-a-language.md)
 
-## Pour imprimer...
+## Impression
 
-### Le document actif
+### Pour imprimer le document actif
 
 Pour imprimer le document actif, cliquez sur l'icône de l'imprimante à droite des onglets du document.
 
-### Une sélection dans le document actif
+### Pour imprimer une sélection dans le document actif
 
 Sélectionnez au moins une ligne dans le document actif. Ensuite, cliquez sur l'icône de l'imprimante à droite des onglets du document ou cliquez à droite sur la sélection et choisissez `Print` dans le menu contextuel. Lorsque le menu contextuel apparaît, `Print` apparaît en haut (ou près) en haut, en bas ou nulle part en fonction du paramètre `imprimer.positionAuMenuContextuelDeLEditeur`.
 
 Les numéros de ligne de votre impression sont alignés avec les numéros de ligne de l'éditeur, qu'ils soient visibles ou non. Donc, si vous discutez d'une ligne de code numérotée 1145 dans un réexamen de code et que vous ouvrez le fichier pour l'amender, en tapant `Ctrl+G` puis 1145 `Enter` mettra votre curseur directement sur la ligne de code en question.
 
-### Un fichier (sans l'ouvrir)
+### Pour imprimer un fichier (sans l'ouvrir)
 
 Pour imprimer un fichier autre que le document actif, trouvez-le dans le volet EXPLORER et cliquez à droite dessus. Au menu contextuel du fichier `Imprimer` apparaît toujours en haut du menu ou près de celui-ci. Ceci imprime le fichier entier.
+
+### Pour imprimer tous les fichiers dans un répertoire
+Si vous appuyez sur `F1` et tapez `imprimer le répertoire`, vous découvrirez que vous pouvez imprimer tous les fichiers contenus dans le répertoire du document actif. Un seul impression est créé avec tous les fichiers séparés par des titres affichant leurs noms de fichiers.
 
 ## Paramètres
 
@@ -35,6 +38,10 @@ Cette extension comporte les paramètres suivants, qui peuvent être modifiés e
 * `print.lineNumbers` : on, off ou inherit (faire la même chose que l'éditeur)
 * `print.lineSpacing` : simple, ligne et demie ou double espacement
 * `print.printAndClose` : après l'impression, fermez le navigateur.
+* `print.folder.include`: modèles à inclure lors de l’impression. Vide correspond à tout.
+* `print.folder.exclude`: modèles à exclure lors de l’impression.
+* `print.folder.maxLines`: les fichiers avec plus de lignes que cela seront ignorés.
+* `print.folder.gitignore`: soit les fichiers de .gitignore doivent être ignorés.
 
 ### Choix de caractère
 

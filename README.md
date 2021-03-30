@@ -54,6 +54,9 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.9.2
+- Fix missing documentation and language translation issues
+
 ### 0.9.0
 - Various dependencies updated to mitigate security risks.
 - Syntax colouring fix for multi-line strings and comments, thanks to [gji](https://github.com/gji) closes #85 and #63

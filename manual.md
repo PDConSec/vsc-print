@@ -20,6 +20,9 @@ Line numbers in your printout are aligned with the line numbers in the editor wh
 
 To print a file other than the active document, find it in the EXPLORER pane and right-click on it. In the file context menu `Print` always appears at or near the top of the menu. This prints the entire file.
 
+## Print all the files in a folder
+If you press `F1` and type `print folder` you will find that you can print all the files in the folder that contains the active document. A single print job is created with all the files separated by headings showing their names.
+
 ## Settings
 
 This extension has the following settings, which can be modified by going to Code > Preferences > Settings > Extensions > Printing:
@@ -34,7 +37,11 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.formatMarkdown` : render markdown as styled HTML when printing
 * `print.lineNumbers` : on, off or inherit (do same as editor)
 * `print.lineSpacing` : single, line-and-a-half or double spaced
-* `print.printAndClose` : après l'impression, fermez le navigateur.
+* `print.printAndClose` : after printing, close the browser
+* `print.folder.include`: pattern for files to include. Empty matches everything.
+* `print.folder.exclude`: patterns to exclude
+* `print.folder.maxLines`: files containing more lines than this threshold will be ignored
+* `print.folder.gitignore`: whether to ignore .gitignore
 
 ### Type face and size
 

@@ -186,10 +186,12 @@ async function getSourceCode(file: string, fileMatcher: ((document: vscode.TextD
   }
 }
 
-// properly open/close syntax highlighting spans across line breaks
-// necessary for e.g. multiline comments, otherwise the span is broken across tr/td
-// maintains a stack of classes, and pushes/pops them upon seeing <span> and </span> tags
-// for each line, adds in the appropriate <span>s at the beginning and </span>s at the end
+/* 
+properly open/close syntax highlighting spans across line breaks
+necessary for e.g. multiline comments, otherwise the span is broken across tr/td
+maintains a stack of classes, and pushes/pops them upon seeing <span> and </span> tags
+for each line, adds in the appropriate <span>s at the beginning and </span>s at the end
+*/
 function fixMultilineSpans(text: string) {
   let classes: string[] = [];
 
@@ -207,15 +209,15 @@ function fixMultilineSpans(text: string) {
 
     let spanMatch;
     spanRegex.lastIndex = 0; // exec maintains state which we need to reset
-    while((spanMatch = spanRegex.exec(line)) !== null) {
-      if(spanMatch[1] !== "") {
+    while ((spanMatch = spanRegex.exec(line)) !== null) {
+      if (spanMatch[1] !== "") {
         classes.pop();
         continue;
       }
       let attrMatch;
       tagAttrRegex.lastIndex = 0;
-      while((attrMatch = tagAttrRegex.exec(spanMatch[2])) !== null) {
-        if(attrMatch[1].toLowerCase().trim() === "class") {
+      while ((attrMatch = tagAttrRegex.exec(spanMatch[2])) !== null) {
+        if (attrMatch[1].toLowerCase().trim() === "class") {
           classes.push(attrMatch[2]);
         }
       }

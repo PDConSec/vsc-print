@@ -2,7 +2,7 @@
 
 [Version français](https://github.com/PeterWone/vsc-print) par Peter Wone
 
-[ENGLISH](README.md) | [FRENCH](README.fra.md) | [РУССКИЕ](README.rus.md) | [Add a language](how-to-add-a-language.md)
+[ENGLISH](README.md) | [FRENCH](README.fra.md) | [Add a language](how-to-add-a-language.md)
 
 
 
@@ -52,6 +52,10 @@ Chrome se souvient trop des imprimantes, de la taille du papier et des marges, s
 KaTeX nécessite une connexion Internet. Vous devez également configurer une référence d'une feuille de style. Les détails sont au manuel.
 
 ## Notes de version
+
+### 0.9.2
+- Corrigez l’omission des mises à jour de documentation pour 0.9.0 et des traductions manquantes Français.
+
 ### 0.9.0
 - Diverses dépendances mises à jour pour atténuer les risques pour la sécurité.
 - Correction de coloration-syntactique pour chaînes (strings) et commentaires multi-lignes, grâce à [gji](https://github.com/gji) ferme #85 et #63

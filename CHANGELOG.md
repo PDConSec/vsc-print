@@ -3,6 +3,9 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.9.2
+- Correct missing translations and documentation.
+
 ### 0.9.0
 - Various dependencies updated to mitigate security risks.
 - Syntax colouring fix for multi-line strings and comments, thanks to [gji](https://github.com/gji) closes #85 and #63
