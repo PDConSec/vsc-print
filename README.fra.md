@@ -53,6 +53,11 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.9.3
+- Autres mises à jour pour le support linguistique
+- Problème 88 Essayer d’imprimer un nouveau fichier qui n’existe pas dans le système de fichiers provoquerait un message d’erreur, une régression causée par des changements internes à l’appui de l’impression d'un repértoire, corrigé grâce à [baincd](https://github.com/baincd)
+- Problème 87 Les lignes blanches n’impriment pas correctement, corrigé grâce à [baincd](https://github.com/baincd)
+
 ### 0.9.2
 - Corrigez l’omission des mises à jour de documentation pour 0.9.0 et des traductions manquantes Français.
 

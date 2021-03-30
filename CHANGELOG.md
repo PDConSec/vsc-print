@@ -3,6 +3,11 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.9.3
+- Further updates for language support
+- Issue 88 Trying to print a new file that does not exist in the filesystem would cause an error message, a regression caused by internal changes in support of folder printing, fix thanks to [baincd](https://github.com/baincd)
+- Issue 87 Blank lines don't print correctly, fix thanks to [baincd](https://github.com/baincd)
+
 ### 0.9.2
 - Correct missing translations and documentation.
 

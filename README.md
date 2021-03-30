@@ -54,6 +54,11 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.9.3
+- Further updates for language support
+- Issue 88 Trying to print a new file that does not exist in the filesystem would cause an error message, a regression caused by internal changes in support of folder printing, fix thanks to [baincd](https://github.com/baincd)
+- Issue 87 Blank lines don't print correctly, fix thanks to [baincd](https://github.com/baincd)
+
 ### 0.9.2
 - Fix missing documentation and language translation issues
 
