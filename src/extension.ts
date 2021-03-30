@@ -160,7 +160,7 @@ async function getSourceCode(file: string, fileMatcher: ((document: vscode.TextD
   let pathsMatch = editorFsPath === file;
 
   try {
-    let otd = await vscode.workspace.openTextDocument(fileUri);
+    let otd = (editor && pathsMatch) ? editor.document : await vscode.workspace.openTextDocument(fileUri);
     if (fileMatcher !== null && !fileMatcher(otd)) {
       return null;
     }
@@ -296,7 +296,7 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
 
   // Fetch source code for directory or single file
   let codePromises: Promise<SourceCode | null>[];
-  if (fs.statSync(filePath).isDirectory()) {
+  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
     const excludes = printConfig.folder.exclude;
     const include = printConfig.folder.include;
     const gitignore = printConfig.folder.gitignore;
