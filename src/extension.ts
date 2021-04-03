@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as hljs from "highlight.js";
 import * as http from "http";
+import * as dns from "dns";
 import * as child_process from "child_process";
 import * as fs from "fs";
 import { AddressInfo } from 'net';
@@ -421,6 +422,9 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
   return new Promise(async (resolve, reject) => {
     // prepare to service an http request
     server = http.createServer(async (request, response) => {
+      if (!connectingToLocalhost(request)) {
+        return request.socket.end();
+      }
       try {
         if (request.url) {
           if (request.url === "/") {
@@ -465,4 +469,23 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
 
 export function deactivate() {
   if (server) { server.close(); }
+}
+
+const localhostAddresses: String[] = ["::1","::ffff:127.0.0.1","127.0.0.1"]
+dns.lookup("localhost",{all: true, family: 4},(err, addresses) => {
+    addresses
+      .map(a => a.address)
+      .filter(a => localhostAddresses.indexOf(a) < 0)
+      .forEach(a => {localhostAddresses.push(a); localhostAddresses.push("::ffff:" + a);});
+})
+dns.lookup("localhost",{all: true, family: 6},(err, addresses) => {
+    addresses
+      .map(a => a.address)
+      .filter(a => localhostAddresses.indexOf(a) < 0)
+      .forEach(a => localhostAddresses.push(a));
+})
+
+function connectingToLocalhost(request: http.IncomingMessage):boolean {
+  console.log(request.socket.localAddress)
+  return localhostAddresses.indexOf(request.socket.localAddress) >= 0;
 }
