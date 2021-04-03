@@ -418,6 +418,7 @@ var server: http.Server | undefined;
 var port: number;
 
 function startWebserver(generateSource: () => Promise<string>): Promise<void> {
+  stopWebServer();
   return new Promise(async (resolve, reject) => {
     // prepare to service an http request
     server = http.createServer(async (request, response) => {
@@ -463,6 +464,10 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
   });
 }
 
-export function deactivate() {
+function stopWebServer() {
   if (server) { server.close(); }
+}
+
+export function deactivate() {
+  stopWebServer();
 }
