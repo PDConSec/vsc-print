@@ -121,6 +121,11 @@
             "default": true,
             "description": "%print.printAndClose.description%"
           },
+          "print.webserverUptimeSeconds": {
+            "type": "integer",
+            "default": 30,
+            "description": "%print.webserverUptimeSeconds.description%"
+          },
           "print.editorContextMenuItemPosition": {
             "default": "Top",
             "type": "string",

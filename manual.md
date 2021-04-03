@@ -38,6 +38,7 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.lineNumbers` : on, off or inherit (do same as editor)
 * `print.lineSpacing` : single, line-and-a-half or double spaced
 * `print.printAndClose` : after printing, close the browser
+* `print.webserverUptimeSeconds` : number of seconds to keep the web server running
 * `print.folder.include`: pattern for files to include. Empty matches everything.
 * `print.folder.exclude`: patterns to exclude
 * `print.folder.maxLines`: files containing more lines than this threshold will be ignored

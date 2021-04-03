@@ -416,6 +416,7 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
 
 var server: http.Server | undefined;
 var port: number;
+let serverTimeout: NodeJS.Timeout | undefined;
 
 function startWebserver(generateSource: () => Promise<string>): Promise<void> {
   stopWebServer();
@@ -461,11 +462,25 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
     });
     let printConfig = vscode.workspace.getConfiguration("print", null);
     server.listen();
+    const webserverUptimeSecs = printConfig.get<number>("webserverUptimeSeconds",0);
+    if (webserverUptimeSecs) {
+      serverTimeout = setTimeout(() => {
+        stopWebServer();
+      }, webserverUptimeSecs * 1000);
+    }
   });
 }
 
 function stopWebServer() {
-  if (server) { server.close(); }
+  if (serverTimeout) {
+    clearTimeout(serverTimeout);
+    serverTimeout = undefined;
+  }
+  if (server) { 
+    server.close();
+    server = undefined;
+    port = 0;
+  }
 }
 
 export function deactivate() {
