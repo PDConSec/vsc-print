@@ -200,13 +200,11 @@
           "group": "Z_commands"
         }
       ]
-    },
-    "remote.extensionKind": {
-      "pdconsec.vscode-print": [
-        "ui"
-      ]
     }
   },
+  "extensionKind": [
+    "ui"
+  ],
   "scripts": {
     "vscode:prepublish": "webpack --mode production",
     "webpack": "webpack --mode development",
