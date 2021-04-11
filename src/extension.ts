@@ -259,15 +259,15 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
   if (printConfig.renderMarkdown && filePath.toLowerCase().split('.').pop() === "md") {
     let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
     let raw = fs.readFileSync(filePath).toString();
-    let content = md.render(raw);
+    let content: String = md.render(raw);
     try {
       // 1 - prepend base local path to relative URLs
-      let a = filePath.replace(/\\/g, "/"); // forward slashes only, they work on all platforms
-      let b = a.substring(0, a.lastIndexOf("/")); // clip file name
-      let c = b.replace(/([a-z]):/i, "$1C/O/L/O/N"); // escape colon on Windows
-      content = content.replace(/(img src=")(?!http[s]?)(?![a-z]:)([^"]+)/gi, `$1${c}/$2`);
-      // 2 - escape colon in embedded file paths
-      content = content.replace(/(img src="[a-z]):([^"]*)/gi, `$1C/O/L/O/N/$2`);
+      let basePath = filePath.replace(/\\/g, "/") // forward slashes only, they work on all platforms
+                             .replace(/\/[^\/]*$/, ""); // clip file name
+      content = content.replace(/(img src=")(?!http[s]?)(?![a-z]:)([^"]+)/gi, `$1${basePath}/$2`);
+      // 2 - encode colons, spaces, and other special chars in file path parts
+      content = content.replace(/(img src=")(?!http[s]?)([^"]+)/gi, ($0, $1, $2: string) => 
+          $1 + $2.split("/").map(encodeURIComponent).join("/") );
     } catch (error) {
       debugger;
     }
@@ -428,7 +428,7 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
             let html = await generateSource();
             response.end(html);
           } else {
-            let filePath: string = request.url.substr(1).replace(/C\/O\/L\/O\/N/g, ":");
+            let filePath: string = decodeURIComponent(request.url.substr(1));
             let cb = fs.statSync(filePath).size;
             let lastdotpos = request.url.lastIndexOf('.');
             let fileExt = request.url.substr(lastdotpos + 1);
