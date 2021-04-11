@@ -264,7 +264,7 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
       // 1 - prepend base local path to relative URLs
       let basePath = filePath.replace(/\\/g, "/") // forward slashes only, they work on all platforms
                              .replace(/\/[^\/]*$/, ""); // clip file name
-      content = content.replace(/(img src=")(?!http[s]?)(?![a-z]:)([^"]+)/gi, `$1${basePath}/$2`);
+      content = content.replace(/(img src=")(?!http[s]?)(?![a-z]:)(?!\/)([^"]+)/gi, `$1${basePath}/$2`);
       // 2 - encode colons, spaces, and other special chars in file path parts
       content = content.replace(/(img src=")(?!http[s]?)([^"]+)/gi, ($0, $1, $2: string) => 
           $1 + $2.split("/").map(encodeURIComponent).join("/") );
@@ -428,7 +428,7 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
             let html = await generateSource();
             response.end(html);
           } else {
-            let filePath: string = decodeURIComponent(request.url.substr(1));
+            let filePath: string = decodeURIComponent(request.url).replace(/^\/([a-z]:)/, "$1"); // Remove leading / on Windows paths
             let cb = fs.statSync(filePath).size;
             let lastdotpos = request.url.lastIndexOf('.');
             let fileExt = request.url.substr(lastdotpos + 1);
