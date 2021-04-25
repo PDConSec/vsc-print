@@ -133,7 +133,10 @@ async function print(filePath: string) {
 
   let printConfig = vscode.workspace.getConfiguration("print", null);
   let cmd = printConfig.alternateBrowser && printConfig.browserPath ? `"${printConfig.browserPath}"` : browserLaunchMap[process.platform];
-  child_process.exec(`${cmd} http://localhost:${port}/`);
+  child_process.exec(`${cmd} http://localhost:${port}/`,(error: child_process.ExecException | null, stdout: string, stderr: string) => {
+    vscode.window.showErrorMessage(`Error Attempting to Print: ${error ? error.message : stderr}`);
+    console.error("Print Error: " + error);
+  } );
 }
 
 function getFileText(fname: string): string {
