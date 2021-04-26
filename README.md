@@ -44,11 +44,16 @@ VS Code Printing is highly configurable. Settings can be modified by going to Co
 
 **A detailed breakdown of these settings can be found in [the manual](https://github.com/PeterWone/vsc-print/blob/master/manual.md).**
 
+## Browser
+
+The browser used will affect your experience.  Chrome is the recommended browser for printing.
+
+- Firefox doesn't close the browser after printing
+- Edge Classic doesn't support making printed tabs respect the editor tab size (because the experimental CSS `tab-size` property is not supported)
+- Microsoft Edge always prompts for permission to close the browser after printing
+- Chrome remembers too much about printers, paper sizes and margins especially if you abort
+
 ## Known Issues
-
-Making printed tabs respect the editor tab size setting depends on the experimental CSS `tab-size` property. This doesn't work on Edge Classic. 
-
-Chrome remembers too much about printers, paper sizes and margins especially if you abort.
 
 KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
 
