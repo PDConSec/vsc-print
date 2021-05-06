@@ -482,20 +482,20 @@ export function deactivate() {
 }
 
 const localhostAddresses: String[] = ["::1", "::ffff:127.0.0.1", "127.0.0.1"]
-dns.lookup("localhost",{all: true, family: 4},(err, addresses) => {
+dns.lookup("localhost", { all: true, family: 4 }, (err, addresses) => {
   addresses
     .map(a => a.address)
     .filter(a => localhostAddresses.indexOf(a) < 0)
-    .forEach(a => {localhostAddresses.push(a); localhostAddresses.push("::ffff:" + a);});
+    .forEach(a => { localhostAddresses.push(a); localhostAddresses.push("::ffff:" + a); });
 })
-dns.lookup("localhost",{all: true, family: 6},(err, addresses) => {
+dns.lookup("localhost", { all: true, family: 6 }, (err, addresses) => {
   addresses
     .map(a => a.address)
     .filter(a => localhostAddresses.indexOf(a) < 0)
     .forEach(a => localhostAddresses.push(a));
 })
 
-function connectingToLocalhost(request: http.IncomingMessage):boolean {
+function connectingToLocalhost(request: http.IncomingMessage): boolean {
   console.log(request.socket.localAddress)
   return localhostAddresses.indexOf(request.socket.localAddress) >= 0;
 }
