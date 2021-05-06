@@ -90,6 +90,10 @@ The setting points at the the cached copy, so if you make changes you must repea
 
 Don't use dark theme stylesheets. Paper is white.
 
+## Web Server
+
+Note that the web server only allows connections to localhost.  Connections not to localhost will be rejected.
+
 ## Katex markdown extension
 This depends on CSS and fonts from the web. To get printing to work you must add the required stylesheet to your settings.
 
