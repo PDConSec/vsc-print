@@ -53,6 +53,14 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.9.4
+- Mettre à jour les actifs pour compenser les modifications apportées au Code Visual Studio 1.56
+- Message d’erreur d’affichage PR101 lorsque le lancement du navigateur échoue, corriger grâce à [baincd](https://github.com/baincd)
+- PR97 corrige le chemin pour le markdown rendu, fixer grâce à [baincd](https://github.com/baincd)
+- PR97 corrige le réglage de l’interface utilisateur `extensionKind` dans `package.json`, fixer grâce à [baincd](https://github.com/baincd)
+- PR96 corrige extensionKind UI réglage dans package.json, fixer grâce à [baincd](https://github.com/baincd)
+- PR94 met à jour README pour clarifier les différences significatives entre le navigateur et la recommandation du navigateur, grâce à [baincd](https://github.com/baincd)
+- PR92 implémente un délai d’attente pour le serveur Web intégré, grâce à [baincd](https://github.com/baincd)
 ### 0.9.3
 - Autres mises à jour pour le support linguistique
 - Problème 88 Essayer d’imprimer un nouveau fichier qui n’existe pas dans le système de fichiers provoquerait un message d’erreur, une régression causée par des changements internes à l’appui de l’impression d'un repértoire, corrigé grâce à [baincd](https://github.com/baincd)
@@ -90,7 +98,7 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ### 0.7.15
 
-- Problème 64 - images locales ont été brisées parce que Microsoft a modifié VS Code. Le rendu de balisage ne réécrit plus les références de ressources aux chemins de fichiers préfixés, ils sont maintenant passés par inchangé. L’extension gère désormais le mappage au système de fichiers.
+- Problème 64 - images locales ont été brisées parce que Microsoft a modifié VS Code. Le rendu de markdown ne réécrit plus les références de ressources aux chemins de fichiers préfixés, ils sont maintenant passés par inchangé. L’extension gère désormais le mappage au système de fichiers.
 
 ### 0.7.14
 

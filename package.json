@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "VS Code Printing Free",
   "description": "Syntax-coloured line-numbered printing in VS Code.",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "icon": "PDCONSEC-zipper-PRINTER2.png",
   "author": {
     "name": "Peter Wone",
@@ -236,7 +236,7 @@
     "vscode-nls-dev": "^3.3.1",
     "vscode-test": "^1.4.1",
     "webpack": "^5.4.0",
-    "webpack-cli": "^4.2.0"
+    "webpack-cli": "^4.6.0"
   },
   "dependencies": {
     "@types/highlight.js": "^10.1.0",

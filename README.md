@@ -59,6 +59,14 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.9.4
+- Update assets to compensate changes in Visual Studio Code 1.56
+- PR101 display error message when browser launch fails, fix thanks to [baincd](https://github.com/baincd)
+- PR97 rendered markdown path fixes, fix thanks to [baincd](https://github.com/baincd)
+- PR96 correct extensionKind UI setting in package.json, fix thanks to [baincd](https://github.com/baincd)
+- PR94 update README to clarify browser differences and recommendation, fix thanks to [baincd](https://github.com/baincd)
+- PR92 implements webserver timeout, thanks to [baincd](https://github.com/baincd)
+
 ### 0.9.3
 - Further updates for language support
 - Issue 88 Trying to print a new file that does not exist in the filesystem would cause an error message, a regression caused by internal changes in support of folder printing, fix thanks to [baincd](https://github.com/baincd)

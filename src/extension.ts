@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as hljs from "highlight.js";
 import * as http from "http";
+import * as dns from "dns";
 import * as child_process from "child_process";
 import * as fs from "fs";
 import { AddressInfo } from 'net';
@@ -133,10 +134,10 @@ async function print(filePath: string) {
 
   let printConfig = vscode.workspace.getConfiguration("print", null);
   let cmd = printConfig.alternateBrowser && printConfig.browserPath ? `"${printConfig.browserPath}"` : browserLaunchMap[process.platform];
-  child_process.exec(`${cmd} http://localhost:${port}/`,(error: child_process.ExecException | null, stdout: string, stderr: string) => {
+  child_process.exec(`${cmd} http://localhost:${port}/`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
     vscode.window.showErrorMessage(`Error Attempting to Print: ${error ? error.message : stderr}`);
     console.error("Print Error: " + error);
-  } );
+  });
 }
 
 function getFileText(fname: string): string {
@@ -266,13 +267,12 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
     try {
       // 1 - prepend base local path to relative URLs
       let basePath = filePath.replace(/\\/g, "/") // forward slashes only, they work on all platforms
-                             .replace(/\/[^\/]*$/, ""); // clip file name
+        .replace(/\/[^\/]*$/, ""); // clip file name
       content = content.replace(/(img src=")(?!http[s]?)(?![a-z]:)(?!\/)([^"]+)/gi, `$1${basePath}/$2`);
       // 2 - encode colons, spaces, and other special chars in file path parts
-      content = content.replace(/(img src=")(?!http[s]?)([^"]+)/gi, ($0, $1, $2: string) => 
-          $1 + $2.split("/").map(encodeURIComponent).join("/") );
+      content = content.replace(/(img src=")(?!http[s]?)([^"]+)/gi, ($0, $1, $2: string) =>
+        $1 + $2.split("/").map(encodeURIComponent).join("/"));
     } catch (error) {
-      debugger;
     }
     let result = `<!DOCTYPE html><html><head><title>${filePath}</title>
     <meta charset="utf-8"/>
@@ -426,6 +426,9 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
   return new Promise(async (resolve, reject) => {
     // prepare to service an http request
     server = http.createServer(async (request, response) => {
+      if (!connectingToLocalhost(request)) {
+        return request.socket.end();
+      }
       try {
         if (request.url) {
           if (request.url === "/") {
@@ -465,7 +468,7 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
     });
     let printConfig = vscode.workspace.getConfiguration("print", null);
     server.listen();
-    const webserverUptimeSecs = printConfig.get<number>("webserverUptimeSeconds",0);
+    const webserverUptimeSecs = printConfig.get<number>("webserverUptimeSeconds", 0);
     if (webserverUptimeSecs) {
       serverTimeout = setTimeout(() => {
         stopWebServer();
@@ -479,7 +482,7 @@ function stopWebServer() {
     clearTimeout(serverTimeout);
     serverTimeout = undefined;
   }
-  if (server) { 
+  if (server) {
     server.close();
     server = undefined;
     port = 0;
@@ -488,4 +491,23 @@ function stopWebServer() {
 
 export function deactivate() {
   stopWebServer();
+}
+
+const localhostAddresses: String[] = ["::1", "::ffff:127.0.0.1", "127.0.0.1"]
+dns.lookup("localhost", { all: true, family: 4 }, (err, addresses) => {
+  addresses
+    .map(a => a.address)
+    .filter(a => localhostAddresses.indexOf(a) < 0)
+    .forEach(a => { localhostAddresses.push(a); localhostAddresses.push("::ffff:" + a); });
+})
+dns.lookup("localhost", { all: true, family: 6 }, (err, addresses) => {
+  addresses
+    .map(a => a.address)
+    .filter(a => localhostAddresses.indexOf(a) < 0)
+    .forEach(a => localhostAddresses.push(a));
+})
+
+function connectingToLocalhost(request: http.IncomingMessage): boolean {
+  console.log(request.socket.localAddress)
+  return localhostAddresses.indexOf(request.socket.localAddress) >= 0;
 }
