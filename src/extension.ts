@@ -477,20 +477,8 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
   });
 }
 
-function stopWebServer() {
-  if (serverTimeout) {
-    clearTimeout(serverTimeout);
-    serverTimeout = undefined;
-  }
-  if (server) {
-    server.close();
-    server = undefined;
-    port = 0;
-  }
-}
-
 export function deactivate() {
-  stopWebServer();
+  if (server) { server.close(); }
 }
 
 const localhostAddresses: String[] = ["::1", "::ffff:127.0.0.1", "127.0.0.1"]
