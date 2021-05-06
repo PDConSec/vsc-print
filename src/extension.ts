@@ -134,7 +134,10 @@ async function print(filePath: string) {
 
   let printConfig = vscode.workspace.getConfiguration("print", null);
   let cmd = printConfig.alternateBrowser && printConfig.browserPath ? `"${printConfig.browserPath}"` : browserLaunchMap[process.platform];
-  child_process.exec(`${cmd} http://localhost:${port}/`);
+  child_process.exec(`${cmd} http://localhost:${port}/`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
+    vscode.window.showErrorMessage(`Error Attempting to Print: ${error ? error.message : stderr}`);
+    console.error("Print Error: " + error);
+  });
 }
 
 function getFileText(fname: string): string {
@@ -260,17 +263,16 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
   if (printConfig.renderMarkdown && filePath.toLowerCase().split('.').pop() === "md") {
     let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
     let raw = fs.readFileSync(filePath).toString();
-    let content = md.render(raw);
+    let content: String = md.render(raw);
     try {
       // 1 - prepend base local path to relative URLs
-      let a = filePath.replace(/\\/g, "/"); // forward slashes only, they work on all platforms
-      let b = a.substring(0, a.lastIndexOf("/")); // clip file name
-      let c = b.replace(/([a-z]):/i, "$1C/O/L/O/N"); // escape colon on Windows
-      content = content.replace(/(img src=")(?!http[s]?)(?![a-z]:)([^"]+)/gi, `$1${c}/$2`);
-      // 2 - escape colon in embedded file paths
-      content = content.replace(/(img src="[a-z]):([^"]*)/gi, `$1C/O/L/O/N/$2`);
+      let basePath = filePath.replace(/\\/g, "/") // forward slashes only, they work on all platforms
+        .replace(/\/[^\/]*$/, ""); // clip file name
+      content = content.replace(/(img src=")(?!http[s]?)(?![a-z]:)(?!\/)([^"]+)/gi, `$1${basePath}/$2`);
+      // 2 - encode colons, spaces, and other special chars in file path parts
+      content = content.replace(/(img src=")(?!http[s]?)([^"]+)/gi, ($0, $1, $2: string) =>
+        $1 + $2.split("/").map(encodeURIComponent).join("/"));
     } catch (error) {
-      debugger;
     }
     let result = `<!DOCTYPE html><html><head><title>${filePath}</title>
     <meta charset="utf-8"/>
@@ -417,8 +419,10 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
 
 var server: http.Server | undefined;
 var port: number;
+let serverTimeout: NodeJS.Timeout | undefined;
 
 function startWebserver(generateSource: () => Promise<string>): Promise<void> {
+  stopWebServer();
   return new Promise(async (resolve, reject) => {
     // prepare to service an http request
     server = http.createServer(async (request, response) => {
@@ -432,7 +436,7 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
             let html = await generateSource();
             response.end(html);
           } else {
-            let filePath: string = request.url.substr(1).replace(/C\/O\/L\/O\/N/g, ":");
+            let filePath: string = decodeURIComponent(request.url).replace(/^\/([a-z]:)/, "$1"); // Remove leading / on Windows paths
             let cb = fs.statSync(filePath).size;
             let lastdotpos = request.url.lastIndexOf('.');
             let fileExt = request.url.substr(lastdotpos + 1);
@@ -464,6 +468,12 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
     });
     let printConfig = vscode.workspace.getConfiguration("print", null);
     server.listen();
+    const webserverUptimeSecs = printConfig.get<number>("webserverUptimeSeconds", 0);
+    if (webserverUptimeSecs) {
+      serverTimeout = setTimeout(() => {
+        stopWebServer();
+      }, webserverUptimeSecs * 1000);
+    }
   });
 }
 
@@ -471,18 +481,18 @@ export function deactivate() {
   if (server) { server.close(); }
 }
 
-const localhostAddresses: String[] = ["::1","::ffff:127.0.0.1","127.0.0.1"]
+const localhostAddresses: String[] = ["::1", "::ffff:127.0.0.1", "127.0.0.1"]
 dns.lookup("localhost",{all: true, family: 4},(err, addresses) => {
-    addresses
-      .map(a => a.address)
-      .filter(a => localhostAddresses.indexOf(a) < 0)
-      .forEach(a => {localhostAddresses.push(a); localhostAddresses.push("::ffff:" + a);});
+  addresses
+    .map(a => a.address)
+    .filter(a => localhostAddresses.indexOf(a) < 0)
+    .forEach(a => {localhostAddresses.push(a); localhostAddresses.push("::ffff:" + a);});
 })
 dns.lookup("localhost",{all: true, family: 6},(err, addresses) => {
-    addresses
-      .map(a => a.address)
-      .filter(a => localhostAddresses.indexOf(a) < 0)
-      .forEach(a => localhostAddresses.push(a));
+  addresses
+    .map(a => a.address)
+    .filter(a => localhostAddresses.indexOf(a) < 0)
+    .forEach(a => localhostAddresses.push(a));
 })
 
 function connectingToLocalhost(request: http.IncomingMessage):boolean {

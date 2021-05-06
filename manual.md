@@ -2,7 +2,7 @@
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
-[ENGLISH](manual.md) | [FRENCH](manual.fra.md) | [РУССКИЕ](manual.rus.md) | [Add a language](how-to-add-a-language.md)
+[ENGLISH](manual.md) | [FRENCH](manual.fra.md) | [Add a language](how-to-add-a-language.md)
 
 ## Printing
 
@@ -38,6 +38,7 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.lineNumbers` : on, off or inherit (do same as editor)
 * `print.lineSpacing` : single, line-and-a-half or double spaced
 * `print.printAndClose` : after printing, close the browser
+* `print.webserverUptimeSeconds` : number of seconds to keep the web server running
 * `print.folder.include`: pattern for files to include. Empty matches everything.
 * `print.folder.exclude`: patterns to exclude
 * `print.folder.maxLines`: files containing more lines than this threshold will be ignored
@@ -51,12 +52,12 @@ The _size_ of printed text is a Print setting because the size that works best o
 
 #### A note on nomenclature
 
-A font defines *all* of the folloing:
+A font defines *all* of the following:
 * **typeface** eg Consolas or Fira Code
 * **treatment** eg bold, italic
 * **size** eg 12pt
 
-"Fira Code" is a typeface, not a font. "Fira Code 12pt Bold" is a font. Bold and italic are _treatments_. Yes, I know you download font files. In the days before TrueType there was a separate file per size and treatment combination and it really was a font file.
+"Fira Code" is a typeface, not a font. "Fira Code 12pt Bold" is a font. Bold and italic are _treatments_. Yes, I know you download font files. In the days before TrueType there was a separate file per size and treatment combination and it really was a font file. "Scalable font" is a contradiction in terms. 
 
 #### If you want a font size other than the sizes listed in the picker
 1. Change the size using the picker to conveniently create an entry in the settings.
