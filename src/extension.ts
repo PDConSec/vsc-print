@@ -437,12 +437,18 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
             response.end(html);
           } else {
             let filePath: string = decodeURIComponent(request.url).replace(/^\/([a-z]:)/, "$1"); // Remove leading / on Windows paths
-            let cb = fs.statSync(filePath).size;
-            let lastdotpos = request.url.lastIndexOf('.');
-            let fileExt = request.url.substr(lastdotpos + 1);
-            response.setHeader("Content-Type", `image/${fileExt}`);
-            response.setHeader("Content-Length", cb);
-            fs.createReadStream(filePath).pipe(response);
+            if (fs.existsSync(filePath)) {
+              let cb = fs.statSync(filePath).size;
+              let lastdotpos = request.url.lastIndexOf('.');
+              let fileExt = request.url.substr(lastdotpos + 1);
+              response.setHeader("Content-Type", `image/${fileExt}`);
+              response.setHeader("Content-Length", cb);
+              fs.createReadStream(filePath).pipe(response);
+            } else {
+              // 404
+              response.writeHead(404, { "Content-Type": "text/html" })
+              response.end("FILE NOT FOUND")
+            }
           }
         }
       } catch (error) {
