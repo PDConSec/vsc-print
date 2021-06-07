@@ -6,6 +6,19 @@
 
 [ENGLISH](README.md) | [FRENCH](README.fra.md) | [Add a language](how-to-add-a-language.md)
 
+## Markdown and source code, styled for reading
+
+* Print source code
+* Print markdown fully rendered
+
+Source code gets line numbers and syntax colouring. Markdown is rendered with VS Code's preview rendering pipeline &mdash; many markdown extensions work with printing.
+
+## Platform independent printing
+
+Print-jobs are rendered as styled HTML and served from an embedded webserver. When you print, your local web browser is launched to load and print. So if you have a local browser that can print, and VS Code can launch it, you're in business. Known user platforms include Windows, Linux and OSX.
+
+## Classic user experience
+
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
 
 The print icon on the toolbar prints the document in the active editor.
