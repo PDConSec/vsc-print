@@ -19,7 +19,17 @@ Print-jobs are rendered as styled HTML and served from an embedded webserver. Wh
 
 ### Troubleshooting on first launch
 
-If you try to print and nothing happens, restart VS Code. If it still doesn't work, your system has a configuration or permission problem that won't let the browser launch. The default Firefox browser on Ubuntu gives trouble out of the box. Install Chromium and use that. If you don't want Chromium for your daily browser then install Chromium but leave Firefox as your default browser. Read the manual for details of how to use a specific browser for printing.
+#### Nothing happens
+
+If you try to print and nothing happens, restart VS Code. If it still doesn't work, your system has a configuration or permission problem that won't let the browser launch. The default Firefox browser on Ubuntu gives trouble out of the box. Install Chromium and use that. Don't forget to make Chromium the default browser. If you don't want Chromium to be the default browser, leave Firefox as the default and read the manual for details of how to use a specific browser for printing and use Chromium to print.
+
+#### Browser launches but no page loads
+
+Your settings are interfering with the embedded webserver. Aggressively locked-down network settings can do this. It's probably permissions. Whoever interfered with networking permissions should troubleshoot this.
+
+#### Browser launches and shows an error message instead of a print-job
+
+Read the error. Generally it's some sort of permission denied on aggressively locked down systems.
 
 ## Classic user experience
 
