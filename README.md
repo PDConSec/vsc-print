@@ -15,7 +15,11 @@ Source code gets line numbers and syntax colouring. Markdown is rendered with VS
 
 ## Platform independent printing
 
-Print-jobs are rendered as styled HTML and served from an embedded webserver. When you print, your local web browser is launched to load and print. So if you have a local browser that can print, and VS Code can launch it, you're in business. Known user platforms include Windows, Linux and OSX.
+Print-jobs are rendered as styled HTML and served from an embedded webserver. When you print, your local web browser is launched to load and print. So if you have a local browser that can print, and VS Code can launch it, you're in business. Known user platforms include Windows, Linux and OSX. 
+
+### Troubleshooting on first launch
+
+If you try to print and nothing happens, restart VS Code. If it still doesn't work, your system has a configuration or permission problem that won't let the browser launch. The default Firefox browser on Ubuntu gives trouble out of the box. Install Chromium and use that. If you don't want Chromium for your daily browser then install Chromium but leave Firefox as your default browser. Read the manual for details of how to use a specific browser for printing.
 
 ## Classic user experience
 
