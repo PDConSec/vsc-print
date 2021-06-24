@@ -1,4 +1,4 @@
-# Visual Studio Code Printing
+# Visual Studio Code Printing TRANSLATE ME
 
 [Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
 

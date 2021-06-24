@@ -1,4 +1,4 @@
-# Visual Studio Code Printing
+# Visual Studio Code Printing TRANSLATE ME
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 

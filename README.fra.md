@@ -57,6 +57,10 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.9.7
+
+- Correction des ressources manquantes en raison d’une mise à jour défectueuse dans l’outil d’empaquetage et de publication d’extensions de Microsoft (le retour à une version antérieure a résolu les ressources manquantes)
+
 ### 0.9.6
 
 - Changer le slogan du marché.
