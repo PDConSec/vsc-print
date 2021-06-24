@@ -84,9 +84,25 @@ The browser used will affect your experience.  Chrome is the recommended browser
 
 ## Known Issues
 
+Using some command line options with Chrome causes errors to be reported, even though printing succeeds. 
+
+You can't supply command-line options on the alternate browser path. Create a batch file in the same directory as the Chrome executable and use this to specify the options you require. Instead of the executable, supply VS Code with the path to the batch file. Don't forget to pass through the URL parameter.
+
+```dos
+chrome --disable-plugins %1
+```
+
+Some Chrome plugins interfere with print job styling. Don't use `--incognito` to disable plugins, use `--disable-plugins`. In line with security best practice we launch the browser with limited permissions. Anything that tries to manipulate profiles (like incognito) will trigger an error message.
+
 KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
+
+### 0.9.5
+
+- Security updates
+- Work-around new bug in nodejs. The error handler is now always invoked when the browser is launched, and it is necessary to check whether the error object is null. This has caused spurious errors to be reported even though printing succeeds.
+- Update readme to promote the (apparently rare) ability to print rendered Markdown. Thanks to Andy Barratt for suggesting this in his review.
 
 ### 0.9.4
 - Update assets to compensate changes in Visual Studio Code 1.56

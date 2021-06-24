@@ -45,6 +45,10 @@ L'impression de code VS est hautement configurable. Les paramètres peuvent êtr
 
 ## Problèmes connus
 
+L’utilisation de certaines options de ligne de commande avec Chrome provoque le signalement d’erreurs, même si l’impression réussit. 
+
+Vous ne pouvez pas fournir d’options de ligne de commande sur l’autre chemin d’accès du navigateur. Créez un fichier de commandes dans le même répertoire que l’exécutable Chrome et utilisez-le pour spécifier les options dont vous avez besoin. Au lieu de l’exécutable, fournissez VS Code avec le chemin d’accès au fichier de commandes. N’oubliez pas de transmettre le paramètre URL.
+
 Rendre la tabulation imprimée respecter le paramètre de taille de tabulation de l'éditeur dépend de la propriété expérimentale `tab-size` CSS. Cela ne fonctionne pas sur Edge Classique. 
 
 Chrome se souvient trop des imprimantes, de la taille du papier et des marges, surtout si vous avorez.
@@ -52,6 +56,12 @@ Chrome se souvient trop des imprimantes, de la taille du papier et des marges, s
 KaTeX nécessite une connexion Internet. Vous devez également configurer une référence d'une feuille de style. Les détails sont au manuel.
 
 ## Notes de version
+
+### 0.9.5 
+
+* Mises à jour de sécurité
+* Contourner la nouvelle faille dans nodejs. Le gestionnaire d’erreurs est désormais toujours appelé lorsque le navigateur est lancé, et il est nécessaire de vérifier si l’objet error est null. Cela a entraîné le signalement de fausses erreurs même si l’impression réussit.
+* Mettez à jour le fichier readme pour promouvoir la capacité (apparemment rare) d’imprimer le Markdown rendu. Merci à Andy Barratt de l’avoir suggéré dans sa revue.
 
 ### 0.9.4
 - Mettre à jour les actifs pour compenser les modifications apportées au Code Visual Studio 1.56

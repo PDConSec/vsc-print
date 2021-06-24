@@ -3,6 +3,12 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.9.5
+
+- Security updates
+- Work-around new bug in nodejs. The error handler is now always invoked when the browser is launched, and it is necessary to check whether the error object is null. This has caused spurious errors to be reported even though printing succeeds.
+- Update readme to promote the (apparently rare) ability to print rendered Markdown. Thanks to Andy Barratt for suggesting this in his review.
+
 ### 0.9.4
 - Update assets to compensate changes in Visual Studio Code 1.56
 - PR101 display error message when browser launch fails, fix thanks to [baincd](https://github.com/baincd)
