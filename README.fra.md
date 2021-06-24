@@ -57,6 +57,10 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ## Notes de version
 
+### 0.9.6
+
+- Changer le slogan du marché.
+
 ### 0.9.5 
 
 * Mises à jour de sécurité

@@ -98,6 +98,10 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.9.6
+
+- Change marketplace tag line.
+
 ### 0.9.5
 
 - Security updates
