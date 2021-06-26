@@ -3,6 +3,11 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.9.8
+
+- Adjust tag line to ensure that Markdown is mentioned when it is clipped.
+- Capitalise all references to Markdown in readme file.
+
 ### 0.9.7
 
 - Fix missing assets due to broken update in Microsoft's extension packaging and publishing tool (reversion to an earlier version resolved the missing assets)
@@ -20,7 +25,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### 0.9.4
 - Update assets to compensate changes in Visual Studio Code 1.56
 - PR101 display error message when browser launch fails, fix thanks to [baincd](https://github.com/baincd)
-- PR97 rendered markdown path fixes, fix thanks to [baincd](https://github.com/baincd)
+- PR97 rendered Markdown path fixes, fix thanks to [baincd](https://github.com/baincd)
 - PR96 correct extensionKind UI setting in package.json, fix thanks to [baincd](https://github.com/baincd)
 - PR94 update README to clarify browser differences and recommendation, fix thanks to [baincd](https://github.com/baincd)
 - PR92 webserver timeout, fix thanks to [baincd](https://github.com/baincd)
@@ -105,10 +110,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Menu and icon availability now determined from editorLangId rather than resourceLangId. This should allow printing of unsaved documents and unrecognised file types per issues 31 and 32.
 
 ### 0.7.1
-Now using VS Code's markdown rendering pipeline.
+Now using VS Code's Markdown rendering pipeline.
 - faster load
 - smaller memory footprint
-- markdown extensions like [Markdown+Math](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath) take effect when printing
+- Markdown extensions like [Markdown+Math](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath) take effect when printing
 
 ### 0.7.0
 - Bump minor version as 0.6.13 introduced new settings changing the UX
@@ -155,11 +160,11 @@ Documentation tweak.
 Fixed free-port finder for embedded webserver.
 
 ## 0.5.1
-- Apply styling to rendered markdown when printing.
+- Apply styling to rendered Markdown when printing.
 - Moved default internal webserver port away from the start of the dynamic port range to reduce the chance of collision. When a collision occurs there is an automatic adjustment but there is a bug requiring manual retry.
 
 ## 0.5.0
-Render markdown when printing.
+Render Markdown when printing.
 
 ## 0.4.0
 - Fix page-breaking by dropping @page margins and delegating margin control to the browser.

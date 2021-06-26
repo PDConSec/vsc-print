@@ -6,32 +6,32 @@
 
 [ENGLISH](README.md) | [FRENCH](README.fra.md) | [Add a language](how-to-add-a-language.md)
 
-## Markdown and source code, styled for reading
+## Markdown and source code, styled for print
 
 * Print source code
-* Print markdown fully rendered
+* Print Markdown fully rendered
 
-Source code gets line numbers and syntax colouring. Markdown is rendered with VS Code's preview rendering pipeline &mdash; many markdown extensions work with printing.
+Source code gets line numbers and syntax colouring. Markdown is rendered with VS Code's preview rendering pipeline &mdash; many Markdown extensions work with printing.
 
 ## Platform independent printing
 
-Print-jobs are rendered as styled HTML and served from an embedded webserver. When you print, your local web browser is launched to load and print. So if you have a local browser that can print, and VS Code can launch it, you're in business. Known user platforms include Windows, Linux and OSX. 
+Print-jobs are rendered as styled HTML and served from an embedded webserver. When you print, your local web browser is launched to load the print-job and give you printing options like page orientation and margin size. So if you have a local browser that can print, and VS Code can launch it, you're in business. Known user platforms include Windows, Linux and OSX. 
 
 ### Troubleshooting on first launch
 
 VSCode Printing Free worked for thirty thousand people out of the box, but sometimes local settings and permissions can spoil the fun. Here are the problems we've seen so far. If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
 
-#### Nothing happens
+#### Nothing seems to happen
 
-If you try to print and nothing happens, restart VS Code. If it still doesn't work, your system has a configuration or permission problem that won't let the browser launch. The default Firefox browser on Ubuntu gives trouble out of the box. Install Chromium (or Chrome, Edge, Brave...) and make it the default browser. If you don't want to make Chromium the default browser, read the manual for details of how to use a specific browser for printing and use Chromium to print.
+If you try to print and nothing happens, restart VS Code. If it still doesn't work, your system may have a configuration or permission problem that won't let the browser launch. The default Firefox browser on Ubuntu gives trouble out of the box. Install Chromium (or Chrome, Edge, Brave...) and make it the default browser. If you don't want to make Chromium the default browser, read the manual for details of how to use a specific browser for printing and use Chromium to print.
 
 #### Browser launches but no page loads
 
-Your settings are interfering with the embedded webserver. Aggressively locked-down network settings can do this. It's probably permissions. Whoever interfered with networking permissions should troubleshoot this.
+Your system settings are likely interfering with the embedded webserver. Aggressively locked-down network settings can do this. It's probably permissions. Whoever interfered with networking permissions should troubleshoot this.
 
 #### Browser launches and shows an error message instead of a print-job
 
-Read the error. Generally it's some sort of permission denied on aggressively locked down systems.
+Examine the error message. Generally it's some sort of permission denied on aggressively locked down systems.
 
 ## Classic user experience
 
@@ -98,6 +98,11 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.9.8
+
+- Adjust tag line to ensure that Markdown is mentioned when it is clipped.
+- Capitalise all references to Markdown in readme file.
+
 ### 0.9.7
 
 - Fix missing assets due to broken update in Microsoft's extension packaging and publishing tool (reversion to an earlier version resolved the missing assets)
@@ -115,7 +120,7 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 ### 0.9.4
 - Update assets to compensate changes in Visual Studio Code 1.56
 - PR101 display error message when browser launch fails, fix thanks to [baincd](https://github.com/baincd)
-- PR97 rendered markdown path fixes, fix thanks to [baincd](https://github.com/baincd)
+- PR97 rendered Markdown path fixes, fix thanks to [baincd](https://github.com/baincd)
 - PR96 correct extensionKind UI setting in package.json, fix thanks to [baincd](https://github.com/baincd)
 - PR94 update README to clarify browser differences and recommendation, fix thanks to [baincd](https://github.com/baincd)
 - PR92 implements webserver timeout, thanks to [baincd](https://github.com/baincd)
@@ -198,10 +203,10 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ### 0.7.1
 
-Now using VS Code's markdown rendering pipeline.
+Now using VS Code's Markdown rendering pipeline.
 - faster load
 - smaller memory footprint
-- markdown extensions like [Markdown+Math](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath) take effect when printing
+- Markdown extensions like [Markdown+Math](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath) take effect when printing
 
 ### 0.7.0
 
