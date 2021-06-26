@@ -1,8 +1,8 @@
 {
   "name": "vscode-print",
   "displayName": "VS Code Printing Free",
-  "description": "Syntax-colouring. Line numbers. Fully rendered markdown.",
-  "version": "0.9.7",
+  "description": "Print rendered Markdown and code with syntax-colouring and line numbers.",
+  "version": "0.9.8",
   "icon": "PDCONSEC-zipper-PRINTER2.png",
   "author": {
     "name": "Peter Wone",

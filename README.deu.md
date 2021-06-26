@@ -1,4 +1,6 @@
-# Visual Studio Code Printing TRANSLATE ME
+# Visual Studio Code Printing 
+
+TRANSLATE ME
 
 [Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
 
@@ -9,13 +11,13 @@
 ## Markdown and source code, styled for reading
 
 * Print source code
-* Print markdown fully rendered
+* Print Markdown fully rendered
 
-Source code gets line numbers and syntax colouring. Markdown is rendered with VS Code's preview rendering pipeline &mdash; many markdown extensions work with printing.
+Source code gets line numbers and syntax colouring. Markdown is rendered with VS Code's preview rendering pipeline &mdash; many Markdown extensions work with printing.
 
 ## Platform independent printing
 
-Print-jobs are rendered as styled HTML and served from an embedded webserver. When you print, your local web browser is launched to load and print. So if you have a local browser that can print, and VS Code can launch it, you're in business. Known user platforms include Windows, Linux and OSX. 
+Print-jobs are rendered as styled HTML and served from an embedded webserver. When you print, your local web browser is launched to load the print-job and give you printing options like page orientation and margin size. Known user platforms include Windows, Linux and OSX. 
 
 ### Troubleshooting on first launch
 
@@ -98,6 +100,11 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.9.8
+
+- Adjust tag line to ensure that Markdown is mention when it is clipped.
+- Capitalise all references to Markdown in readme file.
+
 ### 0.9.7
 
 - Fix missing assets due to broken update in Microsoft's extension packaging and publishing tool (reversion to an earlier version resolved the missing assets)
@@ -115,7 +122,7 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 ### 0.9.4
 - Update assets to compensate changes in Visual Studio Code 1.56
 - PR101 display error message when browser launch fails, fix thanks to [baincd](https://github.com/baincd)
-- PR97 rendered markdown path fixes, fix thanks to [baincd](https://github.com/baincd)
+- PR97 rendered Markdown path fixes, fix thanks to [baincd](https://github.com/baincd)
 - PR96 correct extensionKind UI setting in package.json, fix thanks to [baincd](https://github.com/baincd)
 - PR94 update README to clarify browser differences and recommendation, fix thanks to [baincd](https://github.com/baincd)
 - PR92 implements webserver timeout, thanks to [baincd](https://github.com/baincd)
@@ -198,10 +205,10 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ### 0.7.1
 
-Now using VS Code's markdown rendering pipeline.
+Now using VS Code's Markdown rendering pipeline.
 - faster load
 - smaller memory footprint
-- markdown extensions like [Markdown+Math](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath) take effect when printing
+- Markdown extensions like [Markdown+Math](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath) take effect when printing
 
 ### 0.7.0
 

@@ -34,7 +34,7 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.editorContextMenuItemPosition` : the position of `Print` in the editor context menu
 * `print.editorTitleMenuButton` : show print button in the editor title menu
 * `print.fontSize` : the font size (options from 6 to 13 pt)
-* `print.formatMarkdown` : render markdown as styled HTML when printing
+* `print.formatMarkdown` : render Markdown as styled HTML when printing
 * `print.lineNumbers` : on, off or inherit (do same as editor)
 * `print.lineSpacing` : single, line-and-a-half or double spaced
 * `print.printAndClose` : after printing, close the browser
@@ -94,7 +94,7 @@ Don't use dark theme stylesheets. Paper is white.
 
 Note that the web server only allows connections to localhost.  Connections not to localhost will be rejected.
 
-## Katex markdown extension
+## Katex Markdown extension
 This depends on CSS and fonts from the web. To get printing to work you must add the required stylesheet to your settings.
 
 		"markdown.styles": [

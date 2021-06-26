@@ -34,7 +34,7 @@ Cette extension comporte les paramètres suivants, qui peuvent être modifiés e
 * `print.editorContextMenuItemPosition` : la position de la commande `Imprimer` au menu contextuel de l'éditeur
 * `print.editorTitleMenuButton` : afficher le bouton Imprimer dans le menu titre de l’éditeur
 * `print.fontSize` : la taille de lettrage (options de 6 à 13 pt)
-* `print.formatMarkdown` : rendre le markdown comme HTML stylé lors de l'impression
+* `print.formatMarkdown` : rendre le Markdown comme HTML stylé lors de l'impression
 * `print.lineNumbers` : on, off ou inherit (faire la même chose que l'éditeur)
 * `print.lineSpacing` : simple, ligne et demie ou double espacement
 * `print.printAndClose` : après l'impression, fermez le navigateur.
@@ -73,7 +73,7 @@ Les couleurs utilisées pour la mise en surbrillance syntaxe peuvent être styli
 
 Le paramètre indique la copie mise en cache, donc si vous effectuez des modifications, vous devez répéter le processus d'importation.
 
-## Extension de markdown de Katex
+## Extension de Markdown de Katex
 Cela dépend de CSS et polices des caractères du web. Pour que l'impression fonctionne, vous devez ajouter la feuille de style requise à vos paramètres.
 
 		"markdown.styles": [

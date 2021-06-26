@@ -4,7 +4,34 @@
 
 [ENGLISH](README.md) | [FRENCH](README.fra.md) | [Add a language](how-to-add-a-language.md)
 
+## Markdown et code source, stylisé pour l’impression
 
+* Imprimer le code source
+* Impression Markdown entièrement rendu
+
+Le code source obtient les numéros de ligne et la coloration de la syntaxe. Markdown est rendu avec le pipeline de rendu d’aperçu de VS Code &mdash ; de nombreuses extensions Markdown fonctionnent avec l’impression.
+
+## Impression indépendante du système d’exploitation
+
+Les travaux d’impression sont rendus au format HTML stylisé et servis à partir d’un serveur Web incorporé. Lorsque vous imprimez, votre navigateur Web local est lancé pour charger le travail d’impression et vous donner des options d’impression telles que l’orientation de la page et la taille de la marge. Donc, si vous avez un navigateur local qui peut imprimer, et VS Code peut le lancer, vous êtes en affaires. Les plates-formes utilisateur connues incluent Windows, Linux et OSX.
+
+### Dépannage au premier lancement
+
+VSCode Printing Free a parfaitement fonctionné pour des milliers de personnes prêt à l’emploi, mais parfois les paramètres et les autorisations locaux peuvent gâcher le plaisir. Voici les problèmes que nous avons vus jusqu’à présent. Si quelque chose d’autre ne va pas, ou si vous avez une idée d’amélioration, nous vous invitons à enregistrer un problème sur le référentiel GitHub.
+
+#### Rien ne semble se passer
+
+Si vous essayez d’imprimer et que rien ne se produit, redémarrez VS Code. Si cela ne fonctionne toujours pas, votre système peut avoir un problème de configuration ou d’autorisation qui ne laissera pas le navigateur se lancer. Le navigateur Firefox par défaut sur Ubuntu donne des problèmes hors de la boîte. Installez Chromium (ou Chrome, Edge, Brave...) et faites-en le navigateur par défaut. Si vous ne souhaitez pas faire de Chromium le navigateur par défaut, lisez le manuel pour plus de détails sur l’utilisation d’un navigateur spécifique pour l’impression et utilisez Chromium pour imprimer.
+
+#### Lancement du navigateur mais aucune page ne se charge
+
+Vos paramètres système interfèrent probablement avec le serveur Web intégré. Les paramètres réseau fortement verrouillés peuvent le faire. Il s’agit probablement d’autorisations. Toute personne interférait avec les autorisations réseau doit résoudre ce problème.
+
+#### Le navigateur se lance et affiche un message d’erreur au lieu d’un travail d’impression
+
+Examinez le message d’erreur. En général, il s’agit d’une sorte d’autorisation refusée sur des systèmes étroitement verrouillés.
+
+## Expérience utilisateur classique
 
 ![Toolbar snap with print icon](https://user-images.githubusercontent.com/5498936/53408273-d853d480-3a09-11e9-8936-d37189dce8c5.PNG)
 
@@ -45,17 +72,25 @@ L'impression de code VS est hautement configurable. Les paramètres peuvent êtr
 
 ## Problèmes connus
 
+Les paramètres des fonctionnalités fournies par l’utilisateur ne sont pas encore localisés.
+
 L’utilisation de certaines options de ligne de commande avec Chrome provoque le signalement d’erreurs, même si l’impression réussit. 
 
-Vous ne pouvez pas fournir d’options de ligne de commande sur l’autre chemin d’accès du navigateur. Créez un fichier de commandes dans le même répertoire que l’exécutable Chrome et utilisez-le pour spécifier les options dont vous avez besoin. Au lieu de l’exécutable, fournissez VS Code avec le chemin d’accès au fichier de commandes. N’oubliez pas de transmettre le paramètre URL.
+Sous Windows, vous ne pouvez pas fournir d’options de ligne de commande sur le chemin alternatif d’accès du navigateur, car nous plaçons automatiquement des guillemets autour de votre chemin d’accès en cas d’espaces dans les noms de fichiers ou de répertoires. (Sur d’autres systemes d'exploitation, le devis automatique n’est pas effectué et vous devez échapper manuellement les espaces dans les noms de fichiers et de répertoires.) Contourner ce problème en créant un fichier de commandes dans le même répertoire que l’exécutable du navigateur et en l’utilisant pour spécifier les options dont vous avez besoin. Pour le chemin d’accès du navigateur, spécifiez le chemin d’accès au fichier de commandes.
 
-Rendre la tabulation imprimée respecter le paramètre de taille de tabulation de l'éditeur dépend de la propriété expérimentale `tab-size` CSS. Cela ne fonctionne pas sur Edge Classique. 
+N’oubliez pas d’inclure le paramètre URL.
 
-Chrome se souvient trop des imprimantes, de la taille du papier et des marges, surtout si vous avorez.
+Certains plugins de navigateur interfèrent avec le style des travaux d’impression. Pour la famille Chromium, n’utilisez pas `--disable-plugins` car si une instance de navigateur est déjà en cours d’exécution, cette option ne fonctionne pas. Utilisez `--incognito` ou équivalent à la place.
 
 KaTeX nécessite une connexion Internet. Vous devez également configurer une référence d'une feuille de style. Les détails sont au manuel.
 
 ## Notes de version
+
+### 0.9.8
+
+- Ajustez le slogan pour vous assurer que la référence à Markdown est toujours visible.
+- Mettre en majuscule toutes les références à Markdown dans le fichier readme.
+- Supprimer l’application automatique de guillemets au chemin du navigateur alternatif en raison d’une incompatibilité avec Linux.
 
 ### 0.9.7
 
@@ -74,7 +109,7 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 ### 0.9.4
 - Mettre à jour les actifs pour compenser les modifications apportées au Code Visual Studio 1.56
 - Message d’erreur d’affichage PR101 lorsque le lancement du navigateur échoue, corriger grâce à [baincd](https://github.com/baincd)
-- PR97 corrige le chemin pour le markdown rendu, fixer grâce à [baincd](https://github.com/baincd)
+- PR97 corrige le chemin pour le Markdown rendu, fixer grâce à [baincd](https://github.com/baincd)
 - PR97 corrige le réglage de l’interface utilisateur `extensionKind` dans `package.json`, fixer grâce à [baincd](https://github.com/baincd)
 - PR96 corrige extensionKind UI réglage dans package.json, fixer grâce à [baincd](https://github.com/baincd)
 - PR94 met à jour README pour clarifier les différences significatives entre le navigateur et la recommandation du navigateur, grâce à [baincd](https://github.com/baincd)
@@ -116,7 +151,7 @@ KaTeX nécessite une connexion Internet. Vous devez également configurer une r�
 
 ### 0.7.15
 
-- Problème 64 - images locales ont été brisées parce que Microsoft a modifié VS Code. Le rendu de markdown ne réécrit plus les références de ressources aux chemins de fichiers préfixés, ils sont maintenant passés par inchangé. L’extension gère désormais le mappage au système de fichiers.
+- Problème 64 - images locales ont été brisées parce que Microsoft a modifié VS Code. Le rendu de Markdown ne réécrit plus les références de ressources aux chemins de fichiers préfixés, ils sont maintenant passés par inchangé. L’extension gère désormais le mappage au système de fichiers.
 
 ### 0.7.14
 

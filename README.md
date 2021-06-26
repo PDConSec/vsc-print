@@ -84,15 +84,19 @@ The browser used will affect your experience.  Chrome is the recommended browser
 
 ## Known Issues
 
+Settings for contributed features are not yet localised.
+
 Using some command line options with Chrome causes errors to be reported, even though printing succeeds. 
 
-You can't supply command-line options on the alternate browser path. Create a batch file in the same directory as the Chrome executable and use this to specify the options you require. Instead of the executable, supply VS Code with the path to the batch file. Don't forget to pass through the URL parameter.
+On Windows you can't supply command-line options on the alternate browser path because we automatically put quotes around your path in case of spaces in file or folder names. (On other platforms auto-quoting is not done and you must manually escape spaces in file and folder names.) Work around this by creating a batch file in the same directory as the browser executable and use this to specify the options you require. For the browser path, supply the path to the batch file. Don't forget to pass through the URL parameter.
+
+Some Chrome plugins interfere with print job styling. Don't use `--disable-plugins` because if there is already a running instance of Chrome, this switch doesn't work. Instead use `--incognito`
 
 ```dos
-chrome --disable-plugins %1
+chrome --incognito %1
+firefox -private-window %1
+msedge -inprivate %1
 ```
-
-Some Chrome plugins interfere with print job styling. Don't use `--incognito` to disable plugins, use `--disable-plugins`. In line with security best practice we launch the browser with limited permissions. Anything that tries to manipulate profiles (like incognito) will trigger an error message.
 
 KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
 
@@ -102,6 +106,8 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 - Adjust tag line to ensure that Markdown is mentioned when it is clipped.
 - Capitalise all references to Markdown in readme file.
+- Remove automatic quoting of alternate browser path due to incompatibility with Linux.
+- Add German localisation
 
 ### 0.9.7
 

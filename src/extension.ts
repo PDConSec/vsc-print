@@ -133,7 +133,8 @@ async function print(filePath: string) {
   await startWebserver(() => getRenderedSourceCode(filePath));
 
   let printConfig = vscode.workspace.getConfiguration("print", null);
-  let cmd = printConfig.alternateBrowser && printConfig.browserPath ? `"${printConfig.browserPath}"` : browserLaunchMap[process.platform];
+  let q = process.platform === "win32" ? '"' : "";
+  let cmd = printConfig.alternateBrowser && printConfig.browserPath ? `${q}${printConfig.browserPath}${q}` : browserLaunchMap[process.platform];
   child_process.exec(`${cmd} http://localhost:${port}/`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
     // node on Linux incorrectly calls this error handler, with a null error object
     if (error) {
