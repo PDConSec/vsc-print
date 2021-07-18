@@ -9,7 +9,7 @@
 * Imprimer le code source
 * Impression Markdown entièrement rendu
 
-Le code source obtient les numéros de ligne et la coloration de la syntaxe. Markdown est rendu avec le pipeline de rendu d’aperçu de VS Code &mdash ; de nombreuses extensions Markdown fonctionnent avec l’impression.
+Le code source obtient les numéros de ligne et la coloration de la syntaxe. Markdown est rendu avec le pipeline de rendu d’aperçu de VS Code &mdash; de nombreuses extensions Markdown fonctionnent avec l’impression.
 
 ## Impression indépendante du système d’exploitation
 
