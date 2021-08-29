@@ -54,6 +54,41 @@
       {
         "title": "%configuration.title.print%",
         "properties": {
+          "print.markdownRenderingBodyStyle": {
+            "type": "string",
+            "markdownDescription": "`HTML` and `BODY` attributes",
+            "default": "background-color: white; font-family:serif; font-size:13pt;"
+          },
+          "print.markdownRenderingHeadingStyle": {
+            "type": "string",
+            "markdownDescription": "HTML heading attributes (`H1`, `H2`...). Applies to _all_ headings so don't set the size.",
+            "default": "font-family:sans-serif;"
+          },
+          "print.markdownRenderingParagraphStyle": {
+            "type": "string",
+            "markdownDescription": "HTML `P` attributes",
+            "default": "font-family:serif;"
+          },
+          "print.markdownRenderingTableStyle": {
+            "type": "string",
+            "markdownDescription": "HTML `TABLE` class attributes",
+            "default": "font-family:sans-serif; border-top:thin solid grey; border-left:thin solid grey;"
+          },
+          "print.markdownRenderingTableHeadingStyle": {
+            "type": "string",
+            "markdownDescription": "HTML `TH` class attributes",
+            "default": "font-family:sans-serif; font-weight:400; border-top:thin solid grey; border-left:thin solid grey;"
+          },
+          "print.markdownRenderingListStyle": {
+            "type": "string",
+            "markdownDescription": "HTML `OL` and `UL` class attributes",
+            "default": ""
+          },
+          "print.markdownRenderingTableDataStyle": {
+            "type": "string",
+            "markdownDescription": "HTML `TD` class attributes",
+            "default": "font-family:sans-serif; border-top:thin solid grey; border-left:thin solid grey;"
+          },
           "print.lineSpacing": {
             "type": "number",
             "enum": [
@@ -113,7 +148,45 @@
           "print.colourScheme": {
             "title": "%print.colourScheme.title%",
             "type": "string",
-            "default": "atelier-dune-light",
+            "enum": [
+              "A11 Y",
+              "Arduino",
+              "Ascetic",
+              "Atom One",
+              "Atelier Cave",
+              "Atelier Dune",
+              "Atelier Estuary",
+              "Atelier Forest",
+              "Atelier Heath",
+              "Atelier Lakeside",
+              "Atelier Plateau",
+              "Atelier Savanna",
+              "Atelier Seaside",
+              "Atelier Suplhur Pool",
+              "Color Brewer",
+              "Docco",
+              "Foundation",
+              "GitHub",
+              "GitHub Gist",
+              "Google Code",
+              "Grayscale",
+              "Gruvbox",
+              "Idea",
+              "ISBL",
+              "Kimbie",
+              "Magula",
+              "Mono Blue",
+              "nnfx",
+              "Paraiso",
+              "PureBasic",
+              "QTcreator",
+              "RouterOS",
+              "Schoolbook",
+              "Stack Overflow",
+              "Visual Studio",
+              "XCode"
+            ],
+            "default": "Atelier Dune",
             "markdownDescription": "%print.colourScheme.markdownDescription%"
           },
           "print.printAndClose": {
@@ -221,6 +294,7 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.12",
     "@types/vscode": "^1.51.0",
+    "css-loader": "^6.2.0",
     "del": "^5.1.0",
     "event-stream": "^4.0.1",
     "gulp": "^4.0.2",
@@ -232,7 +306,6 @@
     "tslint": "^5.20.0",
     "typescript": "^3.6.4",
     "vsce": "^1.67.1",
-    "vscode-nls": "^4.1.1",
     "vscode-nls-dev": "^3.3.1",
     "vscode-test": "^1.4.1",
     "webpack": "^5.4.0",
@@ -242,6 +315,7 @@
     "@types/highlight.js": "^10.1.0",
     "@types/markdown-it": "0.0.9",
     "globby": "^11.0.2",
-    "highlight.js": "^10.4.1"
+    "highlight.js": "^10.4.1",
+    "vscode-nls": "^4.1.1"
   }
 }

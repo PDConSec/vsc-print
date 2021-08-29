@@ -7,62 +7,39 @@ import * as fs from "fs";
 import { AddressInfo } from 'net';
 import * as path from "path";
 import * as globby from "globby";
+import { captionByFilename, filenameByCaption, defaultCss } from './imports';
+import * as nls from 'vscode-nls';
 
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
+let msg = localize('sayHello.text', 'Hello');
+console.log(msg);
+
+
+let colourScheme = vscode.workspace.getConfiguration("print", null).colourScheme;
+if (captionByFilename[colourScheme]) {
+  // legacy value, convert
+  vscode.workspace.getConfiguration("print", null).update("colourScheme", captionByFilename[colourScheme]);
+} else {
+  colourScheme = filenameByCaption[colourScheme];
+  if (!colourScheme) {
+    colourScheme = "atelier-dune-light";
+    vscode.workspace.getConfiguration("print", null).update("colourScheme", captionByFilename[colourScheme]);
+  }
+}
+let swatchCss: string = require(`highlight.js/styles/${colourScheme}.css`).default.toString();
 var md: any;
 var selection: vscode.Selection | undefined;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 export function activate(context: vscode.ExtensionContext) {
   let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
-    etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton;
+    etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton,
+    disposable: vscode.Disposable;
   vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
   vscode.commands.executeCommand("setContext", "etmButton", etmButton);
 
   context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
   context.subscriptions.push(vscode.commands.registerCommand("extension.print", printCommand));
   context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
-  let disposable = vscode.commands.registerCommand('extension.browse', async (cmdArgs: any) => {
-    let x = vscode.extensions.getExtension("pdconsec.vscode-print");
-    if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
-    var styleCachePath = `${x.extensionPath.replace(/\\/g, "/")}/node_modules/highlight.js/styles`;
-    let printConfig = vscode.workspace.getConfiguration("print", null);
-    let currentPath = `${styleCachePath}/${printConfig.colourScheme}.css`;
-    vscode.window.showOpenDialog({
-      canSelectFiles: true,
-      canSelectMany: false,
-      defaultUri: vscode.Uri.file(fs.existsSync(currentPath) ? currentPath : styleCachePath),
-      filters: {
-        Stylesheet: ['css']
-      }
-    }).then(f => {
-      if (f) {
-        let p = f[0].fsPath.replace(/\\/g, "/");
-        let lastSlashPosition = p.lastIndexOf("/");
-        let extensionSeparatorPosition = p.lastIndexOf(".");
-        if (extensionSeparatorPosition === -1) {
-          extensionSeparatorPosition = p.length;
-        }
-        var path = p.substring(0, lastSlashPosition);
-        var fileName = p.substring(lastSlashPosition + 1, extensionSeparatorPosition);
-        try {
-          vscode.workspace.getConfiguration().update("print.colourScheme", fileName, vscode.ConfigurationTarget.Global).then(() => {
-            if (path !== styleCachePath) {
-              let newCachePath = `${styleCachePath}/${fileName}`;
-              fs.copyFile(p, newCachePath, err => {
-                if (err) {
-                  vscode.window.showErrorMessage(err.message);
-                }
-              });
-            }
-          }, (err) => {
-            debugger;
-          });
-        } catch (err) {
-          debugger;
-        }
-      }
-    });
-  });
-  context.subscriptions.push(disposable);
 
   // capture the extension path
   disposable = vscode.commands.registerCommand('extension.help', async (cmdArgs: any) => {
@@ -81,11 +58,15 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
       vscode.workspace.getConfiguration("print", null)
         .get('editorContextMenuItemPosition'));
   }
-  if (e.affectsConfiguration('print.editorTitleMenuButton')) {
+  else if (e.affectsConfiguration('print.editorTitleMenuButton')) {
     vscode.commands.executeCommand(
       "setContext", "etmButton",
       vscode.workspace.getConfiguration("print", null)
         .get<boolean>('editorTitleMenuButton'));
+  }
+  else if (e.affectsConfiguration('print.colourScheme')) {
+    colourScheme = filenameByCaption[vscode.workspace.getConfiguration("print", null).colourScheme];
+    swatchCss = require(`highlight.js/styles/${colourScheme}.css`).default.toString();
   }
 };
 
@@ -116,13 +97,13 @@ async function printFolderCommand(commandArgs: any) {
   }
   else if (editor) {
     if (editor.document.isUntitled) {
-      vscode.window.showErrorMessage("File not saved to disk. Save the file or open a file saved to disk and try again.");
+      vscode.window.showErrorMessage("The editor contains an unsaved file. Save the file or open a file saved to disk and try again.");
       return;
     }
     directory = path.dirname(editor.document.uri.fsPath);
   }
   else {
-    vscode.window.showErrorMessage("No file opened. Open a file in the editor and try again.");
+    vscode.window.showErrorMessage("Selection does not contain anything to print.");
     return;
   }
 
@@ -130,7 +111,7 @@ async function printFolderCommand(commandArgs: any) {
 }
 
 async function print(filePath: string) {
-  await startWebserver(() => getRenderedSourceCode(filePath));
+  await startWebserver(() => getHtml(filePath));
 
   let printConfig = vscode.workspace.getConfiguration("print", null);
   let q = process.platform === "win32" ? '"' : "";
@@ -259,7 +240,7 @@ table {
 }
 `;
 
-async function getRenderedSourceCode(filePath: string): Promise<string> {
+async function getHtml(filePath: string): Promise<string> {
   const printConfig = vscode.workspace.getConfiguration("print", null);
   const printFilenames = printConfig.folder.fileNames;
   let printAndClose = printConfig.printAndClose ? " onload = \"window.print();\" onafterprint=\"window.close();\"" : "";
@@ -281,11 +262,13 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
     let result = `<!DOCTYPE html><html><head><title>${filePath}</title>
     <meta charset="utf-8"/>
     <style>
-    html, body {
-      font-family: ${markdownConfig.preview.fontFamily};
-      font-size: ${markdownConfig.preview.fontSize}px;
-      line-height: ${markdownConfig.preview.lineHeight}em;
-    }
+    html, body { ${printConfig.markdownRenderingBodyStyle} }
+    p { ${printConfig.markdownRenderingParagraphStyle} }
+    h1,h2,h3,h4,h5,h6 { ${printConfig.markdownRenderingHeadingStyle} }
+    table { ${printConfig.markdownRenderingTableStyle} }
+    th { ${printConfig.markdownRenderingTableHeadingStyle} }
+    td { ${printConfig.markdownRenderingTableDataStyle} }
+    ol,ul { ${printConfig.markdownRenderingListStyle} }
     img {
       max-width: 100%;
     }
@@ -304,8 +287,6 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
   if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
 
   let stylePath = `${x.extensionPath}/node_modules/highlight.js/styles`;
-  let defaultCss = getFileText(`${stylePath}/default.css`);
-  let swatchCss = getFileText(`${stylePath}/${printConfig.colourScheme}.css`);
 
   // Fetch source code for directory or single file
   let codePromises: Promise<SourceCode | null>[];
@@ -398,11 +379,13 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
   let editorConfig = vscode.workspace.getConfiguration("editor", null);
   let html = `<html><head><title>${filePath}</title><meta charset="utf-8"/>
   <style>
+    ${defaultCss}
+    ${swatchCss}
+    table.hljs {background:none;}
+    html,body{color:white}
     body{
       margin:0;padding:0;tab-size:${editorConfig.tabSize}
     }
-    ${defaultCss}
-    ${swatchCss}
     ${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}
     h3 {
       font-family: Consolas;
