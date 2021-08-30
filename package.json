@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "VS Code Printing Free",
   "description": "Print rendered Markdown and code with syntax-colouring and line numbers.",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "icon": "PDCONSEC-zipper-PRINTER2.png",
   "author": {
     "name": "Peter Wone",
@@ -162,7 +162,7 @@
               "Atelier Plateau",
               "Atelier Savanna",
               "Atelier Seaside",
-              "Atelier Suplhur Pool",
+              "Atelier Sulphur Pool",
               "Color Brewer",
               "Docco",
               "Foundation",
