@@ -7,13 +7,19 @@ import * as fs from "fs";
 import { AddressInfo } from 'net';
 import * as path from "path";
 import * as globby from "globby";
-import { captionByFilename, filenameByCaption, defaultCss } from './imports';
+import { captionByFilename, filenameByCaption, defaultCss, localise } from './imports';
 import * as nls from 'vscode-nls';
 
+// #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
-let msg = localize('sayHello.text', 'Hello');
-console.log(msg);
-
+// function localise(s: string): string { return localize(s, "x"); }
+localize("NO_FILE", "x");
+localize("UNSAVED_FILE", "x");
+localize("EMPTY_SELECTION", "x");
+localize("ERROR_PRINTING", "x");
+localize("ACCESS_DENIED_CREATING_WEBSERVER", "x");
+localize("UNEXPECTED_ERROR", "x");
+// #endregion
 
 let colourScheme = vscode.workspace.getConfiguration("print", null).colourScheme;
 if (captionByFilename[colourScheme]) {
@@ -82,7 +88,7 @@ async function printCommand(cmdArgs: any) {
     fsPath = vscode.window.activeTextEditor.document.uri.fsPath;
   }
   else {
-    vscode.window.showErrorMessage("No file opened. Open a file in the editor and try again.");
+    vscode.window.showErrorMessage(localise("NO_FILE"));
     return;
   }
 
@@ -97,13 +103,13 @@ async function printFolderCommand(commandArgs: any) {
   }
   else if (editor) {
     if (editor.document.isUntitled) {
-      vscode.window.showErrorMessage("The editor contains an unsaved file. Save the file or open a file saved to disk and try again.");
+      vscode.window.showErrorMessage(localise("UNSAVED_FILE"));
       return;
     }
     directory = path.dirname(editor.document.uri.fsPath);
   }
   else {
-    vscode.window.showErrorMessage("Selection does not contain anything to print.");
+    vscode.window.showErrorMessage(localise("NO_SELECTION"));
     return;
   }
 
@@ -119,18 +125,14 @@ async function print(filePath: string) {
   child_process.exec(`${cmd} http://localhost:${port}/`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
     // node on Linux incorrectly calls this error handler, with a null error object
     if (error) {
-      vscode.window.showErrorMessage(`Error Attempting to Print: ${error ? error.message : stderr}`);
-      console.error("Print Error: " + error);
+      vscode.window.showErrorMessage(`${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`);
     }
   });
 }
 
 function getFileText(fname: string): string {
-  // vscode.window.showInformationMessage(`vsc-print get ${fname}`);
-
   var text = fs.readFileSync(fname).toString();
   // strip BOM when present
-  // vscode.window.showInformationMessage(`vsc-print got ${fname}`);
   return text.indexOf('\uFEFF') === 0 ? text.substring(1, text.length) : text;
 }
 
@@ -303,9 +305,22 @@ async function getHtml(filePath: string): Promise<string> {
       patterns.push(...include);
     }
 
-    if (excludes.length > 0) {
-      patterns.push(...(excludes.map((x: string) => "!" + x)));
+    const unprintable = [
+      "bin",
+      "obj",
+      "**/*.dll",
+      "**/*.exe",
+      "**/*.bin",
+      "**/*.pdf",
+      "**/*.hex",
+      "**/*.pdb"
+    ];
+    for (const x of unprintable) {
+      if (excludes.indexOf(x) == -1) {
+        excludes.push(x);
+      }
     }
+    patterns.push(...(excludes.map((x: string) => "!" + x)));
 
     const maxLineCount = printConfig.folder.maxLines;
     const matcher = (document: vscode.TextDocument): boolean => document.lineCount < maxLineCount;
@@ -313,7 +328,10 @@ async function getHtml(filePath: string): Promise<string> {
     codePromises = await globby(patterns, {
       gitignore,
       cwd: filePath
-    }).then(x => x.map(y => getSourceCode(path.join(filePath, y), matcher)));
+    }).then(x =>
+      x.map(y =>
+        getSourceCode(path.join(filePath, y), matcher)
+      ));
   } else {
     codePromises = [getSourceCode(filePath)];
   }
@@ -448,10 +466,10 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
       if (err) {
         switch (err.code) {
           case "EACCES":
-            vscode.window.showErrorMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
+            vscode.window.showErrorMessage(localise("ACCESS_DENIED_CREATING_WEBSERVER"));
             break;
           default:
-            vscode.window.showErrorMessage(`UNEXPECTED ERROR: ${err.code}`);
+            vscode.window.showErrorMessage(`${localise("UNEXPECTED_ERROR")}: ${err.code}`);
         }
       }
     });

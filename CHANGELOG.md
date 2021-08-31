@@ -3,6 +3,13 @@ All notable changes to the "VSCODE-PRINT" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.9.9
+- Localise messages
+- improved settings UX for folder print exclusion and inclusion glob lists
+- guarantee exclusion of known unprintable file types
+- embed stylesheets and improve stylesheet setting UX
+- new settings for customisation of Markdown rendering
+
 ### 0.9.8
 
 - Adjust tag line to ensure that Markdown is mentioned when it is clipped.

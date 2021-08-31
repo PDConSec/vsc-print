@@ -13,7 +13,7 @@
   "print.browserPath.title": "Chemin de stockage du navigateur",
   "print.browserPath.description": "Chemin vers l'exécutable d'un autre navigateur",
   "print.colourScheme.title": "Couleurs",
-  "print.colourScheme.markdownDescription": "Appuyez sur `F1` puis `Imprinter:  Parcourir les fouilles de style` pour choisir une feuille de style compatible highlightjs. Si vous choisissez un fichier en dehors du cache de feuille de style, il sera copié sur le cache. Le papier est blanc alors choisissez des thèmes de lumière pour le texte sombre.",
+  "print.colourScheme.markdownDescription": "[L’aperçu de la feuille de style est disponible en ligne] (https://highlightjs.org/static/demo/). Seules les versions « légères » sont proposées car le papier est blanc.",
   "print.printAndClose.title": "Fermer après impression",
   "print.printAndClose.description": "Afficher le dialogue d'impression lorsque le navigateur est prêt, et essayer de fermer la page après l'impression est terminée ou annulée",
   "print.editorContextMenuItemPosition.title": "Position au menu contextuel de l'éditeur",

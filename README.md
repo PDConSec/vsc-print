@@ -52,7 +52,7 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 Printing on Mac, Linux and Windows
 
 * Entirely local in operation, no dependence on cloud services
-* Syntax colouring in a wide range of familiar colour schemes that you can import or modify
+* Syntax colouring in a wide range of familiar colour schemes 
 * Optional line numbering
 * Adjustable line spacing (1, 1.5, 2)
 * Print a selection of code with line numbers matching the editor
@@ -101,6 +101,13 @@ msedge -inprivate %1
 KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
+
+### 0.9.9
+- Localise messages
+- Improve settings UX for folder print exclusion and inclusion glob lists
+- Guarantee exclusion of known unprintable file types
+- Embed stylesheets and improve stylesheet setting UX
+- New settings for customisation of Markdown rendering
 
 ### 0.9.8
 

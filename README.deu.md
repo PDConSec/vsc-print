@@ -100,6 +100,14 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ## Release Notes
 
+### 0.9.9
+
+- Localise messages
+- Improve settings UX for folder print exclusion and inclusion glob lists
+- Guarantee exclusion of known unprintable file types
+- Embed stylesheets and improve stylesheet setting UX
+- New settings for customisation of Markdown rendering
+
 ### 0.9.8
 
 - Adjust tag line to ensure that Markdown is mention when it is clipped.

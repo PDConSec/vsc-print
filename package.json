@@ -223,11 +223,26 @@
           "print.folder.include": {
             "default": [],
             "type": "array",
+            "items": {
+              "type": "string"
+            },
             "description": "%print.folder.include%"
           },
           "print.folder.exclude": {
-            "default": [],
+            "default": [
+              "bin",
+              "obj",
+              "**/*.bin",
+              "**/*.exe",
+              "**/*.dll",
+              "**/*.hex",
+              "**/*.pdb",
+              "**/*.pdf"
+            ],
             "type": "array",
+            "items": {
+              "type": "string"
+            },
             "description": "%print.folder.exclude%"
           },
           "print.folder.maxLines": {
@@ -247,7 +262,6 @@
     "menus": {
       "explorer/context": [
         {
-          "when": "editorLangId",
           "command": "extension.print",
           "group": "navigation"
         }
@@ -294,13 +308,16 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.12",
     "@types/vscode": "^1.51.0",
+    "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "del": "^5.1.0",
     "event-stream": "^4.0.1",
+    "file-loader": "^6.2.0",
     "gulp": "^4.0.2",
     "gulp-filter": "^6.0.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^5.0.1",
+    "json-loader": "^0.5.7",
     "run-sequence": "^2.2.1",
     "ts-loader": "^8.0.11",
     "tslint": "^5.20.0",

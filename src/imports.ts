@@ -1,41 +1,16 @@
-// import "highlight.js/styles/default.css";
-// import "highlight.js/styles/a11y-light.css";
-// import "highlight.js/styles/arduino-light.css";
-// import "highlight.js/styles/ascetic.css";
-// import "highlight.js/styles/atom-one-light.css";
-// import "highlight.js/styles/atelier-cave-light.css";
-// import "highlight.js/styles/atelier-dune-light.css";
-// import "highlight.js/styles/atelier-estuary-light.css";
-// import "highlight.js/styles/atelier-forest-light.css";
-// import "highlight.js/styles/atelier-heath-light.css";
-// import "highlight.js/styles/atelier-lakeside-light.css";
-// import "highlight.js/styles/atelier-plateau-light.css";
-// import "highlight.js/styles/atelier-savanna-light.css";
-// import "highlight.js/styles/atelier-seaside-light.css";
-// import "highlight.js/styles/atelier-sulphurpool-light.css";
-// import "highlight.js/styles/color-brewer.css";
-// import "highlight.js/styles/docco.css";
-// import "highlight.js/styles/foundation.css";
-// import "highlight.js/styles/github.css";
-// import "highlight.js/styles/github-gist.css";
-// import "highlight.js/styles/googlecode.css";
-// import "highlight.js/styles/grayscale.css";
-// import "highlight.js/styles/gruvbox-light.css";
-// import "highlight.js/styles/idea.css";
-// import "highlight.js/styles/isbl-editor-light.css";
-// import "highlight.js/styles/kimbie.light.css";
-// import "highlight.js/styles/magula.css";
-// import "highlight.js/styles/mono-blue.css";
-// import "highlight.js/styles/nnfx.css";
-// import "highlight.js/styles/paraiso-light.css";
-// import "highlight.js/styles/purebasic.css";
-// import "highlight.js/styles/qtcreator_light.css";
-// import "highlight.js/styles/routeros.css";
-// import "highlight.js/styles/school-book.css";
-// import "highlight.js/styles/stackoverflow-light.css";
-// import "highlight.js/styles/vs.css";
-// import "highlight.js/styles/xcode.css";
+import { env } from 'vscode';
+const locKey = require("../out/extension.nls.metadata.json").keys;
+const locVal: any = {
+  "de": require("../out/extension.nls.de.json"),
+  "en": require("../out/extension.nls.en.json"),
+  "fr": require("../out/extension.nls.fr.json")
+};
 
+export function localise(key: string): string {
+  const i: number = locKey.indexOf(key);
+  let translations = locVal[env.language] || locVal["en"];
+  return i == -1 ? key : translations[i];
+}
 export const filenameByCaption: any = {
   "A11 Y": "a11y-light",
   "Arduino": "arduino-light",
