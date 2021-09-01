@@ -50,7 +50,7 @@ Ou vous pouvez cliquer à droite sur un fichier dans le volet explorateur de fic
 Impression sur Mac, Linux et Windows
 
 * Entièrement local en fonctionnement, pas de dépendance à l'égard des services cloud
-* Coloration syntaxique dans un large éventail de schémas de couleurs familiers que vous pouvez importer ou modifier
+* Coloration syntaxique dans un large éventail de schémas de couleurs familiers 
 * Numérotage de ligne facultatif
 * Espacement de ligne réglable (1, 1,5, 2)
 * Imprimer une sélection de code avec des numéros de ligne correspondant à l'éditeur
@@ -85,6 +85,13 @@ Certains plugins de navigateur interfèrent avec le style des travaux d’impres
 KaTeX nécessite une connexion Internet. Vous devez également configurer une référence d'une feuille de style. Les détails sont au manuel.
 
 ## Notes de version
+
+### 0.9.9
+- Localiser les messages
+- Améliorer l’expérience utilisateur des paramètres pour les listes globulaires d’impression de dossiers pour l’exclusion et l’inclusion
+- Garantir l’exclusion des types de fichiers non imprimables connus
+- Incorporer des feuilles de style et améliorer l’expérience utilisateur des paramètres de feuille de style
+- Nouveaux paramètres pour la personnalisation du rendu Markdown
 
 ### 0.9.8
 

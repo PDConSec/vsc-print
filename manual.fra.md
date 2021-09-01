@@ -69,9 +69,7 @@ Pour configurer un autre navigateur, vous devez faire deux choses :
 
 ## Choisissez un schéma de couleurs
 
-Les couleurs utilisées pour la mise en surbrillance syntaxe peuvent être stylisées en fournissant une feuille de style CSS. Appuyez sur `F1` et tapez `Parcourir pour la feuille de style` pour trouver la commande pour définir ceci. Invoquant il ouvrira un dialogue de navigation de fichier qui par défaut dans le dossier contenant le cache de feuilles de style de VS Code Printing. Si vous naviguez ailleurs et choisissez un fichier CSS, il sera importé dans le dossier cache (potentiellement en train de passer à l'appel d'un fichier du même nom).
-
-Le paramètre indique la copie mise en cache, donc si vous effectuez des modifications, vous devez répéter le processus d'importation.
+Les feuilles de style personnalisées ne sont plus prises en charge. Les feuilles de style disponibles sont regroupées et peuvent être choisies par nom dans une liste. Les choix sont limités aux feuilles de style légères car le papier est blanc.
 
 ## Extension de Markdown de Katex
 Cela dépend de CSS et polices des caractères du web. Pour que l'impression fonctionne, vous devez ajouter la feuille de style requise à vos paramètres.

@@ -23,7 +23,7 @@
   "print.browserPath.title": "Browser Pfad",
   "print.browserPath.description": "Pfad zur .exe Datei des alternativen Browsers",
   "print.colourScheme.title": "Farbschema",
-  "print.colourScheme.markdownDescription": "Drücke `F1`, dann `Drucken: nach Stylesheets suchen` um ein highlightjs kompatibles Stylesheet auszuwählen. Wenn man eine Datei ausserhalb des Stylesheet Cache's auswählt wird dieses zum Cache hinzugefügt. Am besten verwendet man helle Themes mit möglichst weißem Hintergrund.",
+  "print.colourScheme.markdownDescription": "[Stylesheet Vorschau ist online verfügbar](https://highlightjs.org/static/demo/). Es werden nur helle Themes angeboten da dunkle Themes sich nicht für weißes Papier eignen.",
   "print.printAndClose.title": "Nach dem Druck schliessen",
   "print.printAndClose.description": "Zeige mir das Druckfenster an wenn der Browser bereit ist und versuche diese Meldung nach dem Druck zu schließen, sollte der Druckbefehl erledigt sein oder abgebrochen werden",
   "print.editorContextMenuItemPosition.title": "Position im Editor Kontextmenü",

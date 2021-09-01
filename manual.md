@@ -84,15 +84,11 @@ To set up an alternate browser you must do two things:
 
 ## Choose a colour scheme
 
-The colours used for syntax highlighting can be styled by supplying a CSS stylesheet. Press `F1` and type `browse stylesheet` to find the command for setting this. Invoking it will open a file browse dialog that defaults to the folder containing VS Code Printing's cache of stylesheets. If you browse to somewhere else and choose a CSS file, it will be imported to the cache folder (potentially overwriting a file of the same name).
-
-The setting points at the the cached copy, so if you make changes you must repeat the import process.
-
-Don't use dark theme stylesheets. Paper is white.
+Custom stylesheets are no longer supported. Available stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because paper is white.
 
 ## Web Server
 
-Note that the web server only allows connections to localhost.  Connections not to localhost will be rejected.
+The web server allows connections only from localhost.  Connections from other hosts are rejected.
 
 ## Katex Markdown extension
 This depends on CSS and fonts from the web. To get printing to work you must add the required stylesheet to your settings.

@@ -1,0 +1,8 @@
+{
+  "NO_FILE": "Aucun fichier n’est ouvert. Ouvrez un fichier et réessayez.",
+  "UNSAVED_FILE": "L’éditeur contient un fichier non enregistré. Enregistrez le fichier ou ouvrez un fichier enregistré sur le disque et réessayez.",
+  "EMPTY_SELECTION": "Il n’y a rien à imprimer",
+  "ERROR_PRINTING": "Une erreur s’est produite lors de l’impression.",
+  "ACCESS_DENIED_CREATING_WEBSERVER": "Une erreur « Accès refusé » s’est produite lors du démarrage du serveur Web intégré.",
+  "UNEXPECTED_ERROR": "Une erreur inattendue s’est produite."
+}

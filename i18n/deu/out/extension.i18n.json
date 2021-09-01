@@ -1,0 +1,8 @@
+{
+  "NO_FILE": "Es ist keine Datei geöffnet. Öffnen Sie eine Datei im Editor und versuchen Sie es erneut.",
+  "UNSAVED_FILE": "Der Editor enthält eine nicht gespeicherte Datei. Speichern Sie die Datei oder öffnen Sie eine auf der Festplatte gespeicherte Datei, und versuchen Sie es erneut.",
+  "EMPTY_SELECTION": "Es gibt nichts zu drucken.",
+  "ERROR_PRINTING": "Beim Drucken ist ein Fehler aufgetreten.",
+  "ACCESS_DENIED_CREATING_WEBSERVER": "Beim Starten des eingebetteten Webservers ist der Fehler \"Zugriff verweigert\" aufgetreten.",
+  "UNEXPECTED_ERROR": "Ein unerwarteter Fehler ist aufgetreten"
+}
