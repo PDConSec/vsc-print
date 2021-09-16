@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "VS Code Printing Free",
   "description": "Print rendered Markdown and code with syntax-colouring and line numbers.",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "icon": "PDCONSEC-zipper-PRINTER2.png",
   "author": {
     "name": "Peter Wone",
@@ -19,11 +19,12 @@
   "categories": [
     "Other"
   ],
+  "main": "./dist/extension.js",
   "activationEvents": [
     "*"
   ],
-  "main": "./dist/extension.js",
   "contributes": {
+    "markdown.markdownItPlugins": true,
     "commands": [
       {
         "category": "%commands.category%",
@@ -230,14 +231,10 @@
           },
           "print.folder.exclude": {
             "default": [
-              "bin",
-              "obj",
-              "**/*.bin",
-              "**/*.exe",
-              "**/*.dll",
-              "**/*.hex",
-              "**/*.pdb",
-              "**/*.pdf"
+              "{bin,obj,out}",
+              "node_module",
+              "data",
+              "**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp}"
             ],
             "type": "array",
             "items": {
@@ -258,7 +255,6 @@
         }
       }
     ],
-    "markdown.markdownItPlugins": true,
     "menus": {
       "explorer/context": [
         {
@@ -295,7 +291,8 @@
     }
   },
   "extensionKind": [
-    "ui"
+    "ui",
+    "workspace"
   ],
   "scripts": {
     "vscode:prepublish": "webpack --mode production",
@@ -305,6 +302,7 @@
     "watch": "tsc -watch -p ./"
   },
   "devDependencies": {
+    "@types/braces": "^3.0.1",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.12",
     "@types/vscode": "^1.51.0",
@@ -331,6 +329,7 @@
   "dependencies": {
     "@types/highlight.js": "^10.1.0",
     "@types/markdown-it": "0.0.9",
+    "braces": "^3.0.2",
     "globby": "^11.0.2",
     "highlight.js": "^10.4.1",
     "vscode-nls": "^4.1.1"

@@ -9,6 +9,9 @@ to use, copy, modify, merge, publish, or distribute copies of the Software,
 and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
+* Before making negative public comments about this work, read the documentation
+and make a genuine attempt to resolve the problem by raising an issue on the 
+GitHub repository.
 * When making public a derivative work, you must conspicuously 
 acknowledge that it is a derivative of this work.
 * You may not sell or charge a fee for use of this software or derivative work.

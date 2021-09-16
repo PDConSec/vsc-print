@@ -1,14 +1,23 @@
 # Change Log
-All notable changes to the "VSCODE-PRINT" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### 0.9.10
+
+- Total rewrite of file handling to support remote file systems
+- Glob brace expressions can be nested
+- Enforced exclusion for
+  - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
+  - `{bin,obj}`
+- Change to licence terms denying licence to people who make negative 
+public comments without first reading the manual or seeking help on the 
+GitHub repo
 
 ### 0.9.9
+
 - Localise messages
-- improved settings UX for folder print exclusion and inclusion glob lists
-- guarantee exclusion of known unprintable file types
-- embed stylesheets and improve stylesheet setting UX
-- new settings for customisation of Markdown rendering
+- Improved settings UX for folder print exclusion and inclusion glob lists
+- Guarantee exclusion of known unprintable file types
+- Embed stylesheets and improve stylesheet setting UX
+- New settings for customisation of Markdown rendering
 
 ### 0.9.8
 
