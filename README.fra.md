@@ -70,19 +70,43 @@ L'impression de code VS est hautement configurable. Les paramètres peuvent êtr
 
 **L'examen détaillé de ces paramètres se trouve dans [le manuel](https://github.com/PeterWone/vsc-print/blob/master/manual.fr.md).**
 
+## Choix du navigateur
+
+Le navigateur utilisé affectera votre expérience.  
+
+### Recommandé pour l’impression
+
+Tout navigateur dérivé de Chromium devrait aller bien. Les éléments suivants sont connus pour bien fonctionner.
+* Brave
+* Chromium
+* Chrome
+* Edge
+
+### Non recommandé pour l’impression
+
+* Firefox ne ferme pas le navigateur une fois l’impression terminée.
+* Edge Classic n’est plus pris en charge.
+* Internet Explorer n’est pas pris en charge.
+
 ## Problèmes connus
 
-Les paramètres des fonctionnalités fournies par l’utilisateur ne sont pas encore localisés.
+Chrome peut conserver vos sélections d’imprimante, de format de papier et de marge entre les travaux d’impression.
 
-L’utilisation de certaines options de ligne de commande avec Chrome provoque le signalement d’erreurs, même si l’impression réussit. 
+Certaines options de ligne de commande chrome provoquent le signaler des erreurs, même si l’impression réussit.
 
-Sous Windows, vous ne pouvez pas fournir d’options de ligne de commande sur le chemin alternatif d’accès du navigateur, car nous plaçons automatiquement des guillemets autour de votre chemin d’accès en cas d’espaces dans les noms de fichiers ou de répertoires. (Sur d’autres systemes d'exploitation, le devis automatique n’est pas effectué et vous devez échapper manuellement les espaces dans les noms de fichiers et de répertoires.) Contourner ce problème en créant un fichier de commandes dans le même répertoire que l’exécutable du navigateur et en l’utilisant pour spécifier les options dont vous avez besoin. Pour le chemin d’accès du navigateur, spécifiez le chemin d’accès au fichier de commandes.
+### Espaces dans les chemins
 
-N’oubliez pas d’inclure le paramètre URL.
+Sous Windows, vous ne pouvez pas fournir d’options de ligne de commande sur l’autre chemin du navigateur, car nous mettons automatiquement des guillemets autour de votre chemin en cas d’espaces dans les noms de fichiers ou de dossiers. (Sur d’autres plates-formes, l’établissement de devis automatique n’est pas effectué et vous devez échapper manuellement les espaces dans les noms de fichiers et de dossiers.) Contournez ce problème en créant un fichier de commandes dans le même répertoire que l’exécutable du navigateur et utilisez-le pour spécifier les options dont vous avez besoin. Pour le chemin d’accès du navigateur, indiquez le chemin d’accès au fichier de commandes. N’oubliez pas de passer par le paramètre URL.
 
-Certains plugins de navigateur interfèrent avec le style des travaux d’impression. Pour la famille Chromium, n’utilisez pas `--disable-plugins` car si une instance de navigateur est déjà en cours d’exécution, cette option ne fonctionne pas. Utilisez `--incognito` ou équivalent à la place.
+### Interférence des plugins Chrome
 
-KaTeX nécessite une connexion Internet. Vous devez également configurer une référence d'une feuille de style. Les détails sont au manuel.
+Certains plugins Chrome interfèrent avec le style des travaux d’impression. Bien qu’il soit possible de supprimer les plugins avec '--disable-plugins', cela ne fonctionne pas lorsqu’il existe déjà une instance en cours d’exécution de Chrome. Le commutateur '--incognito' supprime les plugins lorsqu’il y a une instance en cours d’exécution, mais a ses propres problèmes.
+
+Pour de meilleurs résultats, gravez de l’espace disque et installez un autre navigateur tel que Chromium, et utilisez-le pour l’impression. Vous pourrez peut-être obtenir un résultat similaire sans avoir besoin de deux navigateurs en utilisant des profils sur Edge.
+
+### Dépendances Internet indirectes
+
+L’extension Math+Markdown (installe le plugin KaTeX) nécessite une connexion Internet pour les feuilles de style et les polices. Vous devez également configurer une référence de feuille de style. Les détails sont dans le manuel.
 
 ## Notes de version
 

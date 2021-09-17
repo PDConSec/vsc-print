@@ -5,7 +5,6 @@ import * as dns from "dns";
 import * as child_process from "child_process";
 import { AddressInfo } from 'net';
 import * as path from "path";
-// import * as globby from "globby";
 import * as braces from "braces";
 import { captionByFilename, filenameByCaption, defaultCss, localise } from './imports';
 import * as nls from 'vscode-nls';
@@ -307,7 +306,6 @@ async function getHtml(uri: vscode.Uri): Promise<string> {
   let codePromises: Promise<SourceCode | null>[];
   let uristat = await vscode.workspace.fs.stat(uri);
   if (uristat.type === vscode.FileType.Directory) {
-    //const gitignore = printConfig.folder.gitignore ? Utf8ArrayToStr(await vscode.workspace.fs.readFile()) : [];
 
     // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
     let excludePatterns: string[] = printConfig.folder.exclude || [];

@@ -1,6 +1,4 @@
-# Visual Studio Code Printing 
-
-TRANSLATE ME
+# Visual Studio Code Printing
 
 [Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
 
@@ -8,7 +6,7 @@ TRANSLATE ME
 
 [ENGLISH](README.md) | [FRENCH](README.fra.md) | [Add a language](how-to-add-a-language.md)
 
-## Markdown and source code, styled for reading
+## Markdown and source code, styled for print
 
 * Print source code
 * Print Markdown fully rendered
@@ -17,23 +15,23 @@ Source code gets line numbers and syntax colouring. Markdown is rendered with VS
 
 ## Platform independent printing
 
-Print-jobs are rendered as styled HTML and served from an embedded webserver. When you print, your local web browser is launched to load the print-job and give you printing options like page orientation and margin size. Known user platforms include Windows, Linux and OSX. 
+Print-jobs are rendered as styled HTML and served from an embedded webserver. When you print, your local web browser is launched to load the print-job and give you printing options like page orientation and margin size. So if you have a local browser that can print, and VS Code can launch it, you're in business. Known user platforms include Windows, Linux and OSX. 
 
 ### Troubleshooting on first launch
 
 VSCode Printing Free worked for thirty thousand people out of the box, but sometimes local settings and permissions can spoil the fun. Here are the problems we've seen so far. If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
 
-#### Nothing happens
+#### Nothing seems to happen
 
-If you try to print and nothing happens, restart VS Code. If it still doesn't work, your system has a configuration or permission problem that won't let the browser launch. The default Firefox browser on Ubuntu gives trouble out of the box. Install Chromium (or Chrome, Edge, Brave...) and make it the default browser. If you don't want to make Chromium the default browser, read the manual for details of how to use a specific browser for printing and use Chromium to print.
+If you try to print and nothing happens, restart VS Code. If it still doesn't work, your system may have a configuration or permission problem that won't let the browser launch. The default Firefox browser on Ubuntu gives trouble out of the box. Install Chromium (or Chrome, Edge, Brave...) and make it the default browser. If you don't want to make Chromium the default browser, read the manual for details of how to use a specific browser for printing and use Chromium to print.
 
 #### Browser launches but no page loads
 
-Your settings are interfering with the embedded webserver. Aggressively locked-down network settings can do this. It's probably permissions. Whoever interfered with networking permissions should troubleshoot this.
+Your system settings are likely interfering with the embedded webserver. Aggressively locked-down network settings can do this. It's probably permissions. Whoever interfered with networking permissions should troubleshoot this.
 
 #### Browser launches and shows an error message instead of a print-job
 
-Read the error. Generally it's some sort of permission denied on aggressively locked down systems.
+Examine the error message. Generally it's some sort of permission denied on aggressively locked down systems.
 
 ## Classic user experience
 
@@ -53,13 +51,14 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 
 Printing on Mac, Linux and Windows
 
-* Entirely local in operation, no dependence on cloud services
-* Syntax colouring in a wide range of familiar colour schemes that you can import or modify
+* Entirely local in operation, no dependence on cloud services (third party Markdown extensions may introduce remote dependencies)
+* Syntax colouring in a wide range of familiar colour schemes 
 * Optional line numbering
 * Adjustable line spacing (1, 1.5, 2)
 * Print a selection of code with line numbers matching the editor
 * Specify a browser other than your default
 * Markdown documents are rendered when you print them (or not, there's a setting)
+* Works with Microsoft remote host extensions for SSH, WSL and Docker containers
 
 ## Requirements
 
@@ -75,33 +74,58 @@ VS Code Printing is highly configurable. Settings can be modified by going to Co
 
 **A detailed breakdown of these settings can be found in [the manual](https://github.com/PeterWone/vsc-print/blob/master/manual.md).**
 
-## Browser
+## Choice of browser
 
-The browser used will affect your experience.  Chrome is the recommended browser for printing.
+The browser used will affect your experience.  
 
-- Firefox doesn't close the browser after printing
-- Edge Classic doesn't support making printed tabs respect the editor tab size (because the experimental CSS `tab-size` property is not supported)
-- Microsoft Edge always prompts for permission to close the browser after printing
-- Chrome remembers too much about printers, paper sizes and margins especially if you abort
+### Recommended for printing
+
+Any Chromium derived browser should be fine. The following are known to work well.
+* Brave
+* Chromium
+* Chrome
+* Edge
+
+### Not recommended for printing
+
+* Firefox doesn't close the browser after printing completes.
+* Edge Classic is no longer supported.
+* Internet Explorer is not supported.
 
 ## Known Issues
 
-Using some command line options with Chrome causes errors to be reported, even though printing succeeds. 
+Chrome may retain your printer, paper size and margin selections between print jobs.
 
-You can't supply command-line options on the alternate browser path. Create a batch file in the same directory as the Chrome executable and use this to specify the options you require. Instead of the executable, supply VS Code with the path to the batch file. Don't forget to pass through the URL parameter.
+Some Chrome command line options cause errors to be reported, even though printing succeeds. 
 
-```dos
-chrome --disable-plugins %1
-```
+### Spaces in paths
 
-Some Chrome plugins interfere with print job styling. Don't use `--incognito` to disable plugins, use `--disable-plugins`. In line with security best practice we launch the browser with limited permissions. Anything that tries to manipulate profiles (like incognito) will trigger an error message.
+On Windows you can't supply command-line options on the alternate browser path because we automatically put quotes around your path in case of spaces in file or folder names. (On other platforms auto-quoting is not done and you must manually escape spaces in file and folder names.) Work around this by creating a batch file in the same directory as the browser executable and use this to specify the options you require. For the browser path, supply the path to the batch file. Don't forget to pass through the URL parameter.
 
-KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
+### Interference from Chrome plugins
+
+Some Chrome plugins interfere with print job styling. While it is possible to suppress plugins with `--disable-plugins` this doesn't work when there is already a running instance of Chrome. The `--incognito` switch suppresses plugins when there is a running instance, but has its own problems.
+
+For better results burn some disk space and install another browser such as Chromium, and use this for printing. You may be able to achieve a similar result without needing two browsers by using profiles on Edge.
+
+### Indirect Internet dependencies
+
+The Math+Markdown extension (installs the KaTeX plugin) requires an internet connection for stylesheets and fonts. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
 
-### 0.9.9
+### 0.9.11
 
+- Total rewrite of file handling to support remote file systems
+- Glob brace expressions can be nested
+- Enforced exclusion for
+  - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
+  - `{bin,obj}`
+- Change to licence terms denying licence to people who make negative 
+public comments without first reading the manual or seeking help on the 
+GitHub repo
+
+### 0.9.9
 - Localise messages
 - Improve settings UX for folder print exclusion and inclusion glob lists
 - Guarantee exclusion of known unprintable file types
@@ -110,8 +134,10 @@ KaTeX requires an internet connection. You must also configure a stylesheet refe
 
 ### 0.9.8
 
-- Adjust tag line to ensure that Markdown is mention when it is clipped.
+- Adjust tag line to ensure that Markdown is mentioned when it is clipped.
 - Capitalise all references to Markdown in readme file.
+- Remove automatic quoting of alternate browser path due to incompatibility with Linux.
+- Add German localisation
 
 ### 0.9.7
 

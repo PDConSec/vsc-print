@@ -1,0 +1,8 @@
+{
+  "NO_FILE": ">>No file is open. Open a file and try again.",
+  "UNSAVED_FILE": ">>The editor contains an unsaved file. Save the file or open a file saved to disk and try again.",
+  "EMPTY_SELECTION": ">>Nothing to print",
+  "ERROR_PRINTING": ">>Error while attempting to print",
+  "ACCESS_DENIED_CREATING_WEBSERVER": ">>An “Access Denied” error occurred while starting the embedded webserver",
+  "UNEXPECTED_ERROR": ">>Unexpected error"
+}

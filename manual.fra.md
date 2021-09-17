@@ -41,7 +41,6 @@ Cette extension comporte les paramètres suivants, qui peuvent être modifiés e
 * `print.folder.include`: modèles à inclure lors de l’impression. Vide correspond à tout.
 * `print.folder.exclude`: modèles à exclure lors de l’impression.
 * `print.folder.maxLines`: les fichiers avec plus de lignes que cela seront ignorés.
-* `print.folder.gitignore`: soit les fichiers de .gitignore doivent être ignorés.
 
 ### Choix de caractère
 

@@ -58,6 +58,7 @@ Printing on Mac, Linux and Windows
 * Print a selection of code with line numbers matching the editor
 * Specify a browser other than your default
 * Markdown documents are rendered when you print them (or not, there's a setting)
+* Works with Microsoft remote host extensions for SSH, WSL and Docker containers
 
 ## Requirements
 
@@ -93,15 +94,9 @@ Any Chromium derived browser should be fine. The following are known to work wel
 
 ## Known Issues
 
-Settings for contributed features are not yet localised.
-
 Chrome may retain your printer, paper size and margin selections between print jobs.
 
 Some Chrome command line options cause errors to be reported, even though printing succeeds. 
-
-### Markdown extensions don't work with remote hosts
-
-When you connect to a remote host or container, VS Code re-initialises but doesn't invoke the rendering pipeline installation callback for MarkdownIT plugin extensions. This bug has been reported on the VS Code GitHub repository.
 
 ### Spaces in paths
 
@@ -119,16 +114,14 @@ The Math+Markdown extension (installs the KaTeX plugin) requires an internet con
 
 ## Release Notes
 
-### 0.9.10
+### 0.9.11
 
-- Total rewrite of file handling to support remote file systems
-- Glob brace expressions can be nested
-- Enforced exclusion for
-  - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
+- Réécriture totale de la gestion des fichiers pour prendre en charge les systèmes de fichiers distants
+- Les expressions globulaires peuvent être imbriquées
+- Exclusion forcée pour
+  - `**/*. {exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
   - `{bin,obj}`
-- Change to licence terms denying licence to people who make negative 
-public comments without first reading the manual or seeking help on the 
-GitHub repo
+- Modification des termes de licence refusant la licence aux personnes qui font négatif commentaires du public sans d’abord lire le manuel ou demander de l’aide sur le Dépôt GitHub
 
 ### 0.9.9
 - Localise messages
