@@ -1,4 +1,4 @@
-# Visual Studio Code Printing
+# Print extension
 
 [Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
 
@@ -19,7 +19,7 @@ Print-jobs are rendered as styled HTML and served from an embedded webserver. Wh
 
 ### Troubleshooting on first launch
 
-VSCode Printing Free worked for thirty thousand people out of the box, but sometimes local settings and permissions can spoil the fun. Here are the problems we've seen so far. If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
+Print worked for thirty thousand people out of the box, but sometimes local settings and permissions can spoil the fun. Here are the problems we've seen so far. If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
 
 #### Nothing seems to happen
 
@@ -51,13 +51,14 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 
 Printing on Mac, Linux and Windows
 
-* Entirely local in operation, no dependence on cloud services
+* Entirely local in operation, no dependence on cloud services (third party Markdown extensions may introduce remote dependencies)
 * Syntax colouring in a wide range of familiar colour schemes 
 * Optional line numbering
 * Adjustable line spacing (1, 1.5, 2)
 * Print a selection of code with line numbers matching the editor
 * Specify a browser other than your default
 * Markdown documents are rendered when you print them (or not, there's a setting)
+* Works with Microsoft remote host extensions for SSH, WSL and Docker containers
 
 ## Requirements
 
@@ -73,34 +74,64 @@ VS Code Printing is highly configurable. Settings can be modified by going to Co
 
 **A detailed breakdown of these settings can be found in [the manual](https://github.com/PeterWone/vsc-print/blob/master/manual.md).**
 
-## Browser
+## Choice of browser
 
-The browser used will affect your experience.  Chrome is the recommended browser for printing.
+The browser used will affect your experience.  
 
-- Firefox doesn't close the browser after printing
-- Edge Classic doesn't support making printed tabs respect the editor tab size (because the experimental CSS `tab-size` property is not supported)
-- Microsoft Edge always prompts for permission to close the browser after printing
-- Chrome remembers too much about printers, paper sizes and margins especially if you abort
+### Recommended for printing
+
+Any Chromium derived browser should be fine. The following are known to work well.
+* Brave
+* Chromium
+* Chrome
+* Edge
+
+### Not recommended for printing
+
+* Firefox doesn't close the browser after printing completes.
+* Edge Classic is no longer supported.
+* Internet Explorer is not supported.
 
 ## Known Issues
 
-Settings for contributed features are not yet localised.
+### Markdown extensions and remoting
 
-Using some command line options with Chrome causes errors to be reported, even though printing succeeds. 
+To use Print with a remote host you must install it **on the remote host**. 
+
+To get the benefit of a Markdown extension when printing a document from a remote host, the Markdown extension must be built with an `extensionKind` of `workspace` _and_ it must be installed to the remote host. Most such extensions are not built for `workspace` but can be trivially fixed by the author. Raise an issue on the repo of the extension you want. 
+
+Chrome may retain your printer, paper size and margin selections between print jobs.
+
+Some Chrome command line options cause errors to be reported, even though printing succeeds. 
+
+### Spaces in paths
 
 On Windows you can't supply command-line options on the alternate browser path because we automatically put quotes around your path in case of spaces in file or folder names. (On other platforms auto-quoting is not done and you must manually escape spaces in file and folder names.) Work around this by creating a batch file in the same directory as the browser executable and use this to specify the options you require. For the browser path, supply the path to the batch file. Don't forget to pass through the URL parameter.
 
-Some Chrome plugins interfere with print job styling. Don't use `--disable-plugins` because if there is already a running instance of Chrome, this switch doesn't work. Instead use `--incognito`
+### Interference from Chrome plugins
 
-```dos
-chrome --incognito %1
-firefox -private-window %1
-msedge -inprivate %1
-```
+Some Chrome plugins interfere with print job styling. While it is possible to suppress plugins with `--disable-plugins` this doesn't work when there is already a running instance of Chrome. The `--incognito` switch suppresses plugins when there is a running instance, but has its own problems.
 
-KaTeX requires an internet connection. You must also configure a stylesheet reference. Details are in the manual.
+For better results burn some disk space and install another browser such as Chromium, and use this for printing. You may be able to achieve a similar result without needing two browsers by using profiles on Edge.
+
+### Indirect Internet dependencies
+
+The Math+Markdown extension (installs the KaTeX plugin) requires an internet connection for stylesheets and fonts. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
+
+### 0.9.12
+
+- Emergency bugfix for resolution of local resources referenced by Markdown
+
+### 0.9.11
+
+- Total rewrite of file management in support of remote file systems
+- Glob brace expressions can be nested
+- Exclusion is forced for
+  - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
+  - `{bin,obj}`
+- Change to licence terms refusing licence to persons who give a bad review without first reading the manual or seeking assistance by raising an issue on the GitHub repository
 
 ### 0.9.9
 - Localise messages

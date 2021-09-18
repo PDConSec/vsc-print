@@ -1,9 +1,9 @@
 {
   "name": "vscode-print",
-  "displayName": "VS Code Printing Free",
-  "description": "Print rendered Markdown and code with syntax-colouring and line numbers.",
-  "version": "0.9.9",
-  "icon": "PDCONSEC-zipper-PRINTER2.png",
+  "displayName": "Print",
+  "description": "Rendered Markdown, coloured code.",
+  "version": "0.9.12",
+  "icon": "vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
     "email": "peter.wone@outlook.com"
@@ -16,14 +16,22 @@
   "engines": {
     "vscode": "^1.51.0"
   },
-  "categories": [
-    "Other"
+  "keywords": [
+    "Markdown",
+    "syntax coloring",
+    "PDF",
+    "Remote"
   ],
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "main": "./dist/extension.js",
   "activationEvents": [
     "*"
   ],
-  "main": "./dist/extension.js",
   "contributes": {
+    "markdown.markdownItPlugins": true,
     "commands": [
       {
         "category": "%commands.category%",
@@ -41,11 +49,6 @@
       },
       {
         "category": "%commands.category%",
-        "command": "extension.browse",
-        "title": "%commands.title.browse%"
-      },
-      {
-        "category": "%commands.category%",
         "command": "extension.help",
         "title": "%commands.title.help%"
       }
@@ -56,37 +59,38 @@
         "properties": {
           "print.markdownRenderingBodyStyle": {
             "type": "string",
-            "markdownDescription": "`HTML` and `BODY` attributes",
+            "markdownDescription": "%print.markdownRenderingBodyStyle.markdownDescription%",
             "default": "background-color: white; font-family:serif; font-size:13pt;"
           },
           "print.markdownRenderingHeadingStyle": {
             "type": "string",
-            "markdownDescription": "HTML heading attributes (`H1`, `H2`...). Applies to _all_ headings so don't set the size.",
+            "markdownDescription": "%print.markdownRenderingHeadingStyle.markdownDescription%",
             "default": "font-family:sans-serif;"
           },
           "print.markdownRenderingParagraphStyle": {
+            "title": "",
             "type": "string",
-            "markdownDescription": "HTML `P` attributes",
+            "markdownDescription": "%print.markdownRenderingParagraphStyle.markdownDescription%",
             "default": "font-family:serif;"
           },
           "print.markdownRenderingTableStyle": {
             "type": "string",
-            "markdownDescription": "HTML `TABLE` class attributes",
+            "markdownDescription": "%print.markdownRenderingTableStyle.markdownDescription%",
             "default": "font-family:sans-serif; border-top:thin solid grey; border-left:thin solid grey;"
           },
           "print.markdownRenderingTableHeadingStyle": {
             "type": "string",
-            "markdownDescription": "HTML `TH` class attributes",
+            "markdownDescription": "%print.markdownRenderingTableHeadingStyle.markdownDescription%",
             "default": "font-family:sans-serif; font-weight:400; border-top:thin solid grey; border-left:thin solid grey;"
           },
           "print.markdownRenderingListStyle": {
             "type": "string",
-            "markdownDescription": "HTML `OL` and `UL` class attributes",
+            "markdownDescription": "%print.markdownRenderingListStyle.markdownDescription%",
             "default": ""
           },
           "print.markdownRenderingTableDataStyle": {
             "type": "string",
-            "markdownDescription": "HTML `TD` class attributes",
+            "markdownDescription": "%print.markdownRenderingTableDataStyle.markdownDescription%",
             "default": "font-family:sans-serif; border-top:thin solid grey; border-left:thin solid grey;"
           },
           "print.lineSpacing": {
@@ -195,6 +199,7 @@
             "description": "%print.printAndClose.description%"
           },
           "print.webserverUptimeSeconds": {
+            "title": "%print.webserverUptimeSeconds.title%",
             "type": "integer",
             "default": 30,
             "description": "%print.webserverUptimeSeconds.description%"
@@ -221,44 +226,37 @@
             "description": "%print.folder.fileNames.description%"
           },
           "print.folder.include": {
+            "title": "%print.folder.include.title",
             "default": [],
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "%print.folder.include%"
+            "description": "%print.folder.include.description%"
           },
           "print.folder.exclude": {
+            "title": "%print.folder.exclude.title",
             "default": [
-              "bin",
-              "obj",
-              "**/*.bin",
-              "**/*.exe",
-              "**/*.dll",
-              "**/*.hex",
-              "**/*.pdb",
-              "**/*.pdf"
+              "{bin,obj,out}",
+              "node_module",
+              "data",
+              "**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp}"
             ],
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "%print.folder.exclude%"
+            "description": "%print.folder.exclude.description%"
           },
           "print.folder.maxLines": {
+            "title": "%print.folder.maxLines.title%",
             "default": 1200,
             "type": "integer",
-            "description": "%print.folder.maxLines%"
-          },
-          "print.folder.gitignore": {
-            "default": true,
-            "type": "boolean",
-            "description": "%print.folder.gitignore%"
+            "description": "%print.folder.maxLines.description%"
           }
         }
       }
     ],
-    "markdown.markdownItPlugins": true,
     "menus": {
       "explorer/context": [
         {
@@ -295,7 +293,7 @@
     }
   },
   "extensionKind": [
-    "ui"
+    "workspace"
   ],
   "scripts": {
     "vscode:prepublish": "webpack --mode production",
@@ -305,6 +303,7 @@
     "watch": "tsc -watch -p ./"
   },
   "devDependencies": {
+    "@types/braces": "^3.0.1",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.12",
     "@types/vscode": "^1.51.0",
@@ -331,6 +330,7 @@
   "dependencies": {
     "@types/highlight.js": "^10.1.0",
     "@types/markdown-it": "0.0.9",
+    "braces": "^3.0.2",
     "globby": "^11.0.2",
     "highlight.js": "^10.4.1",
     "vscode-nls": "^4.1.1"

@@ -6,6 +6,19 @@
 
 ## Printing
 
+### Setup to print on a remote host
+
+You have to install the Print extension on the target system. If the target host is your workstation, no further action is required, but when the target host is a remote host, you must also install the Print extension on the remote host. 
+
+1. Connect to the remote host
+2. Click on the extensions icon at the left border of the VS Code UI. 
+3. Find the Print extension. 
+4. It should have a little badge on it offering to install on the remote host. Click the badge and VS Code will take it from there.
+
+You have to do this again for each different remote host to which you connect (different Docker containers, for example).
+
+Markdown extensions also need to be installed on the target host if you want to use them.
+
 ### Print the active document
 
 To print the active document just click the printer icon to the right of the document tabs. Control for paper size, margins and page orientation is in the print dialog.
@@ -42,7 +55,6 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.folder.include`: pattern for files to include. Empty matches everything.
 * `print.folder.exclude`: patterns to exclude
 * `print.folder.maxLines`: files containing more lines than this threshold will be ignored
-* `print.folder.gitignore`: whether to ignore .gitignore
 
 ### Type face and size
 
@@ -54,10 +66,11 @@ The _size_ of printed text is a Print setting because the size that works best o
 
 A font defines *all* of the following:
 * **typeface** eg Consolas or Fira Code
-* **treatment** eg bold, italic
+* **treatment** eg italic
+* **weight** eg 700 (bold)
 * **size** eg 12pt
 
-"Fira Code" is a typeface, not a font. "Fira Code 12pt Bold" is a font. Bold and italic are _treatments_. Yes, I know you download font files. In the days before TrueType there was a separate file per size and treatment combination and it really was a font file. "Scalable font" is a contradiction in terms. 
+"Fira Code" is a typeface, not a font. "Fira Code 12pt Bold" is a font. Italic is a _treatment_ and Bold is a _weight_. Yes, I know you download font files. In the days before TrueType there was a separate file per size and treatment combination and it really was a font file. "Scalable font" is a contradiction in terms. 
 
 #### If you want a font size other than the sizes listed in the picker
 1. Change the size using the picker to conveniently create an entry in the settings.

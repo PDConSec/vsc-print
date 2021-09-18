@@ -1,4 +1,4 @@
-# Visual Studio Code Printing TRANSLATE ME
+# Print extension TRANSLATE ME
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
@@ -42,7 +42,6 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.folder.include`: pattern for files to include. Empty matches everything.
 * `print.folder.exclude`: patterns to exclude
 * `print.folder.maxLines`: files containing more lines than this threshold will be ignored
-* `print.folder.gitignore`: whether to ignore .gitignore
 
 ### Type face and size
 

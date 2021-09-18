@@ -1,10 +1,23 @@
-# Visual Studio Code Printing
+# Print extension
 
 [Version français](https://github.com/PeterWone/vsc-print) par Peter Wone
 
 [ANGLAIS](manual.md) | [FRANCAIS](manual.fra.md) | [ALLEMAND](manual.deu.md) | [Ajouter une langue](how-to-add-a-language.fra.md)
 
 ## Impression
+
+### Configuration pour imprimer sur un hôte distant
+
+Vous devez installer l’extension Print sur le système cible. Si l’hôte cible est votre poste de travail, aucune autre action n’est requise, mais lorsque l’hôte cible est un hôte distant, vous devez également installer l’extension Print sur l’hôte distant. 
+
+1. Connectez-vous à l’hôte distant
+2. Cliquez sur l’icône des extensions dans la bordure gauche de l’interface utilisateur VS Code. 
+3. Trouvez l’extension Imprimer. 
+4. Il devrait avoir un petit badge sur lui offrant d’installer sur l’hôte distant. Cliquez sur le badge et VS Code le prendra à partir de là.
+
+Vous devez le faire à nouveau pour chaque hôte distant différent auquel vous vous connectez (différents conteneurs Docker, par exemple).
+
+Les extensions Markdown doivent également être installées sur l’hôte cible si vous souhaitez les utiliser.
 
 ### Pour imprimer le document actif
 
@@ -38,15 +51,13 @@ Cette extension comporte les paramètres suivants, qui peuvent être modifiés e
 * `print.lineNumbers` : on, off ou inherit (faire la même chose que l'éditeur)
 * `print.lineSpacing` : simple, ligne et demie ou double espacement
 * `print.printAndClose` : après l'impression, fermez le navigateur.
-* `print.folder.include`: modèles à inclure lors de l’impression. Vide correspond à tout.
-* `print.folder.exclude`: modèles à exclure lors de l’impression.
-* `print.folder.maxLines`: les fichiers avec plus de lignes que cela seront ignorés.
-* `print.folder.gitignore`: soit les fichiers de .gitignore doivent être ignorés.
+* `print.folder.include` : modèles à inclure lors de l’impression. Vide correspond à tout.
+* `print.folder.exclude` : modèles à exclure lors de l’impression.
+* `print.folder.maxLines` : les fichiers avec plus de lignes que cela seront ignorés.
 
 ### Choix de caractère
 
 Bien que la taille de lettrage soit contrôlée par les paramètres, la _police de caractères_ est déterminée par les paramètres de votre éditeur. Si vous voyez Fira Code à l'écran, c'est ce qui sera imprimé.
-
 
 ## Markdown
 
