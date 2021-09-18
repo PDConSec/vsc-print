@@ -1,4 +1,4 @@
-# Visual Studio Code Printing
+# Print extension
 
 [Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
 
@@ -19,7 +19,7 @@ Print-jobs are rendered as styled HTML and served from an embedded webserver. Wh
 
 ### Troubleshooting on first launch
 
-VSCode Printing Free worked for thirty thousand people out of the box, but sometimes local settings and permissions can spoil the fun. Here are the problems we've seen so far. If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
+Print worked for thirty thousand people out of the box, but sometimes local settings and permissions can spoil the fun. Here are the problems we've seen so far. If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
 
 #### Nothing seems to happen
 
@@ -94,6 +94,12 @@ Any Chromium derived browser should be fine. The following are known to work wel
 
 ## Known Issues
 
+### Markdown extensions and remoting
+
+To use Print with a remote host you must install it **on the remote host**. 
+
+To get the benefit of a Markdown extension when printing a document from a remote host, the Markdown extension must be built with an `extensionKind` of `workspace` _and_ it must be installed to the remote host. Most such extensions are not built for `workspace` but can be trivially fixed by the author. Raise an issue on the repo of the extension you want. 
+
 Chrome may retain your printer, paper size and margin selections between print jobs.
 
 Some Chrome command line options cause errors to be reported, even though printing succeeds. 
@@ -114,16 +120,18 @@ The Math+Markdown extension (installs the KaTeX plugin) requires an internet con
 
 ## Release Notes
 
+### 0.9.12
+
+- Emergency bugfix for resolution of local resources referenced by Markdown
+
 ### 0.9.11
 
-- Total rewrite of file handling to support remote file systems
+- Total rewrite of file management in support of remote file systems
 - Glob brace expressions can be nested
-- Enforced exclusion for
+- Exclusion is forced for
   - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
   - `{bin,obj}`
-- Change to licence terms denying licence to people who make negative 
-public comments without first reading the manual or seeking help on the 
-GitHub repo
+- Change to licence terms refusing licence to persons who fail to read the manual or seek assistance on by raising an issue on the GitHub repository
 
 ### 0.9.9
 - Localise messages

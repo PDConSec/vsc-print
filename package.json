@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "icon": "vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
@@ -16,8 +16,15 @@
   "engines": {
     "vscode": "^1.51.0"
   },
+  "keywords": [
+    "Markdown",
+    "syntax coloring",
+    "PDF",
+    "Remote"
+  ],
   "categories": [
-    "Other"
+    "Other",
+    "Visualization"
   ],
   "main": "./dist/extension.js",
   "activationEvents": [
@@ -192,6 +199,7 @@
             "description": "%print.printAndClose.description%"
           },
           "print.webserverUptimeSeconds": {
+            "title": "%print.webserverUptimeSeconds.title%",
             "type": "integer",
             "default": 30,
             "description": "%print.webserverUptimeSeconds.description%"

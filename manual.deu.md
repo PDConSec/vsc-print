@@ -1,4 +1,4 @@
-# Visual Studio Code Printing TRANSLATE ME
+# Print extension TRANSLATE ME
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 

@@ -1,4 +1,4 @@
-# Visual Studio Code Printing
+# Print extension
 
 [Version français](https://github.com/PeterWone/vsc-print) par Peter Wone
 
@@ -17,7 +17,7 @@ Les travaux d’impression sont rendus au format HTML stylisé et servis à part
 
 ### Dépannage au premier lancement
 
-VSCode Printing Free a parfaitement fonctionné pour des milliers de personnes prêt à l’emploi, mais parfois les paramètres et les autorisations locaux peuvent gâcher le plaisir. Voici les problèmes que nous avons vus jusqu’à présent. Si quelque chose d’autre ne va pas, ou si vous avez une idée d’amélioration, nous vous invitons à enregistrer un problème sur le référentiel GitHub.
+Print a parfaitement fonctionné pour des milliers de personnes prêt à l’emploi, mais parfois les paramètres et les autorisations locaux peuvent gâcher le plaisir. Voici les problèmes que nous avons vus jusqu’à présent. Si quelque chose d’autre ne va pas, ou si vous avez une idée d’amélioration, nous vous invitons à enregistrer un problème sur le référentiel GitHub.
 
 #### Rien ne semble se passer
 
@@ -109,6 +109,19 @@ Pour de meilleurs résultats, gravez de l’espace disque et installez un autre 
 L’extension Math+Markdown (installe le plugin KaTeX) nécessite une connexion Internet pour les feuilles de style et les polices. Vous devez également configurer une référence de feuille de style. Les détails sont dans le manuel.
 
 ## Notes de version
+
+### 0.9.12
+
+- Correction de bug d’urgence pour la résolution des ressources locales référencées par Markdown
+
+### 0.9.11
+
+- Réécriture totale de la gestion des fichiers pour prendre en charge les systèmes de fichiers distants
+- Les expressions « glob » peuvent être imbriquées
+- Exclusion forcée pour
+  - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
+  - `{bin,obj}`
+- Modification des termes de licence refusant la licence aux personnes qui font négatif commentaires du public sans d’abord lire le manuel ou demander de l’aide sur le Dépôt GitHub
 
 ### 0.9.9
 - Localiser les messages
