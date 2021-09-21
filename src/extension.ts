@@ -311,9 +311,12 @@ async function getHtml(uri: vscode.Uri): Promise<string> {
 
   // Fetch source code for directory or single file
   let codePromises: Promise<SourceCode | null>[];
-  let uristat = await vscode.workspace.fs.stat(uri);
-  if (uristat.type === vscode.FileType.Directory) {
-    
+  let uristat: vscode.FileStat | undefined;
+  try { // Azure filesystem is not completely implemented
+    uristat = await vscode.workspace.fs.stat(uri);
+  } catch { }
+  if (uristat && uristat.type === vscode.FileType.Directory) {
+
     // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
     let excludePatterns: string[] = printConfig.folder.exclude || [];
     if (excludePatterns.length == 0) {
