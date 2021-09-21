@@ -1,15 +1,25 @@
 # Change Log
 
-### 0.9.10
+### 0.9.13
 
-- Total rewrite of file handling to support remote file systems
+- Emergency bugfix for printing a selection
+
+### 0.9.12
+
+- Emergency bugfix for resolution of local resources referenced by Markdown
+
+### 0.9.11
+
+- Total rewrite of file management in support of remote file systems
 - Glob brace expressions can be nested
-- Enforced exclusion for
+- Exclusion is forced for
   - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
   - `{bin,obj}`
-- Change to licence terms denying licence to people who make negative 
-public comments without first reading the manual or seeking help on the 
-GitHub repo
+- Change to licence terms refusing licence to persons who give a bad review without first reading the manual or seeking assistance by raising an issue on the GitHub repository
+
+### 0.9.10
+
+- this version number was used for an internal release
 
 ### 0.9.9
 
