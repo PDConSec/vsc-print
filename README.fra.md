@@ -110,6 +110,11 @@ L’extension Math+Markdown (installe le plugin KaTeX) nécessite une connexion 
 
 ## Notes de version
 
+### 0.9.14
+
+- Correction de bug d’urgence pour l’impression de fichiers non enregistrés
+- Correction de bogue d’urgence pour l’impression de fichiers avec Azure Uris qui ne sont pas soutenus par un système de fichiers complet
+
 ### 0.9.13
 
 - Correction d’un bug d’urgence pour l’impression d’une sélection
