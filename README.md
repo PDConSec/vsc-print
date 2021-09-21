@@ -120,6 +120,10 @@ The Math+Markdown extension (installs the KaTeX plugin) requires an internet con
 
 ## Release Notes
 
+### 0.9.13
+
+- Emergency bugfix for printing a selection
+
 ### 0.9.12
 
 - Emergency bugfix for resolution of local resources referenced by Markdown

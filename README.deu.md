@@ -1,3 +1,5 @@
+Yes, it's in English. The fellow who translates is busy with his studies. If you want to help, raise an issue on the repo. The quickest way to translate is to use a machine translator, proofread side by side with the source document, and make corrections when you think it's wrong or clumsy in the target language.
+
 # Print extension
 
 [Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
@@ -119,6 +121,10 @@ For better results burn some disk space and install another browser such as Chro
 The Math+Markdown extension (installs the KaTeX plugin) requires an internet connection for stylesheets and fonts. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
+
+### 0.9.13
+
+- Emergency bugfix for printing a selection
 
 ### 0.9.12
 

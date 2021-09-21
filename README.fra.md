@@ -110,6 +110,10 @@ L’extension Math+Markdown (installe le plugin KaTeX) nécessite une connexion 
 
 ## Notes de version
 
+### 0.9.13
+
+- Correction d’un bug d’urgence pour l’impression d’une sélection
+
 ### 0.9.12
 
 - Correction de bug d’urgence pour la résolution des ressources locales référencées par Markdown

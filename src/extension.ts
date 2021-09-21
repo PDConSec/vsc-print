@@ -150,7 +150,7 @@ class SourceCode {
 async function getSourceCode(uri: vscode.Uri, fileMatcher: ((document: vscode.TextDocument) => boolean) = (x) => true): Promise<SourceCode | null> {
   const editor = vscode.window.activeTextEditor;
   // if uri is for the active editor
-  if (editor && uri === editor.document.uri) {
+  if (editor && equivalentUris(uri, editor.document.uri)) {
     let code;
     // if there's a non-empty selection defined get code from the selection
     if (selection && !selection.isEmpty) {
@@ -166,6 +166,13 @@ async function getSourceCode(uri: vscode.Uri, fileMatcher: ((document: vscode.Te
     return fileMatcher(otd) ? new SourceCode(uri.fsPath, otd.getText().trimRight(), otd.languageId) : null;
   }
 }
+
+const equivalentUris = (a: vscode.Uri, b: vscode.Uri):boolean =>
+!(
+  a.path !== b.path
+  || a.scheme !== b.scheme
+);
+
 
 /* 
 properly open/close syntax highlighting spans across line breaks
@@ -306,7 +313,7 @@ async function getHtml(uri: vscode.Uri): Promise<string> {
   let codePromises: Promise<SourceCode | null>[];
   let uristat = await vscode.workspace.fs.stat(uri);
   if (uristat.type === vscode.FileType.Directory) {
-
+    
     // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
     let excludePatterns: string[] = printConfig.folder.exclude || [];
     if (excludePatterns.length == 0) {
