@@ -141,6 +141,10 @@
             ],
             "default": "inherit"
           },
+          "print.showDiagnostics": {
+            "type": "boolean",
+            "description": "Show diagnostic information as notifications when performing print actions"
+          },
           "print.alternateBrowser": {
             "type": "boolean",
             "description": "%print.alternateBrowser.description%",
