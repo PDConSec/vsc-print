@@ -229,7 +229,7 @@ table {
   vertical-align: top;
 }
 .line-text {
-  margin-left: 0.7em;
+  padding-left: 0.7em;
   padding-bottom: {lineSpacing}em;
   white-space: pre-wrap;
 }
