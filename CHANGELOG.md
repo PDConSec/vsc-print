@@ -1,5 +1,14 @@
 # Change Log
 
+### 0.9.15
+
+- Fixed issue 98 - print Markdown rendered from unsaved files
+
+### 0.9.14
+
+- Emergency bugfix for printing unsaved files
+- Emergency bugfix for printing files with Azure Uris that are not backed by a complete filesystem
+
 ### 0.9.13
 
 - Emergency bugfix for printing a selection

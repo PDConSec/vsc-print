@@ -86,7 +86,7 @@ Les feuilles de style personnalisées ne sont plus prises en charge. Les feuille
 Cela dépend de CSS et polices des caractères du web. Pour que l'impression fonctionne, vous devez ajouter la feuille de style requise à vos paramètres.
 
 		"markdown.styles": [
-			"https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css"
+			"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
 		]
 
 Voici quelques échantillons pour vous aider à vérifier votre configuration.
@@ -106,4 +106,31 @@ x = \begin{cases}
    c &\text{if } d
 \end{cases}
 $$
+```
+
+# Extensions Markdown et espaces de travail distants
+
+Pour travailler avec des espaces de travail distants, une extension Markdown doit s’exécuter sur l’hôte distant, car c’est là que le pipeline de rendu Markdown s’exécute. La plupart des extensions Markdown fonctionneront comme ça, mais elles ne sont pas configurées pour cela.
+
+Le problème est que la plupart d’entre eux ne sont pas configurés de cette façon, même s’il suffirait d’une entrée dans leur fichier `package.json`. 
+
+Heureusement, vous pouvez les patcher vous-même. 
+
+1. Trouvez les extensions où elles sont installées sur votre poste de travail dans `~/.vscode/extensions` (sous Windows, remplacez `%userprofile%` par `~`)
+2. Modifiez les fichiers `package.json` pour les extensions Markdown que vous souhaitez utiliser sur les hôtes distants. Ajoutez l’attribut `extensionKind`. 
+3. Lorsque vous avez modifié toutes les extensions Markdown, redémarrez VS Code.
+
+C’est un attribut de niveau racine afin que vous puissiez le mettre dès le début. Si cet attribut est déjà présent, VS Code vous le dira bientôt. Pour fonctionner correctement avec la réunion à l’amiable, il doit spécifier « espace de travail ». Ne mettez pas à la fois `workspace` et `ui`. Si vous faites cela, VS Code préférera la station de travail locale et ne fonctionnera que pour les fichiers locaux. 
+Vous devez le déterminer par l’espace de travail. 
+
+Que se passe-t-il si vous disposez d’un espace de travail distant, mais qu’un éditeur contient un fichier local ? Lorsque ce fichier local est du code source, l’impression fonctionne. Pour Markdown qui est exempt de références de ressources, l’impression fonctionnera. Mais les références Markdown aux images seront résolues dans le système de fichiers distant et les images ne seront pas trouvées.
+
+```json
+{
+  "extensionKind": [
+    "workspace"
+  ],
+  "name": "vscode-print",
+  "displayName": "Print",
+
 ```

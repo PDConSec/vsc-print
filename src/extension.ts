@@ -167,11 +167,11 @@ async function getSourceCode(uri: vscode.Uri, fileMatcher: ((document: vscode.Te
   }
 }
 
-const equivalentUris = (a: vscode.Uri, b: vscode.Uri):boolean =>
-!(
-  a.path !== b.path
-  || a.scheme !== b.scheme
-);
+const equivalentUris = (a: vscode.Uri, b: vscode.Uri): boolean =>
+  !(
+    a.path !== b.path
+    || a.scheme !== b.scheme
+  );
 
 
 /* 
@@ -271,9 +271,11 @@ async function getHtml(uri: vscode.Uri): Promise<string> {
   const printFilenames = printConfig.folder.fileNames;
   let printAndClose = printConfig.printAndClose ? " onload = \"window.print();\" onafterprint=\"window.close();\"" : "";
 
-  if (printConfig.renderMarkdown && uri.fsPath.toLowerCase().split('.').pop() === "md") {
+  const ed = vscode.window.activeTextEditor;
+  const isMarkdown = ed && ed.document.languageId === "markdown" || uri.fsPath.toLowerCase().split('.').pop() == "md";
+  if (printConfig.renderMarkdown && isMarkdown) {
     let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
-    let raw = Utf8ArrayToStr(await vscode.workspace.fs.readFile(uri));
+    let raw = ed ? ed.document.getText() : Utf8ArrayToStr(await vscode.workspace.fs.readFile(uri));
     let content: String = md.render(raw);
     try {
       // 1 - prepend base local path to relative URLs
@@ -468,7 +470,7 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
         }
       } catch (error) {
         response.setHeader("Content-Type", "text/plain");
-        response.end(error.stack);
+        response.end((error as any).stack);
       }
     });
     // report exceptions
