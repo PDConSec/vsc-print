@@ -470,7 +470,7 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
         }
       } catch (error) {
         response.setHeader("Content-Type", "text/plain");
-        response.end(error.stack);
+        response.end((error as any).stack);
       }
     });
     // report exceptions
