@@ -71,11 +71,15 @@ const doCompile = function (buildNls) {
 }
 
 const vscePublishTask = function () {
-  return vsce.publish();
+  return vsce.publish({
+    packagePath: process.env.VSIX_PACKAGE_PATH
+  });
 };
 
 const vscePackageTask = function () {
-  return vsce.createVSIX();
+  return vsce.createVSIX({
+    packagePath: process.env.VSIX_PACKAGE_PATH
+  });
 };
 
 gulp.task('default', buildTask);
