@@ -1,4 +1,4 @@
-# Visual Studio Code Printing TRANSLATE ME
+# Print extension TRANSLATE ME
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
@@ -42,7 +42,6 @@ This extension has the following settings, which can be modified by going to Cod
 * `print.folder.include`: pattern for files to include. Empty matches everything.
 * `print.folder.exclude`: patterns to exclude
 * `print.folder.maxLines`: files containing more lines than this threshold will be ignored
-* `print.folder.gitignore`: whether to ignore .gitignore
 
 ### Type face and size
 
@@ -84,21 +83,17 @@ To set up an alternate browser you must do two things:
 
 ## Choose a colour scheme
 
-The colours used for syntax highlighting can be styled by supplying a CSS stylesheet. Press `F1` and type `browse stylesheet` to find the command for setting this. Invoking it will open a file browse dialog that defaults to the folder containing VS Code Printing's cache of stylesheets. If you browse to somewhere else and choose a CSS file, it will be imported to the cache folder (potentially overwriting a file of the same name).
-
-The setting points at the the cached copy, so if you make changes you must repeat the import process.
-
-Don't use dark theme stylesheets. Paper is white.
+Custom stylesheets are no longer supported. Available stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because paper is white.
 
 ## Web Server
 
-Note that the web server only allows connections to localhost.  Connections not to localhost will be rejected.
+The web server allows connections only from localhost.  Connections from other hosts are rejected.
 
 ## Katex Markdown extension
 This depends on CSS and fonts from the web. To get printing to work you must add the required stylesheet to your settings.
 
 		"markdown.styles": [
-			"https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css"
+			"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
 		]
 
 Here are some samples to help you check your configuration.
@@ -117,4 +112,32 @@ x = \begin{cases}
    c &\text{if } d
 \end{cases}
 $$
+```
+
+# Markdown extensions and remote workspaces
+
+To work with remote workspaces a Markdown extension must run on the remote host because that's where the Markdown rendering pipeline runs. Most Markdown extensions are capable of working like this but they are not set up for it.
+
+Trouble is, most of them aren't set up this way even though all it would take is a single entry in their `package.json` file. 
+
+Fortunately, you can patch them yourself. 
+
+1. Find the extensions where they are installed on your workstation in `~/.vscode/extensions` (on Windows substitute `%userprofile%` for `~`)
+2. Edit the `package.json` files for the Markdown extensions you want to use on remote hosts. Add the `extensionKind` attribute. 
+3. When you've edited all the Markdown extensions restart VS Code.
+
+It's a root level attribute so you can put it right at the start. If this attribute is already present, VS Code will soon tell you. To work properly with a remote host it must specify "workspace". Do not list both `workspace` and `ui`. If you do that VS Code will prefer the local workstation and it will function locally but fail for remote workspaces. 
+You need it to be determined by the workspace. 
+
+What if you have a remote workspace, but one editor contains a local file? When that local file is source code, printing will work. For Markdown that is free of resource references, printing will work. But Markdown references to images will resolve in the remote filesystem and the images will not be found.
+
+
+```json
+{
+  "extensionKind": [
+    "workspace"
+  ],
+  "name": "vscode-print",
+  "displayName": "Print",
+
 ```

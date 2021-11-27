@@ -1,10 +1,23 @@
-# Visual Studio Code Printing
+# Print extension
 
 [Version français](https://github.com/PeterWone/vsc-print) par Peter Wone
 
 [ANGLAIS](manual.md) | [FRANCAIS](manual.fra.md) | [ALLEMAND](manual.deu.md) | [Ajouter une langue](how-to-add-a-language.fra.md)
 
 ## Impression
+
+### Configuration pour imprimer sur un hôte distant
+
+Vous devez installer l’extension Print sur le système cible. Si l’hôte cible est votre poste de travail, aucune autre action n’est requise, mais lorsque l’hôte cible est un hôte distant, vous devez également installer l’extension Print sur l’hôte distant. 
+
+1. Connectez-vous à l’hôte distant
+2. Cliquez sur l’icône des extensions dans la bordure gauche de l’interface utilisateur VS Code. 
+3. Trouvez l’extension Imprimer. 
+4. Il devrait avoir un petit badge sur lui offrant d’installer sur l’hôte distant. Cliquez sur le badge et VS Code le prendra à partir de là.
+
+Vous devez le faire à nouveau pour chaque hôte distant différent auquel vous vous connectez (différents conteneurs Docker, par exemple).
+
+Les extensions Markdown doivent également être installées sur l’hôte cible si vous souhaitez les utiliser.
 
 ### Pour imprimer le document actif
 
@@ -38,15 +51,13 @@ Cette extension comporte les paramètres suivants, qui peuvent être modifiés e
 * `print.lineNumbers` : on, off ou inherit (faire la même chose que l'éditeur)
 * `print.lineSpacing` : simple, ligne et demie ou double espacement
 * `print.printAndClose` : après l'impression, fermez le navigateur.
-* `print.folder.include`: modèles à inclure lors de l’impression. Vide correspond à tout.
-* `print.folder.exclude`: modèles à exclure lors de l’impression.
-* `print.folder.maxLines`: les fichiers avec plus de lignes que cela seront ignorés.
-* `print.folder.gitignore`: soit les fichiers de .gitignore doivent être ignorés.
+* `print.folder.include` : modèles à inclure lors de l’impression. Vide correspond à tout.
+* `print.folder.exclude` : modèles à exclure lors de l’impression.
+* `print.folder.maxLines` : les fichiers avec plus de lignes que cela seront ignorés.
 
 ### Choix de caractère
 
 Bien que la taille de lettrage soit contrôlée par les paramètres, la _police de caractères_ est déterminée par les paramètres de votre éditeur. Si vous voyez Fira Code à l'écran, c'est ce qui sera imprimé.
-
 
 ## Markdown
 
@@ -69,15 +80,13 @@ Pour configurer un autre navigateur, vous devez faire deux choses :
 
 ## Choisissez un schéma de couleurs
 
-Les couleurs utilisées pour la mise en surbrillance syntaxe peuvent être stylisées en fournissant une feuille de style CSS. Appuyez sur `F1` et tapez `Parcourir pour la feuille de style` pour trouver la commande pour définir ceci. Invoquant il ouvrira un dialogue de navigation de fichier qui par défaut dans le dossier contenant le cache de feuilles de style de VS Code Printing. Si vous naviguez ailleurs et choisissez un fichier CSS, il sera importé dans le dossier cache (potentiellement en train de passer à l'appel d'un fichier du même nom).
-
-Le paramètre indique la copie mise en cache, donc si vous effectuez des modifications, vous devez répéter le processus d'importation.
+Les feuilles de style personnalisées ne sont plus prises en charge. Les feuilles de style disponibles sont regroupées et peuvent être choisies par nom dans une liste. Les choix sont limités aux feuilles de style légères car le papier est blanc.
 
 ## Extension de Markdown de Katex
 Cela dépend de CSS et polices des caractères du web. Pour que l'impression fonctionne, vous devez ajouter la feuille de style requise à vos paramètres.
 
 		"markdown.styles": [
-			"https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css"
+			"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
 		]
 
 Voici quelques échantillons pour vous aider à vérifier votre configuration.
@@ -97,4 +106,31 @@ x = \begin{cases}
    c &\text{if } d
 \end{cases}
 $$
+```
+
+# Extensions Markdown et espaces de travail distants
+
+Pour travailler avec des espaces de travail distants, une extension Markdown doit s’exécuter sur l’hôte distant, car c’est là que le pipeline de rendu Markdown s’exécute. La plupart des extensions Markdown fonctionneront comme ça, mais elles ne sont pas configurées pour cela.
+
+Le problème est que la plupart d’entre eux ne sont pas configurés de cette façon, même s’il suffirait d’une entrée dans leur fichier `package.json`. 
+
+Heureusement, vous pouvez les patcher vous-même. 
+
+1. Trouvez les extensions où elles sont installées sur votre poste de travail dans `~/.vscode/extensions` (sous Windows, remplacez `%userprofile%` par `~`)
+2. Modifiez les fichiers `package.json` pour les extensions Markdown que vous souhaitez utiliser sur les hôtes distants. Ajoutez l’attribut `extensionKind`. 
+3. Lorsque vous avez modifié toutes les extensions Markdown, redémarrez VS Code.
+
+C’est un attribut de niveau racine afin que vous puissiez le mettre dès le début. Si cet attribut est déjà présent, VS Code vous le dira bientôt. Pour fonctionner correctement avec la réunion à l’amiable, il doit spécifier « espace de travail ». Ne mettez pas à la fois `workspace` et `ui`. Si vous faites cela, VS Code préférera la station de travail locale et ne fonctionnera que pour les fichiers locaux. 
+Vous devez le déterminer par l’espace de travail. 
+
+Que se passe-t-il si vous disposez d’un espace de travail distant, mais qu’un éditeur contient un fichier local ? Lorsque ce fichier local est du code source, l’impression fonctionne. Pour Markdown qui est exempt de références de ressources, l’impression fonctionnera. Mais les références Markdown aux images seront résolues dans le système de fichiers distant et les images ne seront pas trouvées.
+
+```json
+{
+  "extensionKind": [
+    "workspace"
+  ],
+  "name": "vscode-print",
+  "displayName": "Print",
+
 ```

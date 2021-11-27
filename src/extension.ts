@@ -3,66 +3,48 @@ import * as hljs from "highlight.js";
 import * as http from "http";
 import * as dns from "dns";
 import * as child_process from "child_process";
-import * as fs from "fs";
 import { AddressInfo } from 'net';
 import * as path from "path";
-import * as globby from "globby";
+import * as braces from "braces";
+import { captionByFilename, filenameByCaption, defaultCss, localise } from './imports';
+import * as nls from 'vscode-nls';
 
+// #region necessary for vscode-nls-dev
+const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
+// function localise(s: string): string { return localize(s, "x"); }
+localize("NO_FILE", "x");
+localize("UNSAVED_FILE", "x");
+localize("EMPTY_SELECTION", "x");
+localize("ERROR_PRINTING", "x");
+localize("ACCESS_DENIED_CREATING_WEBSERVER", "x");
+localize("UNEXPECTED_ERROR", "x");
+// #endregion
+
+let colourScheme = vscode.workspace.getConfiguration("print", null).colourScheme;
+if (captionByFilename[colourScheme]) {
+  // legacy value, convert
+  vscode.workspace.getConfiguration("print", null).update("colourScheme", captionByFilename[colourScheme]);
+} else {
+  colourScheme = filenameByCaption[colourScheme];
+  if (!colourScheme) {
+    colourScheme = "atelier-dune-light";
+    vscode.workspace.getConfiguration("print", null).update("colourScheme", captionByFilename[colourScheme]);
+  }
+}
+let swatchCss: string = require(`highlight.js/styles/${colourScheme}.css`).default.toString();
 var md: any;
 var selection: vscode.Selection | undefined;
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 export function activate(context: vscode.ExtensionContext) {
   let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
-    etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton;
+    etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton,
+    disposable: vscode.Disposable;
   vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
   vscode.commands.executeCommand("setContext", "etmButton", etmButton);
 
   context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
   context.subscriptions.push(vscode.commands.registerCommand("extension.print", printCommand));
   context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
-  let disposable = vscode.commands.registerCommand('extension.browse', async (cmdArgs: any) => {
-    let x = vscode.extensions.getExtension("pdconsec.vscode-print");
-    if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
-    var styleCachePath = `${x.extensionPath.replace(/\\/g, "/")}/node_modules/highlight.js/styles`;
-    let printConfig = vscode.workspace.getConfiguration("print", null);
-    let currentPath = `${styleCachePath}/${printConfig.colourScheme}.css`;
-    vscode.window.showOpenDialog({
-      canSelectFiles: true,
-      canSelectMany: false,
-      defaultUri: vscode.Uri.file(fs.existsSync(currentPath) ? currentPath : styleCachePath),
-      filters: {
-        Stylesheet: ['css']
-      }
-    }).then(f => {
-      if (f) {
-        let p = f[0].fsPath.replace(/\\/g, "/");
-        let lastSlashPosition = p.lastIndexOf("/");
-        let extensionSeparatorPosition = p.lastIndexOf(".");
-        if (extensionSeparatorPosition === -1) {
-          extensionSeparatorPosition = p.length;
-        }
-        var path = p.substring(0, lastSlashPosition);
-        var fileName = p.substring(lastSlashPosition + 1, extensionSeparatorPosition);
-        try {
-          vscode.workspace.getConfiguration().update("print.colourScheme", fileName, vscode.ConfigurationTarget.Global).then(() => {
-            if (path !== styleCachePath) {
-              let newCachePath = `${styleCachePath}/${fileName}`;
-              fs.copyFile(p, newCachePath, err => {
-                if (err) {
-                  vscode.window.showErrorMessage(err.message);
-                }
-              });
-            }
-          }, (err) => {
-            debugger;
-          });
-        } catch (err) {
-          debugger;
-        }
-      }
-    });
-  });
-  context.subscriptions.push(disposable);
 
   // capture the extension path
   disposable = vscode.commands.registerCommand('extension.help', async (cmdArgs: any) => {
@@ -71,7 +53,12 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.executeCommand('markdown.showPreview', uriManual);
   });
   context.subscriptions.push(disposable);
-  return { extendMarkdownIt(mdparam: any) { return md = mdparam; } };
+  const markdownExtensionInstaller = {
+    extendMarkdownIt(mdparam: any) {
+      return md = mdparam;
+    }
+  };
+  return markdownExtensionInstaller;
 }
 
 const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
@@ -81,31 +68,36 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
       vscode.workspace.getConfiguration("print", null)
         .get('editorContextMenuItemPosition'));
   }
-  if (e.affectsConfiguration('print.editorTitleMenuButton')) {
+  else if (e.affectsConfiguration('print.editorTitleMenuButton')) {
     vscode.commands.executeCommand(
       "setContext", "etmButton",
       vscode.workspace.getConfiguration("print", null)
         .get<boolean>('editorTitleMenuButton'));
   }
+  else if (e.affectsConfiguration('print.colourScheme')) {
+    colourScheme = filenameByCaption[vscode.workspace.getConfiguration("print", null).colourScheme];
+    swatchCss = require(`highlight.js/styles/${colourScheme}.css`).default.toString();
+  }
 };
 
 async function printCommand(cmdArgs: any) {
+
   let editor = vscode.window.activeTextEditor;
   selection = editor && editor.selection ? editor.selection : undefined;
 
-  let fsPath: string;
+  let uri: vscode.Uri;
   if (cmdArgs) {
-    fsPath = cmdArgs.fsPath;
+    uri = cmdArgs as vscode.Uri;
   }
   else if (vscode.window.activeTextEditor) {
-    fsPath = vscode.window.activeTextEditor.document.uri.fsPath;
+    uri = vscode.window.activeTextEditor.document.uri;
   }
   else {
-    vscode.window.showErrorMessage("No file opened. Open a file in the editor and try again.");
+    vscode.window.showErrorMessage(localise("NO_FILE"));
     return;
   }
 
-  await print(fsPath);
+  await print(uri);
 }
 
 async function printFolderCommand(commandArgs: any) {
@@ -116,21 +108,21 @@ async function printFolderCommand(commandArgs: any) {
   }
   else if (editor) {
     if (editor.document.isUntitled) {
-      vscode.window.showErrorMessage("File not saved to disk. Save the file or open a file saved to disk and try again.");
+      vscode.window.showErrorMessage(localise("UNSAVED_FILE"));
       return;
     }
     directory = path.dirname(editor.document.uri.fsPath);
   }
   else {
-    vscode.window.showErrorMessage("No file opened. Open a file in the editor and try again.");
+    vscode.window.showErrorMessage(localise("NO_SELECTION"));
     return;
   }
 
-  await print(directory);
+  await print(vscode.Uri.file(directory));
 }
 
-async function print(filePath: string) {
-  await startWebserver(() => getRenderedSourceCode(filePath));
+async function print(fileUri: vscode.Uri) {
+  await startWebserver(() => getHtml(fileUri));
 
   let printConfig = vscode.workspace.getConfiguration("print", null);
   let q = process.platform === "win32" ? '"' : "";
@@ -138,19 +130,9 @@ async function print(filePath: string) {
   child_process.exec(`${cmd} http://localhost:${port}/`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
     // node on Linux incorrectly calls this error handler, with a null error object
     if (error) {
-      vscode.window.showErrorMessage(`Error Attempting to Print: ${error ? error.message : stderr}`);
-      console.error("Print Error: " + error);
+      vscode.window.showErrorMessage(`${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`);
     }
   });
-}
-
-function getFileText(fname: string): string {
-  // vscode.window.showInformationMessage(`vsc-print get ${fname}`);
-
-  var text = fs.readFileSync(fname).toString();
-  // strip BOM when present
-  // vscode.window.showInformationMessage(`vsc-print got ${fname}`);
-  return text.indexOf('\uFEFF') === 0 ? text.substring(1, text.length) : text;
 }
 
 class SourceCode {
@@ -165,38 +147,32 @@ class SourceCode {
   }
 }
 
-async function getSourceCode(file: string, fileMatcher: ((document: vscode.TextDocument) => boolean) | null = null): Promise<SourceCode | null> {
-  const fileUri = vscode.Uri.file(file);
+async function getSourceCode(uri: vscode.Uri, fileMatcher: ((document: vscode.TextDocument) => boolean) = (x) => true): Promise<SourceCode | null> {
   const editor = vscode.window.activeTextEditor;
-  let editorFsPath = editor ? editor.document.uri.fsPath : undefined;
-  let pathsMatch = editorFsPath === file;
-
-  try {
-    let otd = (editor && pathsMatch) ? editor.document : await vscode.workspace.openTextDocument(fileUri);
-    if (fileMatcher !== null && !fileMatcher(otd)) {
-      return null;
-    }
-
+  // if uri is for the active editor
+  if (editor && equivalentUris(uri, editor.document.uri)) {
     let code;
-    if (!selection || selection.isEmpty || !pathsMatch) {
-      code = otd.getText();
-    } else {
-      code = otd.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
+    // if there's a non-empty selection defined get code from the selection
+    if (selection && !selection.isEmpty) {
+      code = editor.document.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
     }
-    code = code.trimRight();
-
-    // Get relative path if file is in workspace
-    const workspace = vscode.workspace.getWorkspaceFolder(fileUri);
-    if (workspace) {
-      file = path.relative(workspace.uri.fsPath, file);
+    else {
+      code = editor.document.getText();
     }
-
-    return new SourceCode(file, code, otd.languageId);
-  }
-  catch (err) {
-    return err;
+    return new SourceCode(uri.fsPath, code.trimRight(), editor.document.languageId);
+  } else {
+    // load it to get the text and the langId
+    let otd = await vscode.workspace.openTextDocument(uri);
+    return fileMatcher(otd) ? new SourceCode(uri.fsPath, otd.getText().trimRight(), otd.languageId) : null;
   }
 }
+
+const equivalentUris = (a: vscode.Uri, b: vscode.Uri): boolean =>
+  !(
+    a.path !== b.path
+    || a.scheme !== b.scheme
+  );
+
 
 /* 
 properly open/close syntax highlighting spans across line breaks
@@ -253,24 +229,57 @@ table {
   vertical-align: top;
 }
 .line-text {
-  margin-left: 0.7em;
+  padding-left: 0.7em;
   padding-bottom: {lineSpacing}em;
   white-space: pre-wrap;
 }
 `;
 
-async function getRenderedSourceCode(filePath: string): Promise<string> {
+function Utf8ArrayToStr(array: Uint8Array) {
+  var out, i, len, c;
+  var char2, char3;
+  out = "";
+  len = array.length;
+  i = 0;
+  while (i < len) {
+    c = array[i++];
+    switch (c >> 4) {
+      case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+        // 0xxxxxxx
+        out += String.fromCharCode(c);
+        break;
+      case 12: case 13:
+        // 110x xxxx   10xx xxxx
+        char2 = array[i++];
+        out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
+        break;
+      case 14:
+        // 1110 xxxx  10xx xxxx  10xx xxxx
+        char2 = array[i++];
+        char3 = array[i++];
+        out += String.fromCharCode(((c & 0x0F) << 12) |
+          ((char2 & 0x3F) << 6) |
+          ((char3 & 0x3F) << 0));
+        break;
+    }
+  }
+  return out;
+}
+
+async function getHtml(uri: vscode.Uri): Promise<string> {
   const printConfig = vscode.workspace.getConfiguration("print", null);
   const printFilenames = printConfig.folder.fileNames;
   let printAndClose = printConfig.printAndClose ? " onload = \"window.print();\" onafterprint=\"window.close();\"" : "";
 
-  if (printConfig.renderMarkdown && filePath.toLowerCase().split('.').pop() === "md") {
+  const ed = vscode.window.activeTextEditor;
+  const isMarkdown = ed && ed.document.languageId === "markdown" || uri.fsPath.toLowerCase().split('.').pop() == "md";
+  if (printConfig.renderMarkdown && isMarkdown) {
     let markdownConfig = vscode.workspace.getConfiguration("markdown", null);
-    let raw = fs.readFileSync(filePath).toString();
+    let raw = ed ? ed.document.getText() : Utf8ArrayToStr(await vscode.workspace.fs.readFile(uri));
     let content: String = md.render(raw);
     try {
       // 1 - prepend base local path to relative URLs
-      let basePath = filePath.replace(/\\/g, "/") // forward slashes only, they work on all platforms
+      let basePath = uri.fsPath.replace(/\\/g, "/") // forward slashes only, they work on all platforms
         .replace(/\/[^\/]*$/, ""); // clip file name
       content = content.replace(/(img src=")(?!http[s]?)(?![a-z]:)(?!\/)([^"]+)/gi, `$1${basePath}/$2`);
       // 2 - encode colons, spaces, and other special chars in file path parts
@@ -278,14 +287,16 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
         $1 + $2.split("/").map(encodeURIComponent).join("/"));
     } catch (error) {
     }
-    let result = `<!DOCTYPE html><html><head><title>${filePath}</title>
+    let result = `<!DOCTYPE html><html><head><title>${uri.fsPath}</title>
     <meta charset="utf-8"/>
     <style>
-    html, body {
-      font-family: ${markdownConfig.preview.fontFamily};
-      font-size: ${markdownConfig.preview.fontSize}px;
-      line-height: ${markdownConfig.preview.lineHeight}em;
-    }
+    html, body { ${printConfig.markdownRenderingBodyStyle} }
+    p { ${printConfig.markdownRenderingParagraphStyle} }
+    h1,h2,h3,h4,h5,h6 { ${printConfig.markdownRenderingHeadingStyle} }
+    table { ${printConfig.markdownRenderingTableStyle} }
+    th { ${printConfig.markdownRenderingTableHeadingStyle} }
+    td { ${printConfig.markdownRenderingTableDataStyle} }
+    ol,ul { ${printConfig.markdownRenderingListStyle} }
     img {
       max-width: 100%;
     }
@@ -300,43 +311,41 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
     return result;
   }
 
-  let x = vscode.extensions.getExtension("pdconsec.vscode-print");
-  if (!x) { throw new Error("Cannot resolve extension. Has the name changed? It is defined by the publisher and the extension name defined in package.json"); }
-
-  let stylePath = `${x.extensionPath}/node_modules/highlight.js/styles`;
-  let defaultCss = getFileText(`${stylePath}/default.css`);
-  let swatchCss = getFileText(`${stylePath}/${printConfig.colourScheme}.css`);
-
   // Fetch source code for directory or single file
   let codePromises: Promise<SourceCode | null>[];
-  if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
-    const excludes = printConfig.folder.exclude;
-    const include = printConfig.folder.include;
-    const gitignore = printConfig.folder.gitignore;
+  let uristat: vscode.FileStat | undefined;
+  try { // Azure filesystem is not completely implemented
+    uristat = await vscode.workspace.fs.stat(uri);
+  } catch { }
+  if (uristat && uristat.type === vscode.FileType.Directory) {
 
-    let patterns = [];
-    if (include.length === 0) {
-      patterns.push("**/*.*");
+    // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
+    let excludePatterns: string[] = printConfig.folder.exclude || [];
+    if (excludePatterns.length == 0) {
+      excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp}");
     }
-    else {
-      patterns.push(...include);
+    let includePatterns: string[] = printConfig.folder.include || [];
+    if (includePatterns.length == 0) {
+      includePatterns.push("**/*");
     }
+    // one item should not be surrounded with braces, they would be treated as literals
+    // but flatten them anyway in case the single pattern contains nested braces
+    let excludes: string = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
+    excludePatterns = braces.expand(excludes); //no braces in patterns
+    excludes = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
+    let includes: string = includePatterns.length == 1 ? includePatterns[0] : `{${includePatterns.join(",")}}`;
+    includePatterns = braces.expand(includes);
+    includes = includePatterns.length == 1 ? includePatterns[0] : `{${includePatterns.join(",")}}`;
 
-    if (excludes.length > 0) {
-      patterns.push(...(excludes.map((x: string) => "!" + x)));
-    }
-
+    let rel = new vscode.RelativePattern(uri.fsPath, includes);
     const maxLineCount = printConfig.folder.maxLines;
     const matcher = (document: vscode.TextDocument): boolean => document.lineCount < maxLineCount;
-
-    codePromises = await globby(patterns, {
-      gitignore,
-      cwd: filePath
-    }).then(x => x.map(y => getSourceCode(path.join(filePath, y), matcher)));
+    const ff = await vscode.workspace.findFiles(rel, excludes);
+    codePromises = ff.map(x => getSourceCode(x, matcher));
   } else {
-    codePromises = [getSourceCode(filePath)];
+    codePromises = [getSourceCode(uri)];
   }
-  // Wait for all code to load
+  //  Wait for all code to load
   let allCode = (await Promise.all(codePromises)).filter(x => x !== null) as SourceCode[];
   // Sort files by path depth and name
   allCode = allCode.sort((a, b) => {
@@ -396,13 +405,15 @@ async function getRenderedSourceCode(filePath: string): Promise<string> {
 
 
   let editorConfig = vscode.workspace.getConfiguration("editor", null);
-  let html = `<html><head><title>${filePath}</title><meta charset="utf-8"/>
+  let html = `<html><head><title>${uri.fsPath}</title><meta charset="utf-8"/>
   <style>
+    ${defaultCss}
+    ${swatchCss}
+    table.hljs {background:none;}
+    html,body{color:white}
     body{
       margin:0;padding:0;tab-size:${editorConfig.tabSize}
     }
-    ${defaultCss}
-    ${swatchCss}
     ${lineNumberCss.replace("{lineSpacing}", (printConfig.lineSpacing - 1).toString())}
     h3 {
       font-family: Consolas;
@@ -440,24 +451,26 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
             let html = await generateSource();
             response.end(html);
           } else {
-            let filePath: string = decodeURIComponent(request.url).replace(/^\/([a-z]:)/, "$1"); // Remove leading / on Windows paths
-            if (fs.existsSync(filePath)) {
-              let cb = fs.statSync(filePath).size;
-              let lastdotpos = request.url.lastIndexOf('.');
-              let fileExt = request.url.substr(lastdotpos + 1);
+            const decoded: string = decodeURIComponent(request.url);
+            const filePath: string = decoded.replace(/^\/([a-z]:)/, "$1") // Remove leading / on Windows paths
+            const fileUri: vscode.Uri = vscode.Uri.file(filePath);
+            try {
+              const cb = (await vscode.workspace.fs.stat(fileUri)).size;
+              const lastdotpos = request.url.lastIndexOf('.');
+              const fileExt = request.url.substr(lastdotpos + 1);
               response.setHeader("Content-Type", `image/${fileExt}`);
               response.setHeader("Content-Length", cb);
-              fs.createReadStream(filePath).pipe(response);
-            } else {
+              response.end(await vscode.workspace.fs.readFile(fileUri));
+            } catch (error) {
               // 404
-              response.writeHead(404, { "Content-Type": "text/html" })
-              response.end("FILE NOT FOUND")
+              response.writeHead(404, { "Content-Type": "text/html" });
+              response.end("FILE NOT FOUND");
             }
           }
         }
       } catch (error) {
         response.setHeader("Content-Type", "text/plain");
-        response.end(error.stack);
+        response.end((error as any).stack);
       }
     });
     // report exceptions
@@ -465,10 +478,10 @@ function startWebserver(generateSource: () => Promise<string>): Promise<void> {
       if (err) {
         switch (err.code) {
           case "EACCES":
-            vscode.window.showErrorMessage("ACCESS DENIED ESTABLISHING WEBSERVER");
+            vscode.window.showErrorMessage(localise("ACCESS_DENIED_CREATING_WEBSERVER"));
             break;
           default:
-            vscode.window.showErrorMessage(`UNEXPECTED ERROR: ${err.code}`);
+            vscode.window.showErrorMessage(`${localise("UNEXPECTED_ERROR")}: ${err.code}`);
         }
       }
     });

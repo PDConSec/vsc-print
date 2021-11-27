@@ -1,7 +1,42 @@
 # Change Log
-All notable changes to the "VSCODE-PRINT" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+### 0.9.15
+
+- Fixed issue 98 - print Markdown rendered from unsaved files
+
+### 0.9.14
+
+- Emergency bugfix for printing unsaved files
+- Emergency bugfix for printing files with Azure Uris that are not backed by a complete filesystem
+
+### 0.9.13
+
+- Emergency bugfix for printing a selection
+
+### 0.9.12
+
+- Emergency bugfix for resolution of local resources referenced by Markdown
+
+### 0.9.11
+
+- Total rewrite of file management in support of remote file systems
+- Glob brace expressions can be nested
+- Exclusion is forced for
+  - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
+  - `{bin,obj}`
+- Change to licence terms refusing licence to persons who give a bad review without first reading the manual or seeking assistance by raising an issue on the GitHub repository
+
+### 0.9.10
+
+- this version number was used for an internal release
+
+### 0.9.9
+
+- Localise messages
+- Improved settings UX for folder print exclusion and inclusion glob lists
+- Guarantee exclusion of known unprintable file types
+- Embed stylesheets and improve stylesheet setting UX
+- New settings for customisation of Markdown rendering
 
 ### 0.9.8
 
