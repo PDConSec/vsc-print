@@ -31,6 +31,7 @@
   "print.lineSpacing.line-and-a-half": "Line and a half",
   "print.lineSpacing.double": "Double spaced",
   "print.markdownRenderingBodyStyle.markdownDescription": "`HTML` and `BODY` class attributes",
+  "print.markdownRenderingBlockquoteStyle.markdownDescription": "HTML `BLOCKQUOTE` attributes",
   "print.markdownRenderingHeadingStyle.markdownDescription": "HTML heading attributes (`H1`, `H2`...). Applies to _all_ headings so don't set the size.",
   "print.markdownRenderingParagraphStyle.markdownDescription": "HTML `P` class attributes",
   "print.markdownRenderingTableStyle.markdownDescription": "HTML `TABLE` class attributes",

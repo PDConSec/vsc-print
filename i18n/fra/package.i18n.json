@@ -31,6 +31,7 @@
   "print.lineSpacing.line-and-a-half": "Ligne et demie",
   "print.lineSpacing.double": "Espacement double",
   "print.markdownRenderingBodyStyle.markdownDescription": "Attributs des classes `HTML` et `BODY`",
+  "print.markdownRenderingBlockquoteStyle.markdownDescription": "Attributs des classes `BLOCKQUOTE`",
   "print.markdownRenderingHeadingStyle.markdownDescription": "Attributs de classe d’en-tête HTML (`H1`, `H2`...). S’applique à tous les en-têtes, alors ne définissez pas la taille.",
   "print.markdownRenderingParagraphStyle.markdownDescription": "Attributs de classe HTML `P`",
   "print.markdownRenderingTableStyle.markdownDescription": "Attributs de classe HTML `TABLE`",

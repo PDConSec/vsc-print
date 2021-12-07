@@ -1,4 +1,4 @@
-# Print extension
+# <img width="64px" src="vscode-print-128.png"></img> Print
 
 [Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
 
@@ -6,7 +6,7 @@
 
 [ENGLISH](README.md) | [FRENCH](README.fra.md) | [Add a language](how-to-add-a-language.md)
 
-Out of box failure is usually due to botched unauthorised repackaging by the Eclipse Foundation which omits dependencies. If this happens to you, get the [package produced and tested by us](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print).
+Most failure on first use is due to faulty repackaging by a third party. If this happens to you, obtain the [package produced and tested by us](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print).
 
 ## Markdown and source code, styled for print
 
@@ -22,12 +22,12 @@ Print-jobs are rendered as styled HTML and served from an embedded webserver. Wh
 
 ### Troubleshooting on first launch
 
-Print worked for forty thousand people out of the box, but sometimes local settings and permissions can spoil the fun. Here are some problems people have encountered, and what to do. If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
+Print worked for fifty thousand people out of the box, but sometimes local settings and permissions can spoil the fun. Here are some problems people have encountered, and what to do. If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
 
 * Nothing seems to happen &mdash; restart VS Code.
-* Firefox browser on Ubuntu gives trouble out of the box &mdash; install Chromium (or Chrome, Edge, Brave...) and either make it the default browser or configure Print to use a specific browser for printing (RTFM).
+* Firefox browser is problematic. Install Chromium (or Chrome, Edge, Brave...) and either make it the default browser or configure the Print extension to use a specific browser (RTFM).
 * Browser launches but no page loads &mdash; check networking permissions.
-* Browser launches and shows an error message about not finding a CSS file &mdash; non-standard variants of VS Code such as code-oss fail to install all the dependencies. Refer to https://github.com/PeterWone/vsc-print/issues/116 for details and remedial instructions. This behaviour can also be caused by file system permissions.
+* Browser shows an error message about not finding a CSS file &mdash; you installed from a VSIX that wasn't prepared by us. Get the [official package](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print) and try again.
 
 
 ## Classic user experience
@@ -141,6 +141,11 @@ For better results burn some disk space and install another browser such as Chro
 The Math+Markdown extension (installs the KaTeX plugin) requires an internet connection for stylesheets and fonts. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
+
+### 0.9.16
+
+- Add Markdown style setting for blockquotes (#123)
+- Enforce Markdown style settings over all else
 
 ### 0.9.15
 

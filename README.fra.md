@@ -9,6 +9,8 @@
 * Imprimer le code source
 * Impression Markdown entièrement rendu
 
+_La plupart des défaillances hors boîte sont dues à un regroupage défectueux par des tiers. Si cela vous arrive, procurez-vous le [VSIX produit et vérifié par nous](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)._
+
 Le code source obtient les numéros de ligne et la coloration de la syntaxe. Markdown est rendu avec le pipeline de rendu d’aperçu de VS Code &mdash; de nombreuses extensions Markdown fonctionnent avec l’impression.
 
 ## Impression indépendante du système d’exploitation
@@ -113,6 +115,11 @@ Pour de meilleurs résultats, gravez de l’espace disque et installez un autre 
 L’extension Math+Markdown (installe le plugin KaTeX) nécessite une connexion Internet pour les feuilles de style et les polices. Vous devez également configurer une référence de feuille de style. Les détails sont dans le manuel.
 
 ## Notes de version
+
+### 0.9.16
+
+- Ajouter le paramètre de style Markdown pour les blockquotes (#123)
+- Appliquer les paramètres de style Markdown sur tout le reste
 
 ### 0.9.15
 

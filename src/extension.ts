@@ -265,11 +265,17 @@ function Utf8ArrayToStr(array: Uint8Array) {
   }
   return out;
 }
-
+function important(s: string) {
+  s = s.trim();
+  if (s && !s.endsWith(";")) s += ";";
+  s = s.replace(/!important/gi, "");
+  s = s.replace(/;/g, " !important;");
+  return s;
+}
 async function getHtml(uri: vscode.Uri): Promise<string> {
   const printConfig = vscode.workspace.getConfiguration("print", null);
   const printFilenames = printConfig.folder.fileNames;
-  let printAndClose = printConfig.printAndClose ? " onload = \"window.print();\" onafterprint=\"window.close();\"" : "";
+  let printAndClose = printConfig.printAndClose ? " onload = \"setTimeout(window.print,500);\" onafterprint=\"window.close();\"" : "";
 
   const ed = vscode.window.activeTextEditor;
   const isMarkdown = ed && ed.document.languageId === "markdown" || uri.fsPath.toLowerCase().split('.').pop() == "md";
@@ -290,13 +296,18 @@ async function getHtml(uri: vscode.Uri): Promise<string> {
     let result = `<!DOCTYPE html><html><head><title>${uri.fsPath}</title>
     <meta charset="utf-8"/>
     <style>
-    html, body { ${printConfig.markdownRenderingBodyStyle} }
+    ${defaultCss}
+    ${swatchCss}
+
+    <!-- START Markdown Rendering settings -->
+    html, body { ${printConfig.markdownRenderingBodyStyle} !important }
     p { ${printConfig.markdownRenderingParagraphStyle} }
-    h1,h2,h3,h4,h5,h6 { ${printConfig.markdownRenderingHeadingStyle} }
+    h1,h2,h3,h4,h5,h6 { ${printConfig.markdownRenderingHeadingStyle} !important }
     table { ${printConfig.markdownRenderingTableStyle} }
     th { ${printConfig.markdownRenderingTableHeadingStyle} }
     td { ${printConfig.markdownRenderingTableDataStyle} }
     ol,ul { ${printConfig.markdownRenderingListStyle} }
+    blockquote { ${important(printConfig.markdownRenderingBlockquoteStyle)} }
     img {
       max-width: 100%;
     }
@@ -304,6 +315,7 @@ async function getHtml(uri: vscode.Uri): Promise<string> {
       page-break-after:avoid;
       page-break-inside:avoid;
     }
+    <!-- END Markdown Rendering settings -->
     </style>
     ${markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n")}
     </head>

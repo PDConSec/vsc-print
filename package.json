@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "0.9.15",
+  "version": "0.9.16",
   "icon": "vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
@@ -62,6 +62,12 @@
             "type": "string",
             "markdownDescription": "%print.markdownRenderingBodyStyle.markdownDescription%",
             "default": "background-color: white; font-family:serif; font-size:13pt;"
+          },
+          "print.markdownRenderingBlockquoteStyle": {
+            "title": "",
+            "type": "string",
+            "markdownDescription": "%print.markdownRenderingBlockquoteStyle.markdownDescription%",
+            "default": "font-size: 1.2em; border-left: #8888ff thick solid; padding-left: 1.5em;"
           },
           "print.markdownRenderingHeadingStyle": {
             "type": "string",
