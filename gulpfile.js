@@ -26,6 +26,7 @@ const languages = [
   { folderName: 'eng', id: 'en' },
   { folderName: 'deu', id: 'de' },
   { folderName: 'fra', id: 'fr' },
+  { folderName: 'zho', id: 'zh' },
   { folderName: 'pseudo', id: 'qps-ploc' }
 ];
 
