@@ -40,7 +40,7 @@
   "print.markdownRenderingTableDataStyle.markdownDescription": "HTML `TD` 类属性",
   "print.printAndClose.title": "打印后关闭",
   "print.printAndClose.description": "浏览器就绪时显示打印对话框，打印完成或取消后尝试关闭页面",
-  "print.renderMarkdown.title": "呈现(Render) Markdown",
+  "print.renderMarkdown.title": "表现 Markdown 格式",
   "print.renderMarkdown.description": "打印时将 Markdown 渲染为 HTML",
   "print.webserverUptimeSeconds.title": "网络服务器超时",
   "print.webserverUptimeSeconds.description": "网络服务器在开始为打印作业提供服务后保持可用的时间（以秒为单位）。"
