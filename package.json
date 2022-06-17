@@ -17,12 +17,12 @@
     "vscode": "^1.60.0"
   },
   "keywords": [
+    "print",
     "Markdown",
     "syntax coloring",
-    "syntax colouring",
     "line numbers",
     "PDF",
-    "remoting-ready"
+    "remoting"
   ],
   "categories": [
     "Other"
