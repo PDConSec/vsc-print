@@ -266,10 +266,12 @@ function Utf8ArrayToStr(array: Uint8Array) {
   return out;
 }
 function important(s: string) {
-  s = s.trim();
-  if (s && !s.endsWith(";")) s += ";";
-  s = s.replace(/!important/gi, "");
-  s = s.replace(/;/g, " !important;");
+  if (s) {
+    s = s.trim();
+    if (!s.endsWith(";")) s += ";";
+    s = s.replace(/!important/gi, "");
+    s = s.replace(/;/g, " !important;");
+  }
   return s;
 }
 async function getHtml(uri: vscode.Uri): Promise<string> {
@@ -394,7 +396,7 @@ async function getHtml(uri: vscode.Uri): Promise<string> {
       renderedCode = renderedCode
         .split("\n")
         .map(line => line || "&nbsp;")
-        .map((line, i) => `<tr><td class="line-number">${startLine + i}</td><td class="line-text">${line}</td></tr>`)
+        .map((line, i) => `<tr><td class="line-number">${startLine + i}</td><td class="line-text">${line.replace(/([^ -]{40})/g,"$1<wbr>")}</td></tr>`)
         .join("\n")
         .replace("\n</td>", "</td>")
         ;
@@ -402,7 +404,7 @@ async function getHtml(uri: vscode.Uri): Promise<string> {
       renderedCode = renderedCode
         .split("\n")
         .map(line => line || "&nbsp;")
-        .map((line, i) => `<tr><td class="line-text">${line}</td></tr>`)
+        .map((line, i) => `<tr><td class="line-text">${line.replace(/([^ -]{40})/g, "$1<wbr>")}</td></tr>`)
         .join("\n")
         .replace("\n</td>", "</td>")
         ;
