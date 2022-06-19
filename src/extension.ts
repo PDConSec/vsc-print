@@ -1,14 +1,14 @@
-import { PrintSession } from './PrintSession';
+import { PrintSession } from './print-session';
 import * as vscode from 'vscode';
 import * as hljs from "highlight.js";
 import * as http from "http";
 import * as dns from "dns";
-import * as child_process from "child_process";
 import { AddressInfo } from 'net';
 import * as path from "path";
 import * as braces from "braces";
 import { captionByFilename, filenameByCaption, defaultCss, localise } from './imports';
 import * as nls from 'vscode-nls';
+import { SourceCode } from './source-code';
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -20,6 +20,8 @@ localize("ERROR_PRINTING", "x");
 localize("ACCESS_DENIED_CREATING_WEBSERVER", "x");
 localize("UNEXPECTED_ERROR", "x");
 // #endregion
+
+let server: http.Server | undefined;
 
 let colourScheme = vscode.workspace.getConfiguration("print", null).colourScheme;
 if (captionByFilename[colourScheme]) {
@@ -35,8 +37,8 @@ if (captionByFilename[colourScheme]) {
 let swatchCss: string = require(`highlight.js/styles/${colourScheme}.css`).default.toString();
 let md: any;
 let selection: vscode.Selection | undefined;
-const sessions = new Map<string, PrintSession>()
-const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
+const printSessions = new Map<string, PrintSession>()
+
 export function activate(context: vscode.ExtensionContext) {
 	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
 		etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton,
@@ -46,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.print", printCommand));
-	context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
+	// context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
 
 	// capture the extension path
 	disposable = vscode.commands.registerCommand('extension.help', async (cmdArgs: any) => {
@@ -54,9 +56,45 @@ export function activate(context: vscode.ExtensionContext) {
 		let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
 		vscode.commands.executeCommand('markdown.showPreview', uriManual);
 	});
+	server = http.createServer(async (request, response) => {
+		if (!connectingToLocalhost(request)) {
+			return request.socket.end();
+		}
+		try {
+			if (request.url) {
+				const urlParts = request.url.split('/',);
+				const printSession = printSessions.get(urlParts[1]);
+				if (printSession) {
+					printSession.respond(urlParts, response);
+				} else {
+					return request.socket.end();
+				}
+			}
+		} catch (error) {
+			response.setHeader("Content-Type", "text/plain");
+			response.end((error as any).stack);
+		}
+	});
+	server.on("error", (err: any) => {
+		if (err) {
+			switch (err.code) {
+				case "EACCES":
+					vscode.window.showErrorMessage(localise("ACCESS_DENIED_CREATING_WEBSERVER"));
+					break;
+				default:
+					vscode.window.showErrorMessage(`${localise("UNEXPECTED_ERROR")}: ${err.code}`);
+			}
+		}
+	});
+	server.on("listening", () => {
+		PrintSession.port = (server!.address() as AddressInfo).port;
+	});
+	let printConfig = vscode.workspace.getConfiguration("print", null);
+	server.listen();
 	context.subscriptions.push(disposable);
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
+			SourceCode.Markdown = mdparam;
 			return md = mdparam;
 		}
 	};
@@ -85,63 +123,49 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 async function printCommand(cmdArgs: any) {
 	let editor = vscode.window.activeTextEditor;
 	selection = editor?.selection;
-
+	for (const kvp of printSessions) {
+		if (kvp[1].age() > 900000) {
+			printSessions.delete(kvp[0]);
+		}
+	}
 	const printSession = new PrintSession(cmdArgs);
-	const sessionId = crypto.randomUUID();
-	sessions.set(sessionId, printSession);
-	if (printSession.uri) {
-		vscode.window.showErrorMessage(localise("NO_FILE"));
-	} else {
-		await print(printSession.uri!);
-	}
+	printSessions.set(printSession.sessionId, printSession);
+	printSession.launchBrowser()
 }
+// async function printFolderCommand(commandArgs: any) {
+// 	const editor = vscode.window.activeTextEditor;
+// 	let directory: string;
+// 	if (commandArgs) {
+// 		directory = commandArgs.fsPath;
+// 	}
+// 	else if (editor) {
+// 		if (editor.document.isUntitled) {
+// 			vscode.window.showErrorMessage(localise("UNSAVED_FILE"));
+// 			return;
+// 		}
+// 		directory = path.dirname(editor.document.uri.fsPath);
+// 	}
+// 	else {
+// 		vscode.window.showErrorMessage(localise("NO_SELECTION"));
+// 		return;
+// 	}
 
-async function printFolderCommand(commandArgs: any) {
-	const editor = vscode.window.activeTextEditor;
-	let directory: string;
-	if (commandArgs) {
-		directory = commandArgs.fsPath;
-	}
-	else if (editor) {
-		if (editor.document.isUntitled) {
-			vscode.window.showErrorMessage(localise("UNSAVED_FILE"));
-			return;
-		}
-		directory = path.dirname(editor.document.uri.fsPath);
-	}
-	else {
-		vscode.window.showErrorMessage(localise("NO_SELECTION"));
-		return;
-	}
+// 	await print(vscode.Uri.file(directory));
+// }
 
-	await print(vscode.Uri.file(directory));
-}
+// async function print(fileUri: vscode.Uri) {
+// 	await startWebserver(() => getHtml(fileUri));
 
-async function print(fileUri: vscode.Uri) {
-	await startWebserver(() => getHtml(fileUri));
-
-	let printConfig = vscode.workspace.getConfiguration("print", null);
-	let q = process.platform === "win32" ? '"' : "";
-	let cmd = printConfig.alternateBrowser && printConfig.browserPath ? `${q}${printConfig.browserPath}${q}` : browserLaunchMap[process.platform];
-	child_process.exec(`${cmd} http://localhost:${port}/`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
-		// node on Linux incorrectly calls this error handler, with a null error object
-		if (error) {
-			vscode.window.showErrorMessage(`${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`);
-		}
-	});
-}
-
-class SourceCode {
-	public filename: string;
-	public code: string;
-	public language: string;
-
-	constructor(filename: string, code: string, language: string) {
-		this.filename = filename;
-		this.code = code;
-		this.language = language;
-	}
-}
+// 	let printConfig = vscode.workspace.getConfiguration("print", null);
+// 	let q = process.platform === "win32" ? '"' : "";
+// 	let cmd = printConfig.alternateBrowser && printConfig.browserPath ? `${q}${printConfig.browserPath}${q}` : browserLaunchMap[process.platform];
+// 	child_process.exec(`${cmd} http://localhost:${port}/`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
+// 		// node on Linux incorrectly calls this error handler, with a null error object
+// 		if (error) {
+// 			vscode.window.showErrorMessage(`${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`);
+// 		}
+// 	});
+// }
 
 async function getSourceCode(uri: vscode.Uri, fileMatcher: ((document: vscode.TextDocument) => boolean) = (x) => true): Promise<SourceCode | null> {
 	const editor = vscode.window.activeTextEditor;
@@ -442,73 +466,7 @@ async function getHtml(uri: vscode.Uri): Promise<string> {
 	return html;
 }
 
-var server: http.Server | undefined;
-var port: number;
 let serverTimeout: NodeJS.Timeout | undefined;
-
-function startWebserver(generateSource: () => Promise<string>): Promise<void> {
-	stopWebServer();
-	return new Promise(async (resolve, reject) => {
-		// prepare to service an http request
-		server = http.createServer(async (request, response) => {
-			if (!connectingToLocalhost(request)) {
-				return request.socket.end();
-			}
-			try {
-				if (request.url) {
-					if (request.url === "/") {
-						response.setHeader("Content-Type", "text/html");
-						let html = await generateSource();
-						response.end(html);
-					} else {
-						const decoded: string = decodeURIComponent(request.url);
-						const filePath: string = decoded.replace(/^\/([a-z]:)/, "$1") // Remove leading / on Windows paths
-						const fileUri: vscode.Uri = vscode.Uri.file(filePath);
-						try {
-							const cb = (await vscode.workspace.fs.stat(fileUri)).size;
-							const lastdotpos = request.url.lastIndexOf('.');
-							const fileExt = request.url.substr(lastdotpos + 1);
-							response.setHeader("Content-Type", `image/${fileExt}`);
-							response.setHeader("Content-Length", cb);
-							response.end(await vscode.workspace.fs.readFile(fileUri));
-						} catch (error) {
-							// 404
-							response.writeHead(404, { "Content-Type": "text/html" });
-							response.end("FILE NOT FOUND");
-						}
-					}
-				}
-			} catch (error) {
-				response.setHeader("Content-Type", "text/plain");
-				response.end((error as any).stack);
-			}
-		});
-		// report exceptions
-		server.on("error", (err: any) => {
-			if (err) {
-				switch (err.code) {
-					case "EACCES":
-						vscode.window.showErrorMessage(localise("ACCESS_DENIED_CREATING_WEBSERVER"));
-						break;
-					default:
-						vscode.window.showErrorMessage(`${localise("UNEXPECTED_ERROR")}: ${err.code}`);
-				}
-			}
-		});
-		server.on("listening", () => {
-			port = (server!.address() as AddressInfo).port;
-			resolve();
-		});
-		let printConfig = vscode.workspace.getConfiguration("print", null);
-		server.listen();
-		const webserverUptimeSecs = printConfig.get<number>("webserverUptimeSeconds", 0);
-		if (webserverUptimeSecs) {
-			serverTimeout = setTimeout(() => {
-				stopWebServer();
-			}, webserverUptimeSecs * 1000);
-		}
-	});
-}
 
 function stopWebServer() {
 	if (serverTimeout) {
@@ -518,7 +476,6 @@ function stopWebServer() {
 	if (server) {
 		server.close();
 		server = undefined;
-		port = 0;
 	}
 }
 
@@ -542,5 +499,5 @@ dns.lookup("localhost", { all: true, family: 6 }, (err, addresses) => {
 
 function connectingToLocalhost(request: http.IncomingMessage): boolean {
 	console.log(request.socket.localAddress)
-	return localhostAddresses.indexOf(request.socket.localAddress) >= 0;
+	return localhostAddresses.indexOf(request.socket.localAddress!) >= 0;
 }
