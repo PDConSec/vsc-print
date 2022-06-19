@@ -327,6 +327,7 @@
     "gulp-filter": "^6.0.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^5.0.1",
+    "html-loader": "^3.1.2",
     "json-loader": "^0.5.7",
     "run-sequence": "^2.2.1",
     "ts-loader": "^8.3.0",
