@@ -1,0 +1,21 @@
+/* Line numbers */
+
+body {
+	font-family: "Fira Code", monospace;
+}
+
+table {
+  border: none;
+  border-collapse: collapse;
+}
+.line-number {
+  border-right: thin solid silver;
+  padding-right: 0.3em;
+  text-align: right;
+  vertical-align: top;
+}
+.line-text {
+  padding-left: 0.7em;
+  padding-bottom: 1em;
+  white-space: pre-wrap;
+}

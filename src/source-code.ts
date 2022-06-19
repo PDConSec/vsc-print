@@ -1,4 +1,8 @@
+import hljs = require('highlight.js');
+import path = require('path');
 import * as vscode from 'vscode';
+
+const template: string = require("./template.html").default.toString();
 
 export class SourceCode {
 	static Markdown: any;
@@ -6,12 +10,21 @@ export class SourceCode {
 		public filename: string,
 		public code: string,
 		public language: string,
-		public startLine: number = 1,
+		public printLineNumbers: boolean,
+		public startLine: number = 1
 	) { }
 	public asHtml(): string {
 		const printConfig = vscode.workspace.getConfiguration("print", null);
 		if (printConfig.renderMarkdown && this.language === "markdown") {
-			return SourceCode.Markdown.render(this.code);
+			const markdownConfig = vscode.workspace.getConfiguration("markdown", null);
+			let renderedCode = SourceCode.Markdown.render(this.code);
+			return template
+				.replace(/\$TITLE/g, path.basename(this.filename))
+				.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
+				.replace("$CONTENT", renderedCode)
+				.replace("$DEFAULT_STYLESHEET_LINK", '<link href="vsc-print.resource/default-markdown.css" rel="stylesheet" />')
+				.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n"))
+				;
 		} else {
 			let renderedCode = "";
 			try {
@@ -23,13 +36,11 @@ export class SourceCode {
 
 			renderedCode = this.fixMultilineSpans(renderedCode);
 
-			var addLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && vscode.window.activeTextEditor && (vscode.window.activeTextEditor.options.lineNumbers || 0) > 0);
-			if (addLineNumbers) {
-				var startLine = selection && !(selection.isEmpty || selection.isSingleLine) ? selection.start.line + 1 : 1;
+			if (this.printLineNumbers) {
 				renderedCode = renderedCode
 					.split("\n")
 					.map(line => line || "&nbsp;")
-					.map((line, i) => `<tr><td class="line-number">${startLine + i}</td><td class="line-text">${line.replace(/([^ -]{40})/g, "$1<wbr>")}</td></tr>`)
+					.map((line, i) => `<tr><td class="line-number">${this.startLine + i}</td><td class="line-text">${line.replace(/([^ -]{40})/g, "$1<wbr>")}</td></tr>`)
 					.join("\n")
 					.replace("\n</td>", "</td>")
 					;
@@ -42,8 +53,18 @@ export class SourceCode {
 					.replace("\n</td>", "</td>")
 					;
 			}
+			return template
+				.replace(/\$TITLE/g, path.basename(this.filename))
+				.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
+				.replace("$CONTENT", `<table class="hljs">${renderedCode}</table>`)
+				.replace("$DEFAULT_STYLESHEET_LINK",
+					'<link href="vsc-print.resource/default.css" rel="stylesheet" />\n' +
+					'\t<link href="vsc-print.resource/line-numbers.css" rel="stylesheet" />\n' +
+					'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
+					'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
+				.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
+				;
 		}
-		return "";
 	}
 	fixMultilineSpans(text: string): string {
 		let classes: string[] = [];
