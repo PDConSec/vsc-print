@@ -61,34 +61,38 @@ export class SourceCode {
 	}
 	getRenderedCode(code: string, languageId: string): string {
 		let renderedCode = "";
-		const printConfig = vscode.workspace.getConfiguration("print", null);
-		if (printConfig.renderMarkdown && this.language === "markdown") {
-			renderedCode = SourceCode.Markdown.render(code);
-		} else {
-			try {
-				renderedCode = hljs.highlight(languageId, code).value;
-			}
-			catch (err) {
-				renderedCode = hljs.highlightAuto(code).value;
-			}
-			renderedCode = this.fixMultilineSpans(renderedCode);
-			if (this.printLineNumbers) {
-				renderedCode = renderedCode
-					.split("\n")
-					.map(line => line || "&nbsp;")
-					.map((line, i) => `<tr><td class="line-number">${this.startLine + i}</td><td class="line-text">${line.replace(/([^ -]{40})/g, "$1<wbr>")}</td></tr>`)
-					.join("\n")
-					.replace("\n</td>", "</td>")
-					;
+		try {
+			const printConfig = vscode.workspace.getConfiguration("print", null);
+			if (printConfig.renderMarkdown && this.language === "markdown") {
+				renderedCode = SourceCode.Markdown.render(code);
 			} else {
-				renderedCode = renderedCode
-					.split("\n")
-					.map(line => line || "&nbsp;")
-					.map((line, i) => `<tr><td class="line-text">${line.replace(/([^ -]{40})/g, "$1<wbr>")}</td></tr>`)
-					.join("\n")
-					.replace("\n</td>", "</td>")
-					;
+				try {
+					renderedCode = hljs.highlight(languageId, code).value;
+				}
+				catch (err) {
+					renderedCode = hljs.highlightAuto(code).value;
+				}
+				renderedCode = this.fixMultilineSpans(renderedCode);
+				if (this.printLineNumbers) {
+					renderedCode = renderedCode
+						.split("\n")
+						.map(line => line || "&nbsp;")
+						.map((line, i) => `<tr><td class="line-number">${this.startLine + i}</td><td class="line-text">${line.replace(/([^ -]{40})/g, "$1<wbr>")}</td></tr>`)
+						.join("\n")
+						.replace("\n</td>", "</td>")
+						;
+				} else {
+					renderedCode = renderedCode
+						.split("\n")
+						.map(line => line || "&nbsp;")
+						.map((line, i) => `<tr><td class="line-text">${line.replace(/([^ -]{40})/g, "$1<wbr>")}</td></tr>`)
+						.join("\n")
+						.replace("\n</td>", "</td>")
+						;
+				}
 			}
+		} catch {
+			renderedCode = "<div>Could not render this file.</end>";
 		}
 		return renderedCode;
 	}
