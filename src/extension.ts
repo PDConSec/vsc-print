@@ -25,16 +25,7 @@ let colourScheme = vscode.workspace.getConfiguration("print", null).colourScheme
 if (captionByFilename[colourScheme]) {
 	// legacy value, convert
 	vscode.workspace.getConfiguration("print", null).update("colourScheme", captionByFilename[colourScheme]);
-} else {
-	colourScheme = filenameByCaption[colourScheme];
-	if (!colourScheme) {
-		colourScheme = "atelier-dune-light";
-		vscode.workspace.getConfiguration("print", null).update("colourScheme", captionByFilename[colourScheme]);
-	}
 }
-let swatchCss: string = require(`highlight.js/styles/${colourScheme}.css`).default.toString();
-let md: any;
-let selection: vscode.Selection | undefined;
 const printSessions = new Map<string, PrintSession>();
 
 export function activate(context: vscode.ExtensionContext) {
@@ -46,7 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.print", printCommand));
-	// context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
 
 	// capture the extension path
 	disposable = vscode.commands.registerCommand('extension.help', async (cmdArgs: any) => {
@@ -93,7 +84,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
 			SourceCode.Markdown = mdparam;
-			return md = mdparam;
+			return mdparam;
 		}
 	};
 	return markdownExtensionInstaller;
@@ -112,29 +103,44 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 			vscode.workspace.getConfiguration("print", null)
 				.get<boolean>('editorTitleMenuButton'));
 	}
-	else if (e.affectsConfiguration('print.colourScheme')) {
-		colourScheme = filenameByCaption[vscode.workspace.getConfiguration("print", null).colourScheme];
-		swatchCss = require(`highlight.js/styles/${colourScheme}.css`).default.toString();
-	}
 };
 
 async function printCommand(cmdArgs: any) {
-	let editor = vscode.window.activeTextEditor;
-	selection = editor?.selection;
 	Array.from(printSessions).forEach(ps => { if (ps[1].completed) printSessions.delete(ps[0]); });
 	const printSession = new PrintSession(cmdArgs);
 	printSessions.set(printSession.sessionId, printSession);
 	printSession.launchBrowser()
 }
-function stopWebServer() {
-	if (server) {
-		server.close();
-		server = undefined;
+
+async function printFolderCommand(commandArgs: any) {
+	const editor = vscode.window.activeTextEditor;
+	let folderUri: vscode.Uri;
+	if (commandArgs) {
+		folderUri = commandArgs;
 	}
+	else if (editor) {
+		if (editor.document.isUntitled) {
+			vscode.window.showErrorMessage(localise("UNSAVED_FILE"));
+			return;
+		}
+		const cmdArgs = commandArgs as vscode.Uri;
+		folderUri = vscode.Uri.from({
+			scheme: cmdArgs.scheme,
+			path: path.dirname(editor.document.uri.fsPath)
+		});
+	}
+	else {
+		vscode.window.showErrorMessage(localise("NO_SELECTION"));
+		return;
+	}
+	Array.from(printSessions).forEach(ps => { if (ps[1].completed) printSessions.delete(ps[0]); });
+	const printSession = new PrintSession(folderUri);
+	printSessions.set(printSession.sessionId, printSession);
+	printSession.launchBrowser()
 }
 
 export function deactivate() {
-	stopWebServer();
+	server?.close();
 }
 
 const localhostAddresses: String[] = ["::1", "::ffff:127.0.0.1", "127.0.0.1"]

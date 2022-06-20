@@ -1,41 +1,77 @@
+import braces = require('braces');
 import hljs = require('highlight.js');
 import path = require('path');
 import * as vscode from 'vscode';
-
+const templateFolderItem = require("./template-folder-item.html").default.toString();
 const template: string = require("./template.html").default.toString();
 
 export class SourceCode {
 	static Markdown: any;
 	constructor(
 		public filename: string,
-		public code: string,
-		public language: string,
+		public code: string = "",
+		public language: string = "",
 		public printLineNumbers: boolean,
 		public startLine: number = 1
 	) { }
-	public asHtml(): string {
+	public async asHtml(): Promise<string> {
 		const printConfig = vscode.workspace.getConfiguration("print", null);
-		if (printConfig.renderMarkdown && this.language === "markdown") {
-			const markdownConfig = vscode.workspace.getConfiguration("markdown", null);
-			let renderedCode = SourceCode.Markdown.render(this.code);
+		if (this.language === "folder") {
+			const docs = await this.docsInFolder();
+			const composite = docs.map(doc => templateFolderItem
+					.replace("$FOLDER_ITEM_TITLE", doc.fileName)
+					.replace("$FOLDER_ITEM_CONTENT", `<table class="hljs">${this.getRenderedCode(doc.getText(), doc.languageId)}</table>`)
+			).join('\n');
+
 			return template
 				.replace(/\$TITLE/g, path.basename(this.filename))
 				.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("$CONTENT", renderedCode)
-				.replace("$DEFAULT_STYLESHEET_LINK", '<link href="vsc-print.resource/default-markdown.css" rel="stylesheet" />')
-				.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n"))
+				.replace("$CONTENT", composite)
+				.replace("$DEFAULT_STYLESHEET_LINK",
+					'<link href="vsc-print.resource/default.css" rel="stylesheet" />\n' +
+					'\t<link href="vsc-print.resource/line-numbers.css" rel="stylesheet" />\n' +
+					'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
+					'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
+				.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
 				;
 		} else {
-			let renderedCode = "";
+			if (printConfig.renderMarkdown && this.language === "markdown") {
+				const markdownConfig = vscode.workspace.getConfiguration("markdown", null);
+				return template
+					.replace(/\$TITLE/g, path.basename(this.filename))
+					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
+					.replace("$CONTENT", this.getRenderedCode(this.code, this.language))
+					.replace("$DEFAULT_STYLESHEET_LINK", '<link href="vsc-print.resource/default-markdown.css" rel="stylesheet" />')
+					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n"))
+					;
+			} else {
+				return template
+					.replace(/\$TITLE/g, path.basename(this.filename))
+					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
+					.replace("$CONTENT", `<table class="hljs">${this.getRenderedCode(this.code, this.language)}</table>`)
+					.replace("$DEFAULT_STYLESHEET_LINK",
+						'<link href="vsc-print.resource/default.css" rel="stylesheet" />\n' +
+						'\t<link href="vsc-print.resource/line-numbers.css" rel="stylesheet" />\n' +
+						'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
+						'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
+					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
+					;
+			}
+		}
+	}
+	getRenderedCode(code: string, languageId: string): string {
+		let renderedCode = "";
+		const printConfig = vscode.workspace.getConfiguration("print", null);
+		if (printConfig.renderMarkdown && this.language === "markdown") {
+			renderedCode = SourceCode.Markdown.render(code);
+		} else {
 			try {
-				renderedCode = hljs.highlight(this.language, this.code).value;
+				renderedCode = hljs.highlight(languageId, code).value;
 			}
 			catch (err) {
-				renderedCode = hljs.highlightAuto(this.code).value;
+				renderedCode = hljs.highlightAuto(code).value;
 			}
-
 			renderedCode = this.fixMultilineSpans(renderedCode);
-
 			if (this.printLineNumbers) {
 				renderedCode = renderedCode
 					.split("\n")
@@ -53,18 +89,8 @@ export class SourceCode {
 					.replace("\n</td>", "</td>")
 					;
 			}
-			return template
-				.replace(/\$TITLE/g, path.basename(this.filename))
-				.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("$CONTENT", `<table class="hljs">${renderedCode}</table>`)
-				.replace("$DEFAULT_STYLESHEET_LINK",
-					'<link href="vsc-print.resource/default.css" rel="stylesheet" />\n' +
-					'\t<link href="vsc-print.resource/line-numbers.css" rel="stylesheet" />\n' +
-					'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
-					'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
-				.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
-				;
 		}
+		return renderedCode;
 	}
 	fixMultilineSpans(text: string): string {
 		let classes: string[] = [];
@@ -129,5 +155,36 @@ export class SourceCode {
 			}
 		}
 		return out;
+	}
+	async docsInFolder(): Promise<vscode.TextDocument[]> {
+		const printConfig = vscode.workspace.getConfiguration("print", null);
+		// findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
+		let excludePatterns: string[] = printConfig.folder.exclude || [];
+		if (excludePatterns.length == 0) {
+			excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp}");
+		}
+		let includePatterns: string[] = printConfig.folder.include || [];
+		if (includePatterns.length == 0) {
+			includePatterns.push("**/*");
+		}
+		// one item should not be surrounded with braces, they would be treated as literals
+		// but flatten them anyway in case the single pattern contains nested braces
+		let excludes: string = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
+		excludePatterns = braces.expand(excludes); //no braces in patterns
+		excludes = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
+		let includes: string = includePatterns.length == 1 ? includePatterns[0] : `{${includePatterns.join(",")}}`;
+		includePatterns = braces.expand(includes);
+		includes = includePatterns.length == 1 ? includePatterns[0] : `{${includePatterns.join(",")}}`;
+
+		let rel = new vscode.RelativePattern(this.filename, includes);
+		const maxLineCount = printConfig.folder.maxLines;
+		const matcher = (document: vscode.TextDocument): boolean => document.lineCount < maxLineCount;
+		const fileUris = await vscode.workspace.findFiles(rel, excludes);
+		const docs = await Promise.all(fileUris.map(uri => vscode.workspace.openTextDocument(uri)));
+		return docs.filter(doc => matcher(doc)).sort((a, b) => {
+			const A = a.fileName;
+			const B = b.fileName;
+			return A < B ? -1 : A > B ? 1 : 0;
+		});
 	}
 }

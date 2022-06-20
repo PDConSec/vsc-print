@@ -29,25 +29,15 @@ export class PrintSession {
 	constructor(cmdArgs?: vscode.Uri) {
 		this.ready = new Promise<void>(async (resolve, reject) => {
 			try {
-				const editor = vscode.window.activeTextEditor;
 				const printConfig = vscode.workspace.getConfiguration("print", null);
-				const printLineNumbers = printConfig.lineNumbers === "on" ||
-					(printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0);
-
-				if (editor) {
-					const selection = editor.selection;
-					const document = editor.document;
-					this.uri = document.uri;
-					if (selection && !selection.isEmpty) {
-						this.code = new SourceCode(
-							document.uri.fsPath,
-							document.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, ""),
-							document.languageId,
-							printLineNumbers,
-							selection.start.line
-						);
-					}
-					else {
+				let printLineNumbers = printConfig.lineNumbers === "on";
+				if (cmdArgs) {
+					const uristat = await vscode.workspace.fs.stat(cmdArgs);
+					if (uristat.type === vscode.FileType.Directory) {
+						this.code = new SourceCode(cmdArgs.fsPath, "", "folder", printLineNumbers)
+					} else {
+						var document = await vscode.workspace.openTextDocument(cmdArgs);
+						this.uri = document.uri;
 						this.code = new SourceCode(
 							document.uri.fsPath,
 							document.getText(),
@@ -56,25 +46,41 @@ export class PrintSession {
 						);
 					}
 					resolve();
-				} else {
-					var document = await vscode.workspace.openTextDocument(cmdArgs!);
-					this.uri = document.uri;
-					this.code = new SourceCode(
-						document.uri.fsPath,
-						document.getText(),
-						document.languageId,
-						printLineNumbers
-					);
-					resolve();
+				}
+				else {
+					const editor = vscode.window.activeTextEditor;
+					printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
+					if (editor) {
+						const selection = editor.selection;
+						const document = editor.document;
+						this.uri = document.uri;
+						if (selection && !selection.isEmpty) {
+							this.code = new SourceCode(
+								document.uri.fsPath,
+								document.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, ""),
+								document.languageId,
+								printLineNumbers,
+								selection.start.line
+							);
+						}
+						else {
+							this.code = new SourceCode(
+								document.uri.fsPath,
+								document.getText(),
+								document.languageId,
+								printLineNumbers
+							);
+						}
+						resolve();
+					}
 				}
 			} catch { reject(); }
 		});
 	}
 
 	public async respond(urlParts: string[], response: http.ServerResponse) {
-		const basePath = path.dirname(this.uri!.fsPath);
 		if (urlParts.length === 3 && urlParts[2] === "") {
-			let html = this.code!.asHtml();
+			let html = await this.code!.asHtml();
 			response.writeHead(200, {
 				"Content-Type": "text/html; charset=utf-8",
 				"Content-Length": Buffer.byteLength(html, 'utf-8')
@@ -99,14 +105,14 @@ export class PrintSession {
 				case "default.css":
 					response.writeHead(200, {
 						"Content-Type": "text/css; charset=utf-8",
-						"Content-Length": Buffer.byteLength(defaultCss, 'utf-8') 
+						"Content-Length": Buffer.byteLength(defaultCss, 'utf-8')
 					});
 					response.end(defaultCss);
 					break;
 				case "default-markdown.css":
 					response.writeHead(200, {
 						"Content-Type": "text/css; charset=utf-8",
-						"Content-Length": Buffer.byteLength(defaultMarkdownCss,'utf-8')
+						"Content-Length": Buffer.byteLength(defaultMarkdownCss, 'utf-8')
 					});
 					response.end(defaultMarkdownCss);
 					break;
@@ -136,6 +142,7 @@ export class PrintSession {
 			}
 		} else {
 			// extract the relative path to a resource file
+			const basePath = path.dirname(this.uri!.fsPath);
 			const resourcePath = path.join(basePath, ...urlParts.slice(2));
 			const fileUri: vscode.Uri = vscode.Uri.file(resourcePath);
 			const fileExt = path.extname(resourcePath);
