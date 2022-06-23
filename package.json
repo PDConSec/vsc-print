@@ -73,24 +73,24 @@
             "description": "%print.lineSpacing.description%",
             "default": 1
           },
-					"print.fontSize": {
-						"title": "%print.fontSize.title%",
-						"type": "string",
-						"enum": [
-							"6pt",
-							"7pt",
-							"8pt",
-							"9pt",
-							"10pt",
-							"11pt",
-							"11.5pt",
-							"12pt",
-							"13pt"
-						],
-						"description": "%print.fontSize.description%",
-						"default": "10pt"
-					},
-					"print.renderMarkdown": {
+          "print.fontSize": {
+            "title": "%print.fontSize.title%",
+            "type": "string",
+            "enum": [
+              "6pt",
+              "7pt",
+              "8pt",
+              "9pt",
+              "10pt",
+              "11pt",
+              "11.5pt",
+              "12pt",
+              "13pt"
+            ],
+            "description": "%print.fontSize.description%",
+            "default": "10pt"
+          },
+          "print.renderMarkdown": {
             "type": "boolean",
             "default": true,
             "description": "%print.renderMarkdown.description%"
@@ -285,7 +285,7 @@
     "ts-loader": "^8.3.0",
     "tslint": "^5.20.1",
     "typescript": "^3.9.10",
-    "vsce": "^1.100.0",
+    "vsce": "^2.9.2",
     "vscode-nls-dev": "^3.3.2",
     "vscode-test": "^1.6.1",
     "webpack": "^5.54.0",
