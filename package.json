@@ -58,48 +58,6 @@
       {
         "title": "%configuration.title.print%",
         "properties": {
-          "print.markdownRenderingBodyStyle": {
-            "type": "string",
-            "markdownDescription": "%print.markdownRenderingBodyStyle.markdownDescription%",
-            "default": "background-color: white; font-family:serif; font-size:13pt;"
-          },
-          "print.markdownRenderingBlockquoteStyle": {
-            "title": "",
-            "type": "string",
-            "markdownDescription": "%print.markdownRenderingBlockquoteStyle.markdownDescription%",
-            "default": "font-size: 1.2em; border-left: #8888ff thick solid; padding-left: 1.5em;"
-          },
-          "print.markdownRenderingHeadingStyle": {
-            "type": "string",
-            "markdownDescription": "%print.markdownRenderingHeadingStyle.markdownDescription%",
-            "default": "font-family:sans-serif;"
-          },
-          "print.markdownRenderingParagraphStyle": {
-            "title": "",
-            "type": "string",
-            "markdownDescription": "%print.markdownRenderingParagraphStyle.markdownDescription%",
-            "default": "font-family:serif;"
-          },
-          "print.markdownRenderingTableStyle": {
-            "type": "string",
-            "markdownDescription": "%print.markdownRenderingTableStyle.markdownDescription%",
-            "default": "font-family:sans-serif; border-top:thin solid grey; border-left:thin solid grey;"
-          },
-          "print.markdownRenderingTableHeadingStyle": {
-            "type": "string",
-            "markdownDescription": "%print.markdownRenderingTableHeadingStyle.markdownDescription%",
-            "default": "font-family:sans-serif; font-weight:400; border-top:thin solid grey; border-left:thin solid grey;"
-          },
-          "print.markdownRenderingListStyle": {
-            "type": "string",
-            "markdownDescription": "%print.markdownRenderingListStyle.markdownDescription%",
-            "default": ""
-          },
-          "print.markdownRenderingTableDataStyle": {
-            "type": "string",
-            "markdownDescription": "%print.markdownRenderingTableDataStyle.markdownDescription%",
-            "default": "font-family:sans-serif; border-top:thin solid grey; border-left:thin solid grey;"
-          },
           "print.lineSpacing": {
             "type": "number",
             "enum": [
@@ -209,12 +167,6 @@
             "default": true,
             "description": "%print.printAndClose.description%"
           },
-          "print.webserverUptimeSeconds": {
-            "title": "%print.webserverUptimeSeconds.title%",
-            "type": "integer",
-            "default": 30,
-            "description": "%print.webserverUptimeSeconds.description%"
-          },
           "print.editorContextMenuItemPosition": {
             "default": "Top",
             "type": "string",
@@ -251,7 +203,7 @@
               "{bin,obj,out}",
               "node_module",
               "data",
-              "**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp}"
+              "**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo}"
             ],
             "type": "array",
             "items": {
@@ -316,7 +268,7 @@
   "devDependencies": {
     "@types/braces": "^3.0.1",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.20.27",
+    "@types/node": "^18.0.0",
     "@types/vscode": "^1.60.0",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.3.0",
@@ -327,12 +279,13 @@
     "gulp-filter": "^6.0.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-typescript": "^5.0.1",
+    "html-loader": "^3.1.2",
     "json-loader": "^0.5.7",
     "run-sequence": "^2.2.1",
     "ts-loader": "^8.3.0",
     "tslint": "^5.20.1",
     "typescript": "^3.9.10",
-    "vsce": "^1.100.0",
+    "vsce": "^2.9.2",
     "vscode-nls-dev": "^3.3.2",
     "vscode-test": "^1.6.1",
     "webpack": "^5.54.0",

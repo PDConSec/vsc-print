@@ -1,0 +1,16 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.hljs {
+	background-color: unset;
+}
+
+.line-number,
+.line-text {
+	font-size: $FONT_SIZE;
+	line-height: $LINE_SPACINGem;
+	padding-bottom: 3px;
+}
