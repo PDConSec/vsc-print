@@ -77,7 +77,7 @@ export class SourceCode {
 					renderedCode = renderedCode
 						.split("\n")
 						.map(line => line || "&nbsp;")
-						.map((line, i) => `<tr><td class="line-number">${this.startLine + i}</td><td class="line-text">${line.replace(/([^ -]{40})/g, "$1<wbr>")}</td></tr>`)
+						.map((line, i) => `<tr><td class="line-number">${this.startLine + i}</td><td class="line-text">${line.replace(/([^ -<]{40})/g, "$1<wbr>")}</td></tr>`)
 						.join("\n")
 						.replace("\n</td>", "</td>")
 						;
@@ -85,7 +85,7 @@ export class SourceCode {
 					renderedCode = renderedCode
 						.split("\n")
 						.map(line => line || "&nbsp;")
-						.map((line, i) => `<tr><td class="line-text">${line.replace(/([^ -]{40})/g, "$1<wbr>")}</td></tr>`)
+						.map((line, i) => `<tr><td class="line-text">${line.replace(/([^ -<]{40})/g, "$1<wbr>")}</td></tr>`)
 						.join("\n")
 						.replace("\n</td>", "</td>")
 						;
