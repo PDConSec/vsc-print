@@ -128,8 +128,10 @@ export class PrintSession {
 					response.end(lineNumbersCss);
 					break;
 				case "settings.css":
-					let css = settingsCss;
-					// todo apply settings to template
+					const printConfig = vscode.workspace.getConfiguration("print", null);
+					const css = settingsCss
+						.replace("$FONT_SIZE", printConfig.fontSize)
+						.replace("$LINE_SPACING", printConfig.lineSpacing)
 					response.writeHead(200, {
 						"Content-Type": "text/css; charset=utf-8",
 						"Content-Length": Buffer.byteLength(css, "utf-8")
