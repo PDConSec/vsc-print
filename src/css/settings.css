@@ -1,4 +1,4 @@
 .line-text {
 	font-size: $FONT_SIZE;
-  padding-bottom: $LINE_SPACINGem;
+  line-height: $LINE_SPACINGem;
 }
