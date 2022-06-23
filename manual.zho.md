@@ -2,9 +2,7 @@
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
-[ENGLISH](manual.md) | [FRENCH](manual.fra.md) | [GERMAN](manual.deu.md) |
-[中文CHINESE](manual.zho.md) |
-[Add a language](how-to-add-a-language.md)
+[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
 
 ## 打印
 
