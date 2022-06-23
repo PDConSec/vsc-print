@@ -19,14 +19,14 @@ export class SourceCode {
 		if (this.language === "folder") {
 			const docs = await this.docsInFolder();
 			const composite = docs.map(doc => templateFolderItem
-					.replace("$FOLDER_ITEM_TITLE", doc.fileName)
-					.replace("$FOLDER_ITEM_CONTENT", `<table class="hljs">${this.getRenderedCode(doc.getText(), doc.languageId)}</table>`)
+				.replace("$FOLDER_ITEM_TITLE", doc.fileName)
+				.replace("$FOLDER_ITEM_CONTENT", () => `<table class="hljs">${this.getRenderedCode(doc.getText(), doc.languageId)}</table>`)
 			).join('\n');
 
 			return template
 				.replace(/\$TITLE/g, path.basename(this.filename))
 				.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("$CONTENT", composite)
+				.replace("$CONTENT", () => composite) // replacer fn suppresses interpretation of $
 				.replace("$DEFAULT_STYLESHEET_LINK",
 					'<link href="vsc-print.resource/default.css" rel="stylesheet" />\n' +
 					'\t<link href="vsc-print.resource/line-numbers.css" rel="stylesheet" />\n' +
@@ -40,7 +40,7 @@ export class SourceCode {
 				return template
 					.replace(/\$TITLE/g, path.basename(this.filename))
 					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
-					.replace("$CONTENT", this.getRenderedCode(this.code, this.language))
+					.replace("$CONTENT", () => this.getRenderedCode(this.code, this.language)) // replacer fn suppresses interpretation of $
 					.replace("$DEFAULT_STYLESHEET_LINK", '<link href="vsc-print.resource/default-markdown.css" rel="stylesheet" />')
 					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n"))
 					;
@@ -48,7 +48,7 @@ export class SourceCode {
 				return template
 					.replace(/\$TITLE/g, path.basename(this.filename))
 					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
-					.replace("$CONTENT", `<table class="hljs">${this.getRenderedCode(this.code, this.language)}</table>`)
+					.replace("$CONTENT", () => `<table class="hljs">${this.getRenderedCode(this.code, this.language)}</table>`) // replacer fn suppresses $
 					.replace("$DEFAULT_STYLESHEET_LINK",
 						'<link href="vsc-print.resource/default.css" rel="stylesheet" />\n' +
 						'\t<link href="vsc-print.resource/line-numbers.css" rel="stylesheet" />\n' +
