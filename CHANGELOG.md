@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.9.16
+
+- Addressed issue 126 - overhaul embedded webserver
+- This resolves markdown styling issues 122 and 123
+
 ### 0.9.15
 
 - Fixed issue 98 - print Markdown rendered from unsaved files
