@@ -1,0 +1,8 @@
+{
+  "NO_FILE": "无打开文件，请打开后再试一次",
+  "UNSAVED_FILE": "编辑器包含一个未保存的文件。保存文件或打开保存到磁盘的文件，然后重试。",
+  "EMPTY_SELECTION": "没什么可以打印",
+  "ERROR_PRINTING": "尝试打印时出错",
+  "ACCESS_DENIED_CREATING_WEBSERVER": "启动内置网络服务器时发生错误:拒绝访问",
+  "UNEXPECTED_ERROR": "意外错误"
+}
