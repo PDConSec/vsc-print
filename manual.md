@@ -99,9 +99,11 @@ To set up an alternate browser you must do two things:
 
 For source code printing, stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because printer paper is white and printer inks and toners are designed for white paper. 
 
+Line spacing and font size settings are available for source code. 
+
 ## Styling your markdown
 
-For rendered Markdown, customisation via CSS files has returned to Print. 
+For rendered Markdown, customisation via CSS files has returned to Print. Styling settings that were introduced to work around problems with remote workspaces have been retired in favour of CSS stylesheets. If you had customisations, you should express these styles in a CSS file, add it to your document workspace, and register it in `markdown.styles`. 
 
 How do you reference a CSS file from a Markdown document? You don't. There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLS, or document  relative URLs, as shown in the following example.
 
