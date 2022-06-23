@@ -93,6 +93,10 @@ export class PrintSession {
 				"Content-Length": 2
 			});
 			response.end("OK");
+		} else if (urlParts.length === 4 && urlParts[2] === "workspace.resource") {
+			const basePath = vscode.workspace.getWorkspaceFolder(this.uri!)?.uri.fsPath!;
+			const resourcePath = path.join(basePath, ...urlParts.slice(3));
+			await relativeResource(resourcePath);
 		} else if (urlParts.length === 4 && urlParts[2] === "vsc-print.resource") {
 			switch (urlParts[3]) {
 				case "colour-scheme.css":
@@ -141,9 +145,12 @@ export class PrintSession {
 					break;
 			}
 		} else {
-			// extract the relative path to a resource file
 			const basePath = path.dirname(this.uri!.fsPath);
 			const resourcePath = path.join(basePath, ...urlParts.slice(2));
+			await relativeResource(resourcePath);
+		}
+
+		async function relativeResource(resourcePath: string) {
 			const fileUri: vscode.Uri = vscode.Uri.file(resourcePath);
 			const fileExt = path.extname(resourcePath);
 			switch (fileExt.toLowerCase()) {
