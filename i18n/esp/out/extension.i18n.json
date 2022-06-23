@@ -1,0 +1,8 @@
+{
+  "NO_FILE": "No hay ningún archivo abierto. Abra un archivo e inténtelo de nuevo.",
+  "UNSAVED_FILE": "El editor contiene un archivo no guardado. Guarde el archivo o abra un archivo guardado en el disco e inténtelo de nuevo.",
+  "EMPTY_SELECTION": "Nada que imprimir",
+  "ERROR_PRINTING": "Error al intentar imprimir",
+  "ACCESS_DENIED_CREATING_WEBSERVER": "Se ha producido un error de \"Acceso denegado\" al iniciar el servidor web incrustado",
+  "UNEXPECTED_ERROR": "Error imprevisto"
+}

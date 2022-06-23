@@ -4,7 +4,7 @@
 
 [英语版本](https://github.com/PeterWone/vsc-print)由 Peter Wone 编写
 
-[ENGLISH](README.md) | [FRENCH](README.fra.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
+[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
 
 大多数首次使用失败是由于第三方重新打包错误造成的。如果您遇到这种情况。请获取 [我们生产和测试的包装](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print).
 
