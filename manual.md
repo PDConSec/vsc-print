@@ -97,26 +97,23 @@ To set up an alternate browser you must do two things:
 
 ## Choose a colour scheme for source code printing
 
-For source code printing, stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because paper is white. For rendered Markdown, customisation via CSS files has returned.
+For source code printing, stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because printer paper is white and printer inks and toners are designed for white paper. 
 
 ## Styling your markdown
 
-The _recommended_ way to handle stylesheets is as follows.
+For rendered Markdown, customisation via CSS files has returned to Print. 
 
-* For styling specific to a particular document you can use relative URLs. Backpathing is supported provided the referenced file is in the workspace.
-* You can reference a stylesheet that is served by a webserver. Obviously stylesheets served this way will be available only where the webserver is accessible.
-* You can use a workspace-relative URL like this: `vsc-print.workspace/path/to/stylesheet.css`.
-
-How do you reference a CSS file from a Markdown document? You don't. There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list.
+How do you reference a CSS file from a Markdown document? You don't. There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLS, or document  relative URLs, as shown in the following example.
 
 ```json
 "markdown.styles": [
 	"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css",
-	"vsc-print.workspace/path/to/stylesheet.css"
+	"path/to/document/relative/custom.css",
+	"workspace.resource/path/to/stylesheet.css"
 ]
 ```
 
-Workspace relative URLs are the best way to share resources between documents. They are in the workspace so they can be source controlled along with the documents, and because the URL is relative to the workspace rather than the document you can organise (and reorganise) documents in folders without breaking the URLs. Note that this applies not only to stylesheets but also to image resources.
+Workspace relative URLs are the best way to share resources between documents. They are in the workspace so they can be source controlled along with the documents, and because the URL is relative to the workspace rather than the document you can organise (and reorganise) documents in folders without breaking the URLs. Note that this applies not only to stylesheets but also to image file resources.
 
 ## Web Server
 
