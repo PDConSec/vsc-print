@@ -95,22 +95,41 @@ To set up an alternate browser you must do two things:
 1. Supply the path to the browser executable in the `Print: Browser Path` setting. On Windows it might be something like `C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe`
 1. Enable/disable the alternate browser using the setting `Print: Alternate Browser`
 
-## Choose a colour scheme
+## Choose a colour scheme for source code printing
 
-Custom stylesheets are no longer supported. Available stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because paper is white.
+For source code printing, stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because printer paper is white and printer inks and toners are designed for white paper. 
+
+Line spacing and font size settings are available for source code. 
+
+## Styling your markdown
+
+For rendered Markdown, customisation via CSS files has returned to Print. Styling settings that were introduced to work around problems with remote workspaces have been retired in favour of CSS stylesheets. If you had customisations, you should express these styles in a CSS file, add it to your document workspace, and register it in `markdown.styles`. 
+
+How do you reference a CSS file from a Markdown document? You don't. There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLS, or document  relative URLs, as shown in the following example.
+
+```json
+"markdown.styles": [
+	"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css",
+	"path/to/document/relative/custom.css",
+	"workspace.resource/path/to/stylesheet.css"
+]
+```
+
+Workspace relative URLs are the best way to share resources between documents. They are in the workspace so they can be source controlled along with the documents, and because the URL is relative to the workspace rather than the document you can organise (and reorganise) documents in folders without breaking the URLs. Note that this applies not only to stylesheets but also to image file resources.
 
 ## Web Server
 
-The web server allows connections only from localhost.  Connections from other hosts are rejected.
+The embedded web server allows connections only from localhost.  Connections from other hosts are rejected.
 
 ## Katex Markdown extension
 This depends on CSS and fonts from the web. To get printing to work you must add the required stylesheet to your settings. If you find one or two things work in the preview yet not in print, determine the current version from the KaTeX website, and update the URL. 
 
 ```json
 "markdown.styles": [
-  "https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
+	"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
 ]
 ```
+If you want to cut the cord, then import the Katex resources into your project as described in the preceding section and use a workspace-relative reference. 
 
 Here are some samples to help you check your configuration.
 ```

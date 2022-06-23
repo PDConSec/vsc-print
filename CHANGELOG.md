@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.9.16
+
+- Addressed issue 126 - overhaul embedded webserver
+- This resolves markdown styling issues 122 and 123
+
 ### 0.9.15
 
 - Fixed issue 98 - print Markdown rendered from unsaved files
@@ -58,6 +63,7 @@
 - Update readme to promote the (apparently rare) ability to print rendered Markdown. Thanks to Andy Barratt for suggesting this in his review.
 
 ### 0.9.4
+
 - Update assets to compensate changes in Visual Studio Code 1.56
 - PR101 display error message when browser launch fails, fix thanks to [baincd](https://github.com/baincd)
 - PR97 rendered Markdown path fixes, fix thanks to [baincd](https://github.com/baincd)
@@ -66,14 +72,17 @@
 - PR92 webserver timeout, fix thanks to [baincd](https://github.com/baincd)
 
 ### 0.9.3
+
 - Further updates for language support
 - Issue 88 Trying to print a new file that does not exist in the filesystem would cause an error message, a regression caused by internal changes in support of folder printing, fix thanks to [baincd](https://github.com/baincd)
 - Issue 87 Blank lines don't print correctly, fix thanks to [baincd](https://github.com/baincd)
 
 ### 0.9.2
+
 - Correct missing translations and documentation.
 
 ### 0.9.0
+
 - Various dependencies updated to mitigate security risks.
 - Syntax colouring fix for multi-line strings and comments, thanks to [gji](https://github.com/gji) closes #85 and #63
 - Changed default stylesheet from vs2015 (a dark theme) to Atelier Dune.
