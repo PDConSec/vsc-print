@@ -1,4 +1,4 @@
-# Visual Studio Code Printing
+# Print
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
@@ -21,11 +21,11 @@ Markdown extensions also need to be installed on the target host if you want to 
 
 ### Print the active document
 
-To print the active document just click the printer icon to the right of the document tabs. Control for paper size, margins and page orientation is in the print dialog.
+To print the active document just click the printer icon to the right of the document tabs. Make sure you don't have multiple lines of text selected. Otherwise, you'll print the selection, not the whole document. **Control for paper size, margins and page orientation is in the print dialog.**
 
 ### Print a selection in the active document
 
-Select at least one line in the active document. Then either click the printer icon to the right of the document tabs or right-click on the selection and choose `Print` from the context menu. When the context menu appears, `Print` appears at (or near) the top, the bottom or nowhere depending on the setting `Print: Editor Context Menu Item Position` .
+Select a multi-line block of text in the active document. Then either click the printer icon to the right of the document tabs or right-click on the selection and choose `Print` from the context menu. When the context menu appears, `Print` appears at (or near) the top, the bottom or nowhere depending on the setting `Print: Editor Context Menu Item Position` .
 
 Line numbers in your printout are aligned with the line numbers in the editor whether these are visible or not. So if you are discussing a line of code numbered 1145 in a code review and you open the file to amend it, typing `Ctrl+G` and then 1145 `[Enter]` will put your cursor directly on the line of code in question.
 
