@@ -5,8 +5,8 @@ import * as vscode from 'vscode';
 const templateFolderItem = require("./template-folder-item.html").default.toString();
 const template: string = require("./template.html").default.toString();
 
-export class SourceCode {
-	static Markdown: any;
+export class HtmlRenderer {
+	static MarkdownEngine: any;
 	constructor(
 		public filename: string,
 		public code: string = "",
@@ -64,7 +64,7 @@ export class SourceCode {
 		try {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
 			if (printConfig.renderMarkdown && this.language === "markdown") {
-				renderedCode = SourceCode.Markdown.render(code);
+				renderedCode = HtmlRenderer.MarkdownEngine.render(code);
 			} else {
 				try {
 					renderedCode = hljs.highlight(languageId, code).value;

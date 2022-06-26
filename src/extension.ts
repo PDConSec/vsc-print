@@ -6,7 +6,7 @@ import { AddressInfo } from 'net';
 import * as path from "path";
 import { captionByFilename, filenameByCaption, localise } from './imports';
 import * as nls from 'vscode-nls';
-import { SourceCode } from './source-code';
+import { HtmlRenderer } from './html-renderer';
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -83,7 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
-			SourceCode.Markdown = mdparam;
+			HtmlRenderer.MarkdownEngine = mdparam;
 			return mdparam;
 		}
 	};
@@ -106,7 +106,7 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 };
 
 async function printCommand(cmdArgs: any) {
-	Array.from(printSessions).forEach(ps => { if (ps[1].completed) printSessions.delete(ps[0]); });
+	gc();
 	const printSession = new PrintSession(cmdArgs);
 	printSessions.set(printSession.sessionId, printSession);
 	printSession.launchBrowser()
@@ -133,7 +133,7 @@ async function printFolderCommand(commandArgs: any) {
 		vscode.window.showErrorMessage(localise("NO_SELECTION"));
 		return;
 	}
-	Array.from(printSessions).forEach(ps => { if (ps[1].completed) printSessions.delete(ps[0]); });
+	gc();
 	const printSession = new PrintSession(folderUri);
 	printSessions.set(printSession.sessionId, printSession);
 	printSession.launchBrowser()
@@ -158,6 +158,14 @@ dns.lookup("localhost", { all: true, family: 6 }, (err, addresses) => {
 })
 
 function connectingToLocalhost(request: http.IncomingMessage): boolean {
-	console.log(request.socket.localAddress)
+	// console.log(request.socket.localAddress)
 	return localhostAddresses.indexOf(request.socket.localAddress!) >= 0;
+}
+
+function gc() {
+	const allKvps = Array.from(printSessions);
+	const completed = allKvps.filter(kvp => kvp[1].completed);
+	for (const sessionId of completed.map(c => c[0])) {
+		printSessions.delete(sessionId);
+	}
 }

@@ -101,6 +101,8 @@ For source code printing, stylesheets are bundled and can be chosen by name from
 
 Line spacing and font size settings are available for source code. 
 
+There are limits to the inference of syntactical context when applying the syntax colouring engine (highlight.js) to a selection. You can often improve this by expanding the selection to include things like function headers.
+
 ## Styling your markdown
 
 For rendered Markdown, customisation via CSS files has returned to Print. Styling settings that were introduced to work around problems with remote workspaces have been retired in favour of CSS stylesheets. If you had customisations, you should express these styles in a CSS file, add it to your document workspace, and register it in `markdown.styles`. 

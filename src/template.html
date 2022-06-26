@@ -10,7 +10,9 @@
 	<script type="text/javascript">
 		function printAndClose(enabled) {
 			if (enabled) {
-				window.addEventListener("afterprint", (event) => window.close());
+				window.addEventListener("afterprint", (event) => {
+					fetch("completed").then(window.close);
+				});
 				setTimeout(window.print, 500);
 			}
 		} 

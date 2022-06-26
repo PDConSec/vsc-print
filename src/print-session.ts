@@ -1,4 +1,4 @@
-import { SourceCode } from './source-code';
+import { HtmlRenderer } from './html-renderer';
 import * as vscode from 'vscode';
 import * as http from "http";
 import * as path from "path";
@@ -22,7 +22,7 @@ export class PrintSession {
 	public age(): number {
 		return new Date().valueOf() - this.created;
 	}
-	code: SourceCode | undefined;
+	htmlRenderer: HtmlRenderer | undefined;
 	public ready: Promise<void>;
 	public sessionId = nodeCrypto.randomUUID();
 	public uri: vscode.Uri | undefined;
@@ -30,57 +30,61 @@ export class PrintSession {
 		this.ready = new Promise<void>(async (resolve, reject) => {
 			try {
 				const printConfig = vscode.workspace.getConfiguration("print", null);
+				const editor = vscode.window.activeTextEditor;
+				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";
-				if (cmdArgs) {
-					const uristat = await vscode.workspace.fs.stat(cmdArgs);
-					if (uristat.type === vscode.FileType.Directory) {
-						this.code = new SourceCode(cmdArgs.fsPath, "", "folder", printLineNumbers)
-					} else {
-						var document = await vscode.workspace.openTextDocument(cmdArgs);
+				switch (await this.contentSource(cmdArgs)) {
+					case "editor": {
+						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
+						this.htmlRenderer = new HtmlRenderer(
+							document!.uri.fsPath,
+							document!.getText(),
+							document!.languageId,
+							printLineNumbers
+						);
+					}
+						break;
+					case "selection": {
+						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
+						const selection = editor!.selection;
+						this.uri = document?.uri;
+						if (selection && !selection.isEmpty) {
+							const allText = document!.getText();
+							const selectedText = document!.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
+							const langId = document!.languageId;
+							const startLine = selection.start.line + 1; // zero based to one based
+							this.htmlRenderer = new HtmlRenderer(
+								document!.uri.fsPath,
+								selectedText,
+								langId,
+								printLineNumbers,
+								startLine
+							);
+						}
+					}
+						break;
+					case "file":
+						document = await vscode.workspace.openTextDocument(cmdArgs!);
 						this.uri = document.uri;
-						this.code = new SourceCode(
+						this.htmlRenderer = new HtmlRenderer(
 							document.uri.fsPath,
 							document.getText(),
 							document.languageId,
 							printLineNumbers
 						);
-					}
-					resolve();
+						break;
+					case "folder":
+						this.htmlRenderer = new HtmlRenderer(cmdArgs!.fsPath, "", "folder", printLineNumbers)
+						break;
 				}
-				else {
-					const editor = vscode.window.activeTextEditor;
-					printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
-					if (editor) {
-						const selection = editor.selection;
-						const document = editor.document;
-						this.uri = document.uri;
-						if (selection && !selection.isEmpty) {
-							this.code = new SourceCode(
-								document.uri.fsPath,
-								document.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, ""),
-								document.languageId,
-								printLineNumbers,
-								selection.start.line
-							);
-						}
-						else {
-							this.code = new SourceCode(
-								document.uri.fsPath,
-								document.getText(),
-								document.languageId,
-								printLineNumbers
-							);
-						}
-						resolve();
-					}
-				}
+				resolve();
 			} catch { reject(); }
 		});
 	}
 
 	public async respond(urlParts: string[], response: http.ServerResponse) {
 		if (urlParts.length === 3 && urlParts[2] === "") {
-			let html = await this.code!.asHtml();
+			let html = await this.htmlRenderer!.asHtml();
 			response.writeHead(200, {
 				"Content-Type": "text/html; charset=utf-8",
 				"Content-Length": Buffer.byteLength(html, 'utf-8')
@@ -194,4 +198,17 @@ export class PrintSession {
 			}
 		});
 	}
+
+	async contentSource(uri?: vscode.Uri): Promise<string> {
+		if (!uri) return "editor"; // unsaved
+		const uristat = await vscode.workspace.fs.stat(uri);
+		if (uristat.type === vscode.FileType.Directory) return "folder";
+		const editor = vscode.window.activeTextEditor;
+		if (editor && uri.toString() === editor.document.uri.toString()) {
+			return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
+		} else {
+			return "file";
+		}
+	}
 }
+
