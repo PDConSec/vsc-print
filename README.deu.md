@@ -6,7 +6,7 @@ Yes, it's in English. The fellow who translates is busy with his studies. If you
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
-[ENGLISH](README.md) | [FRENCH](README.fra.md) | [Add a language](how-to-add-a-language.md)
+[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
 
 ## Markdown and source code, styled for print
 

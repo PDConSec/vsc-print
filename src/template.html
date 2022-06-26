@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>$TITLE</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	$VSCODE_MARKDOWN_STYLESHEET_LINKS
+	$DEFAULT_STYLESHEET_LINK
+	<script type="text/javascript">
+		function printAndClose(enabled) {
+			if (enabled) {
+				window.addEventListener("afterprint", (event) => {
+					fetch("completed").then(window.close);
+				});
+				setTimeout(window.print, 500);
+			}
+		} 
+	</script>
+</head>
+
+<body onload="printAndClose($PRINT_AND_CLOSE)">
+	$CONTENT
+</body>
+
+</html>

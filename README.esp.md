@@ -4,7 +4,7 @@
 
 [Version Española](https://github.com/UPL123/vsc-print) por UPL123
 
-[ENGLISH](README.md) | [FRENCH](README.fra.md) | [Add a language](how-to-add-a-language.md)
+[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
 
 La mayoría de las fallas en el primer uso se deben a un reenvasado defectuoso por parte de un tercero. Si esto le sucede a usted, obtenga el [paquete producido y probado por nosotros](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print).
 

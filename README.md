@@ -4,9 +4,15 @@
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
-[ENGLISH](README.md) | [FRENCH](README.fra.md) | [Add a language](how-to-add-a-language.md)
+[Chinese Version](https://github.com/kuriyamasss/vsc-print) by Kuriyamasss,中文版本由Kuriyamasss翻译
+
+[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
 
 Most failure on first use is due to faulty repackaging by a third party. If this happens to you, obtain the [package produced and tested by us](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print).
+
+Custom Markdown styling is back! See the manual for details of how to use your own CSS files with Markdown rendering.
+
+We have community translations into Spanish and Chinese.
 
 ## Markdown and source code, styled for print
 
@@ -141,6 +147,11 @@ For better results burn some disk space and install another browser such as Chro
 The Math+Markdown extension (installs the KaTeX plugin) requires an internet connection for stylesheets and fonts. You must also configure a stylesheet reference. Details are in the manual.
 
 ## Release Notes
+
+### 0.9.18
+
+- Fix selection printing
+- Minor documentation update
 
 ### 0.9.16
 

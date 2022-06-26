@@ -1,8 +1,8 @@
-# Visual Studio Code Printing
+# Print
 
 [English version](https://github.com/PeterWone/vsc-print) by Peter Wone
 
-[ENGLISH](manual.md) | [FRENCH](manual.fra.md) | [GERMAN](manual.deu.md) | [Add a language](how-to-add-a-language.md)
+[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
 
 ## Printing
 
@@ -21,11 +21,11 @@ Markdown extensions also need to be installed on the target host if you want to 
 
 ### Print the active document
 
-To print the active document just click the printer icon to the right of the document tabs. Control for paper size, margins and page orientation is in the print dialog.
+To print the active document just click the printer icon to the right of the document tabs. Make sure you don't have multiple lines of text selected. Otherwise, you'll print the selection, not the whole document. **Control for paper size, margins and page orientation is in the print dialog.**
 
 ### Print a selection in the active document
 
-Select at least one line in the active document. Then either click the printer icon to the right of the document tabs or right-click on the selection and choose `Print` from the context menu. When the context menu appears, `Print` appears at (or near) the top, the bottom or nowhere depending on the setting `Print: Editor Context Menu Item Position` .
+Select a multi-line block of text in the active document. Then either click the printer icon to the right of the document tabs or right-click on the selection and choose `Print` from the context menu. When the context menu appears, `Print` appears at (or near) the top, the bottom or nowhere depending on the setting `Print: Editor Context Menu Item Position` .
 
 Line numbers in your printout are aligned with the line numbers in the editor whether these are visible or not. So if you are discussing a line of code numbered 1145 in a code review and you open the file to amend it, typing `Ctrl+G` and then 1145 `[Enter]` will put your cursor directly on the line of code in question.
 
@@ -95,22 +95,43 @@ To set up an alternate browser you must do two things:
 1. Supply the path to the browser executable in the `Print: Browser Path` setting. On Windows it might be something like `C:\Program Files (x86)\Google\Chrome\Application\Chrome.exe`
 1. Enable/disable the alternate browser using the setting `Print: Alternate Browser`
 
-## Choose a colour scheme
+## Choose a colour scheme for source code printing
 
-Custom stylesheets are no longer supported. Available stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because paper is white.
+For source code printing, stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because printer paper is white and printer inks and toners are designed for white paper. 
+
+Line spacing and font size settings are available for source code. 
+
+There are limits to the inference of syntactical context when applying the syntax colouring engine (highlight.js) to a selection. You can often improve this by expanding the selection to include things like function headers.
+
+## Styling your markdown
+
+For rendered Markdown, customisation via CSS files has returned to Print. Styling settings that were introduced to work around problems with remote workspaces have been retired in favour of CSS stylesheets. If you had customisations, you should express these styles in a CSS file, add it to your document workspace, and register it in `markdown.styles`. 
+
+How do you reference a CSS file from a Markdown document? You don't. There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLS, or document  relative URLs, as shown in the following example.
+
+```json
+"markdown.styles": [
+	"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css",
+	"path/to/document/relative/custom.css",
+	"workspace.resource/path/to/stylesheet.css"
+]
+```
+
+Workspace relative URLs are the best way to share resources between documents. They are in the workspace so they can be source controlled along with the documents, and because the URL is relative to the workspace rather than the document you can organise (and reorganise) documents in folders without breaking the URLs. Note that this applies not only to stylesheets but also to image file resources.
 
 ## Web Server
 
-The web server allows connections only from localhost.  Connections from other hosts are rejected.
+The embedded web server allows connections only from localhost.  Connections from other hosts are rejected.
 
 ## Katex Markdown extension
 This depends on CSS and fonts from the web. To get printing to work you must add the required stylesheet to your settings. If you find one or two things work in the preview yet not in print, determine the current version from the KaTeX website, and update the URL. 
 
 ```json
 "markdown.styles": [
-  "https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
+	"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
 ]
 ```
+If you want to cut the cord, then import the Katex resources into your project as described in the preceding section and use a workspace-relative reference. 
 
 Here are some samples to help you check your configuration.
 ```

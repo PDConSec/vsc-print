@@ -25,8 +25,9 @@ const outDest = 'out';
 const languages = [
   { folderName: 'eng', id: 'en' },
   { folderName: 'deu', id: 'de' },
+  { folderName: 'esp', id: 'es' },
   { folderName: 'fra', id: 'fr' },
-  { folderName: 'es', id: 'es' },
+  { folderName: 'zho', id: 'zh' },
   { folderName: 'pseudo', id: 'qps-ploc' }
 ];
 

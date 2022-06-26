@@ -37,12 +37,18 @@ const config = {
           }
         ]
       },
-      {
-        test: /\.css$/,
-        use: [
-          'css-loader'
-        ]
-      },
+			{
+				test: /\.css$/,
+				use: [
+					'css-loader'
+				]
+			},
+			{
+				test: /\.html$/,
+				use: [
+					'html-loader'
+				]
+			},
       {
         test: /\.json$/i
       }

@@ -1,0 +1,38 @@
+html,
+body {
+	background-color: white;
+	font-family: serif;
+	font-size: 14pt;
+}
+
+p {
+	font-family: serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: sans-serif;
+	page-break-after: avoid;
+	page-break-inside: avoid;
+}
+
+table {
+	font-family: sans-serif;
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th {
+	font-family: Castellar;
+	font-weight: 400;
+	border: thin solid silver;
+	padding: 3px;
+}
+
+img {
+	max-width: 100%;
+}
