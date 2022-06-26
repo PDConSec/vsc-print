@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.9.18
+
+- Fix selection printing
+- Minor documentation update
+
 ### 0.9.16
 
 - Addressed issue 126 - overhaul embedded webserver
