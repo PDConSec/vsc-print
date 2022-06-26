@@ -148,6 +148,11 @@ The Math+Markdown extension (installs the KaTeX plugin) requires an internet con
 
 ## Release Notes
 
+### 0.9.18
+
+- Fix selection printing
+- Minor documentation update
+
 ### 0.9.16
 
 - Add Markdown style setting for blockquotes (#123)
