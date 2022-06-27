@@ -19,7 +19,7 @@ on:
         description: 'Publish to GitHub releases'
         type: boolean
         required: true
-        default: "false"
+        default: "true"
 
 jobs:
   package:
