@@ -111,6 +111,7 @@ jobs:
           PRINT_RELEASE: ${{ secrets.PRINT_RELEASE }}
         with:
           tag_name: ${{ needs.package.outputs.tag }}
+          token: ${{ secrets.PRINT_RELEASE }}
           release_name: Release ${{ needs.package.outputs.version }}
           draft: false
           prerelease: false
