@@ -109,9 +109,9 @@ jobs:
         uses: actions/create-release@v1
         env:
           PRINT_RELEASE: ${{ secrets.PRINT_RELEASE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ needs.package.outputs.tag }}
-          token: ${{ secrets.PRINT_RELEASE }}
           release_name: Release ${{ needs.package.outputs.version }}
           draft: false
           prerelease: false
