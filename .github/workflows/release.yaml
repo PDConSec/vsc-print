@@ -113,7 +113,7 @@ jobs:
         uses: actions/create-release@v1
         env:
           PRINT_RELEASE: ${{ secrets.PRINT_RELEASE }}
-          xGITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ needs.package.outputs.tag }}
           release_name: Release ${{ needs.package.outputs.version }}
@@ -126,7 +126,4 @@ jobs:
           files: ${{ needs.package.outputs.packageName }}
           release-tag:  ${{ needs.package.outputs.tag }}
           repo-token: ${{ secrets.PRINT_RELEASE }}
-
-      - if: failure()
-        name: Delete tag
-        uses: pr-mpt/actions-delete-tag@v1
+          
