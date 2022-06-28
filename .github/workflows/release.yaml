@@ -61,6 +61,10 @@ jobs:
           Write-Host "::set-output name=tag::release/$version"
           Write-Host "::set-output name=version::$version"
         shell: pwsh
+        
+      - if: failure()
+        name: Delete tag
+        uses: pr-mpt/actions-delete-tag@v1
 
   publishMS:
     name: Publish to MS marketplace
