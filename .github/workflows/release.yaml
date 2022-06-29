@@ -9,7 +9,7 @@ on:
         description: 'Publish to MS marketplace'
         type: boolean
         required: true
-        default: "false"
+        default: "true"
       publishOVSX:
         description: 'Publish to OpenVSX'
         type: boolean
