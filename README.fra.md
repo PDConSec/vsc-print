@@ -116,6 +116,15 @@ L’extension Math+Markdown (installe le plugin KaTeX) nécessite une connexion 
 
 ## Notes de version
 
+### 0.9.22 
+
+- Correction du chemin cassé vers « navigateur alternatif » sous Windows
+
+### 0.9.18
+
+- Correction de l’impression de sélection
+- Mise à jour mineure de la documentation
+
 ### 0.9.16
 
 - Ajouter le paramètre de style Markdown pour les blockquotes (#123)
