@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.9.22 
+
+- Fix broken path escaping on Windows
+
 ### 0.9.18
 
 - Fix selection printing
