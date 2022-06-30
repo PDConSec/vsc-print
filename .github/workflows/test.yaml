@@ -20,6 +20,8 @@ jobs:
       with:
         node-version: 16.x
     - run: npm install
+    - run: npm install gulp-cli --save-dev
+      if: runner.os == 'Darwin'
     - run: gulp
     - run: xvfb-run -a npm test
       if: runner.os == 'Linux'
