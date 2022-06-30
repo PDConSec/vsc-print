@@ -20,7 +20,7 @@ jobs:
       with:
         node-version: 16.x
     - run: npm install
-    - run: npm install gulp-cli --save-dev
+    - run: npm i gulp gulp-cli -g
       if: runner.os == 'MacOS'
     - run: gulp
     - run: xvfb-run -a npm test
