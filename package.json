@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
-	"version": "0.9.23",
+	"version": "0.9.24",
 	"icon": "vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
@@ -18,10 +18,8 @@
 	},
 	"keywords": [
 		"print",
-		"Markdown",
-		"syntax coloring",
-		"line numbers",
 		"PDF",
+		"Markdown",
 		"remote"
 	],
 	"categories": [
@@ -34,6 +32,11 @@
 	"contributes": {
 		"markdown.markdownItPlugins": true,
 		"commands": [
+			{
+				"category": "%commands.category%",
+				"command": "extension.returnSomething",
+				"title": "return something"
+			},
 			{
 				"category": "%commands.category%",
 				"command": "extension.print",
@@ -272,6 +275,7 @@
 		"@types/node": "^18.0.0",
 		"@types/vscode": "^1.60.0",
 		"@vscode/test-electron": "^2.1.5",
+		"axios": "^0.27.2",
 		"copy-webpack-plugin": "^9.0.1",
 		"css-loader": "^6.3.0",
 		"del": "^5.1.0",

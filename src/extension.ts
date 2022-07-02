@@ -20,7 +20,7 @@ localize("UNEXPECTED_ERROR", "x");
 // #endregion
 
 let server: http.Server | undefined;
-
+const testFlags = new Set<string>();
 let colourScheme = vscode.workspace.getConfiguration("print", null).colourScheme;
 if (captionByFilename[colourScheme]) {
 	// legacy value, convert
@@ -38,6 +38,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.print", printCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.test.flags", () => testFlags));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
 
 	// capture the extension path
 	disposable = vscode.commands.registerCommand('extension.help', async (cmdArgs: any) => {
@@ -105,14 +107,14 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 	}
 };
 
-async function printCommand(cmdArgs: any) {
+function printCommand(cmdArgs: any): PrintSession {
 	gc();
 	const printSession = new PrintSession(cmdArgs);
 	printSessions.set(printSession.sessionId, printSession);
-	printSession.launchBrowser()
+	return printSession;
 }
 
-async function printFolderCommand(commandArgs: any) {
+function printFolderCommand(commandArgs: any): PrintSession | undefined {
 	const editor = vscode.window.activeTextEditor;
 	let folderUri: vscode.Uri;
 	if (commandArgs) {
@@ -136,7 +138,7 @@ async function printFolderCommand(commandArgs: any) {
 	gc();
 	const printSession = new PrintSession(folderUri);
 	printSessions.set(printSession.sessionId, printSession);
-	printSession.launchBrowser()
+	return printSession;
 }
 
 export function deactivate() {

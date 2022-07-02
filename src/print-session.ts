@@ -83,6 +83,7 @@ export class PrintSession {
 	}
 
 	public async respond(urlParts: string[], response: http.ServerResponse) {
+		await this.ready;
 		if (urlParts.length === 3 && urlParts[2] === "") {
 			let html = await this.htmlRenderer!.asHtml();
 			response.writeHead(200, {
@@ -188,15 +189,26 @@ export class PrintSession {
 		}
 	}
 
-	async launchBrowser() {
-		let printConfig = vscode.workspace.getConfiguration("print", null);
-		let cmd = printConfig.alternateBrowser && printConfig.browserPath ? escapePath(printConfig.browserPath) : browserLaunchMap[process.platform];
-		child_process.exec(`${cmd} http://localhost:${PrintSession.port}/${this.sessionId}/`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
-			// node on Linux incorrectly calls this error handler, with a null error object
-			if (error) {
-				vscode.window.showErrorMessage(`${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`);
-			}
-		});
+	public getUrl(): string { return `http://localhost:${PrintSession.port}/${this.sessionId}/`; }
+	public static getLaunchBrowserCommand(): string {
+		const printConfig = vscode.workspace.getConfiguration("print", null);
+		const cmd = printConfig.alternateBrowser && printConfig.browserPath ? escapePath(printConfig.browserPath) : browserLaunchMap[process.platform];
+		return cmd;
+	}
+
+	public async launchBrowser(): Promise<string> {
+		const url = this.getUrl();
+		const testFlags = await vscode.commands.executeCommand("extension.test.flags") as Set<string>;
+		if (!testFlags.has("suppress browser")) {
+			const cmd = PrintSession.getLaunchBrowserCommand();
+			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
+				// node on Linux incorrectly calls this error handler, with a null error object
+				if (error) {
+					vscode.window.showErrorMessage(`${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`);
+				}
+			});
+		}
+		return url;
 	}
 
 	async contentSource(uri?: vscode.Uri): Promise<string> {
