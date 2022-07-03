@@ -58,8 +58,6 @@ suite('Print Extension Test Suite', () => {
 		}
 	});
 
-	let session: PrintSession | undefined;
-
 	test('Print active editor', async () => {
 		const W = vscode.workspace.workspaceFolders;
 		let w = W![0].uri.fsPath;
@@ -68,7 +66,7 @@ suite('Print Extension Test Suite', () => {
 		flags?.add("suppress browser");
 		await vscode.window.showTextDocument(otd);
 		assert.ok(vscode.window.activeTextEditor);
-		session = await vscode.commands.executeCommand<string>("extension.print") as PrintSession | undefined;
+		const session = await vscode.commands.executeCommand<string>("extension.print") as PrintSession | undefined;
 		await session!.ready;
 		const url = session!.getUrl();
 		const response = await axios.get(url);
@@ -81,7 +79,7 @@ suite('Print Extension Test Suite', () => {
 		let w = W![0].uri.fsPath;
 		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
 		flags?.add("suppress browser");
-		session = await vscode.commands.executeCommand<string>("extension.printFolder", W![0].uri) as PrintSession | undefined;
+		const session = await vscode.commands.executeCommand<string>("extension.printFolder", W![0].uri) as PrintSession | undefined;
 		await session!.ready;
 		const url = session!.getUrl();
 		const response = await axios.get(url);
