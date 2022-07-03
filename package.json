@@ -33,9 +33,12 @@
 		"markdown.markdownItPlugins": true,
 		"commands": [
 			{
-				"category": "%commands.category%",
-				"command": "extension.returnSomething",
-				"title": "return something"
+				"command": "extension.test.browserLaunchCommand",
+				"title": "get browser launch command"
+			},
+			{
+				"command": "extension.test.flags",
+				"title": "get test flags collection"
 			},
 			{
 				"category": "%commands.category%",
