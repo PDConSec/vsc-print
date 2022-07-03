@@ -64,10 +64,10 @@ suite('Print Extension Test Suite', () => {
 		const W = vscode.workspace.workspaceFolders;
 		let w = W![0].uri.fsPath;
 		const otd = await vscode.workspace.openTextDocument(path.join(w, "sample.json"));
-		assert.ok(vscode.window.activeTextEditor);
 		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
 		flags?.add("suppress browser");
 		await vscode.window.showTextDocument(otd);
+		assert.ok(vscode.window.activeTextEditor);
 		session = await vscode.commands.executeCommand<string>("extension.print") as PrintSession | undefined;
 		await session!.ready;
 		const url = session!.getUrl();
