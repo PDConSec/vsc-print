@@ -27,34 +27,37 @@ export class PrintSession {
 	public sessionId = nodeCrypto.randomUUID();
 	public uri: vscode.Uri | undefined;
 	constructor(cmdArgs?: vscode.Uri) {
-		this.ready = new Promise<void>(async (resolve, reject) => {
+		this.ready = new Promise(async (resolve, reject) => {
 			try {
 				const printConfig = vscode.workspace.getConfiguration("print", null);
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";
-				switch (await this.contentSource(cmdArgs)) {
+				const contentSource = await this.contentSource(cmdArgs);
+				switch (contentSource) {
 					case "editor": {
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
+						if (!document) throw "This can't happen";
 						this.htmlRenderer = new HtmlRenderer(
-							document!.uri.fsPath,
-							document!.getText(),
-							document!.languageId,
+							document.uri.fsPath,
+							document.getText(),
+							document.languageId,
 							printLineNumbers
 						);
 					}
 						break;
 					case "selection": {
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
-						const selection = editor!.selection;
-						this.uri = document?.uri;
-						if (selection && !selection.isEmpty) {
-							const allText = document!.getText();
+						if (!document) throw "This can't happen";
+						const selection = editor?.selection;
+						if (!selection) throw "This can't happen";
+						this.uri = document.uri;
+						if (selection.isEmpty) {
 							const selectedText = document!.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
 							const langId = document!.languageId;
 							const startLine = selection.start.line + 1; // zero based to one based
 							this.htmlRenderer = new HtmlRenderer(
-								document!.uri.fsPath,
+								document.uri.fsPath,
 								selectedText,
 								langId,
 								printLineNumbers,
@@ -77,15 +80,20 @@ export class PrintSession {
 						this.htmlRenderer = new HtmlRenderer(cmdArgs!.fsPath, "", "folder", printLineNumbers)
 						break;
 				}
+				this.launchBrowser()
 				resolve();
-			} catch { reject(); }
+			} catch (err) {
+				reject(err);
+			}
 		});
 	}
 
 	public async respond(urlParts: string[], response: http.ServerResponse) {
 		await this.ready;
+		
 		if (urlParts.length === 3 && urlParts[2] === "") {
-			let html = await this.htmlRenderer!.asHtml();
+			const renderer = this.htmlRenderer;
+			const html = await renderer!.asHtml();
 			response.writeHead(200, {
 				"Content-Type": "text/html; charset=utf-8",
 				"Content-Length": Buffer.byteLength(html, 'utf-8')
@@ -213,13 +221,18 @@ export class PrintSession {
 
 	async contentSource(uri?: vscode.Uri): Promise<string> {
 		if (!uri) return "editor"; // unsaved
-		const uristat = await vscode.workspace.fs.stat(uri);
-		if (uristat.type === vscode.FileType.Directory) return "folder";
-		const editor = vscode.window.activeTextEditor;
-		if (editor && uri.toString() === editor.document.uri.toString()) {
-			return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
-		} else {
-			return "file";
+		try {
+			const uristat = await vscode.workspace.fs.stat(uri);
+			if (uristat.type === vscode.FileType.Directory) return "folder";
+			const editor = vscode.window.activeTextEditor;
+			if (editor && uri.toString() === editor.document.uri.toString()) {
+				return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
+			} else {
+				return "file";
+			}			
+		} catch (error) {
+			console.log(`Unexpected error analysing contentSource, uri was ${typeof uri === "undefined" ? "undefined" : JSON.stringify(uri)}`);
+			throw error;
 		}
 	}
 }

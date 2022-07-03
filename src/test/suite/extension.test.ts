@@ -60,16 +60,33 @@ suite('Print Extension Test Suite', () => {
 
 	let session: PrintSession | undefined;
 
-	test('Create PrintSession', async () => {
+	test('Print active editor', async () => {
 		const W = vscode.workspace.workspaceFolders;
-		if (W) {
-			let w = W[0].uri.fsPath;
-			const otd = await vscode.workspace.openTextDocument(path.join(w, "sample.json"));
-			const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
-			flags?.add("suppress browser");
-			await vscode.window.showTextDocument(otd);
-			session = await vscode.commands.executeCommand<string>("extension.print", true) as PrintSession | undefined;
-		}
+		let w = W![0].uri.fsPath;
+		const otd = await vscode.workspace.openTextDocument(path.join(w, "sample.json"));
+		assert.ok(vscode.window.activeTextEditor);
+		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		flags?.add("suppress browser");
+		await vscode.window.showTextDocument(otd);
+		session = await vscode.commands.executeCommand<string>("extension.print") as PrintSession | undefined;
+		await session!.ready;
+		const url = session!.getUrl();
+		const response = await axios.get(url);
+		assert.equal(response.headers["content-type"], 'text/html; charset=utf-8');
+		assert.ok(response.data.includes("<title>sample.json</title>"));
+	});
+
+	test('Print folder', async () => {
+		const W = vscode.workspace.workspaceFolders;
+		let w = W![0].uri.fsPath;
+		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		flags?.add("suppress browser");
+		session = await vscode.commands.executeCommand<string>("extension.printFolder", W![0].uri) as PrintSession | undefined;
+		await session!.ready;
+		const url = session!.getUrl();
+		const response = await axios.get(url);
+		assert.equal(response.headers["content-type"], 'text/html; charset=utf-8');
+		assert.ok(response.data.includes("<title>test-docs</title>"));
 	});
 
 });
