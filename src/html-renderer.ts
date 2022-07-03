@@ -67,7 +67,7 @@ export class HtmlRenderer {
 				renderedCode = HtmlRenderer.MarkdownEngine.render(code);
 			} else {
 				try {
-					renderedCode = hljs.highlight(languageId, code).value;
+					renderedCode = hljs.highlight(code, { language: languageId }).value;
 				}
 				catch (err) {
 					renderedCode = hljs.highlightAuto(code).value;
