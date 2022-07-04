@@ -13,7 +13,7 @@ async function main() {
 		// Passed to --extensionTestsPath
 		const extensionTestsPath = path.resolve(__dirname, './suite/index');
 
-		const vsixName = path.join(__dirname, fs.readdirSync(__dirname)
+		const vsixName = path.join(extensionDevelopmentPath, fs.readdirSync(__dirname)
 			.filter(p => path.extname(p) === ".vsix")
 			.sort((a, b) => a < b ? 1 : a > b ? -1 : 0)[0]);
 
