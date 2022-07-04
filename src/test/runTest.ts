@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as fs from 'fs';
 
 import { runTests } from '@vscode/test-electron';
 
@@ -12,7 +13,15 @@ async function main() {
 		// Passed to --extensionTestsPath
 		const extensionTestsPath = path.resolve(__dirname, './suite/index');
 
-		const launchArgs = [path.resolve(__dirname, '../../src/test/test-docs')];
+		const vsixName = path.join(__dirname, fs.readdirSync(__dirname)
+			.filter(p => path.extname(p) === ".vsix")
+			.sort((a, b) => a < b ? 1 : a > b ? -1 : 0)[0]);
+
+		const launchArgs = [
+			path.resolve(__dirname, '../../src/test/test-docs'),
+			"--install-extension",
+			vsixName
+		];
 		//console.log(launchArgs);
 
 		// Download VS Code, unzip it and run the integration test
