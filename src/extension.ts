@@ -39,6 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("extension.print", printCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.test.flags", () => testFlags));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.test.sessionCount", () => printSessions.size));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
 
 	// capture the extension path

@@ -22,7 +22,7 @@ suite('Print Extension Test Suite', () => {
 		await printConfig.update("alternateBrowser", false);
 		const cmd = await vscode.commands.executeCommand<string>("extension.test.browserLaunchCommand");
 		switch (process.platform) {
-			
+
 			case "win32":
 				assert.strictEqual(cmd, "start");
 				break;
@@ -68,9 +68,12 @@ suite('Print Extension Test Suite', () => {
 		const session = (await vscode.commands.executeCommand<PrintSession>("extension.print"))!;
 		await session.ready;
 		const url = session.getUrl();
-		const response = await axios.get(url);
+		let response = await axios.get(url);
 		assert.equal(response.headers["content-type"], 'text/html; charset=utf-8');
 		assert.ok(response.data.includes("<title>sample.json</title>"));
+		assert.ok(!session.completed);
+		await axios.get(`${url}completed`);
+		assert.ok(session.completed);
 	});
 
 	test('Print folder', async () => {
@@ -81,9 +84,41 @@ suite('Print Extension Test Suite', () => {
 		const session = (await vscode.commands.executeCommand<PrintSession>("extension.printFolder", W![0].uri))!;
 		await session.ready;
 		const url = session.getUrl();
-		const response = await axios.get(url);
+		let response = await axios.get(url);
 		assert.equal(response.headers["content-type"], 'text/html; charset=utf-8');
 		assert.ok(response.data.includes("<title>test-docs</title>"));
+		assert.ok(!session.completed);
+		await axios.get(`${url}completed`);
+		assert.ok(session.completed);
 	});
 
+	test("Completed sessions are unavailable", async () => {
+		const W = vscode.workspace.workspaceFolders;
+		let w = W![0].uri.fsPath;
+		const uri = vscode.Uri.file(path.join(w, "sample.json"));
+		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		flags?.add("suppress browser");
+		const sessions: Array<PrintSession> = [];
+		const N = 3;
+		for (let index = 0; index < N; index++) {
+			sessions.push((await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!);
+		}
+		assert.equal(sessions.filter(s => !s.completed).length, N)
+		for (let index = 0; index < N; index++) {
+			const url = sessions[index].getUrl();
+			let response = await axios.get(`${url}completed`);
+		}
+		assert.equal(sessions.filter(s => s.completed).length, N)
+		let sessionCount = await vscode.commands.executeCommand<number>("extension.test.sessionCount");
+		assert.equal(sessionCount, N);
+		const staleUrl = sessions[0].getUrl();
+		const session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
+		sessionCount = await vscode.commands.executeCommand<number>("extension.test.sessionCount");
+		await axios.get(`${session.getUrl()}completed`);
+		assert.equal(sessionCount, 1);
+		try {
+			const response = await axios.get(`${staleUrl}`);
+			assert.ok(false, "Attempting to connect to a closed session should fail");
+		} catch { }
+	})
 });
