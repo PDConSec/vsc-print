@@ -13,9 +13,9 @@ async function main() {
 		// Passed to --extensionTestsPath
 		const extensionTestsPath = path.resolve(__dirname, './suite/index');
 
-		const vsixName = path.join(extensionDevelopmentPath, fs.readdirSync(__dirname)
+		const vsixName = fs.readdirSync(extensionDevelopmentPath)
 			.filter(p => path.extname(p) === ".vsix")
-			.sort((a, b) => a < b ? 1 : a > b ? -1 : 0)[0]);
+			.sort((a, b) => a < b ? 1 : a > b ? -1 : 0)[0];
 
 		const launchArgs = [
 			path.resolve(__dirname, '../../src/test/test-docs'),
