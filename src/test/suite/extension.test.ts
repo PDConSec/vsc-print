@@ -1,15 +1,16 @@
-import { PrintSession } from './../../print-session';
+import { PrintSession } from '../../print-session';
 import * as assert from 'assert';
 import { after } from 'mocha';
 import path = require('path');
 import axios from 'axios';
-import * as htmlparser2 from 'htmlparser2'
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from 'vscode';
-import { platform } from 'os';
-// import * as myExtension from '../extension';
+// import * as myExtension from '../../extension';
+
+// NOTE we don't import and call directly, we expect the extension to be 
+// installed and active, and we use registered commands to manipulate it.
 
 suite('Print Extension Test Suite', () => {
 	after(() => {

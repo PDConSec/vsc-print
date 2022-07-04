@@ -27,19 +27,11 @@
 	],
 	"main": "./dist/extension.js",
 	"activationEvents": [
-		"*"
+		"onStartupFinished"
 	],
 	"contributes": {
 		"markdown.markdownItPlugins": true,
 		"commands": [
-			{
-				"command": "extension.test.browserLaunchCommand",
-				"title": "get browser launch command"
-			},
-			{
-				"command": "extension.test.flags",
-				"title": "get test flags collection"
-			},
 			{
 				"category": "%commands.category%",
 				"command": "extension.print",
@@ -278,6 +270,7 @@
 		"@types/node": "^18.0.0",
 		"@types/vscode": "^1.60.0",
 		"@vscode/test-electron": "^2.1.5",
+		"await-exec": "^0.1.2",
 		"axios": "^0.27.2",
 		"copy-webpack-plugin": "^9.0.1",
 		"css-loader": "^6.3.0",
