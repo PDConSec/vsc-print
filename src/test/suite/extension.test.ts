@@ -122,8 +122,49 @@ suite('Print Extension Test Suite', () => {
 		} catch { }
 	});
 
-	test("Can connect to external url", async () => {
-		const response = await axios.get("https://pdconsec.net/");
+	//todo fetch bundled resource
+	test("Document relative resource", async () => {
+		const W = vscode.workspace.workspaceFolders;
+		let w = W![0].uri.fsPath;
+		const uri = vscode.Uri.file(path.join(w, "subfolder", "sample.md"));
+		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		flags?.add("suppress browser");
+		const session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
+		await session.ready;
+		const url = session.getUrl();
+		const response = await axios.get(`${url}vscode-print-128.png`);
 		assert.equal(response.status, 200);
-	})
+		assert.equal(response.headers["content-type"], "image/png");
+	});
+
+	test("Workspace resource", async () => {
+		const W = vscode.workspace.workspaceFolders;
+		let w = W![0].uri.fsPath;
+		const uri = vscode.Uri.file(path.join(w, "subfolder", "sample.md"));
+		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		flags?.add("suppress browser");
+		const session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
+		await session.ready;
+		const url = session.getUrl();
+		const response = await axios.get(`${url}workspace.resource/2158834-45134090-2560-1440.jpg`);
+		assert.equal(response.status, 200);
+		assert.equal(response.headers["content-type"], "image/jpg");
+	});
+
+	test("Bundled resource", async () => {
+		const W = vscode.workspace.workspaceFolders;
+		let w = W![0].uri.fsPath;
+		const uri = vscode.Uri.file(path.join(w, "subfolder", "sample.md"));
+		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		flags?.add("suppress browser");
+		const session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
+		await session.ready;
+		const url = session.getUrl();
+		const response = await axios.get(`${url}vsc-print.resource/default-markdown.css`);
+		assert.equal(response.status, 200);
+		assert.equal(response.headers["content-type"], "text/css; charset=utf-8");
+	});
+
+	//todo do it all again with a remote workspace
+
 });
