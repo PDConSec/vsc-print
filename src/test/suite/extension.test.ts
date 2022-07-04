@@ -120,5 +120,10 @@ suite('Print Extension Test Suite', () => {
 			const response = await axios.get(`${staleUrl}`);
 			assert.ok(false, "Attempting to connect to a closed session should fail");
 		} catch { }
+	});
+
+	test("Can connect to external url", async () => {
+		const response = await axios.get("https://pdconsec.net/");
+		assert.equal(response.status, 200);
 	})
 });
