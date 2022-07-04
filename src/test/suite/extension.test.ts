@@ -122,7 +122,6 @@ suite('Print Extension Test Suite', () => {
 		} catch { }
 	});
 
-	//todo fetch bundled resource
 	test("Document relative resource", async () => {
 		const W = vscode.workspace.workspaceFolders;
 		let w = W![0].uri.fsPath;
@@ -135,6 +134,7 @@ suite('Print Extension Test Suite', () => {
 		const response = await axios.get(`${url}vscode-print-128.png`);
 		assert.equal(response.status, 200);
 		assert.equal(response.headers["content-type"], "image/png");
+		await axios.get(`${url}completed`);
 	});
 
 	test("Workspace resource", async () => {
@@ -149,6 +149,7 @@ suite('Print Extension Test Suite', () => {
 		const response = await axios.get(`${url}workspace.resource/2158834-45134090-2560-1440.jpg`);
 		assert.equal(response.status, 200);
 		assert.equal(response.headers["content-type"], "image/jpg");
+		await axios.get(`${url}completed`);
 	});
 
 	test("Bundled resource", async () => {
@@ -163,7 +164,8 @@ suite('Print Extension Test Suite', () => {
 		const response = await axios.get(`${url}vsc-print.resource/default-markdown.css`);
 		assert.equal(response.status, 200);
 		assert.equal(response.headers["content-type"], "text/css; charset=utf-8");
-	});
+		await axios.get(`${url}completed`);
+});
 
 	//todo do it all again with a remote workspace
 
