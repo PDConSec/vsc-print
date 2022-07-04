@@ -20,7 +20,9 @@ async function main() {
 		const launchArgs = [
 			path.resolve(__dirname, '../../src/test/test-docs'),
 			"--install-extension",
-			vsixName
+			vsixName,
+			"--install-extension",
+			"ms-vscode-remote.remote-ssh"
 		];
 
 		// Download VS Code, unzip it and run the integration test
