@@ -1,0 +1,9 @@
+services:
+  ubuntu:
+    image: ssh-ubuntu
+    # volumes:
+    #   - /localpath:/home/test/test-docs
+    ports:
+      - 5022:22
+    container_name: sshubuntu
+    
