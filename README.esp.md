@@ -141,6 +141,15 @@ La extensión Math+Markdown (instala el complemento KaTeX) requiere una conexió
 
 ## Notas de lanzamiento
 
+### 0.9.22 
+
+- Arreglar la ruta rota a "navegador alternativo" en Windows
+
+### 0.9.18
+
+- Arreglar la impresión de selección
+- Actualización de documentación menor
+
 ### 0.9.16
 
 - Agregue la configuración de estilo Markdown para blockquotes (# 123)

@@ -148,6 +148,10 @@ The Math+Markdown extension (installs the KaTeX plugin) requires an internet con
 
 ## Release Notes
 
+### 0.9.22 
+
+- Fix broken path escaping on Windows
+
 ### 0.9.18
 
 - Fix selection printing
