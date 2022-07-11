@@ -146,7 +146,7 @@ const _gc = setInterval(() => {
 	for (const sessionId of completed.map(c => c[0])) {
 		printSessions.delete(sessionId);
 	}
-}, 1000);
+}, 500);
 
 export function deactivate() {
 	server?.close();

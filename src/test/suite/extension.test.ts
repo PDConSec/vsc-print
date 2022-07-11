@@ -103,13 +103,16 @@ suite('Print Extension Test Suite', () => {
 		await axios.get(`${url}completed`);
 		const startTime = new Date();
 		let elapsed = 0;
-		while (elapsed > 1000) { 
+		while (elapsed > 500) { 
 			elapsed = new Date().valueOf() - startTime.valueOf();
 		}
+		console.log(`waited ${elapsed}ms for gc cycle`);
 		try {
 			const response = await axios.get(`${url}`);
 			assert.ok(false, "Attempting to connect to a closed session should fail");
-		} catch { }
+		} catch (err) { 
+			console.log(`Attempted access to closed session failed as expected, reporting ${err}`);			
+		}
 	});
 
 	test("Document relative resource", async () => {
