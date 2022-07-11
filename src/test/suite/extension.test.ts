@@ -116,6 +116,8 @@ suite('Print Extension Test Suite', () => {
 		sessionCount = await vscode.commands.executeCommand<number>("extension.test.sessionCount");
 		await axios.get(`${session.getUrl()}completed`);
 		assert.equal(sessionCount, 1);
+		const startTime = new Date();
+		while (new Date().valueOf() - startTime.valueOf() < 1000) { }
 		try {
 			const response = await axios.get(`${staleUrl}`);
 			assert.ok(false, "Attempting to connect to a closed session should fail");
@@ -165,7 +167,7 @@ suite('Print Extension Test Suite', () => {
 		assert.equal(response.status, 200);
 		assert.equal(response.headers["content-type"], "text/css; charset=utf-8");
 		await axios.get(`${url}completed`);
-});
+	});
 
 	//todo do it all again with a remote workspace
 
