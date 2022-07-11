@@ -98,28 +98,16 @@ suite('Print Extension Test Suite', () => {
 		const uri = vscode.Uri.file(path.join(w, "sample.json"));
 		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
 		flags?.add("suppress browser");
-		const sessions: Array<PrintSession> = [];
-		const N = 3;
-		for (let index = 0; index < N; index++) {
-			sessions.push((await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!);
-		}
-		assert.equal(sessions.filter(s => !s.completed).length, N)
-		for (let index = 0; index < N; index++) {
-			const url = sessions[index].getUrl();
-			let response = await axios.get(`${url}completed`);
-		}
-		assert.equal(sessions.filter(s => s.completed).length, N)
-		let sessionCount = await vscode.commands.executeCommand<number>("extension.test.sessionCount");
-		assert.equal(sessionCount, N);
-		const staleUrl = sessions[0].getUrl();
-		const session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
-		sessionCount = await vscode.commands.executeCommand<number>("extension.test.sessionCount");
-		await axios.get(`${session.getUrl()}completed`);
-		assert.equal(sessionCount, 1);
+		let session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
+		let url = session.getUrl();
+		await axios.get(`${url}completed`);
 		const startTime = new Date();
-		while (new Date().valueOf() - startTime.valueOf() > 1000) { }
+		let elapsed = 0;
+		while (elapsed > 1000) { 
+			elapsed = new Date().valueOf() - startTime.valueOf();
+		}
 		try {
-			const response = await axios.get(`${staleUrl}`);
+			const response = await axios.get(`${url}`);
 			assert.ok(false, "Attempting to connect to a closed session should fail");
 		} catch { }
 	});
