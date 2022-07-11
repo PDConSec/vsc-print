@@ -117,7 +117,7 @@ suite('Print Extension Test Suite', () => {
 		await axios.get(`${session.getUrl()}completed`);
 		assert.equal(sessionCount, 1);
 		const startTime = new Date();
-		while (new Date().valueOf() - startTime.valueOf() < 1000) { }
+		while (new Date().valueOf() - startTime.valueOf() > 1000) { }
 		try {
 			const response = await axios.get(`${staleUrl}`);
 			assert.ok(false, "Attempting to connect to a closed session should fail");
