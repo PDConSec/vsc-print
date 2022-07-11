@@ -109,7 +109,6 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 };
 
 function printCommand(cmdArgs: any): PrintSession {
-	gc();
 	const printSession = new PrintSession(cmdArgs);
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;
@@ -136,14 +135,22 @@ function printFolderCommand(commandArgs: any): PrintSession | undefined {
 		vscode.window.showErrorMessage(localise("NO_SELECTION"));
 		return;
 	}
-	gc();
 	const printSession = new PrintSession(folderUri);
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;
 }
 
+const _gc = setInterval(() => {
+	const allKvps = Array.from(printSessions);
+	const completed = allKvps.filter(kvp => kvp[1].completed);
+	for (const sessionId of completed.map(c => c[0])) {
+		printSessions.delete(sessionId);
+	}
+}, 2000);
+
 export function deactivate() {
 	server?.close();
+	clearInterval(_gc)
 }
 
 const localhostAddresses: String[] = ["::1", "::ffff:127.0.0.1", "127.0.0.1"]
@@ -165,10 +172,3 @@ function connectingToLocalhost(request: http.IncomingMessage): boolean {
 	return localhostAddresses.indexOf(request.socket.localAddress!) >= 0;
 }
 
-function gc() {
-	const allKvps = Array.from(printSessions);
-	const completed = allKvps.filter(kvp => kvp[1].completed);
-	for (const sessionId of completed.map(c => c[0])) {
-		printSessions.delete(sessionId);
-	}
-}
