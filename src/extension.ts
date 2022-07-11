@@ -27,6 +27,7 @@ if (captionByFilename[colourScheme]) {
 	vscode.workspace.getConfiguration("print", null).update("colourScheme", captionByFilename[colourScheme]);
 }
 const printSessions = new Map<string, PrintSession>();
+let _gc: NodeJS.Timer;
 
 export function activate(context: vscode.ExtensionContext) {
 	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
@@ -90,6 +91,13 @@ export function activate(context: vscode.ExtensionContext) {
 			return mdparam;
 		}
 	};
+	_gc = setInterval(() => {
+		const allKvps = Array.from(printSessions);
+		const completed = allKvps.filter(kvp => kvp[1].completed);
+		for (const sessionId of completed.map(c => c[0])) {
+			printSessions.delete(sessionId);
+		}
+	}, 500);
 	return markdownExtensionInstaller;
 }
 
@@ -140,13 +148,6 @@ function printFolderCommand(commandArgs: any): PrintSession | undefined {
 	return printSession;
 }
 
-const _gc = setInterval(() => {
-	const allKvps = Array.from(printSessions);
-	const completed = allKvps.filter(kvp => kvp[1].completed);
-	for (const sessionId of completed.map(c => c[0])) {
-		printSessions.delete(sessionId);
-	}
-}, 500);
 
 export function deactivate() {
 	server?.close();
