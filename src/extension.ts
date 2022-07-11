@@ -41,6 +41,19 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.test.flags", () => testFlags));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.test.sessionCount", () => printSessions.size));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.test.setGcMs", ms => {
+		if (_gc) {
+			clearInterval(_gc);
+		}
+		console.log(`Print session GC interval is ${ms}ms`);
+		setInterval(() => {
+			const allKvps = Array.from(printSessions);
+			const completed = allKvps.filter(kvp => kvp[1].completed);
+			for (const sessionId of completed.map(c => c[0])) {
+				printSessions.delete(sessionId);
+			}
+		}, ms);
+	}));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
 
 	// capture the extension path
@@ -91,13 +104,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return mdparam;
 		}
 	};
-	_gc = setInterval(() => {
-		const allKvps = Array.from(printSessions);
-		const completed = allKvps.filter(kvp => kvp[1].completed);
-		for (const sessionId of completed.map(c => c[0])) {
-			printSessions.delete(sessionId);
-		}
-	}, 500);
+	vscode.commands.executeCommand("extension.test.setGcMs", 2000);
 	return markdownExtensionInstaller;
 }
 
@@ -151,7 +158,7 @@ function printFolderCommand(commandArgs: any): PrintSession | undefined {
 
 export function deactivate() {
 	server?.close();
-	clearInterval(_gc)
+	clearInterval(_gc);
 }
 
 const localhostAddresses: String[] = ["::1", "::ffff:127.0.0.1", "127.0.0.1"]

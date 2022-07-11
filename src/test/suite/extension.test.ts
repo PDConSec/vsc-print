@@ -94,24 +94,26 @@ suite('Print Extension Test Suite', () => {
 
 	test("Completed sessions are unavailable", async () => {
 		const W = vscode.workspace.workspaceFolders;
+		const gcms = 500;
 		let w = W![0].uri.fsPath;
 		const uri = vscode.Uri.file(path.join(w, "sample.json"));
 		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		await vscode.commands.executeCommand<Set<string>>("extension.test.setGcMs", gcms);
 		flags?.add("suppress browser");
 		let session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
 		let url = session.getUrl();
 		await axios.get(`${url}completed`);
 		const startTime = new Date();
 		let elapsed = 0;
-		while (elapsed > 500) { 
+		while (elapsed < gcms) {
 			elapsed = new Date().valueOf() - startTime.valueOf();
 		}
 		console.log(`waited ${elapsed}ms for gc cycle`);
 		try {
 			const response = await axios.get(`${url}`);
 			assert.ok(false, "Attempting to connect to a closed session should fail");
-		} catch (err) { 
-			console.log(`Attempted access to closed session failed as expected, reporting ${err}`);			
+		} catch (err) {
+			console.log(`Attempted access to closed session failed as expected, reporting ${err}`);
 		}
 	});
 
