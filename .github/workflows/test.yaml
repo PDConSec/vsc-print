@@ -58,4 +58,5 @@ jobs:
       if: runner.os == 'Linux'
     - run: npm test ${{ secrets.SSH_HOST }} ${{ secrets.SSH_WORKSPACE }}
       if: runner.os != 'Linux'
+    - run: code --list-extensions
 
