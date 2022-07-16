@@ -24,14 +24,18 @@ async function main() {
 			"--install-extension",
 			"ms-vscode-remote.remote-ssh"
 		];
+		const remoteTestWorkspaceFolder = path.resolve(__dirname, process.argv[2]);
 		const launchArgsRemote = [
 			"--folder-uri",
-			path.resolve(__dirname, process.argv[2]),
+			remoteTestWorkspaceFolder,
 			"--install-extension",
 			vsixName,
 			"--install-extension",
 			"ms-vscode-remote.remote-ssh"
 		];
+
+		console.log(`remoteTestWorkspaceFolder is ${remoteTestWorkspaceFolder}`);
+		
 
 		// Download VS Code, unzip it and run the integration test
 		await runTests({ extensionDevelopmentPath, extensionTestsPath, launchArgs: launchArgsLocal });
