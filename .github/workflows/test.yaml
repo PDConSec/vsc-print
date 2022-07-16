@@ -56,6 +56,6 @@ jobs:
     - run: gulp package
     - run: xvfb-run -a npm test ${{ secrets.SSH_WORKSPACE }}
       if: runner.os == 'Linux'
-    - run: npm test vscode-remote://ssh-remote+${{ secrets.SSH_HOST }}/${{ secrets.SSH_WORKSPACE }}
+    - run: npm test ${{ secrets.SSH_HOST }} ${{ secrets.SSH_WORKSPACE }}
       if: runner.os != 'Linux'
 

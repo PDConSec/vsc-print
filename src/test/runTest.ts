@@ -27,8 +27,8 @@ async function main() {
 			"ms-vscode-remote.remote-ssh"
 		];
 		const launchArgsRemote = [
-			"--folder-uri",
-			process.argv[2]
+			`--remote=ssh-remote+${process.argv[2]}`,
+			process.argv[3]
 		];
 
 		// Download VS Code, unzip it and run the integration test
