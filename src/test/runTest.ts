@@ -26,9 +26,11 @@ async function main() {
 			"--install-extension",
 			"ms-vscode-remote.remote-ssh"
 		];
+		const SSH_HOST = process.argv[2];
+		const SSH_WORKSPACE = process.argv[3];
 		const launchArgsRemote = [
-			`--remote=ssh-remote+testuser@${process.argv[2]}`,
-			process.argv[3]
+			"--folder-uri",
+			`vscode-remote://ssh-remote+testuser@${SSH_HOST}${SSH_WORKSPACE}`
 		];
 
 		// Download VS Code, unzip it and run the integration test
