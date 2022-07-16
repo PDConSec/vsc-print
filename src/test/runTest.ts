@@ -24,7 +24,7 @@ async function main() {
 			"--install-extension",
 			"ms-vscode-remote.remote-ssh"
 		];
-		const remoteTestWorkspaceFolder = path.resolve(__dirname, process.argv[2]);
+		const remoteTestWorkspaceFolder = process.argv[2];
 		const launchArgsRemote = [
 			"--folder-uri",
 			remoteTestWorkspaceFolder,
