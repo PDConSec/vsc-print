@@ -22,8 +22,6 @@ async function main() {
 			"--install-extension",
 			vsixName,
 			"--install-extension",
-			"ms-vscode-remote.remote-ssh",
-			"--install-extension",
 			"ms-vscode-remote.remote-ssh"
 		];
 		const SSH_HOST = process.argv[2];
