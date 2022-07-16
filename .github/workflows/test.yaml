@@ -54,7 +54,7 @@ jobs:
     - run: npm i gulp gulp-cli -g
       if: runner.os == 'MacOS'
     - run: gulp package
-    - run: xvfb-run -a npm test
+    - run: xvfb-run -a npm test ${{ secrets.SSH_WORKSPACE }}
       if: runner.os == 'Linux'
     - run: npm test ${{ secrets.SSH_WORKSPACE }}
       if: runner.os != 'Linux'
