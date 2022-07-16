@@ -27,7 +27,7 @@ async function main() {
 			"ms-vscode-remote.remote-ssh"
 		];
 		const launchArgsRemote = [
-			`--remote=ssh-remote+${process.argv[2]}`,
+			`--remote=ssh-remote+testuser@${process.argv[2]}`,
 			process.argv[3]
 		];
 
