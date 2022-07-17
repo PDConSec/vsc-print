@@ -43,7 +43,7 @@ jobs:
       run: curl -o ./vscode.deb https://code.visualstudio.com/docs/?dv=linux64_deb
       if: runner.os == 'Linux'
     - name: Install VS Code package (Ubuntu)
-      run: apt install -y ./vscode.deb
+      run: sudo apt install -y ./vscode.deb
 
     - name: Download VS Code latest (MacOS)
       run: curl -o ./vscode.zip https://code.visualstudio.com/docs/?dv=osx
@@ -80,7 +80,7 @@ jobs:
     
     - name: Install ssh-remote support
       run: code --install-extension ms-vscode-remote.remote-ssh
-      
+
     - name: Install VSIXs (Windows)
       run: PowerShell.exe -Command { Get-ChildItem *.vsix | ForEach { code --install-extension $_.Name } }
       if: runner.os == 'Windows'
