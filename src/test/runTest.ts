@@ -18,12 +18,7 @@ async function main() {
 			.sort((a, b) => a < b ? 1 : a > b ? -1 : 0)[0];
 
 		const launchArgsLocal = [
-			path.resolve(__dirname, '../../src/test/test-docs'),
-			"--install-extension",
-			vsixName,
-			"--install-extension",
-			"ms-vscode-remote.remote-ssh",
-			"--list-extensions"
+			path.resolve(__dirname, '../../src/test/test-docs')
 		];
 		const SSH_HOST = process.argv[2];
 		const SSH_WORKSPACE = process.argv[3];
@@ -33,8 +28,8 @@ async function main() {
 		];
 
 		// Download VS Code, unzip it and run the integration test
-		await runTests({ extensionDevelopmentPath, extensionTestsPath, launchArgs: launchArgsLocal });
-		await runTests({ extensionDevelopmentPath, extensionTestsPath, launchArgs: launchArgsRemote });
+		await runTests({ extensionDevelopmentPath, extensionTestsPath, reuseMachineInstall: true, launchArgs: launchArgsLocal });
+		await runTests({ extensionDevelopmentPath, extensionTestsPath, reuseMachineInstall: true, launchArgs: launchArgsRemote });
 	} catch (err) {
 		console.error(err);
 		console.error('Failed to run tests');
