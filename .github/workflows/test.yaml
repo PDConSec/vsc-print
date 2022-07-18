@@ -46,9 +46,10 @@ jobs:
       if: runner.os == 'Linux'
     - name: Install VS Code package (Ubuntu)
       run: sudo apt install -y /tmp/vscode.deb
+      if: runner.os == 'Linux'
 
     - name: Download VS Code latest (MacOS)
-      run: curl -o ./vscode.zip https://code.visualstudio.com/docs/?dv=osx
+      run: curl "https://code.visualstudio.com/sha/download?build=stable&os=darwin-universal" -Lso /tmp/vscode.zip 
       if: runner.os == 'MacOS'
     - name: Unzip (MacOS)
       run: unzip vscode.zip
@@ -57,7 +58,7 @@ jobs:
       run: export PATH=$PWD/Visual Studio Code.app/Contents/Resources/app/bin:$PATH
 
     - name: Download VS Code latest (Windows)
-      run: curl -o vscode-setup.exe https://code.visualstudio.com/docs/?dv=win
+      run: curl "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" -Lso vscode-setup.exe 
       if: runner.os == 'Windows'
     - name: Install (Windows)
       run: vscode-setup.exe /verysilent /norestart
