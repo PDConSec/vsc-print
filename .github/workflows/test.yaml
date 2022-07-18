@@ -21,7 +21,8 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
@@ -36,14 +37,15 @@ jobs:
       with:
         key: ${{ secrets.TESTUSER_RSA_KEY }} 
         known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+
     - name: Adding Known Hosts
       run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
     - name: Download VS Code latest (Ubuntu)
-      run: curl -o ./vscode.deb https://code.visualstudio.com/docs/?dv=linux64_deb
+      run: curl -o /tmp/vscode.deb https://code.visualstudio.com/docs/?dv=linux64_deb
       if: runner.os == 'Linux'
     - name: Install VS Code package (Ubuntu)
-      run: sudo apt install -y ./vscode.deb
+      run: sudo apt install -y /tmp/vscode.deb
 
     - name: Download VS Code latest (MacOS)
       run: curl -o ./vscode.zip https://code.visualstudio.com/docs/?dv=osx
