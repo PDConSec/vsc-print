@@ -28,8 +28,8 @@ async function main() {
 		];
 
 		// Download VS Code, unzip it and run the integration test
-		await runTests({ extensionDevelopmentPath, extensionTestsPath, reuseMachineInstall: true, launchArgs: launchArgsLocal });
-		await runTests({ extensionDevelopmentPath, extensionTestsPath, reuseMachineInstall: true, launchArgs: launchArgsRemote });
+		await runTests({ extensionDevelopmentPath, extensionTestsPath, vscodeExecutablePath: process.argv[4], reuseMachineInstall: true, launchArgs: launchArgsLocal });
+		await runTests({ extensionDevelopmentPath, extensionTestsPath, vscodeExecutablePath: process.argv[4], reuseMachineInstall: true, launchArgs: launchArgsRemote });
 	} catch (err) {
 		console.error(err);
 		console.error('Failed to run tests');
