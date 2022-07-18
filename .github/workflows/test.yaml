@@ -83,7 +83,7 @@ jobs:
     - run: gulp package
     
     - name: Install ssh-remote support
-      run: code --install-extension ms-vscode-remote.remote-ssh
+      run: /usr/bin/code --install-extension ms-vscode-remote.remote-ssh
 
     - name: Install VSIXs (Windows)
       run: PowerShell.exe -Command { Get-ChildItem *.vsix | ForEach { code --install-extension $_.Name } }
