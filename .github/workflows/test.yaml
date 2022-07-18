@@ -48,7 +48,7 @@ jobs:
       run: sudo apt install -y /tmp/vscode.deb
       # run: sudo apt install -o Debug::pkgPackageManager=true -o Debug::pkgDPkgPM=true -y /tmp/vscode.deb
       if: runner.os == 'Linux'
-    # - run: find / -name code -print
+    - run: which code
     - name: Download VS Code latest (MacOS)
       run: curl "https://code.visualstudio.com/sha/download?build=stable&os=darwin-universal" -Lso /tmp/vscode.zip 
       if: runner.os == 'MacOS'
