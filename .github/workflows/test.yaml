@@ -42,7 +42,7 @@ jobs:
       run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
     - name: Download VS Code latest (Ubuntu)
-      run: curl -o /tmp/vscode.deb https://code.visualstudio.com/docs/?dv=linux64_deb
+      run: curl -o /tmp/vscode.deb https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
       if: runner.os == 'Linux'
     - name: Install VS Code package (Ubuntu)
       run: sudo apt install -y /tmp/vscode.deb
