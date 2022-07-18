@@ -45,7 +45,7 @@ jobs:
       run: curl "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64" -Lso /tmp/vscode.deb 
       if: runner.os == 'Linux'
     - name: Install VS Code package (Ubuntu)
-      run: sudo apt install -y /tmp/vscode.deb
+      run: sudo apt install -oDebug::pkgPackageManager -y /tmp/vscode.deb
       if: runner.os == 'Linux'
 
     - name: Download VS Code latest (MacOS)
