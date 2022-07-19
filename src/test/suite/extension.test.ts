@@ -92,6 +92,7 @@ suite('Print Extension Test Suite', () => {
 		assert.ok(session.completed);
 	});
 
+	test("fail", async () => { throw "FAIL"; });
 	test("Completed sessions are unavailable", async () => {
 		const W = vscode.workspace.workspaceFolders;
 		const gcms = 200;
