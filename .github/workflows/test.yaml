@@ -46,9 +46,8 @@ jobs:
       if: runner.os == 'Linux'
     - name: Install VS Code package (Ubuntu)
       run: sudo apt install -y /tmp/vscode.deb
-      # run: sudo apt install -o Debug::pkgPackageManager=true -o Debug::pkgDPkgPM=true -y /tmp/vscode.deb
       if: runner.os == 'Linux'
-    - run: which code
+    # - run: which code
     - name: Download VS Code latest (MacOS)
       run: curl "https://code.visualstudio.com/sha/download?build=stable&os=darwin-universal" -Lso /tmp/vscode.zip 
       if: runner.os == 'MacOS'
@@ -94,8 +93,12 @@ jobs:
       run: for file in *vsix; do code --install-extension $file; done
       if: runner.os != 'Windows'
 
-    - run: xvfb-run -a npm test ${{ secrets.SSH_HOST }} ${{ secrets.SSH_WORKSPACE }}
+    - run: xvfb-run -a npm test ${{ secrets.SSH_HOST }} ${{ secrets.SSH_WORKSPACE }} /usr/bin/code
       if: runner.os == 'Linux'
+
     - run: npm test ${{ secrets.SSH_HOST }} ${{ secrets.SSH_WORKSPACE }}
-      if: runner.os != 'Linux'
+      if: runner.os == 'Windows'
+
+    - run: npm test ${{ secrets.SSH_HOST }} ${{ secrets.SSH_WORKSPACE }} $PWD/Visual Studio Code.app/Contents/Resources/app/bin/code
+      if: runner.os == 'MacOS'
 

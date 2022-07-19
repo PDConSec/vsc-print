@@ -27,6 +27,9 @@ async function main() {
 			`vscode-remote://ssh-remote+testuser@${SSH_HOST}${SSH_WORKSPACE}`
 		];
 
+		console.log(`vscodeExecutablePath = ${process.argv[4]}`);
+		
+
 		// Download VS Code, unzip it and run the integration test
 		await runTests({ extensionDevelopmentPath, extensionTestsPath, vscodeExecutablePath: process.argv[4], reuseMachineInstall: true, launchArgs: launchArgsLocal });
 		await runTests({ extensionDevelopmentPath, extensionTestsPath, vscodeExecutablePath: process.argv[4], reuseMachineInstall: true, launchArgs: launchArgsRemote });
