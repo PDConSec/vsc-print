@@ -94,7 +94,7 @@ suite('Print Extension Test Suite', () => {
 
 	test("Completed sessions are unavailable", async () => {
 		const W = vscode.workspace.workspaceFolders;
-		const gcms = 200;
+		const gcms = 50;
 		let w = W![0].uri.fsPath;
 		const uri = vscode.Uri.file(path.join(w, "sample.json"));
 		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
