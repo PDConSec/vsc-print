@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 import { runTests } from '@vscode/test-electron';
+import { TestOptions } from '@vscode/test-electron/out/runTest';
 
 async function main() {
 	try {
@@ -14,25 +15,21 @@ async function main() {
 		const extensionTestsPath = path.resolve(__dirname, './suite/index');
 
 		const vsixName = fs.readdirSync(extensionDevelopmentPath)
-			.filter(p => path.extname(p) === ".vsix")
+			.filter(p => path.extname(p) === ".vsix" && p.includes("vscode-print-"))
 			.sort((a, b) => a < b ? 1 : a > b ? -1 : 0)[0];
 
-		const launchArgsLocal = [
-			path.resolve(__dirname, '../../src/test/test-docs')
-		];
-		const SSH_HOST = process.argv[2];
-		const SSH_WORKSPACE = process.argv[3];
-		const launchArgsRemote = [
-			"--folder-uri",
-			`vscode-remote://ssh-remote+testuser@${SSH_HOST}${SSH_WORKSPACE}`
-		];
-
-		console.log(`vscodeExecutablePath = ${process.argv[4]}`);
-		
+		let options: TestOptions = {
+			extensionDevelopmentPath,
+			extensionTestsPath,
+			launchArgs: [
+				path.resolve(__dirname, '../../src/test/test-docs'),
+				`--install-extension=${vsixName}`,
+				"--install-extension=ms-vscode-remote.remote-ssh"
+			]
+		}
 
 		// Download VS Code, unzip it and run the integration test
-		await runTests({ extensionDevelopmentPath, extensionTestsPath, vscodeExecutablePath: process.argv[4], reuseMachineInstall: true, launchArgs: launchArgsLocal });
-		await runTests({ extensionDevelopmentPath, extensionTestsPath, vscodeExecutablePath: process.argv[4], reuseMachineInstall: true, launchArgs: launchArgsRemote });
+		await runTests(options);
 	} catch (err) {
 		console.error(err);
 		console.error('Failed to run tests');

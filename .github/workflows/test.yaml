@@ -26,45 +26,12 @@ jobs:
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
-        # - os: macos-latest
-        #   path: ~/Library/Caches/pip
-        # - os: windows-latest
-        #   path: ~\AppData\Local\pip\Cache
+        - os: macos-latest
+          path: ~/Library/Caches/pip
+        - os: windows-latest
+          path: ~\AppData\Local\pip\Cache
     runs-on: ${{ matrix.os }}
     steps:
-    - name: Install SSH Key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.TESTUSER_RSA_KEY }} 
-        known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
-
-    - name: Adding Known Hosts
-      run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
-    - name: Download VS Code latest (Ubuntu)
-      run: curl "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64" -Lso /tmp/vscode.deb 
-      if: runner.os == 'Linux'
-    - name: Install VS Code package (Ubuntu)
-      run: sudo apt install -y /tmp/vscode.deb
-      if: runner.os == 'Linux'
-    # - run: which code
-    - name: Download VS Code latest (MacOS)
-      run: curl "https://code.visualstudio.com/sha/download?build=stable&os=darwin-universal" -Lso /tmp/vscode.zip 
-      if: runner.os == 'MacOS'
-    - name: Unzip (MacOS)
-      run: unzip vscode.zip
-      if: runner.os == 'MacOS'
-    - name: Add Code to path (MacOS)
-      run: export PATH=$PWD/Visual Studio Code.app/Contents/Resources/app/bin:$PATH
-      if: runner.os == 'MacOS'
-
-    - name: Download VS Code latest (Windows)
-      run: curl "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user" -Lso vscode-setup.exe 
-      if: runner.os == 'Windows'
-    - name: Install (Windows)
-      run: vscode-setup.exe /verysilent /norestart
-      if: runner.os == 'Windows'
-
     - uses: actions/cache@v3
       with:
         path: ${{ matrix.path }}
@@ -78,27 +45,16 @@ jobs:
       with:
         node-version: 16.x
     - run: npm install
-    - run: npm i gulp gulp-cli -g
+
+    - name: Globally install gulp for Princess MacOS the Different
+      run: npm i gulp gulp-cli -g
       if: runner.os == 'MacOS'
+      
     - run: gulp package
     
-    - name: Install ssh-remote support
-      run: /usr/bin/code --install-extension ms-vscode-remote.remote-ssh
-
-    - name: Install VSIXs (Windows)
-      run: PowerShell.exe -Command { Get-ChildItem *.vsix | ForEach { code --install-extension $_.Name } }
-      if: runner.os == 'Windows'
-
-    - name: Install VSIXs (Ubuntu, MacOS)
-      run: for file in *vsix; do code --install-extension $file; done
-      if: runner.os != 'Windows'
-
-    - run: xvfb-run -a npm test ${{ secrets.SSH_HOST }} ${{ secrets.SSH_WORKSPACE }} /usr/bin/code
+    - run: xvfb-run -a npm test 
       if: runner.os == 'Linux'
 
-    - run: npm test ${{ secrets.SSH_HOST }} ${{ secrets.SSH_WORKSPACE }}
-      if: runner.os == 'Windows'
-
-    - run: npm test ${{ secrets.SSH_HOST }} ${{ secrets.SSH_WORKSPACE }} $PWD/Visual Studio Code.app/Contents/Resources/app/bin/code
-      if: runner.os == 'MacOS'
+    - run: npm test 
+      if: runner.os != 'Linux'
 
