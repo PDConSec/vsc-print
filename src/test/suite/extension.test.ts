@@ -94,7 +94,6 @@ suite('Print Extension Test Suite', () => {
 
 	test("Completed sessions are unavailable", async () => {
 		const W = vscode.workspace.workspaceFolders;
-		const gcms = 50;
 		let w = W![0].uri.fsPath;
 		const uri = vscode.Uri.file(path.join(w, "sample.json"));
 		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
@@ -103,13 +102,8 @@ suite('Print Extension Test Suite', () => {
 		let session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
 		let url = session.getUrl();
 		await axios.get(`${url}completed`);
-		const startTime = new Date();
-		let elapsed = 0;
-		while (elapsed < gcms) {
-			elapsed = new Date().valueOf() - startTime.valueOf();
-		}
-		let failed = false
-		console.log(`waited ${elapsed}ms for gc cycle`);
+		await vscode.commands.executeCommand("extension.gc");
+		let failed: boolean = false;
 		try {
 			const response = await axios.get(`${url}`);
 		} catch (err) {
