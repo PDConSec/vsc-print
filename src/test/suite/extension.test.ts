@@ -97,7 +97,6 @@ suite('Print Extension Test Suite', () => {
 		let w = W![0].uri.fsPath;
 		const uri = vscode.Uri.file(path.join(w, "sample.json"));
 		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
-		await vscode.commands.executeCommand<Set<string>>("extension.test.setGcMs", gcms);
 		flags?.add("suppress browser");
 		let session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
 		let url = session.getUrl();
