@@ -23,7 +23,7 @@ async function main() {
 			extensionTestsPath,
 			launchArgs: [
 				path.resolve(__dirname, '../../src/test/test-docs'),
-				`--install-extension=${vsixName}`,
+//				`--install-extension=${vsixName}`,
 				"--install-extension=ms-vscode-remote.remote-ssh"
 			]
 		}
