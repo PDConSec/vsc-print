@@ -1,301 +1,311 @@
 {
-  "name": "vscode-print",
-  "displayName": "Print",
-  "description": "Rendered Markdown, coloured code.",
-  "version": "0.9.23",
-  "icon": "vscode-print-128.png",
-  "author": {
-    "name": "Peter Wone",
-    "email": "peter.wone@outlook.com"
-  },
-  "publisher": "pdconsec",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/PeterWone/vsc-print"
-  },
-  "engines": {
-    "vscode": "^1.60.0"
-  },
-  "keywords": [
-    "print",
-    "Markdown",
-    "syntax coloring",
-    "line numbers",
-    "PDF",
-    "remote"
-  ],
-  "categories": [
-    "Other"
-  ],
-  "main": "./dist/extension.js",
-  "activationEvents": [
-    "*"
-  ],
-  "contributes": {
-    "markdown.markdownItPlugins": true,
-    "commands": [
-      {
-        "category": "%commands.category%",
-        "command": "extension.print",
-        "title": "%commands.title.print%",
-        "icon": {
-          "dark": "./printer-icon-dog-ear-inverse.svg",
-          "light": "./printer-icon-dog-ear.svg"
-        }
-      },
-      {
-        "category": "%commands.category%",
-        "command": "extension.printFolder",
-        "title": "%commands.title.printFolder%"
-      },
-      {
-        "category": "%commands.category%",
-        "command": "extension.help",
-        "title": "%commands.title.help%"
-      }
-    ],
-    "configuration": [
-      {
-        "title": "%configuration.title.print%",
-        "properties": {
-          "print.lineSpacing": {
-            "type": "number",
-            "enum": [
-              1,
-              1.5,
-              2
-            ],
-            "enumDescriptions": [
-              "%print.lineSpacing.single%",
-              "%print.lineSpacing.line-and-a-half%",
-              "%print.lineSpacing.double%"
-            ],
-            "description": "%print.lineSpacing.description%",
-            "default": 1
-          },
-          "print.fontSize": {
-            "title": "%print.fontSize.title%",
-            "type": "string",
-            "enum": [
-              "6pt",
-              "7pt",
-              "8pt",
-              "9pt",
-              "10pt",
-              "11pt",
-              "11.5pt",
-              "12pt",
-              "13pt"
-            ],
-            "description": "%print.fontSize.description%",
-            "default": "10pt"
-          },
-          "print.renderMarkdown": {
-            "type": "boolean",
-            "default": true,
-            "description": "%print.renderMarkdown.description%"
-          },
-          "print.lineNumbers": {
-            "type": "string",
-            "description": "%print.lineNumbers.description%",
-            "enum": [
-              "on",
-              "off",
-              "inherit"
-            ],
-            "default": "inherit"
-          },
-          "print.showDiagnostics": {
-            "type": "boolean",
-            "description": "Show diagnostic information as notifications when performing print actions"
-          },
-          "print.alternateBrowser": {
-            "type": "boolean",
-            "description": "%print.alternateBrowser.description%",
-            "default": true
-          },
-          "print.browserPath": {
-            "type": "string",
-            "description": "%print.browserPath.description%"
-          },
-          "print.colourScheme": {
-            "title": "%print.colourScheme.title%",
-            "type": "string",
-            "enum": [
-              "A11 Y",
-              "Arduino",
-              "Ascetic",
-              "Atom One",
-              "Atelier Cave",
-              "Atelier Dune",
-              "Atelier Estuary",
-              "Atelier Forest",
-              "Atelier Heath",
-              "Atelier Lakeside",
-              "Atelier Plateau",
-              "Atelier Savanna",
-              "Atelier Seaside",
-              "Atelier Sulphur Pool",
-              "Color Brewer",
-              "Docco",
-              "Foundation",
-              "GitHub",
-              "GitHub Gist",
-              "Google Code",
-              "Grayscale",
-              "Gruvbox",
-              "Idea",
-              "ISBL",
-              "Kimbie",
-              "Magula",
-              "Mono Blue",
-              "nnfx",
-              "Paraiso",
-              "PureBasic",
-              "QTcreator",
-              "RouterOS",
-              "Schoolbook",
-              "Stack Overflow",
-              "Visual Studio",
-              "XCode"
-            ],
-            "default": "Atelier Dune",
-            "markdownDescription": "%print.colourScheme.markdownDescription%"
-          },
-          "print.printAndClose": {
-            "type": "boolean",
-            "default": true,
-            "description": "%print.printAndClose.description%"
-          },
-          "print.editorContextMenuItemPosition": {
-            "default": "Top",
-            "type": "string",
-            "markdownDescription": "%print.editorContextMenuItemPosition.markdownDescription%",
-            "enum": [
-              "Top",
-              "Bottom",
-              "None"
-            ]
-          },
-          "print.editorTitleMenuButton": {
-            "default": true,
-            "type": "boolean",
-            "description": "%print.editorTitleMenuButton.description%"
-          },
-          "print.folder.fileNames": {
-            "default": true,
-            "type": "boolean",
-            "title": "%print.folder.fileNames.title%",
-            "description": "%print.folder.fileNames.description%"
-          },
-          "print.folder.include": {
-            "title": "%print.folder.include.title",
-            "default": [],
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "%print.folder.include.description%"
-          },
-          "print.folder.exclude": {
-            "title": "%print.folder.exclude.title",
-            "default": [
-              "{bin,obj,out}",
-              "node_module",
-              "data",
-              "**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo}"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "%print.folder.exclude.description%"
-          },
-          "print.folder.maxLines": {
-            "title": "%print.folder.maxLines.title%",
-            "default": 1200,
-            "type": "integer",
-            "description": "%print.folder.maxLines.description%"
-          }
-        }
-      }
-    ],
-    "menus": {
-      "explorer/context": [
-        {
-          "command": "extension.print",
-          "group": "navigation"
-        }
-      ],
-      "editor/title": [
-        {
-          "when": "editorLangId && etmButton",
-          "command": "extension.print",
-          "group": "navigation"
-        }
-      ],
-      "editor/title/context": [
-        {
-          "when": "editorLangId",
-          "command": "extension.print",
-          "group": "navigation"
-        }
-      ],
-      "editor/context": [
-        {
-          "when": "editorLangId && ecmPrint == Top",
-          "command": "extension.print",
-          "group": "navigation"
-        },
-        {
-          "when": "editorLangId && ecmPrint == Bottom",
-          "command": "extension.print",
-          "group": "Z_commands"
-        }
-      ]
-    }
-  },
-  "extensionKind": [
-    "workspace"
-  ],
-  "scripts": {
-    "vscode:prepublish": "webpack --mode production",
-    "webpack": "webpack --mode development",
-    "webpack-dev": "webpack --mode development --watch",
-    "compile": "npm run webpack",
-    "watch": "tsc -watch -p ./"
-  },
-  "devDependencies": {
-    "@types/braces": "^3.0.1",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^18.0.0",
-    "@types/vscode": "^1.60.0",
-    "copy-webpack-plugin": "^9.0.1",
-    "css-loader": "^6.3.0",
-    "del": "^5.1.0",
-    "event-stream": "^4.0.1",
-    "file-loader": "^6.2.0",
-    "gulp": "^4.0.2",
-    "gulp-filter": "^6.0.0",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-typescript": "^5.0.1",
-    "html-loader": "^3.1.2",
-    "json-loader": "^0.5.7",
-    "run-sequence": "^2.2.1",
-    "ts-loader": "^8.3.0",
-    "tslint": "^5.20.1",
-    "typescript": "^3.9.10",
-    "vsce": "^2.9.2",
-    "vscode-nls-dev": "^3.3.2",
-    "vscode-test": "^1.6.1",
-    "webpack": "^5.54.0",
-    "webpack-cli": "^4.8.0"
-  },
-  "dependencies": {
-    "@types/highlight.js": "^10.1.0",
-    "@types/markdown-it": "0.0.9",
-    "braces": "^3.0.2",
-    "highlight.js": "^10.7.3",
-    "vscode-nls": "^4.1.2"
-  }
+	"name": "vscode-print",
+	"displayName": "Print",
+	"description": "Rendered Markdown, coloured code.",
+	"version": "0.9.26",
+	"icon": "vscode-print-128.png",
+	"author": {
+		"name": "Peter Wone",
+		"email": "peter.wone@outlook.com"
+	},
+	"publisher": "pdconsec",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/PeterWone/vsc-print"
+	},
+	"engines": {
+		"vscode": "^1.60.0"
+	},
+	"keywords": [
+		"print",
+		"PDF",
+		"Markdown",
+		"remote"
+	],
+	"categories": [
+		"Other"
+	],
+	"main": "./dist/extension.js",
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"contributes": {
+		"markdown.markdownItPlugins": true,
+		"commands": [
+			{
+				"category": "%commands.category%",
+				"command": "extension.print",
+				"title": "%commands.title.print%",
+				"icon": {
+					"dark": "./printer-icon-dog-ear-inverse.svg",
+					"light": "./printer-icon-dog-ear.svg"
+				}
+			},
+			{
+				"category": "%commands.category%",
+				"command": "extension.printFolder",
+				"title": "%commands.title.printFolder%"
+			},
+			{
+				"category": "%commands.category%",
+				"command": "extension.help",
+				"title": "%commands.title.help%"
+			}
+		],
+		"configuration": [
+			{
+				"title": "%configuration.title.print%",
+				"properties": {
+					"print.lineSpacing": {
+						"type": "number",
+						"enum": [
+							1,
+							1.5,
+							2
+						],
+						"enumDescriptions": [
+							"%print.lineSpacing.single%",
+							"%print.lineSpacing.line-and-a-half%",
+							"%print.lineSpacing.double%"
+						],
+						"description": "%print.lineSpacing.description%",
+						"default": 1
+					},
+					"print.fontSize": {
+						"title": "%print.fontSize.title%",
+						"type": "string",
+						"enum": [
+							"6pt",
+							"7pt",
+							"8pt",
+							"9pt",
+							"10pt",
+							"11pt",
+							"11.5pt",
+							"12pt",
+							"13pt"
+						],
+						"description": "%print.fontSize.description%",
+						"default": "10pt"
+					},
+					"print.renderMarkdown": {
+						"type": "boolean",
+						"default": true,
+						"description": "%print.renderMarkdown.description%"
+					},
+					"print.lineNumbers": {
+						"type": "string",
+						"description": "%print.lineNumbers.description%",
+						"enum": [
+							"on",
+							"off",
+							"inherit"
+						],
+						"default": "inherit"
+					},
+					"print.showDiagnostics": {
+						"type": "boolean",
+						"description": "Show diagnostic information as notifications when performing print actions"
+					},
+					"print.alternateBrowser": {
+						"type": "boolean",
+						"description": "%print.alternateBrowser.description%",
+						"default": true
+					},
+					"print.browserPath": {
+						"type": "string",
+						"description": "%print.browserPath.description%"
+					},
+					"print.colourScheme": {
+						"title": "%print.colourScheme.title%",
+						"type": "string",
+						"enum": [
+							"A11 Y",
+							"Arduino",
+							"Ascetic",
+							"Atom One",
+							"Atelier Cave",
+							"Atelier Dune",
+							"Atelier Estuary",
+							"Atelier Forest",
+							"Atelier Heath",
+							"Atelier Lakeside",
+							"Atelier Plateau",
+							"Atelier Savanna",
+							"Atelier Seaside",
+							"Atelier Sulphur Pool",
+							"Color Brewer",
+							"Docco",
+							"Foundation",
+							"GitHub",
+							"GitHub Gist",
+							"Google Code",
+							"Grayscale",
+							"Gruvbox",
+							"Idea",
+							"ISBL",
+							"Kimbie",
+							"Lightfair",
+							"Magula",
+							"Mono Blue",
+							"nnfx",
+							"Paraiso",
+							"PureBasic",
+							"QTcreator",
+							"RouterOS",
+							"Schoolbook",
+							"Stack Overflow",
+							"Visual Studio",
+							"XCode"
+						],
+						"default": "Atelier Dune",
+						"markdownDescription": "%print.colourScheme.markdownDescription%"
+					},
+					"print.printAndClose": {
+						"type": "boolean",
+						"default": true,
+						"description": "%print.printAndClose.description%"
+					},
+					"print.editorContextMenuItemPosition": {
+						"default": "Top",
+						"type": "string",
+						"markdownDescription": "%print.editorContextMenuItemPosition.markdownDescription%",
+						"enum": [
+							"Top",
+							"Bottom",
+							"None"
+						]
+					},
+					"print.editorTitleMenuButton": {
+						"default": true,
+						"type": "boolean",
+						"description": "%print.editorTitleMenuButton.description%"
+					},
+					"print.folder.fileNames": {
+						"default": true,
+						"type": "boolean",
+						"title": "%print.folder.fileNames.title%",
+						"description": "%print.folder.fileNames.description%"
+					},
+					"print.folder.include": {
+						"title": "%print.folder.include.title",
+						"default": [],
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "%print.folder.include.description%"
+					},
+					"print.folder.exclude": {
+						"title": "%print.folder.exclude.title",
+						"default": [
+							"{bin,obj,out}",
+							"node_module",
+							"data",
+							"**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo}"
+						],
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "%print.folder.exclude.description%"
+					},
+					"print.folder.maxLines": {
+						"title": "%print.folder.maxLines.title%",
+						"default": 1200,
+						"type": "integer",
+						"description": "%print.folder.maxLines.description%"
+					}
+				}
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "extension.print",
+					"group": "navigation"
+				}
+			],
+			"editor/title": [
+				{
+					"when": "editorLangId && etmButton",
+					"command": "extension.print",
+					"group": "navigation"
+				}
+			],
+			"editor/title/context": [
+				{
+					"when": "editorLangId",
+					"command": "extension.print",
+					"group": "navigation"
+				}
+			],
+			"editor/context": [
+				{
+					"when": "editorLangId && ecmPrint == Top",
+					"command": "extension.print",
+					"group": "navigation"
+				},
+				{
+					"when": "editorLangId && ecmPrint == Bottom",
+					"command": "extension.print",
+					"group": "Z_commands"
+				}
+			]
+		}
+	},
+	"extensionKind": [
+		"workspace"
+	],
+	"scripts": {
+		"vscode:prepublish": "webpack --mode production",
+		"webpack": "webpack --mode development",
+		"webpack-dev": "webpack --mode development --watch",
+		"compile": "npm run webpack",
+		"watch": "tsc -watch -p ./",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/braces": "^3.0.1",
+		"@types/mocha": "^5.2.7",
+		"@types/node": "^18.0.0",
+		"@types/vscode": "^1.60.0",
+		"@vscode/test-electron": "^2.1.5",
+		"await-exec": "^0.1.2",
+		"axios": "^0.27.2",
+		"copy-webpack-plugin": "^9.0.1",
+		"css-loader": "^6.3.0",
+		"del": "^5.1.0",
+		"event-stream": "^4.0.1",
+		"file-loader": "^6.2.0",
+		"gulp": "^4.0.2",
+		"gulp-filter": "^6.0.0",
+		"gulp-sourcemaps": "^2.6.5",
+		"gulp-typescript": "^5.0.1",
+		"html-loader": "^3.1.2",
+		"json-loader": "^0.5.7",
+		"mocha": "^10.0.0",
+		"run-sequence": "^2.2.1",
+		"ts-loader": "^8.3.0",
+		"tslint": "^5.20.1",
+		"typescript": "^3.9.10",
+		"vsce": "^2.9.2",
+		"vscode-nls-dev": "^3.3.2",
+		"vscode-test": "^1.6.1",
+		"webpack": "^5.54.0",
+		"webpack-cli": "^4.8.0"
+	},
+	"dependencies": {
+		"@types/highlight.js": "^10.1.0",
+		"@types/markdown-it": "0.0.9",
+		"braces": "^3.0.2",
+		"highlight.js": "^10.7.3",
+		"vscode-nls": "^4.1.2"
+	},
+	"__metadata": {
+		"id": "05046d70-8146-42f5-ac9e-b97b37c8c0ef",
+		"publisherDisplayName": "PD Consulting",
+		"publisherId": "a803a703-65fb-4fa9-955a-c9259bf2560d",
+		"isPreReleaseVersion": false
+	}
 }

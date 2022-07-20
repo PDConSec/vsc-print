@@ -29,6 +29,7 @@
 			"problemMatcher": []
 		},
 		{
+			"label": "gulp-build",
 			"type": "gulp",
 			"task": "build",
 			"problemMatcher": [

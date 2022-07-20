@@ -20,14 +20,21 @@ localize("UNEXPECTED_ERROR", "x");
 // #endregion
 
 let server: http.Server | undefined;
-
+const testFlags = new Set<string>();
 let colourScheme = vscode.workspace.getConfiguration("print", null).colourScheme;
 if (captionByFilename[colourScheme]) {
 	// legacy value, convert
 	vscode.workspace.getConfiguration("print", null).update("colourScheme", captionByFilename[colourScheme]);
 }
 const printSessions = new Map<string, PrintSession>();
-
+let _gc: NodeJS.Timer;
+function gc() {
+	const allKvps = Array.from(printSessions);
+	const completed = allKvps.filter(kvp => kvp[1].completed);
+	for (const sessionId of completed.map(c => c[0])) {
+		printSessions.delete(sessionId);
+	}
+}
 export function activate(context: vscode.ExtensionContext) {
 	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
 		etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton,
@@ -38,6 +45,10 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.print", printCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.test.flags", () => testFlags));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.test.sessionCount", () => printSessions.size));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.gc", gc));
+	context.subscriptions.push(vscode.commands.registerCommand("extension.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
 
 	// capture the extension path
 	disposable = vscode.commands.registerCommand('extension.help', async (cmdArgs: any) => {
@@ -87,6 +98,7 @@ export function activate(context: vscode.ExtensionContext) {
 			return mdparam;
 		}
 	};
+	_gc = setInterval(gc, 2000);
 	return markdownExtensionInstaller;
 }
 
@@ -105,14 +117,13 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 	}
 };
 
-async function printCommand(cmdArgs: any) {
-	gc();
+function printCommand(cmdArgs: any): PrintSession {
 	const printSession = new PrintSession(cmdArgs);
 	printSessions.set(printSession.sessionId, printSession);
-	printSession.launchBrowser()
+	return printSession;
 }
 
-async function printFolderCommand(commandArgs: any) {
+function printFolderCommand(commandArgs: any): PrintSession | undefined {
 	const editor = vscode.window.activeTextEditor;
 	let folderUri: vscode.Uri;
 	if (commandArgs) {
@@ -133,14 +144,15 @@ async function printFolderCommand(commandArgs: any) {
 		vscode.window.showErrorMessage(localise("NO_SELECTION"));
 		return;
 	}
-	gc();
 	const printSession = new PrintSession(folderUri);
 	printSessions.set(printSession.sessionId, printSession);
-	printSession.launchBrowser()
+	return printSession;
 }
+
 
 export function deactivate() {
 	server?.close();
+	clearInterval(_gc);
 }
 
 const localhostAddresses: String[] = ["::1", "::ffff:127.0.0.1", "127.0.0.1"]
@@ -162,10 +174,3 @@ function connectingToLocalhost(request: http.IncomingMessage): boolean {
 	return localhostAddresses.indexOf(request.socket.localAddress!) >= 0;
 }
 
-function gc() {
-	const allKvps = Array.from(printSessions);
-	const completed = allKvps.filter(kvp => kvp[1].completed);
-	for (const sessionId of completed.map(c => c[0])) {
-		printSessions.delete(sessionId);
-	}
-}

@@ -1,0 +1,59 @@
+on:
+  push:
+    branches:    
+      - '*'         # matches every branch that doesn't contain a '/'
+      - '*/*'       # matches every branch containing a single '/'
+      - '**'        # matches every branch
+      - '!master'   # excludes master
+  pull_request:
+    branches:
+      - master
+
+  workflow_dispatch:
+    inputs:
+      build:
+        description: Unit tests
+        type: boolean
+        required: true
+        default: "true"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+        - os: ubuntu-latest
+          path: ~/.cache/pip
+        - os: macos-latest
+          path: ~/Library/Caches/pip
+        - os: windows-latest
+          path: ~\AppData\Local\pip\Cache
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/cache@v3
+      with:
+        path: ${{ matrix.path }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+         ${{ runner.os }}-pip-
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 16.x
+    - run: npm install
+
+    - name: Globally install gulp for Princess MacOS the Different
+      run: npm i gulp gulp-cli -g
+      if: runner.os == 'MacOS'
+
+    - run: gulp package
+    
+    - run: xvfb-run -a npm test 
+      if: runner.os == 'Linux'
+
+    - run: npm test 
+      if: runner.os != 'Linux'
+

@@ -24,13 +24,14 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
+				"${workspaceFolder}/src/test/test-docs",
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test"
+        "--extensionTestsPath=${workspaceFolder}/out/test/suite/index"
       ],
       "outFiles": [
         "${workspaceFolder}/out/test/**/*.js"
       ],
-      "preLaunchTask": "npm: compile"
+      "preLaunchTask": "gulp-build"
     }
   ]
 }
