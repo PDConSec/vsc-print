@@ -52,7 +52,18 @@ export class PrintSession {
 						const selection = editor?.selection;
 						if (!selection) throw "This can't happen";
 						this.uri = document.uri;
-						if (selection.isEmpty) {
+						if (selection.isEmpty) { // use entire doc
+							const selectedText = document!.getText().replace(/\s*$/, "");
+							const langId = document!.languageId;
+							const startLine = selection.start.line + 1; // zero based to one based
+							this.htmlRenderer = new HtmlRenderer(
+								document.uri.fsPath,
+								selectedText,
+								langId,
+								printLineNumbers,
+								startLine
+							);
+						} else {
 							const selectedText = document!.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
 							const langId = document!.languageId;
 							const startLine = selection.start.line + 1; // zero based to one based
@@ -206,7 +217,7 @@ export class PrintSession {
 
 	public async launchBrowser(): Promise<string> {
 		const url = this.getUrl();
-		const testFlags = await vscode.commands.executeCommand("extension.test.flags") as Set<string>;
+		const testFlags = await vscode.commands.executeCommand("vsc-print.test.flags") as Set<string>;
 		if (!testFlags.has("suppress browser")) {
 			const cmd = PrintSession.getLaunchBrowserCommand();
 			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
