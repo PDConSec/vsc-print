@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
-	"version": "0.9.26",
+	"version": "0.9.27",
 	"icon": "vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
@@ -34,7 +34,7 @@
 		"commands": [
 			{
 				"category": "%commands.category%",
-				"command": "extension.print",
+				"command": "vsc-print.print",
 				"title": "%commands.title.print%",
 				"icon": {
 					"dark": "./printer-icon-dog-ear-inverse.svg",
@@ -43,12 +43,12 @@
 			},
 			{
 				"category": "%commands.category%",
-				"command": "extension.printFolder",
+				"command": "vsc-print.printFolder",
 				"title": "%commands.title.printFolder%"
 			},
 			{
 				"category": "%commands.category%",
-				"command": "extension.help",
+				"command": "vsc-print.help",
 				"title": "%commands.title.help%"
 			}
 		],
@@ -222,33 +222,33 @@
 		"menus": {
 			"explorer/context": [
 				{
-					"command": "extension.print",
+					"command": "vsc-print.print",
 					"group": "navigation"
 				}
 			],
 			"editor/title": [
 				{
 					"when": "editorLangId && etmButton",
-					"command": "extension.print",
+					"command": "vsc-print.print",
 					"group": "navigation"
 				}
 			],
 			"editor/title/context": [
 				{
 					"when": "editorLangId",
-					"command": "extension.print",
+					"command": "vsc-print.print",
 					"group": "navigation"
 				}
 			],
 			"editor/context": [
 				{
 					"when": "editorLangId && ecmPrint == Top",
-					"command": "extension.print",
+					"command": "vsc-print.print",
 					"group": "navigation"
 				},
 				{
 					"when": "editorLangId && ecmPrint == Bottom",
-					"command": "extension.print",
+					"command": "vsc-print.print",
 					"group": "Z_commands"
 				}
 			]

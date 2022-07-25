@@ -20,7 +20,7 @@ suite('Print Extension Test Suite', () => {
 	test(`Check platform browser launch command on ${process.platform}`, async () => {
 		const printConfig = vscode.workspace.getConfiguration("print", null);
 		await printConfig.update("alternateBrowser", false);
-		const cmd = await vscode.commands.executeCommand<string>("extension.test.browserLaunchCommand");
+		const cmd = await vscode.commands.executeCommand<string>("vsc-print.test.browserLaunchCommand");
 		switch (process.platform) {
 
 			case "win32":
@@ -44,14 +44,14 @@ suite('Print Extension Test Suite', () => {
 		switch (process.platform) {
 			case "win32":
 				await printConfig.update("browserPath", "c:\\Program Files\\Google\\Chrome\\Application\\chrome.exe");
-				cmd = await vscode.commands.executeCommand<string>("extension.test.browserLaunchCommand");
+				cmd = await vscode.commands.executeCommand<string>("vsc-print.test.browserLaunchCommand");
 				assert.strictEqual(cmd, '"c:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"');
 				break;
 
 			case "linux":
 			case "darwin":
 				await printConfig.update("browserPath", "/path/with spaces/executable");
-				cmd = await vscode.commands.executeCommand<string>("extension.test.browserLaunchCommand", true);
+				cmd = await vscode.commands.executeCommand<string>("vsc-print.test.browserLaunchCommand", true);
 				assert.strictEqual(cmd, "/path/with\\ spaces/executable");
 				break;
 		}
@@ -61,11 +61,11 @@ suite('Print Extension Test Suite', () => {
 		const W = vscode.workspace.workspaceFolders;
 		let w = W![0].uri.fsPath;
 		const otd = await vscode.workspace.openTextDocument(path.join(w, "sample.json"));
-		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		const flags = await vscode.commands.executeCommand<Set<string>>("vsc-print.test.flags");
 		flags?.add("suppress browser");
 		await vscode.window.showTextDocument(otd);
 		assert.ok(vscode.window.activeTextEditor);
-		const session = (await vscode.commands.executeCommand<PrintSession>("extension.print"))!;
+		const session = (await vscode.commands.executeCommand<PrintSession>("vsc-print.print"))!;
 		await session.ready;
 		const url = session.getUrl();
 		let response = await axios.get(url);
@@ -79,9 +79,9 @@ suite('Print Extension Test Suite', () => {
 	test('Print folder', async () => {
 		const W = vscode.workspace.workspaceFolders!;
 		let w = W[0].uri.fsPath;
-		const flags = (await vscode.commands.executeCommand<Set<string>>("extension.test.flags"))!;
+		const flags = (await vscode.commands.executeCommand<Set<string>>("vsc-print.test.flags"))!;
 		flags.add("suppress browser");
-		const session = (await vscode.commands.executeCommand<PrintSession>("extension.printFolder", W![0].uri))!;
+		const session = (await vscode.commands.executeCommand<PrintSession>("vsc-print.printFolder", W![0].uri))!;
 		await session.ready;
 		const url = session.getUrl();
 		let response = await axios.get(url);
@@ -96,12 +96,12 @@ suite('Print Extension Test Suite', () => {
 		const W = vscode.workspace.workspaceFolders;
 		let w = W![0].uri.fsPath;
 		const uri = vscode.Uri.file(path.join(w, "sample.json"));
-		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		const flags = await vscode.commands.executeCommand<Set<string>>("vsc-print.test.flags");
 		flags?.add("suppress browser");
-		let session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
+		let session = (await vscode.commands.executeCommand<PrintSession>("vsc-print.print", uri))!;
 		let url = session.getUrl();
 		await axios.get(`${url}completed`);
-		await vscode.commands.executeCommand("extension.gc");
+		await vscode.commands.executeCommand("vsc-print.gc");
 		let failed: boolean = false;
 		try {
 			const response = await axios.get(`${url}`);
@@ -115,9 +115,9 @@ suite('Print Extension Test Suite', () => {
 		const W = vscode.workspace.workspaceFolders;
 		let w = W![0].uri.fsPath;
 		const uri = vscode.Uri.file(path.join(w, "subfolder", "sample.md"));
-		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		const flags = await vscode.commands.executeCommand<Set<string>>("vsc-print.test.flags");
 		flags?.add("suppress browser");
-		const session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
+		const session = (await vscode.commands.executeCommand<PrintSession>("vsc-print.print", uri))!;
 		await session.ready;
 		const url = session.getUrl();
 		const response = await axios.get(`${url}vscode-print-128.png`);
@@ -130,9 +130,9 @@ suite('Print Extension Test Suite', () => {
 		const W = vscode.workspace.workspaceFolders;
 		let w = W![0].uri.fsPath;
 		const uri = vscode.Uri.file(path.join(w, "subfolder", "sample.md"));
-		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		const flags = await vscode.commands.executeCommand<Set<string>>("vsc-print.test.flags");
 		flags?.add("suppress browser");
-		const session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
+		const session = (await vscode.commands.executeCommand<PrintSession>("vsc-print.print", uri))!;
 		await session.ready;
 		const url = session.getUrl();
 		const response = await axios.get(`${url}workspace.resource/2158834-45134090-2560-1440.jpg`);
@@ -145,9 +145,9 @@ suite('Print Extension Test Suite', () => {
 		const W = vscode.workspace.workspaceFolders;
 		let w = W![0].uri.fsPath;
 		const uri = vscode.Uri.file(path.join(w, "subfolder", "sample.md"));
-		const flags = await vscode.commands.executeCommand<Set<string>>("extension.test.flags");
+		const flags = await vscode.commands.executeCommand<Set<string>>("vsc-print.test.flags");
 		flags?.add("suppress browser");
-		const session = (await vscode.commands.executeCommand<PrintSession>("extension.print", uri))!;
+		const session = (await vscode.commands.executeCommand<PrintSession>("vsc-print.print", uri))!;
 		await session.ready;
 		const url = session.getUrl();
 		const response = await axios.get(`${url}vsc-print.resource/default-markdown.css`);

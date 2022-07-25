@@ -1,5 +1,13 @@
 # Change Log
 
+### 0.9.27
+
+- Fix printing of a selection [#142](https://github.com/PDConSec/vsc-print/issues/142)
+
+### 0.9.26
+
+- Unit tests and integration tests, with extensive supporting changes.
+
 ### 0.9.22 
 
 - Fix broken path escaping on Windows

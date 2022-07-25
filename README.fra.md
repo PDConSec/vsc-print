@@ -116,6 +116,14 @@ L’extension Math+Markdown (installe le plugin KaTeX) nécessite une connexion 
 
 ## Notes de version
 
+### 0.9.27
+
+- Corriger l'impression d'une sélection [#142](https://github.com/PDConSec/vsc-print/issues/142)
+
+### 0.9.26
+
+- Tests unitaires et tests d’intégration, avec des modifications de prise en charge étendues.
+
 ### 0.9.22 
 
 - Correction du chemin cassé vers « navigateur alternatif » sous Windows

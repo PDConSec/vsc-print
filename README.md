@@ -148,6 +148,10 @@ The Math+Markdown extension (installs the KaTeX plugin) requires an internet con
 
 ## Release Notes
 
+### 0.9.27
+
+- Fix printing of a selection [#142](https://github.com/PDConSec/vsc-print/issues/142)
+
 ### 0.9.26
 
 - Unit tests and integration tests, with extensive supporting changes.

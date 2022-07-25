@@ -43,12 +43,12 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.executeCommand("setContext", "etmButton", etmButton);
 
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
-	context.subscriptions.push(vscode.commands.registerCommand("extension.print", printCommand));
-	context.subscriptions.push(vscode.commands.registerCommand("extension.printFolder", printFolderCommand));
-	context.subscriptions.push(vscode.commands.registerCommand("extension.test.flags", () => testFlags));
-	context.subscriptions.push(vscode.commands.registerCommand("extension.test.sessionCount", () => printSessions.size));
-	context.subscriptions.push(vscode.commands.registerCommand("extension.gc", gc));
-	context.subscriptions.push(vscode.commands.registerCommand("extension.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.print", printCommand));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.printFolder", printFolderCommand));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.sessionCount", () => printSessions.size));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.gc", gc));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
 
 	// capture the extension path
 	disposable = vscode.commands.registerCommand('extension.help', async (cmdArgs: any) => {
