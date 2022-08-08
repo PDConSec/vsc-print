@@ -2,8 +2,10 @@ import { env } from 'vscode';
 const locKey = require("../out/extension.nls.metadata.json").keys;
 const locVal: any = {
   "de": require("../out/extension.nls.de.json"),
-  "en": require("../out/extension.nls.en.json"),
-  "fr": require("../out/extension.nls.fr.json")
+	"en": require("../out/extension.nls.en.json"),
+	"es": require("../out/extension.nls.es.json"),
+	"fr": require("../out/extension.nls.fr.json"),
+	"zh": require("../out/extension.nls.zh.json")
 };
 
 export function localise(key: string): string {
@@ -36,7 +38,8 @@ export const filenameByCaption: any = {
   "Gruvbox": "gruvbox-light",
   "Idea": "idea",
   "ISBL": "isbl-editor-light",
-  "Kimbie": "kimbie.light",
+	"Kimbie": "kimbie.light",
+	"Lightfair": "lightfair",
   "Magula": "magula",
   "Mono Blue": "mono-blue",
   "nnfx": "nnfx",
