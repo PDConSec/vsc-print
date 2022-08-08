@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.9.28
+
+- Update references to eliminate vulnerabilities.
+- Register ES, ZH localisation resources for UI [#145](https://github.com/PDConSec/vsc-print/issues/145)
+
 ### 0.9.27
 
 - Fix printing of a selection [#142](https://github.com/PDConSec/vsc-print/issues/142)

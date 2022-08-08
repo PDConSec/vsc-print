@@ -10,8 +10,18 @@
 1. Copy the file `packagei18n.json` from the `/i18n/eng` folder to the folder you just created for your language.
 1. Use a UTF8 capable editor (VS Code is a good choice) to edit this file.
 1. Replace each English string with your translation.
-   * Translation of jargon and technical terms is tricky but you are a subject matter expert, so ask yourself: What would I see in my source code? How would I write this in email to another programmer?
+   * Translation of jargon and technical terms is tricky but you are a subject matter expert, so ask yourself: If I were explaining or naming this in my own language, how would I phrase it? How would I write this in email to another programmer?
    * DO NOT translate the keys (the property names).
+1. Edit the file `src/imports.ts` to register your translation for localisation of the UI.
+   ```
+   const locVal: any = {
+     "de": require("../out/extension.nls.de.json"), 
+     "en": require("../out/extension.nls.en.json"),
+     "es": require("../out/extension.nls.es.json"),
+     "fr": require("../out/extension.nls.fr.json"),
+     "zh": require("../out/extension.nls.zh.json")
+   };
+   ```
 1. Translate `README.md` and `manual.md` to `README.xyz.md` and `manual.xyz.md` where xyz is your language code.
 1. There's probably no point translating _this_ file unless you seriously expect translation from your language to another.
 1. Save, stage, commit and push your changes to your fork on GitHub.
