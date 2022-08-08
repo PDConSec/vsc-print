@@ -116,6 +116,11 @@ L’extension Math+Markdown (installe le plugin KaTeX) nécessite une connexion 
 
 ## Notes de version
 
+### 0.9.28
+
+- Mettre à jour les références pour éliminer les vulnérabilités.
+- Enregistrer les ressources de localisation ES et ZH pour l’interface utilisateur [#145](https://github.com/PDConSec/vsc-print/issues/145)
+
 ### 0.9.27
 
 - Corriger l'impression d'une sélection [#142](https://github.com/PDConSec/vsc-print/issues/142)
