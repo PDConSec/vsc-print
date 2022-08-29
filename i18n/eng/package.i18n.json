@@ -23,7 +23,7 @@
   "print.folder.maxLines.description": "Upper limit for file size, in lines of text. Files larger than this are ignored.",
   "print.fontSize.title": "Font size",
   "print.fontSize.description": "Font size",
-  "print.lineNumbers.title": "print.lineNumbers",
+  "print.lineNumbers.title": "Numbering",
   "print.lineNumbers.description": "Print with line numbers",
   "print.lineSpacing.title": "Line spacing",
   "print.lineSpacing.description": "Vertical spacing of lines",
