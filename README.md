@@ -8,11 +8,6 @@
 
 [ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
 
-Most failure on first use is due to faulty repackaging by a third party. If this happens to you, obtain the [package produced and tested by us](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print).
-
-Custom Markdown styling is back! See the manual for details of how to use your own CSS files with Markdown rendering.
-
-We have community translations into Spanish and Chinese.
 
 ## Markdown and source code, styled for print
 
@@ -20,21 +15,20 @@ We have community translations into Spanish and Chinese.
 * Print Markdown fully rendered
 * Supports remote workspaces
 
-Source code gets line numbers and syntax colouring. Markdown is rendered with VS Code's preview rendering pipeline &mdash; many Markdown extensions work with printing.
+Source code gets line numbers and syntax colouring. Markdown is rendered with VS Code's preview rendering pipeline, so many Markdown extensions work with printing.
 
 ## Platform independent printing
 
-Print-jobs are rendered as styled HTML and served from an embedded webserver. When you print, your local web browser is launched to load the print-job and give you printing options like page orientation and margin size. So if you have a local browser that can print, and VS Code can launch it, you're in business. Known user platforms include Windows, Linux and OSX. 
+Print-jobs are rendered as styled HTML and served from an embedded webserver. Your local web browser is launched to load the print-job and give you printing options like page orientation and margin size. So if you have a local browser that can print, and VS Code can launch it, you're in business.  
 
 ### Troubleshooting on first launch
-
-Print worked for fifty thousand people out of the box, but sometimes local settings and permissions can spoil the fun. Here are some problems people have encountered, and what to do. If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
 
 * Nothing seems to happen &mdash; restart VS Code.
 * Firefox browser is problematic. Install Chromium (or Chrome, Edge, Brave...) and either make it the default browser or configure the Print extension to use a specific browser (RTFM).
 * Browser launches but no page loads &mdash; check networking permissions.
 * Browser shows an error message about not finding a CSS file &mdash; you installed from a VSIX that wasn't prepared by us. Get the [official package](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print) and try again.
 
+If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
 
 ## Classic user experience
 
@@ -52,8 +46,7 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 
 ## Features
 
-Printing on Mac, Linux and Windows
-
+* Works on Mac, Linux and Windows
 * Entirely local in operation, no dependence on cloud services (third party Markdown extensions may introduce remote dependencies)
 * Syntax colouring in a wide range of familiar colour schemes 
 * Optional line numbering
@@ -65,23 +58,9 @@ Printing on Mac, Linux and Windows
 
 ## Requirements
 
-* You'll need a web browser that has access to a printer. Firefox is _not_ an ideal choice but if you prefer it as your default browser then you will be pleased to learn that you can you can configure printing to use a non-default browser &mdash; you can have it both ways.
+* Start by making sure you can print a web page from your browser.
+* Firefox is _not_ an ideal choice but if you prefer it as your default browser then you will be pleased to learn that you can you can configure printing to use a non-default browser &mdash; you can have it both ways.
 * The user as which VS Code runs must be able to establish a listening socket.
-
-
-## Quality control
-
-This software is tested only with the version of Visual Studio Code published by Microsoft. Other variants such as code-oss have been known to botch the installation of resources, leading to runtime errors.
-
-Testing is done on Windows 10 and Ubuntu with current builds of Chrome, Edge and Firefox.
-
-Testing does not include OSX. If you feel that Macs shouldn't be second class citizens then there are three options. 
-
-* Join the team and test on your Mac
-* Donate a Mac for testing
-* Convince Apple to support OSX on a virtual machine for testing purposes instead of being actively obstructive.
-
-Testing does not include Windows XP, 7 or 8 but detailed bug reports relating to these platforms  will be taken seriously.
 
 ## Reporting bugs
 
@@ -103,7 +82,9 @@ The browser used will affect your experience.
 
 ### Recommended for printing
 
-Any Chromium derived browser should be fine. The following are known to work well.
+For best printing results, install a Chromium based browser. If you don't want to make this your default browser, take advantage of the alternate-browser settings. 
+
+The following are known to work well.
 * Brave
 * Chromium
 * Chrome
@@ -111,7 +92,7 @@ Any Chromium derived browser should be fine. The following are known to work wel
 
 ### Not recommended for printing
 
-* Firefox doesn't close the browser after printing completes.
+* Firefox prints well enough but doesn't close the browser afterward. 
 * Edge Classic is no longer supported.
 * Internet Explorer is not supported.
 
@@ -139,8 +120,6 @@ Work around auto-quoting by creating a batch file in the same directory as the b
 Chrome may retain your printer, paper size and margin selections between print jobs. Some Chrome command line options cause errors to be reported, even though printing succeeds. 
 
 Some Chrome plugins interfere with print job styling. While it is possible to suppress plugins with `--disable-plugins` this doesn't work when there is already a running instance of Chrome. The `--incognito` switch suppresses plugins when there is a running instance, but has its own problems.
-
-For better results burn some disk space and install another browser such as Chromium, and use this for printing. You may be able to achieve a similar result without needing two browsers by using profiles on Edge.
 
 ### Indirect Internet dependencies
 
