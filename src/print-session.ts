@@ -27,6 +27,10 @@ export class PrintSession {
 	public sessionId = nodeCrypto.randomUUID();
 	public uri: vscode.Uri | undefined;
 	constructor(cmdArgs?: vscode.Uri) {
+		const printConfig = vscode.workspace.getConfiguration("print", null);
+		if (printConfig.showDiagnostics) {
+			vscode.window.showInformationMessage(`Creating a print session object for ${cmdArgs}`);
+		}
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
 				const printConfig = vscode.workspace.getConfiguration("print", null);
@@ -36,6 +40,9 @@ export class PrintSession {
 				const contentSource = await this.contentSource(cmdArgs);
 				switch (contentSource) {
 					case "editor": {
+						if (printConfig.showDiagnostics) {
+							vscode.window.showInformationMessage("Printing the buffer of the active editor");
+						}
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
 						if (!document) throw "This can't happen";
 						this.htmlRenderer = new HtmlRenderer(
@@ -47,6 +54,9 @@ export class PrintSession {
 					}
 						break;
 					case "selection": {
+						if (printConfig.showDiagnostics) {
+							vscode.window.showInformationMessage("Printing the selection in the active editor");
+						}
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
 						if (!document) throw "This can't happen";
 						const selection = editor?.selection;
@@ -79,6 +89,9 @@ export class PrintSession {
 						break;
 					case "file":
 						document = await vscode.workspace.openTextDocument(cmdArgs!);
+						if (printConfig.showDiagnostics) {
+							vscode.window.showInformationMessage(`Printing the file ${document.uri.fsPath}`);
+						}
 						this.uri = document.uri;
 						this.htmlRenderer = new HtmlRenderer(
 							document.uri.fsPath,
@@ -88,6 +101,9 @@ export class PrintSession {
 						);
 						break;
 					case "folder":
+						if (printConfig.showDiagnostics) {
+							vscode.window.showInformationMessage(`Printing the folder ${cmdArgs!.fsPath}`);
+						}
 						this.htmlRenderer = new HtmlRenderer(cmdArgs!.fsPath, "", "folder", printLineNumbers)
 						break;
 				}
@@ -101,7 +117,7 @@ export class PrintSession {
 
 	public async respond(urlParts: string[], response: http.ServerResponse) {
 		await this.ready;
-		
+
 		if (urlParts.length === 3 && urlParts[2] === "") {
 			const renderer = this.htmlRenderer;
 			const html = await renderer!.asHtml();
@@ -220,6 +236,10 @@ export class PrintSession {
 		const testFlags = await vscode.commands.executeCommand("vsc-print.test.flags") as Set<string>;
 		if (!testFlags.has("suppress browser")) {
 			const cmd = PrintSession.getLaunchBrowserCommand();
+			const printConfig = vscode.workspace.getConfiguration("print", null);
+			if (printConfig.showDiagnostics) {
+				vscode.window.showInformationMessage(`Launch browser command ${cmd} ${url}`);
+			}
 			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
 				// node on Linux incorrectly calls this error handler, with a null error object
 				if (error) {
@@ -240,7 +260,7 @@ export class PrintSession {
 				return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
 			} else {
 				return "file";
-			}			
+			}
 		} catch (error) {
 			console.log(`Unexpected error analysing contentSource, uri was ${typeof uri === "undefined" ? "undefined" : JSON.stringify(uri)}`);
 			throw error;

@@ -17,6 +17,10 @@ export class HtmlRenderer {
 	public async asHtml(): Promise<string> {
 		const printConfig = vscode.workspace.getConfiguration("print", null);
 		if (this.language === "folder") {
+			const printConfig = vscode.workspace.getConfiguration("print", null);
+			if (printConfig.showDiagnostics) {
+				vscode.window.showInformationMessage(`Printing a folder`);
+			}
 			const docs = await this.docsInFolder();
 			const composite = docs.map(doc => templateFolderItem
 				.replace("$FOLDER_ITEM_TITLE", doc.fileName)
@@ -36,6 +40,9 @@ export class HtmlRenderer {
 				;
 		} else {
 			if (printConfig.renderMarkdown && this.language === "markdown") {
+				if (printConfig.showDiagnostics) {
+					vscode.window.showInformationMessage(`Printing rendered Markdown`);
+				}
 				const markdownConfig = vscode.workspace.getConfiguration("markdown", null);
 				return template
 					.replace(/\$TITLE/g, path.basename(this.filename))
@@ -45,6 +52,9 @@ export class HtmlRenderer {
 					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n"))
 					;
 			} else {
+				if (printConfig.showDiagnostics) {
+					vscode.window.showInformationMessage(`Printing ${this.filename}`);
+				}
 				return template
 					.replace(/\$TITLE/g, path.basename(this.filename))
 					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)

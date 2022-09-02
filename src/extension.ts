@@ -36,6 +36,10 @@ function gc() {
 	}
 }
 export function activate(context: vscode.ExtensionContext) {
+	if (vscode.workspace.getConfiguration("print", null).showDiagnostics) {
+		vscode.window.showInformationMessage("Print activated");
+	}
+
 	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
 		etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton,
 		disposable: vscode.Disposable;
@@ -118,12 +122,18 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 };
 
 function printCommand(cmdArgs: any): PrintSession {
+	if (vscode.workspace.getConfiguration("print", null).showDiagnostics) {
+		vscode.window.showInformationMessage("Print command was invoked");
+	}
 	const printSession = new PrintSession(cmdArgs);
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;
 }
 
 function printFolderCommand(commandArgs: any): PrintSession | undefined {
+	if (vscode.workspace.getConfiguration("print", null).showDiagnostics) {
+		vscode.window.showInformationMessage("Print Folder command was invoked");
+	}
 	const editor = vscode.window.activeTextEditor;
 	let folderUri: vscode.Uri;
 	if (commandArgs) {
