@@ -86,7 +86,7 @@ suite('Print Extension Test Suite', () => {
 		const url = session.getUrl();
 		let response = await axios.get(url);
 		assert.equal(response.headers["content-type"], 'text/html; charset=utf-8');
-		assert.ok(response.data.includes("<title>sample.json</title>"));
+		assert.ok(response.data.includes("<title>Untitled-1</title>"));
 		assert.ok(!session.completed);
 		await axios.get(`${url}completed`);
 		assert.ok(session.completed);
