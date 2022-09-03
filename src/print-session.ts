@@ -37,7 +37,7 @@ export class PrintSession {
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";
-				const contentSource = await this.contentSource(cmdArgs);
+				const contentSource = await this.contentSource(cmdArgs!);
 				switch (contentSource) {
 					case "editor": {
 						if (printConfig.showDiagnostics) {
@@ -105,6 +105,9 @@ export class PrintSession {
 							vscode.window.showInformationMessage(`Printing the folder ${cmdArgs!.fsPath}`);
 						}
 						this.htmlRenderer = new HtmlRenderer(cmdArgs!.fsPath, "", "folder", printLineNumbers)
+						break;
+					default:
+						vscode.window.showErrorMessage(contentSource);
 						break;
 				}
 				this.launchBrowser()
@@ -250,9 +253,9 @@ export class PrintSession {
 		return url;
 	}
 
-	async contentSource(uri?: vscode.Uri): Promise<string> {
-		if (!uri) return "editor"; // unsaved
+	async contentSource(uri: vscode.Uri): Promise<string> {
 		try {
+			await vscode.workspace.fs.stat(uri); // barfs when file does not exist (unsaved)
 			const uristat = await vscode.workspace.fs.stat(uri);
 			if (uristat.type === vscode.FileType.Directory) return "folder";
 			const editor = vscode.window.activeTextEditor;
@@ -261,9 +264,12 @@ export class PrintSession {
 			} else {
 				return "file";
 			}
-		} catch (error) {
-			console.log(`Unexpected error analysing contentSource, uri was ${typeof uri === "undefined" ? "undefined" : JSON.stringify(uri)}`);
-			throw error;
+		} catch (ex) {
+			if (vscode.window.activeTextEditor) {
+				return "editor";
+			} else {
+				return `Content source could not be determined. "${uri}" does not resolve to a file and there is no active editor.`;
+			}
 		}
 	}
 }
