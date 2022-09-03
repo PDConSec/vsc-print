@@ -76,6 +76,23 @@ suite('Print Extension Test Suite', () => {
 		assert.ok(session.completed);
 	});
 
+	test("Print unsaved active editor", async () => {
+		await vscode.commands.executeCommand("workbench.action.files.newUntitledFile");
+		const flags = await vscode.commands.executeCommand<Set<string>>("vsc-print.test.flags");
+		flags?.add("suppress browser");
+		await vscode.window.showTextDocument(otd);
+		assert.ok(vscode.window.activeTextEditor);
+		const session = (await vscode.commands.executeCommand<PrintSession>("vsc-print.print"))!;
+		await session.ready;
+		const url = session.getUrl();
+		let response = await axios.get(url);
+		assert.equal(response.headers["content-type"], 'text/html; charset=utf-8');
+		assert.ok(response.data.includes("<title>sample.json</title>"));
+		assert.ok(!session.completed);
+		await axios.get(`${url}completed`);
+		assert.ok(session.completed);
+	})
+
 	test('Print folder', async () => {
 		const W = vscode.workspace.workspaceFolders!;
 		let w = W[0].uri.fsPath;
