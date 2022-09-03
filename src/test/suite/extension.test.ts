@@ -77,10 +77,9 @@ suite('Print Extension Test Suite', () => {
 	});
 
 	test("Print unsaved active editor", async () => {
-		await vscode.commands.executeCommand("workbench.action.files.newUntitledFile");
 		const flags = await vscode.commands.executeCommand<Set<string>>("vsc-print.test.flags");
 		flags?.add("suppress browser");
-		await vscode.window.showTextDocument(otd);
+		await vscode.commands.executeCommand("workbench.action.files.newUntitledFile");
 		assert.ok(vscode.window.activeTextEditor);
 		const session = (await vscode.commands.executeCommand<PrintSession>("vsc-print.print"))!;
 		await session.ready;
