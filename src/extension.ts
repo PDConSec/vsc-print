@@ -37,7 +37,7 @@ function gc() {
 }
 export function activate(context: vscode.ExtensionContext) {
 	if (vscode.workspace.getConfiguration("print", null).showDiagnostics) {
-		vscode.window.showInformationMessage("Print activated");
+		vscode.window.showInformationMessage(`Print extension activated on ${process.platform}`);
 	}
 
 	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
