@@ -16,6 +16,7 @@ export class HtmlRenderer {
 	) { }
 	public async asHtml(): Promise<string> {
 		const printConfig = vscode.workspace.getConfiguration("print", null);
+		const EMBEDDED_STYLES = this.getEmbeddedStyles();
 		if (this.language === "folder") {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
 			if (printConfig.showDiagnostics) {
@@ -37,6 +38,7 @@ export class HtmlRenderer {
 					'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
 					'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
 				.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
+				.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
 				;
 		} else {
 			if (printConfig.renderMarkdown && this.language === "markdown") {
@@ -50,6 +52,7 @@ export class HtmlRenderer {
 					.replace("$CONTENT", () => this.getRenderedCode(this.code, this.language)) // replacer fn suppresses interpretation of $
 					.replace("$DEFAULT_STYLESHEET_LINK", '<link href="vsc-print.resource/default-markdown.css" rel="stylesheet" />')
 					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n"))
+					.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
 					;
 			} else {
 				if (printConfig.showDiagnostics) {
@@ -65,9 +68,14 @@ export class HtmlRenderer {
 						'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
 						'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
 					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
+					.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
 					;
 			}
 		}
+	}
+	getEmbeddedStyles() {
+		let editorConfig = vscode.workspace.getConfiguration("editor", null);
+		return `body{tab-size:${editorConfig.tabSize};}`;
 	}
 	getRenderedCode(code: string, languageId: string): string {
 		let renderedCode = "";
