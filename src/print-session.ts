@@ -45,6 +45,7 @@ export class PrintSession {
 						}
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
 						if (!document) throw "This can't happen";
+						this.uri = document.uri;
 						this.htmlRenderer = new HtmlRenderer(
 							document.uri.fsPath,
 							document.getText(),
