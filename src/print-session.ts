@@ -29,7 +29,7 @@ export class PrintSession {
 	public uri: vscode.Uri | undefined;
 	constructor(cmdArgs?: vscode.Uri) {
 		const printConfig = vscode.workspace.getConfiguration("print", null);
-		if (logging) {
+		if (printConfig.logging) {
 			logger.debug(`Creating a print session object for ${cmdArgs}`);
 		}
 		this.ready = new Promise(async (resolve, reject) => {
@@ -41,7 +41,7 @@ export class PrintSession {
 				const contentSource = await this.contentSource(cmdArgs!);
 				switch (contentSource) {
 					case "editor": {
-						if (logging) {
+						if (printConfig.logging) {
 							logger.debug("Using the buffer of the active editor");
 						}
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
@@ -58,7 +58,7 @@ export class PrintSession {
 					}
 						break;
 					case "selection": {
-						if (logging) {
+						if (printConfig.logging) {
 							logger.debug("Printing the selection in the active editor");
 						}
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
@@ -95,7 +95,7 @@ export class PrintSession {
 						break;
 					case "file":
 						document = await vscode.workspace.openTextDocument(cmdArgs!);
-						if (logging) {
+						if (printConfig.logging) {
 							logger.debug(`Printing the file ${document.uri.fsPath}`);
 						}
 						this.uri = document.uri;
@@ -109,7 +109,7 @@ export class PrintSession {
 						);
 						break;
 					case "folder":
-						if (logging) {
+						if (printConfig.logging) {
 							logger.debug(`Printing the folder ${cmdArgs!.fsPath}`);
 						}
 						this.htmlRenderer = new HtmlRenderer(cmdArgs!.fsPath, "", "folder", printLineNumbers)
@@ -254,7 +254,7 @@ export class PrintSession {
 		if (!testFlags.has("suppress browser")) {
 			const cmd = PrintSession.getLaunchBrowserCommand();
 			const printConfig = vscode.workspace.getConfiguration("print", null);
-			if (logging) {
+			if (printConfig.logging) {
 				logger.debug(`Platform detected as "${process.platform}" so launch browser command is "${cmd}"`);
 			}
 			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {

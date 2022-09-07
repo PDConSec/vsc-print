@@ -20,7 +20,7 @@ export class HtmlRenderer {
 		const EMBEDDED_STYLES = this.getEmbeddedStyles();
 		if (this.language === "folder") {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
-			if (logging) {
+			if (printConfig.logging) {
 				logger.debug(`Printing a folder`);
 			}
 			const docs = await this.docsInFolder();
@@ -43,7 +43,7 @@ export class HtmlRenderer {
 				;
 		} else {
 			if (printConfig.renderMarkdown && this.language === "markdown") {
-				if (logging) {
+				if (printConfig.logging) {
 					logger.debug(`Printing rendered Markdown`);
 				}
 				const markdownConfig = vscode.workspace.getConfiguration("markdown", null);
@@ -56,7 +56,7 @@ export class HtmlRenderer {
 					.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
 					;
 			} else {
-				if (logging) {
+				if (printConfig.logging) {
 					logger.debug(`Printing ${this.filename}`);
 				}
 				return template
