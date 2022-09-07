@@ -1,4 +1,4 @@
-# <img width="64px" src="vscode-print-128.png"></img> Print
+# <img width="64px" src="./vscode-print-128.png"></img> Print
 
 [Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
 
@@ -14,6 +14,10 @@
 * Print source code
 * Print Markdown fully rendered
 * Supports remote workspaces
+
+![source](assets/source.png) 
+
+![Markdown-rendered](assets/Markdown-rendered.png) 
 
 Source code gets line numbers and syntax colouring. Markdown is rendered with VS Code's preview rendering pipeline, so many Markdown extensions work with printing.
 
@@ -98,10 +102,6 @@ The following are known to work well.
 
 ## Known Issues
 
-### Installer problems
-
-Non-standard variants of VS Code such as code-oss may fail to install dependencies resulting in errors about not being able to find CSS files. See https://github.com/PeterWone/vsc-print/issues/116 for details and remedial instructions.
-
 ### Markdown extensions and remoting
 
 To use Print with a remote host you must install it **on the remote host**. 
@@ -136,49 +136,5 @@ The Math+Markdown extension (installs the KaTeX plugin) requires an internet con
 
 - Fix printing of a selection [#142](https://github.com/PDConSec/vsc-print/issues/142)
 
-### 0.9.26
-
-- Unit tests and integration tests, with extensive supporting changes.
-
-### 0.9.22 
-
-- Fix broken path escaping on Windows
-
-### 0.9.18
-
-- Fix selection printing
-- Minor documentation update
-
-### 0.9.16
-
-- Add Markdown style setting for blockquotes (#123)
-- Enforce Markdown style settings over all else
-
-### 0.9.15
-
-- Fixed issue 98 - print Markdown rendered from unsaved files
-- Added instructions on modifying Markdown plugin extensions to allow them to work with remote hosts.
-
-### 0.9.14
-
-- Emergency bugfix for printing unsaved files
-- Emergency bugfix for printing files with Azure Uris that are not backed by a complete filesystem
-
-### 0.9.13
-
-- Emergency bugfix for printing a selection
-
-### 0.9.12
-
-- Emergency bugfix for resolution of local resources referenced by Markdown
-
-### 0.9.11
-
-- Total rewrite of file management in support of remote file systems
-- Glob brace expressions can be nested
-- Exclusion is forced for
-  - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
-  - `{bin,obj}`
-- Change to licence terms refusing licence to persons who give a bad review without first reading the manual or seeking assistance by raising an issue on the GitHub repository
 
 ### Refer to the changelog for a complete history.

@@ -1,3 +1,4 @@
+import { logger } from './logger';
 import { PrintSession } from './print-session';
 import * as vscode from 'vscode';
 import * as http from "http";
@@ -37,7 +38,7 @@ function gc() {
 }
 export function activate(context: vscode.ExtensionContext) {
 	if (vscode.workspace.getConfiguration("print", null).showDiagnostics) {
-		vscode.window.showInformationMessage(`Print extension activated on ${process.platform}`);
+		logger.debug("Print activated");
 	}
 
 	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
@@ -83,9 +84,11 @@ export function activate(context: vscode.ExtensionContext) {
 		if (err) {
 			switch (err.code) {
 				case "EACCES":
+					logger.debug(`ACCESS_DENIED_CREATING_WEBSERVER ${err.code}`);
 					vscode.window.showErrorMessage(localise("ACCESS_DENIED_CREATING_WEBSERVER"));
 					break;
 				default:
+					logger.debug(`UNEXPECTED_ERROR ${err.code}`);
 					vscode.window.showErrorMessage(`${localise("UNEXPECTED_ERROR")}: ${err.code}`);
 			}
 		}
@@ -123,7 +126,7 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 
 function printCommand(cmdArgs: any): PrintSession {
 	if (vscode.workspace.getConfiguration("print", null).showDiagnostics) {
-		vscode.window.showInformationMessage("Print command was invoked");
+		logger.debug("Print command was invoked");
 	}
 	const printSession = new PrintSession(cmdArgs);
 	printSessions.set(printSession.sessionId, printSession);
@@ -132,7 +135,7 @@ function printCommand(cmdArgs: any): PrintSession {
 
 function printFolderCommand(commandArgs: any): PrintSession | undefined {
 	if (vscode.workspace.getConfiguration("print", null).showDiagnostics) {
-		vscode.window.showInformationMessage("Print Folder command was invoked");
+		logger.debug("Print Folder command was invoked");
 	}
 	const editor = vscode.window.activeTextEditor;
 	let folderUri: vscode.Uri;
@@ -141,6 +144,7 @@ function printFolderCommand(commandArgs: any): PrintSession | undefined {
 	}
 	else if (editor) {
 		if (editor.document.isUntitled) {
+			logger.debug("Folder printing aborted because the editor contains an unsaved file");
 			vscode.window.showErrorMessage(localise("UNSAVED_FILE"));
 			return;
 		}
@@ -151,6 +155,7 @@ function printFolderCommand(commandArgs: any): PrintSession | undefined {
 		});
 	}
 	else {
+		logger.debug("Folder printing aborted because no command argument was presented");
 		vscode.window.showErrorMessage(localise("NO_SELECTION"));
 		return;
 	}

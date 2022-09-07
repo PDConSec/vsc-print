@@ -10,5 +10,6 @@
 		"typescript.tsc.autoDetect": "off",
 		"markdown.styles": [
 			"https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css"
-		]
+		],
+		"print.colourScheme": "Atelier Dune"
 }
