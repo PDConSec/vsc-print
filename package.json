@@ -103,9 +103,9 @@
 						],
 						"default": "inherit"
 					},
-					"print.showDiagnostics": {
+					"print.logging": {
 						"type": "boolean",
-						"description": "Show diagnostic information as notifications when performing print actions"
+						"description": "Log diagnostic information to extension folder"
 					},
 					"print.alternateBrowser": {
 						"type": "boolean",
@@ -291,7 +291,6 @@
 		"typescript": "^3.9.10",
 		"vsce": "^2.9.2",
 		"vscode-nls-dev": "^3.3.2",
-		"vscode-test": "^1.6.1",
 		"webpack": "^5.54.0",
 		"webpack-cli": "^4.8.0"
 	},
@@ -300,7 +299,8 @@
 		"@types/markdown-it": "0.0.9",
 		"braces": "^3.0.2",
 		"highlight.js": "^10.7.3",
-		"vscode-nls": "^4.1.2"
+		"vscode-nls": "^4.1.2",
+		"winston": "^3.8.1"
 	},
 	"__metadata": {
 		"id": "05046d70-8146-42f5-ac9e-b97b37c8c0ef",

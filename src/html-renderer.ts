@@ -1,3 +1,4 @@
+import { logger } from './logger';
 import braces = require('braces');
 import hljs = require('highlight.js');
 import path = require('path');
@@ -19,8 +20,8 @@ export class HtmlRenderer {
 		const EMBEDDED_STYLES = this.getEmbeddedStyles();
 		if (this.language === "folder") {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
-			if (printConfig.showDiagnostics) {
-				vscode.window.showInformationMessage(`Printing a folder`);
+			if (logging) {
+				logger.debug(`Printing a folder`);
 			}
 			const docs = await this.docsInFolder();
 			const composite = docs.map(doc => templateFolderItem
@@ -42,8 +43,8 @@ export class HtmlRenderer {
 				;
 		} else {
 			if (printConfig.renderMarkdown && this.language === "markdown") {
-				if (printConfig.showDiagnostics) {
-					vscode.window.showInformationMessage(`Printing rendered Markdown`);
+				if (logging) {
+					logger.debug(`Printing rendered Markdown`);
 				}
 				const markdownConfig = vscode.workspace.getConfiguration("markdown", null);
 				return template
@@ -55,8 +56,8 @@ export class HtmlRenderer {
 					.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
 					;
 			} else {
-				if (printConfig.showDiagnostics) {
-					vscode.window.showInformationMessage(`Printing ${this.filename}`);
+				if (logging) {
+					logger.debug(`Printing ${this.filename}`);
 				}
 				return template
 					.replace(/\$TITLE/g, path.basename(this.filename))
