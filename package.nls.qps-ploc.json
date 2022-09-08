@@ -4,6 +4,7 @@
 	"commands.title.print": "PSEUDO:Print",
 	"commands.title.printFolder": "PSEUDO:Print content of folder",
 	"commands.title.help": "PSEUDO:Open the manual",
+	"commands.title.openLog": "PSEUDO:Open the vscode-print log file",
 	"print.alternateBrowser.title": "PSEUDO:Alternate browser",
 	"print.alternateBrowser.description": "PSEUDO:Use the alternate browser",
 	"print.browserPath.title": "PSEUDO:Browser path",

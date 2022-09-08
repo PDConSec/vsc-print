@@ -55,12 +55,6 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", ()=> openDoc("manual")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", ()=> openDoc("log")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
-	// capture the extension path
-	disposable = vscode.commands.registerCommand('vsc-print.help', async (cmdArgs: any) => {
-		let pathToManual = path.join(context.extensionPath, "manual.md");
-		let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
-		vscode.commands.executeCommand('markdown.showPreview', uriManual);
-	});
 	server = http.createServer(async (request, response) => {
 		if (!connectingToLocalhost(request)) {
 			return request.socket.end();
@@ -98,7 +92,6 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	let printConfig = vscode.workspace.getConfiguration("print", null);
 	server.listen();
-	context.subscriptions.push(disposable);
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
 			HtmlRenderer.MarkdownEngine = mdparam;
