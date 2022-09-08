@@ -4,6 +4,7 @@
 	"commands.title.print": "Print",
 	"commands.title.printFolder": "Print content of folder",
 	"commands.title.help": "Open the manual",
+	"commands.title.openLog": "Open the vscode-print log file",
 	"print.alternateBrowser.title": "Alternate browser",
 	"print.alternateBrowser.description": "Use the alternate browser",
 	"print.browserPath.title": "Browser path",

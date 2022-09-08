@@ -55,9 +55,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", ()=> openDoc("manual")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", ()=> openDoc("log")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
-
 	// capture the extension path
-	disposable = vscode.commands.registerCommand('extension.help', async (cmdArgs: any) => {
+	disposable = vscode.commands.registerCommand('vsc-print.help', async (cmdArgs: any) => {
 		let pathToManual = path.join(context.extensionPath, "manual.md");
 		let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
 		vscode.commands.executeCommand('markdown.showPreview', uriManual);
