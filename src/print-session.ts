@@ -29,9 +29,7 @@ export class PrintSession {
 	public uri: vscode.Uri | undefined;
 	constructor(cmdArgs?: vscode.Uri) {
 		const printConfig = vscode.workspace.getConfiguration("print", null);
-		if (printConfig.logging) {
-			logger.debug(`Creating a print session object for ${cmdArgs}`);
-		}
+		logger.debug(`Creating a print session object for ${cmdArgs}`);
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
 				const printConfig = vscode.workspace.getConfiguration("print", null);
@@ -41,9 +39,7 @@ export class PrintSession {
 				const contentSource = await this.contentSource(cmdArgs!);
 				switch (contentSource) {
 					case "editor": {
-						if (printConfig.logging) {
-							logger.debug("Using the buffer of the active editor");
-						}
+						logger.debug("Using the buffer of the active editor");
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
@@ -58,9 +54,7 @@ export class PrintSession {
 					}
 						break;
 					case "selection": {
-						if (printConfig.logging) {
-							logger.debug("Printing the selection in the active editor");
-						}
+						logger.debug("Printing the selection in the active editor");
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
@@ -95,9 +89,7 @@ export class PrintSession {
 						break;
 					case "file":
 						document = await vscode.workspace.openTextDocument(cmdArgs!);
-						if (printConfig.logging) {
-							logger.debug(`Printing the file ${document.uri.fsPath}`);
-						}
+						logger.debug(`Printing the file ${document.uri.fsPath}`);
 						this.uri = document.uri;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
@@ -109,13 +101,11 @@ export class PrintSession {
 						);
 						break;
 					case "folder":
-						if (printConfig.logging) {
-							logger.debug(`Printing the folder ${cmdArgs!.fsPath}`);
-						}
+						logger.debug(`Printing the folder ${cmdArgs!.fsPath}`);
 						this.htmlRenderer = new HtmlRenderer(cmdArgs!.fsPath, "", "folder", printLineNumbers)
 						break;
 					default:
-						logger.debug(contentSource);
+						logger.error(contentSource);
 						vscode.window.showErrorMessage(contentSource);
 						break;
 				}
@@ -254,14 +244,12 @@ export class PrintSession {
 		if (!testFlags.has("suppress browser")) {
 			const cmd = PrintSession.getLaunchBrowserCommand();
 			const printConfig = vscode.workspace.getConfiguration("print", null);
-			if (printConfig.logging) {
-				logger.debug(`Platform detected as "${process.platform}" so launch browser command is "${cmd}"`);
-			}
+			logger.debug(`Platform detected as "${process.platform}" so launch browser command is "${cmd}"`);
 			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
 				// node on Linux incorrectly calls this error handler, with a null error object
 				if (error) {
 					const msg = `${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`;
-					logger.debug(msg);
+					logger.error(msg);
 					vscode.window.showErrorMessage(msg);
 				}
 			});

@@ -1,5 +1,20 @@
 # Change Log
 
+### 0.9.31
+
+- Control logging level with setting
+- Update documentation and localisation 
+
+### 0.9.30
+
+- Add diagnostic logging
+
+### 0.9.29
+
+- Fix content source analysis
+- Fix printing of never-saved editor buffer
+- Add regression test for printing never-saved editor buffer
+
 ### 0.9.28
 
 - Update references to eliminate vulnerabilities.

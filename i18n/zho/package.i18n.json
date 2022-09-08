@@ -4,7 +4,8 @@
   "commands.title.print": "打印",
   "commands.title.printFolder": "打印文件夹内容",
   "commands.title.help": "打开手册",
-  "print.alternateBrowser.title": "备用浏览器",
+	"commands.title.openLog": "Open the vscode-print log file",
+	"print.alternateBrowser.title": "备用浏览器",
   "print.alternateBrowser.description": "使用备用浏览器",
   "print.browserPath.title": "浏览器路径",
   "print.browserPath.description": "替代浏览器可执行文件的路径",
@@ -35,5 +36,6 @@
   "print.renderMarkdown.title": "表现 Markdown 格式",
   "print.renderMarkdown.description": "打印时将 Markdown 渲染为 HTML",
   "print.webserverUptimeSeconds.title": "网络服务器超时",
-  "print.webserverUptimeSeconds.description": "网络服务器在开始为打印作业提供服务后保持可用的时间（以秒为单位）。"
+  "print.webserverUptimeSeconds.description": "网络服务器在开始为打印作业提供服务后保持可用的时间（以秒为单位）。",
+	"print.logLevel.markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Silly` will log absolutely everything. `Debug` is good for troubleshooting but the log file will grow fast."
 }

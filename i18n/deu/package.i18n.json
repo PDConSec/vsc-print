@@ -4,7 +4,8 @@
   "commands.title.print": "drucken",
   "commands.title.printFolder": "Drucken des Ordnerinhalts",
   "commands.title.help": "Handbuch einsehen",
-  "print.alternateBrowser.title": "Alternativer Browser",
+	"commands.title.openLog": "Open the vscode-print log file",
+	"print.alternateBrowser.title": "Alternativer Browser",
   "print.alternateBrowser.description": "Alternativen Browser benutzen",
   "print.browserPath.title": "Browser Pfad",
   "print.browserPath.description": "Pfad zur .exe Datei des alternativen Browsers",
@@ -42,5 +43,6 @@
   "print.renderMarkdown.title": "Markdown Dateien rendern",
   "print.renderMarkdown.description": "Anwenden von Stilen auf Markdown, anstatt als Rohtext zu drucken",
   "print.webserverUptimeSeconds.title":"Webserver-Timeout",
-  "print.webserverUptimeSeconds.description": "Zeit in Sekunden, dass der eingebettete Webserver verfügbar bleibt"
+  "print.webserverUptimeSeconds.description": "Zeit in Sekunden, dass der eingebettete Webserver verfügbar bleibt",
+	"print.logLevel.markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Silly` will log absolutely everything. `Debug` is good for troubleshooting but the log file will grow fast."
 }

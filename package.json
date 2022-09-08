@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
-	"version": "0.9.30",
+	"version": "0.9.31",
 	"icon": "vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
@@ -50,6 +50,11 @@
 				"category": "%commands.category%",
 				"command": "vsc-print.help",
 				"title": "%commands.title.help%"
+			},
+			{
+				"category": "%commands.category%",
+				"command": "vsc-print.openLog",
+				"title": "%commands.title.openLog%"
 			}
 		],
 		"configuration": [
@@ -103,9 +108,19 @@
 						],
 						"default": "inherit"
 					},
-					"print.logging": {
-						"type": "boolean",
-						"description": "Log diagnostic information to extension folder"
+					"print.logLevel": {
+						"type": "string",
+						"markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Silly` will log absolutely everything. `Debug` is good for troubleshooting but the log file will grow fast.",
+						"enum": [
+							"error",
+							"warn",
+							"info",
+							"http",
+							"verbose",
+							"debug",
+							"silly"
+						],
+						"default": "error"
 					},
 					"print.alternateBrowser": {
 						"type": "boolean",

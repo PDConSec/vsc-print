@@ -4,7 +4,8 @@
   "commands.title.print": "Imprimer",
   "commands.title.printFolder": "Imprimer le contenu du dossier",
   "commands.title.help": "Consulter la documentation",
-  "print.alternateBrowser.title": "Navigateur alternatif",
+	"commands.title.openLog": "Ouvrez le fichier journal vscode-print",
+	"print.alternateBrowser.title": "Navigateur alternatif",
   "print.alternateBrowser.description": "Utiliser le navigateur alternatif",
   "print.browserPath.title": "Chemin de stockage du navigateur",
   "print.browserPath.description": "Chemin vers l'exécutable d'un autre navigateur",
@@ -35,5 +36,6 @@
   "print.renderMarkdown.title": "Rendre le Markdown",
   "print.renderMarkdown.description": "Rendre le Markdown en HTML lors de l'impression",
   "print.webserverUptimeSeconds.title": "Délai d’expiration du serveur Web",
-  "print.webserverUptimeSeconds.description": "Temps, en secondes, pendant lequel le serveur Web intégré reste disponible après avoir démarré la maintenance d’une tâche d’impression."
+  "print.webserverUptimeSeconds.description": "Temps, en secondes, pendant lequel le serveur Web intégré reste disponible après avoir démarré la maintenance d’une tâche d’impression.",
+	"print.logLevel.markdownDescription": "Le niveau de journal `Error` n’enregistrera que les erreurs (très peu d’entrées de journal) tandis que `info` enregistrera les erreurs, les avertissements et les informations. `Silly` enregistrera absolument tout. `Debug` convient au dépannage, mais le fichier journal deviendra rapidement volumineux."
 }
