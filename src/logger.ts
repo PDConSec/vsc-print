@@ -1,13 +1,20 @@
 import { extensionPath } from './extension-path';
 import * as winston from "winston";
+import * as vscode from "vscode";
 
-const dt = new Date().toISOString().replace(/\:/g, "-");
-const logFileName = `${dt}_info.log`;
-const debugLogFileName = `${dt}_debug.log`;
-const logFileDir = `${extensionPath}/logs`;
+const logFileName = `vscode-print.log`;
+const logFileDir = `${extensionPath}`;
+const logLevel = vscode.workspace.getConfiguration("print", null).logLevel;
 
+const transports = [
+	new winston.transports.File({
+		level: logLevel,
+		dirname: logFileDir,
+		filename: logFileName
+	}),
+]
 export const logger: winston.Logger = winston.createLogger({
-	level: 'debug',
+	level: logLevel,
 	format: winston.format.combine(
 		winston.format.simple(),
 		winston.format.timestamp({
@@ -15,17 +22,6 @@ export const logger: winston.Logger = winston.createLogger({
 		}),
 		winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
 	),
-	transports: [
-		new winston.transports.File({
-			level: 'info',
-			dirname: logFileDir,
-			filename: logFileName
-		}),
-		new winston.transports.File({
-			level: 'debug',
-			dirname: logFileDir,
-			filename: debugLogFileName
-		}),
-	]
+	transports: transports
 });
 

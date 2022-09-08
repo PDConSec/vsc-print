@@ -42,5 +42,6 @@
   "print.renderMarkdown.title": "PSEUDO:Render Markdown",
   "print.renderMarkdown.description": "PSEUDO:Render Markdown as HTML when printing",
   "print.webserverUptimeSeconds.title": "PSEUDO:Webserver timeout",
-  "print.webserverUptimeSeconds.description": "PSEUDO:Time in seconds that embedded webserver remains available"
+  "print.webserverUptimeSeconds.description": "PSEUDO:Time in seconds that embedded webserver remains available",
+	"print.logLevel.markdownDescription": "PSEUDO:Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Silly` will log absolutely everything. `Debug` is good for troubleshooting but the log file will grow fast."
 }

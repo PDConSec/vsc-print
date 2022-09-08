@@ -8,6 +8,7 @@ import * as path from "path";
 import { captionByFilename, filenameByCaption, localise } from './imports';
 import * as nls from 'vscode-nls';
 import { HtmlRenderer } from './html-renderer';
+import { extensionPath } from './extension-path';
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -37,9 +38,7 @@ function gc() {
 	}
 }
 export function activate(context: vscode.ExtensionContext) {
-	if (vscode.workspace.getConfiguration("print", null).showDiagnostics) {
-		logger.debug("Print activated");
-	}
+	logger.debug("Print activated");
 
 	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
 		etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton,
@@ -53,6 +52,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.sessionCount", () => printSessions.size));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.gc", gc));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", ()=> openDoc("manual")));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", ()=> openDoc("log")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
 
 	// capture the extension path
@@ -109,6 +110,21 @@ export function activate(context: vscode.ExtensionContext) {
 	return markdownExtensionInstaller;
 }
 
+function openDoc(doc:string) {
+	switch (doc) {
+		case "manual":
+			let pathToManual = path.join(extensionPath, "manual.md");
+			let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
+			vscode.commands.executeCommand('markdown.showPreview', uriManual);
+			break;
+	
+		case "log":
+			let pathToLogFile = path.join(extensionPath, "vscode-print.log");
+			let uriLogFile: vscode.Uri = vscode.Uri.file(pathToLogFile);
+			vscode.workspace.openTextDocument(uriLogFile).then(vscode.window.showTextDocument);
+			break;
+	}
+}
 const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 	if (e.affectsConfiguration('print.editorContextMenuItemPosition')) {
 		vscode.commands.executeCommand(
@@ -125,18 +141,14 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 };
 
 function printCommand(cmdArgs: any): PrintSession {
-	if (vscode.workspace.getConfiguration("print", null).showDiagnostics) {
 		logger.debug("Print command was invoked");
-	}
 	const printSession = new PrintSession(cmdArgs);
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;
 }
 
 function printFolderCommand(commandArgs: any): PrintSession | undefined {
-	if (vscode.workspace.getConfiguration("print", null).showDiagnostics) {
 		logger.debug("Print Folder command was invoked");
-	}
 	const editor = vscode.window.activeTextEditor;
 	let folderUri: vscode.Uri;
 	if (commandArgs) {

@@ -35,5 +35,6 @@
   "print.renderMarkdown.title": "Renderizar Markdown",
   "print.renderMarkdown.description": "Renderizar Markdown como HTML al imprimir",
   "print.webserverUptimeSeconds.title": "Tiempo de espera del servidor web ",
-  "print.webserverUptimeSeconds.description": "Tiempo en segundos que el servidor web incorporado permanece disponible después de iniciar un trabajo de impresión."
+  "print.webserverUptimeSeconds.description": "Tiempo en segundos que el servidor web incorporado permanece disponible después de iniciar un trabajo de impresión.",
+	"print.logLevel.markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Silly` will log absolutely everything. `Debug` is good for troubleshooting but the log file will grow fast."
 }

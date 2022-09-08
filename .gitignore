@@ -4,4 +4,4 @@ node_modules
 .vscode-test/
 *.vsix
 /package.nls.*.json
-logs
+vscode-print.log

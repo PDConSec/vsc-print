@@ -35,5 +35,6 @@
   "print.renderMarkdown.title": "Render Markdown",
   "print.renderMarkdown.description": "Render Markdown as HTML when printing",
   "print.webserverUptimeSeconds.title": "Embedded websever timeout",
-  "print.webserverUptimeSeconds.description": "Time in seconds that the embedded webserver remains available after starting to service a print job."
+  "print.webserverUptimeSeconds.description": "Time in seconds that the embedded webserver remains available after starting to service a print job.",
+	"print.logLevel.markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Silly` will log absolutely everything. `Debug` is good for troubleshooting but the log file will grow fast."
 }
