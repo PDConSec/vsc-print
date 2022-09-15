@@ -41,4 +41,11 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 
 ## Highly configurable
 
-There are a _lot_ of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](manual.md) If things aren't going your way then maybe you could read it.
+There are a _lot_ of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](manual.md) If things aren't going your way, maybe you should read it.
+
+Some things you can configure:
+
+- the colour scheme used for syntax colouring
+- whether or not you want line numbers
+- alternate browser for printing
+- line spacing (leave yourself more room for handwritten annotation of code)
