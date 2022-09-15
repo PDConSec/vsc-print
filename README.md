@@ -47,4 +47,6 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 
 ## Highly configurable
 
-We're old school. [We wrote a manual.](manual.md) Read it.
+There are a _lot_ of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](manual.md) 
+
+If things aren't going your way then maybe you could read it.
