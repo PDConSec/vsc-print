@@ -27,12 +27,6 @@ So if you have a local browser that can print, and VS Code can launch it, you're
 
 ![Markdown-rendered](assets/Markdown-rendered.png) 
 
-
-## Cross-platform printing
-
-Print-jobs are rendered as styled HTML and served from an embedded webserver. Your local web browser is launched to load the print-job and give you printing options like page orientation and margin size. So if you have a local browser that can print, and VS Code can launch it, you're in business.  
-
-
 ## Classic user experience
 
 The print icon on the toolbar prints the document in the active editor.
@@ -47,4 +41,4 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 
 ## Highly configurable
 
-There are a _lot_ of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](manual.md). If things aren't going your way then maybe you could read it.
+There are a _lot_ of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](manual.md) If things aren't going your way then maybe you could read it.
