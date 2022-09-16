@@ -20,7 +20,7 @@ export class HtmlRenderer {
 		const EMBEDDED_STYLES = this.getEmbeddedStyles();
 		if (this.language === "folder") {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
-				logger.debug(`Printing a folder`);
+			logger.debug(`Printing a folder`);
 			const docs = await this.docsInFolder();
 			const composite = docs.map(doc => templateFolderItem
 				.replace("$FOLDER_ITEM_TITLE", doc.fileName)
@@ -41,7 +41,7 @@ export class HtmlRenderer {
 				;
 		} else {
 			if (printConfig.renderMarkdown && this.language === "markdown") {
-					logger.debug(`Printing rendered Markdown`);
+				logger.debug(`Printing rendered Markdown`);
 				const markdownConfig = vscode.workspace.getConfiguration("markdown", null);
 				return template
 					.replace(/\$TITLE/g, path.basename(this.filename))
@@ -52,7 +52,7 @@ export class HtmlRenderer {
 					.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
 					;
 			} else {
-					logger.debug(`Printing ${this.filename}`);
+				logger.debug(`Printing ${this.filename}`);
 				return template
 					.replace(/\$TITLE/g, path.basename(this.filename))
 					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
@@ -78,6 +78,10 @@ export class HtmlRenderer {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
 			if (printConfig.renderMarkdown && this.language === "markdown") {
 				renderedCode = HtmlRenderer.MarkdownEngine.render(code);
+				const v = renderedCode.lastIndexOf("</style>");
+				if (v != -1) {
+					renderedCode = renderedCode.substring(v + 8);
+				}
 			} else {
 				try {
 					renderedCode = hljs.highlight(code, { language: languageId }).value;
@@ -105,6 +109,7 @@ export class HtmlRenderer {
 				}
 			}
 		} catch {
+			logger.error("Markdown could not be rendered");
 			renderedCode = "<div>Could not render this file.</end>";
 		}
 		return renderedCode;
