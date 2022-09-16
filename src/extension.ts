@@ -105,7 +105,8 @@ export function activate(context: vscode.ExtensionContext) {
 function openDoc(doc:string) {
 	switch (doc) {
 		case "manual":
-			let pathToManual = path.join(extensionPath, "manual.md");
+			// todo localise 
+			let pathToManual = path.join(extensionPath, "doc/manual.md");
 			let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
 			vscode.commands.executeCommand('markdown.showPreview', uriManual);
 			break;

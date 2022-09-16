@@ -1,6 +1,6 @@
 Modified MIT License
 
-Copyright (c) 2019 PD Consulting and Security
+Copyright (c) 2019-2022 PD Consulting and Security
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
