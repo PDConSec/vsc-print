@@ -13,7 +13,7 @@
 	"print.colourScheme.markdownDescription": "[Stylesheet preview is available online](https://highlightjs.org/static/demo/). Only 'light' versions are offered because paper is white.",
 	"print.editorContextMenuItemPosition.title": "Editor context-menu position",
 	"print.editorContextMenuItemPosition.markdownDescription": "The position of `Print` in the editor context menu",
-	"print.editorTitleMenuButton.description": "Print the content of the active editor",
+	"print.editorTitleMenuButton.description": "When this option is selected the Print icon appears on the toolbar above an active editor",
 	"print.folder.fileNames.title": "Include file names",
 	"print.folder.fileNames.description": "Include file names as section titles when printing content of a folder",
 	"print.folder.include.title": "Folder content include pattern",
@@ -37,5 +37,5 @@
 	"print.renderMarkdown.description": "Render Markdown as HTML when printing",
 	"print.webserverUptimeSeconds.title": "Embedded websever timeout",
 	"print.webserverUptimeSeconds.description": "Time in seconds that the embedded webserver remains available after starting to service a print job.",
-	"print.logLevel.markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Silly` will log absolutely everything. `Debug` is good for troubleshooting but the log file will grow fast."
+	"print.logLevel.markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Debug` is good for troubleshooting but the log file will grow fast. `Silly` will log absolutely everything. Don't _leave_ the log level on silly, the log would become huge. The purpose is brief use to check that low level things like garbage collection are happening."
 }

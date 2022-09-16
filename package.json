@@ -3,7 +3,7 @@
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
 	"version": "0.9.31",
-	"icon": "vscode-print-128.png",
+	"icon": "assets/vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
 		"email": "peter.wone@outlook.com"
@@ -37,8 +37,8 @@
 				"command": "vsc-print.print",
 				"title": "%commands.title.print%",
 				"icon": {
-					"dark": "./printer-icon-dog-ear-inverse.svg",
-					"light": "./printer-icon-dog-ear.svg"
+					"dark": "assets/printer-icon-dog-ear-inverse.svg",
+					"light": "assets/printer-icon-dog-ear.svg"
 				}
 			},
 			{

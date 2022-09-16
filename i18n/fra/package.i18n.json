@@ -13,7 +13,7 @@
   "print.colourScheme.markdownDescription": "[L’aperçu de la feuille de style est disponible en ligne](https://highlightjs.org/static/demo/). Seules les versions « légères » sont proposées car le papier est blanc.",
   "print.editorContextMenuItemPosition.title": "Position au menu contextuel de l'éditeur",
   "print.editorContextMenuItemPosition.markdownDescription": "La position de `Impresser` au menu contextuel de l'éditeur",
-  "print.editorTitleMenuButton.description": "Imprimer le contenu de l’éditeur actif",
+  "print.editorTitleMenuButton.description": "Lorsque cette option est sélectionnée, l’icône Imprimer apparaît dans la barre d’outils au-dessus d’un éditeur actif",
   "print.folder.fileNames.title": "Include file names",
   "print.folder.fileNames.description": "Inclure des noms de fichiers en tant que titres de section lors de l’impression du contenu d’un dossier",
   "print.folder.include.title": "Modèle d’inclusion du contenu du dossier",
@@ -37,5 +37,5 @@
   "print.renderMarkdown.description": "Rendre le Markdown en HTML lors de l'impression",
   "print.webserverUptimeSeconds.title": "Délai d’expiration du serveur Web",
   "print.webserverUptimeSeconds.description": "Temps, en secondes, pendant lequel le serveur Web intégré reste disponible après avoir démarré la maintenance d’une tâche d’impression.",
-	"print.logLevel.markdownDescription": "Le niveau de journal `Error` n’enregistrera que les erreurs (très peu d’entrées de journal) tandis que `info` enregistrera les erreurs, les avertissements et les informations. `Silly` enregistrera absolument tout. `Debug` convient au dépannage, mais le fichier journal deviendra rapidement volumineux."
+	"print.logLevel.markdownDescription": "Le niveau de journal `Erreur` n’enregistrera que les erreurs (très peu d’entrées) tandis que `info` enregistrera les erreurs, les avertissements et les informations. `Debug` est bon pour le dépannage, mais le fichier journal se développera rapidement. `Silly` enregistrera absolument tout. Ne laissez pas le niveau du journal sur idiot, le journal deviendrait énorme. Le but est une brève utilisation pour vérifier que des choses de bas niveau comme la collecte des ordures se produisent."
 }

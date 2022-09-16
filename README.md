@@ -41,7 +41,7 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 
 ## Highly configurable
 
-There are a _lot_ of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](manual.md) If things aren't going your way, maybe you should read it. And [the troubleshooting guide](troubleshooting.md).
+There are a _lot_ of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](docs/manual.md) If things aren't going your way, maybe you should read it. And [the troubleshooting guide](docs/troubleshooting.md).
 
 Some things you can configure:
 

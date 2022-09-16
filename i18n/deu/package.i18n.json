@@ -4,7 +4,7 @@
   "commands.title.print": "drucken",
   "commands.title.printFolder": "Drucken des Ordnerinhalts",
   "commands.title.help": "Handbuch einsehen",
-	"commands.title.openLog": "Open the vscode-print log file",
+	"commands.title.openLog": "Öffnen Sie die vscode-print-Protokolldatei",
 	"print.alternateBrowser.title": "Alternativer Browser",
   "print.alternateBrowser.description": "Alternativen Browser benutzen",
   "print.browserPath.title": "Browser Pfad",
@@ -13,7 +13,7 @@
   "print.colourScheme.markdownDescription": "[Stylesheet Vorschau ist online verfügbar](https://highlightjs.org/static/demo/). Es werden nur helle Themes angeboten da dunkle Themes sich nicht für weißes Papier eignen.",
   "print.editorContextMenuItemPosition.title": "Position im Editor Kontextmenü",
   "print.editorContextMenuItemPosition.markdownDescription": "Die Position von `Drucken` im Kontextmenü des Editors",
-  "print.editorTitleMenuButton.description": "Drucke den Inhalt des aktuell aktiven Editorfensters",
+  "print.editorTitleMenuButton.description": "Wenn diese Option ausgewählt ist, wird das Symbol Drucken in der Symbolleiste über einem aktiven Editor angezeigt.",
   "print.folder.fileNames.title": "Drucken von Dateinamen",
   "print.folder.fileNames.description": "Einschließen von Dateinamen als Abschnittstitel beim Drucken von Inhalten eines Ordners.",
   "print.folder.include.title": "Ordnerinhalts-Include-Muster",
@@ -44,5 +44,5 @@
   "print.renderMarkdown.description": "Anwenden von Stilen auf Markdown, anstatt als Rohtext zu drucken",
   "print.webserverUptimeSeconds.title":"Webserver-Timeout",
   "print.webserverUptimeSeconds.description": "Zeit in Sekunden, dass der eingebettete Webserver verfügbar bleibt",
-	"print.logLevel.markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Silly` will log absolutely everything. `Debug` is good for troubleshooting but the log file will grow fast."
+	"print.logLevel.markdownDescription": "Die Protokollebene 'Fehler' protokolliert nur Fehler (sehr wenige Einträge), während `info` Fehler, Warnungen und Informationen protokolliert. `Debug` ist gut für die Fehlerbehebung, aber die Protokolldatei wird schnell wachsen. `Silly` wird absolut alles protokollieren. Lassen Sie die Protokollebene nicht auf albern, das Protokoll würde riesig werden. Der Zweck ist eine kurze Verwendung, um zu überprüfen, ob Dinge auf niedriger Ebene wie die Garbage Collection passieren."
 }
