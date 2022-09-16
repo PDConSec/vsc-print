@@ -52,13 +52,10 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.sessionCount", () => printSessions.size));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.gc", gc));
-	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", ()=> openDoc("manual")));
-	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", ()=> openDoc("log")));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", () => openDoc("manual")));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", () => openDoc("log")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
 	server = http.createServer(async (request, response) => {
-		if (!connectingToLocalhost(request)) {
-			return request.socket.end();
-		}
 		try {
 			if (request.url) {
 				const urlParts = request.url.split('/',);
@@ -88,10 +85,12 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 	server.on("listening", () => {
-		PrintSession.port = (server!.address() as AddressInfo).port;
+		const addr = server!.address() as AddressInfo;
+		PrintSession.port = addr.port;
+		logger.info(`Began listening on ${addr.address}:${addr.port}`);
 	});
 	let printConfig = vscode.workspace.getConfiguration("print", null);
-	server.listen();
+	server.listen({ host: "localhost" });
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
 			HtmlRenderer.MarkdownEngine = mdparam;
@@ -102,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
 	return markdownExtensionInstaller;
 }
 
-function openDoc(doc:string) {
+function openDoc(doc: string) {
 	switch (doc) {
 		case "manual":
 			// todo localise 
@@ -110,7 +109,7 @@ function openDoc(doc:string) {
 			let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
 			vscode.commands.executeCommand('markdown.showPreview', uriManual);
 			break;
-	
+
 		case "log":
 			let pathToLogFile = path.join(extensionPath, "vscode-print.log");
 			let uriLogFile: vscode.Uri = vscode.Uri.file(pathToLogFile);
@@ -118,6 +117,7 @@ function openDoc(doc:string) {
 			break;
 	}
 }
+
 const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 	if (e.affectsConfiguration('print.editorContextMenuItemPosition')) {
 		vscode.commands.executeCommand(
@@ -134,14 +134,14 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 };
 
 function printCommand(cmdArgs: any): PrintSession {
-		logger.debug("Print command was invoked");
+	logger.debug("Print command was invoked");
 	const printSession = new PrintSession(cmdArgs);
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;
 }
 
 function printFolderCommand(commandArgs: any): PrintSession | undefined {
-		logger.debug("Print Folder command was invoked");
+	logger.debug("Print Folder command was invoked");
 	const editor = vscode.window.activeTextEditor;
 	let folderUri: vscode.Uri;
 	if (commandArgs) {
@@ -173,24 +173,6 @@ function printFolderCommand(commandArgs: any): PrintSession | undefined {
 export function deactivate() {
 	server?.close();
 	clearInterval(_gc);
-}
-
-const localhostAddresses: String[] = ["::1", "::ffff:127.0.0.1", "127.0.0.1"]
-dns.lookup("localhost", { all: true, family: 4 }, (err, addresses) => {
-	addresses
-		.map(a => a.address)
-		.filter(a => localhostAddresses.indexOf(a) < 0)
-		.forEach(a => { localhostAddresses.push(a); localhostAddresses.push("::ffff:" + a); });
-})
-dns.lookup("localhost", { all: true, family: 6 }, (err, addresses) => {
-	addresses
-		.map(a => a.address)
-		.filter(a => localhostAddresses.indexOf(a) < 0)
-		.forEach(a => localhostAddresses.push(a));
-})
-
-function connectingToLocalhost(request: http.IncomingMessage): boolean {
-	// console.log(request.socket.localAddress)
-	return localhostAddresses.indexOf(request.socket.localAddress!) >= 0;
+	logger.info("Garbage collection stopped by deactivate")
 }
 
