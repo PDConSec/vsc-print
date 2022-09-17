@@ -92,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
 		logger.info(`Began listening on ${addr.address}:${addr.port}`);
 	});
 	let printConfig = vscode.workspace.getConfiguration("print", null);
-	server.listen(0, "127.0.0.1");
+	server.listen(0, "localhost");
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
 			HtmlRenderer.MarkdownEngine = mdparam;
