@@ -63,10 +63,12 @@ export function activate(context: vscode.ExtensionContext) {
 				if (printSession) {
 					await printSession.respond(urlParts, response);
 				} else {
+					logger.warn(`Dropping connection of ${request.url} does not correspond to a print session`);
 					return request.socket.end();
 				}
 			}
 		} catch (error) {
+			logger.error(error);
 			response.setHeader("Content-Type", "text/plain; charset=utf-8");
 			response.end((error as any).stack);
 		}
@@ -90,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
 		logger.info(`Began listening on ${addr.address}:${addr.port}`);
 	});
 	let printConfig = vscode.workspace.getConfiguration("print", null);
-	server.listen({ host: "localhost" });
+	server.listen(0, "127.0.0.1");
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
 			HtmlRenderer.MarkdownEngine = mdparam;
@@ -104,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
 function openDoc(doc: string) {
 	switch (doc) {
 		case "manual":
-			// todo localise 
+			// todo localise the command that opens the manual
 			let pathToManual = path.join(extensionPath, "doc/manual.md");
 			let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
 			vscode.commands.executeCommand('markdown.showPreview', uriManual);
