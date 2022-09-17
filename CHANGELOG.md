@@ -1,5 +1,14 @@
 # Change Log
 
+### 0.10.0
+
+- Webserver binds only to loopback interface, request origin no longer checked
+- More updates to documentation and localisation 
+  - ancillary documents moved to /doc
+  - images etc moved to /assets
+- `Print: Open the manual` is now localised, falling back to English
+- `Print: Open the vscode-print log file` opens the log file in VS Code for inspection
+
 ### 0.9.31
 
 - Control logging level with setting
