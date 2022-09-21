@@ -5,7 +5,7 @@
 ## Core Markdown
 
 - Headings 
-- Bullets,numbering
+- Bullets and numbering
 - __Bold__ and _italic_ text
 - Images
 - Tables
