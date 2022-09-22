@@ -239,6 +239,10 @@
 				{
 					"command": "vsc-print.print",
 					"group": "navigation"
+				},
+				{
+					"command": "vsc-print.printFolder",
+					"group": "navigation"
 				}
 			],
 			"editor/title": [
@@ -262,18 +266,8 @@
 					"group": "navigation"
 				},
 				{
-					"when": "editorLangId && ecmPrint == Top",
-					"command": "vsc-print.printFolder",
-					"group": "navigation"
-				},
-				{
 					"when": "editorLangId && ecmPrint == Bottom",
 					"command": "vsc-print.print",
-					"group": "Z_commands"
-				},
-				{
-					"when": "editorLangId && ecmPrint == Bottom",
-					"command": "vsc-print.printFolder",
 					"group": "Z_commands"
 				}
 			]

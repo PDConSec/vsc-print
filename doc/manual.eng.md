@@ -10,6 +10,7 @@
 2. [Customising your setup](#customising-your-setup)
 3. [Markdown](#markdown)
 4. [Markdown extensions and remote workspaces](#markdown-extensions-and-remote-workspaces)
+5. [Troubleshooting](#troubleshooting)
 
 # General use
 
@@ -168,31 +169,98 @@ x = \begin{cases}
 $$
 ```
 
-# Markdown extensions and remote workspaces
+## Rendered Markdown and remote workspaces
 
-To work with remote workspaces a Markdown extension must run on the remote host because that's where the Markdown rendering pipeline runs. Most Markdown extensions are capable of working like this but they are not set up for it.
+To work with remote workspaces a Markdown extension must run on the remote host because that's where the Markdown rendering pipeline runs. Extensions like Print that are designed for use with remote workspaces can be deployed to the remote host with a single click. Most Markdown extensions are capable of working like this but they are not set up for it.
 
-Trouble is, most of them aren't set up this way even though all it would take is a single entry in their `package.json` file. 
+Unfortunately, Markdown extensions are not normally configured for remote use; the designers expected them to run locally. 
 
-Fortunately, you can patch them yourself. 
+### DIY patching of Markdown extensions
+
+If your need is urgent, you can patch extensions yourself. 
 
 1. Find the extensions where they are installed on your workstation in `~/.vscode/extensions` (on Windows substitute `%userprofile%` for `~`)
-2. Edit the `package.json` files for the Markdown extensions you want to use on remote hosts. Add the `extensionKind` attribute. 
+2. Edit the `package.json` files for the Markdown extensions you want to use on remote hosts. Add the `extensionKind` as a root level attribute. 
 3. When you've edited all the Markdown extensions restart VS Code.
-
-It's a root level attribute so you can put it right at the start. If this attribute is already present, VS Code will soon tell you. To work properly with a remote host it must specify "workspace". Do not list both `workspace` and `ui`. If you do that VS Code will prefer the local workstation and it will function locally but fail for remote workspaces. 
-You need it to be determined by the workspace. 
-
-What if you have a remote workspace, but one editor contains a local file? When that local file is source code, printing will work. For Markdown that is free of resource references, printing will work. But Markdown references to images will resolve in the remote filesystem and the images will not be found.
-
+4. Install the extension on the remote host and patch the extension on the remote host in the same way.
 
 ```json
-{
-  "extensionKind": [
-    "workspace"
-  ],
-  "name": "vscode-print",
-  "displayName": "Print",
-  ...
+...
+"extensionKind": [
+  "workspace"
+],
+...
 ```
-You may also need to make the same change to the `package.json` in the installation on the remote host.
+
+Patches like this will be lost at the next update for an extension, so if your patch was successful you may want to submit a PR to the publisher.
+
+# Troubleshooting
+
+## Prerequisites
+
+* Start by making sure you can print a web page from your browser.
+* Firefox is _not_ an ideal choice but if you prefer it as your default browser then you will be pleased to learn that you can you can configure printing to use a non-default browser &mdash; you can have it both ways.
+* The user as which VS Code runs must be able to establish a listening socket.
+
+## First launch hassles
+* Nothing seems to happen &mdash; restart VS Code.
+* Browser launches but no page loads &mdash; check networking permissions.
+* Browser shows an error message about not finding a CSS file &mdash; you installed from a VSIX that wasn't prepared by us. Get the [official package](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print) and try again.
+
+If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
+
+## Choice of browser
+
+The browser used will affect your experience.  
+
+### Recommended for printing
+
+For best printing results, install a Chromium based browser. If you don't want to make this your default browser, take advantage of the alternate-browser settings. 
+
+The following are known to work well.
+* Brave
+* Chromium
+* Chrome
+* Edge
+
+### NOT recommended for printing
+
+* Firefox prints well enough but doesn't close the browser afterward. 
+* Edge Classic is no longer supported.
+* Internet Explorer is not supported.
+
+## Markdown extensions and remoting
+
+To use Print with a remote host, you must install it **on the remote host**. 
+
+To get the benefit of a Markdown extension when printing a document from a remote host, the Markdown extension must be built with an `extensionKind` of `workspace` _and_ it must be installed to the remote host. 
+
+Most such extensions are not built for `workspace`. They can be trivially fixed by modifying their `package.json`. Unfortunately this manual patch is likely to be lost whenever the extension is updated, so you should raise an issue with the author of extensions you patch.
+
+## Alternate browser
+
+You cannot supply command-line options on the alternate browser path. On Windows, we automatically put quotes around your path in case of spaces in file or folder names. On other platforms, spaces are automatically escaped.
+
+Both auto-quoting and escaping of spaces are incompatible with the use of command line options. The solution is to create a batch file (or shell script) that launches the browser with command line options, and supply the path to the batch file (or shell script).
+
+### Chrome and plugins
+Chrome may retain your printer, paper size and margin selections between print jobs. Some Chrome command line options cause errors to be reported, even though printing succeeds. 
+
+Some Chrome plugins interfere with print job styling. While it is possible to suppress plugins with `--disable-plugins` this doesn't work when there is already a running instance of Chrome. The `--incognito` switch suppresses plugins when there is a running instance, but has its own problems.
+
+## Indirect Internet dependencies
+
+The Math+Markdown extension (installs the KaTeX plugin) requires an internet connection for stylesheets and fonts. You must also configure a stylesheet reference. Details are in the manual.
+
+## Reporting a problem
+
+If you _still_ can't get Print to work, [raise an issue on the repository](https://github.com/PDConSec/vsc-print/issues). We'll try to help you.
+
+
+
+We may ask you to crank up your logging level, reproduce the problem and then send us the log.
+
+### Logging
+
+Set the logging level with the `Print: Log Level` setting. This defaults to `error` (minimal logging) but you can turn it all the way up to `debug` which is very detailed, or even `silly` which will even log calls to the garbage collector.
+
