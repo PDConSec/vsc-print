@@ -19,6 +19,8 @@ localize("EMPTY_SELECTION", "x");
 localize("ERROR_PRINTING", "x");
 localize("ACCESS_DENIED_CREATING_WEBSERVER", "x");
 localize("UNEXPECTED_ERROR", "x");
+localize("TOO_MANY_FILES", "x");
+localize("FILE_LIST_DISABLED", "x");
 // #endregion
 
 let server: http.Server | undefined;
@@ -48,7 +50,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.print", printCommand));
-	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.printFolder", printFolderCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.sessionCount", () => printSessions.size));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.gc", gc));
@@ -138,36 +139,6 @@ function printCommand(cmdArgs: any): PrintSession {
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;
 }
-
-function printFolderCommand(commandArgs: any): PrintSession | undefined {
-		logger.debug("Print Folder command was invoked");
-	const editor = vscode.window.activeTextEditor;
-	let folderUri: vscode.Uri;
-	if (commandArgs) {
-		folderUri = commandArgs;
-	}
-	else if (editor) {
-		if (editor.document.isUntitled) {
-			logger.debug("Folder printing aborted because the editor contains an unsaved file");
-			vscode.window.showErrorMessage(localise("UNSAVED_FILE"));
-			return;
-		}
-		const cmdArgs = commandArgs as vscode.Uri;
-		folderUri = vscode.Uri.from({
-			scheme: cmdArgs.scheme,
-			path: path.dirname(editor.document.uri.fsPath)
-		});
-	}
-	else {
-		logger.debug("Folder printing aborted because no command argument was presented");
-		vscode.window.showErrorMessage(localise("NO_SELECTION"));
-		return;
-	}
-	const printSession = new PrintSession(folderUri);
-	printSessions.set(printSession.sessionId, printSession);
-	return printSession;
-}
-
 
 export function deactivate() {
 	server?.close();

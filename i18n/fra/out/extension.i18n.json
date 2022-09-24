@@ -4,5 +4,7 @@
   "EMPTY_SELECTION": "Il n’y a rien à imprimer",
   "ERROR_PRINTING": "Une erreur s’est produite lors de l’impression.",
   "ACCESS_DENIED_CREATING_WEBSERVER": "Une erreur « Accès refusé » s’est produite lors du démarrage du serveur Web intégré.",
-  "UNEXPECTED_ERROR": "Une erreur inattendue s’est produite."
+  "UNEXPECTED_ERROR": "Une erreur inattendue s’est produite.",
+	"TOO_MANY_FILES": "Trop de fichiers dans le répertoire pour inclure du contenu. Seul le résumé sera imprimé.",
+	"FILE_LIST_DISABLED": "La liste des fichiers est désactivée"
 }

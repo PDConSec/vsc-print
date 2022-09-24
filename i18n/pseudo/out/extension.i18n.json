@@ -4,5 +4,7 @@
   "EMPTY_SELECTION": ">>Nothing to print",
   "ERROR_PRINTING": ">>Error while attempting to print",
   "ACCESS_DENIED_CREATING_WEBSERVER": ">>An “Access Denied” error occurred while starting the embedded webserver",
-  "UNEXPECTED_ERROR": ">>Unexpected error"
+  "UNEXPECTED_ERROR": ">>Unexpected error",
+	"TOO_MANY_FILES": ">>Too many files in folder to include content. Only the summary will be printed.",
+	"FILE_LIST_DISABLED": ">>file-list is disabled"
 }
