@@ -51,4 +51,4 @@ Some things you can configure:
 - line spacing (leave yourself more room for handwritten annotation of code)
 
 
-<iframe src="https://pdconsec.net" style="height:100%;width:100%" />
+<iframe src="https://pdconsec.net" style="height:100%;width:100%"></iframe>
