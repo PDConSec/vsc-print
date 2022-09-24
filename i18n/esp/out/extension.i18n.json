@@ -4,5 +4,7 @@
   "EMPTY_SELECTION": "Nada que imprimir",
   "ERROR_PRINTING": "Error al intentar imprimir",
   "ACCESS_DENIED_CREATING_WEBSERVER": "Se ha producido un error de \"Acceso denegado\" al iniciar el servidor web incrustado",
-  "UNEXPECTED_ERROR": "Error imprevisto"
+  "UNEXPECTED_ERROR": "Error imprevisto",
+	"TOO_MANY_FILES": "Demasiados archivos en el directorio para incluir contenido. Solo se imprimirá el resumen.",
+	"FILE_LIST_DISABLED": "La lista de archivos está deshabilitada"
 }

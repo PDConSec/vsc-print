@@ -43,11 +43,6 @@
 			},
 			{
 				"category": "%commands.category%",
-				"command": "vsc-print.printFolder",
-				"title": "%commands.title.printFolder%"
-			},
-			{
-				"category": "%commands.category%",
 				"command": "vsc-print.help",
 				"title": "%commands.title.help%"
 			},
@@ -110,7 +105,7 @@
 					},
 					"print.logLevel": {
 						"type": "string",
-						"markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Silly` will log absolutely everything. `Debug` is good for troubleshooting but the log file will grow fast.",
+						"markdownDescription": "%print.logLevel.markdownDescription%",
 						"enum": [
 							"error",
 							"warn",
@@ -203,7 +198,7 @@
 						"description": "%print.folder.fileNames.description%"
 					},
 					"print.folder.include": {
-						"title": "%print.folder.include.title",
+						"title": "%print.folder.include.title%",
 						"default": [],
 						"type": "array",
 						"items": {
@@ -212,12 +207,12 @@
 						"description": "%print.folder.include.description%"
 					},
 					"print.folder.exclude": {
-						"title": "%print.folder.exclude.title",
+						"title": "%print.folder.exclude.title%",
 						"default": [
 							"{bin,obj,out}",
 							"node_module",
 							"data",
-							"**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo}"
+							"**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo,design}"
 						],
 						"type": "array",
 						"items": {
@@ -230,6 +225,18 @@
 						"default": 1200,
 						"type": "integer",
 						"description": "%print.folder.maxLines.description%"
+					},
+					"print.folder.maxFiles": {
+						"title": "%print.folder.maxFiles.title%",
+						"default": 30,
+						"type": "integer",
+						"description": "%print.folder.maxFiles.description%"
+					},
+					"print.folder.includeFileList": {
+						"title": "%print.folder.includeFileList.title%",
+						"default": false,
+						"type": "boolean",
+						"description": "%print.folder.includeFileList.description%"
 					}
 				}
 			}
