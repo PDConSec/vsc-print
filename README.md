@@ -49,6 +49,3 @@ Some things you can configure:
 - whether or not you want line numbers
 - alternate browser for printing
 - line spacing (leave yourself more room for handwritten annotation of code)
-
-
-<div src="https://pdconsec.net" style="height:100%;width:100%"></div>
