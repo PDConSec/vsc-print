@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.10.1
+
+- Fix broken asset path
+- Move localisation credits to end of README.md
+
 ### 0.10.0
 
 - Webserver binds only to loopback interface, request origin no longer checked
@@ -7,7 +12,10 @@
   - ancillary documents moved to /doc
   - images etc moved to /assets
 - `Print: Open the manual` is now localised, falling back to English
-- `Print: Open the vscode-print log file` opens the log file in VS Code for inspection
+- `Print: Open the log` opens the log file in VS Code for inspection
+- New settings
+	- `Log Level` controls the minimum severity for log messages
+	- `Max Files` limits the number of files that printing a folder can render into a single print job
 
 ### 0.9.31
 
