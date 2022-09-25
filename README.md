@@ -1,4 +1,4 @@
-# <img width="64px" src="./vscode-print-128.png"></img> Print
+# <img width="64px" src="assets/vscode-print-128.png"></img> Print
 
 [Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
 
