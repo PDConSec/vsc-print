@@ -2,7 +2,6 @@
 	"configuration.title.print": "Printing",
 	"commands.category": "Printing",
 	"commands.title.print": "Print",
-	"commands.title.printFolder": "Print content of folder",
 	"commands.title.help": "Open the manual",
 	"commands.title.openLog": "Open the log file",
 	"print.alternateBrowser.title": "Alternate browser",
