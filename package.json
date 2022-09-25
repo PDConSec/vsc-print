@@ -72,7 +72,6 @@
 						"default": 1
 					},
 					"print.fontSize": {
-						"title": "%print.fontSize.title%",
 						"type": "string",
 						"enum": [
 							"6pt",
@@ -127,7 +126,6 @@
 						"description": "%print.browserPath.description%"
 					},
 					"print.colourScheme": {
-						"title": "%print.colourScheme.title%",
 						"type": "string",
 						"enum": [
 							"A11 Y",
@@ -194,11 +192,9 @@
 					"print.folder.fileNames": {
 						"default": true,
 						"type": "boolean",
-						"title": "%print.folder.fileNames.title%",
 						"description": "%print.folder.fileNames.description%"
 					},
 					"print.folder.include": {
-						"title": "%print.folder.include.title%",
 						"default": [],
 						"type": "array",
 						"items": {
@@ -207,7 +203,6 @@
 						"description": "%print.folder.include.description%"
 					},
 					"print.folder.exclude": {
-						"title": "%print.folder.exclude.title%",
 						"default": [
 							"{bin,obj,out}",
 							"node_module",
@@ -221,19 +216,16 @@
 						"description": "%print.folder.exclude.description%"
 					},
 					"print.folder.maxLines": {
-						"title": "%print.folder.maxLines.title%",
 						"default": 1200,
 						"type": "integer",
 						"description": "%print.folder.maxLines.description%"
 					},
 					"print.folder.maxFiles": {
-						"title": "%print.folder.maxFiles.title%",
 						"default": 30,
 						"type": "integer",
 						"description": "%print.folder.maxFiles.description%"
 					},
 					"print.folder.includeFileList": {
-						"title": "%print.folder.includeFileList.title%",
 						"default": false,
 						"type": "boolean",
 						"description": "%print.folder.includeFileList.description%"
