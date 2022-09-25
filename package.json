@@ -246,10 +246,6 @@
 				{
 					"command": "vsc-print.print",
 					"group": "navigation"
-				},
-				{
-					"command": "vsc-print.printFolder",
-					"group": "navigation"
 				}
 			],
 			"editor/title": [
