@@ -32,6 +32,7 @@ if (captionByFilename[colourScheme]) {
 }
 const printSessions = new Map<string, PrintSession>();
 let _gc: NodeJS.Timer;
+
 function gc() {
 	const allKvps = Array.from(printSessions);
 	const completed = allKvps.filter(kvp => kvp[1].completed);
@@ -39,6 +40,7 @@ function gc() {
 		printSessions.delete(sessionId);
 	}
 }
+
 export function activate(context: vscode.ExtensionContext) {
 	logger.debug("Print activated");
 
