@@ -1,33 +1,22 @@
-# Rendered Markdown
+# Print Markdown &ndash; _rendered_
+
+<div style="float:left; margin-right:5em">
+
+## Core Markdown
 
 - Headings 
-- Bullets,numbering
+- Bullets and numbering
 - __Bold__ and _italic_ text
 - Images
 - Tables
+</div>
 
-Even Markdown extensions. 
+<div>
 
-<table>
-<tr>
-<td colspan=2>
+## Many extensions 
 
 ```smiles
 O=C(Oc1ccccc1C(=O)O)C
 ```
-</td>
-</tr>
-<tr><td>
 
-$$
-\begin{alignedat}{2}
-   10&x+ &3&y = 2 \\
-   3&x+&13&y = 4
-\end{alignedat}
-$$
-</td><td>
-
-$$
-\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}
-$$
-</td></tr></table>
+If it works in the Preview pane you can print it, apart from some extensions that depend on script.
