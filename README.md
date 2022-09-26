@@ -1,4 +1,4 @@
-[English](README.md) | [Français](README.fra.md) | [اردو](README.iri.md) | [Italiano](README.ita.md) | [Íslenska] (README.isl.md) | [简体中文](README.zho.md)
+[English](README.md) | [Français](README.fra.md) | [اردو](README.iri.md) | [Italiano](README.ita.md) | [Íslenska](README.isl.md) | [简体中文](README.zho.md)
 
 # <img width="64px" src="assets/vscode-print-128.png"></img> Print, right where it belongs
 
