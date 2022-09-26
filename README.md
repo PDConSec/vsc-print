@@ -35,7 +35,7 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 
 ## Highly configurable
 
-There are a number of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](doc/manual.md) If things aren't going your way, maybe you should read it. If you're having first-use problems, the manual contains a [troubleshooting guide](doc/manual.eng.md#troubleshooting).
+There are a number of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](doc/manual.eng.md) If things aren't going your way, maybe you should read it. If you're having first-use problems, the manual contains a [troubleshooting guide](doc/manual.eng.md#troubleshooting).
 
 Some things you can configure:
 
@@ -46,7 +46,7 @@ Some things you can configure:
 
 ## Localisation 
 
-[English and French](https://github.com/PeterWone/vsc-print) by Peter Wone
+[English](README.eng.md) and [French](README.fra.md) by Peter Wone
 
 [Chinese](https://github.com/kuriyamasss/vsc-print) by Kuriyamasss,中文版本由Kuriyamasss翻译
 

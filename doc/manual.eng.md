@@ -1,8 +1,8 @@
 # Using the Print extension
 
-[English version](https://github.com/PeterWone/vsc-print) by Peter Wone
+English version by Peter Wone
 
-[ENGLISH](../MANUAL.md) | [FRANCAISE](../MANUAL.fra.md) | [DEUTSCH](../MANUAL.deu.md) | [ESPAGNOLE](../MANUAL.esp.md) | [中文CHINESE](../MANUAL.zho.md) | [Add a language](how-to-add-a-language.md)
+[ENGLISH](manual.eng.md) | [FRANCAISE](mania.fra.md) | [DEUTSCH](manual.deu.md) | [ESPAGNOLE](manual.esp.md) | [中文CHINESE](manual.zho.md) | [Add a language](how-to-add-a-language.md)
 
 # Contents
 
@@ -61,6 +61,7 @@ Here is a list of available setting names as they appear in the configuration fi
 * `print.printAndClose` : after printing, close the browser
 * `print.folder.include`: pattern for files to include. Empty matches everything.
 * `print.folder.exclude`: patterns to exclude
+* `print.folder.maxFiles`: the maximum number of files for which content is rendered when printing a folder
 * `print.folder.maxLines`: files containing more lines than this threshold will be ignored
 * `print.logLevel`: controls the level of detail going into the log file
 
@@ -88,7 +89,7 @@ If you need to supply command-line options, create a batch file (or a bash scrip
 
 Using the `Colour Scheme` setting you can specify the colour scheme used for syntax colouring. Choices are limited to light themes because printers use white paper. 
 
-While it is possible to use a dark theme and just set the back
+If you print the active document and there is a multi-line selection, only the selection is printed.
 
 ### Type face and size
 
@@ -103,12 +104,6 @@ You probably want Markdown print-jobs rendered and styled, and this is the defau
 ### Colour scheme
 
 For source code printing, stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because printer paper is white and printer inks and toners are designed for white paper. 
-
-
-
-Line spacing and font size settings are available for source code. 
-
-There are limits to the inference of syntactical context when applying the syntax colouring engine (highlight.js) to a selection. You can often improve this by expanding the selection to include things like function headers.
 
 # Markdown
 
@@ -244,23 +239,17 @@ You cannot supply command-line options on the alternate browser path. On Windows
 Both auto-quoting and escaping of spaces are incompatible with the use of command line options. The solution is to create a batch file (or shell script) that launches the browser with command line options, and supply the path to the batch file (or shell script).
 
 ### Chrome and plugins
+
 Chrome may retain your printer, paper size and margin selections between print jobs. Some Chrome command line options cause errors to be reported, even though printing succeeds. 
 
 Some Chrome plugins interfere with print job styling. While it is possible to suppress plugins with `--disable-plugins` this doesn't work when there is already a running instance of Chrome. The `--incognito` switch suppresses plugins when there is a running instance, but has its own problems.
 
-## Indirect Internet dependencies
-
-The Math+Markdown extension (installs the KaTeX plugin) requires an internet connection for stylesheets and fonts. You must also configure a stylesheet reference. Details are in the manual.
-
 ## Reporting a problem
 
 If you _still_ can't get Print to work, [raise an issue on the repository](https://github.com/PDConSec/vsc-print/issues). We'll try to help you.
-
-
 
 We may ask you to crank up your logging level, reproduce the problem and then send us the log.
 
 ### Logging
 
 Set the logging level with the `Print: Log Level` setting. This defaults to `error` (minimal logging) but you can turn it all the way up to `debug` which is very detailed, or even `silly` which will even log calls to the garbage collector.
-
