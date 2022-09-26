@@ -37,12 +37,12 @@ Vous pouvez également cliquer avec le bouton droit sur un fichier dans le volet
 
 Il existe différents paramètres. La plupart d’entre eux, vous avez juste besoin de lire les descriptions sur la page des paramètres, mais nous sommes de la vieille école et [nous avons écrit un manuel.] (doc/manual.fra.md) Si les choses ne vont pas bien, vous devriez peut-être le lire. Si vous rencontrez des problèmes de première utilisation, le manuel contient un [guide de dépannage] (doc/manual.fra.md#troubleshooting).
 
-Some things you can configure:
+Quelques-unes des choses que vous pouvez configurer:
 
-- the colour scheme used for syntax colouring
-- whether or not you want line numbers
-- alternate browser for printing
-- line spacing (leave yourself more room for handwritten annotation of code)
+- la palette de couleurs utilisée pour la coloration syntaxique
+- si vous voulez ou non des numéros de ligne
+- un navigateur autre que votre navigateur par défaut, à utiliser lors de l’impression
+- interligne (laissez-vous plus de place pour l’annotation manuscrite du code)
 
 ## Localisation 
 
