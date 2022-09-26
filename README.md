@@ -46,7 +46,7 @@ Some things you can configure:
 
 ## Localisation 
 
-[English](README.eng.md) and [French](README.fra.md) by Peter Wone
+[English](README.md) and [French](README.fra.md) by Peter Wone
 
 [Chinese](https://github.com/kuriyamasss/vsc-print) by Kuriyamasss,中文版本由Kuriyamasss翻译
 
