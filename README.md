@@ -1,3 +1,16 @@
+<style>
+	.translation-links {
+		border-bottom: thick silver solid;
+		border-top: thick silver solid;
+		columns: 3;
+		font-size: large;
+	}
+	@media print {
+	.translation-links {
+		visibility: hidden;
+	}
+}
+	</style>
 <div class="translation-links">
 
 [English](README.md) 

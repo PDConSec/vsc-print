@@ -37,12 +37,3 @@ img {
 	max-width: 100%;
 }
 
-@media print {
-	.translation-links {
-		border-bottom: thick silver solid;
-		border-top: thick silver solid;
-		columns: 3;
-		font-size: large;
-		visibility: hidden;
-	}
-}
