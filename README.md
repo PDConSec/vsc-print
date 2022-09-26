@@ -6,7 +6,7 @@
 
 Print-jobs are rendered as styled HTML and served from an embedded webserver. Your local web browser is launched to load the print-job and give you printing options like paper size, page orientation and margin size. 
 
-So if you have a local browser that can print, and VS Code can launch it, you're in business.  
+So if you have a local browser that can print, and VS Code can launch it, you can print.
 
 ## Source code
 
