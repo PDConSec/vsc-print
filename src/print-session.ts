@@ -12,8 +12,6 @@ import { defaultCss, filenameByCaption } from "./imports";
 const defaultMarkdownCss: string = require("./css/default-markdown.css").default.toString();
 const lineNumbersCss: string = require("./css/line-numbers.css").default.toString();
 let settingsCss: string = require("./css/settings.css").default.toString();
-const colourSchemeName: string = filenameByCaption[vscode.workspace.getConfiguration("print", null).colourScheme];
-const colourSchemeCss: string = require(`highlight.js/styles/${colourSchemeName}.css`).default.toString();
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export class PrintSession {
@@ -146,9 +144,14 @@ export class PrintSession {
 			logger.debug(`Responding to vsc-print.resource request for ${urlParts[3]} in session ${urlParts[1]}`);
 			switch (urlParts[3]) {
 				case "colour-scheme.css":
+					let colourScheme = vscode.workspace.getConfiguration("print").colourScheme;
+					let colourSchemeName: string = filenameByCaption[colourScheme];
+					logger.debug(`Loading colour scheme from ${colourSchemeName}`);
+					let colourSchemeCss: string = require(`highlight.js/styles/${colourSchemeName}.css`).default.toString();
 					response.writeHead(200, {
 						"Content-Type": "text/css; charset=utf-8",
-						"Content-Length": colourSchemeCss.length
+						"Content-Length": colourSchemeCss.length,
+						'Cache-Control': 'no-cache'
 					});
 					response.end(colourSchemeCss);
 					break;

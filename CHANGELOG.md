@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.10.4
+
+- Fixed an issue preventing the selected colour scheme from being applied
+
 ### 0.10.1
 
 - Fix broken asset path

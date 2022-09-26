@@ -25,10 +25,10 @@ localize("FILE_LIST_DISABLED", "x");
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
-let colourScheme = vscode.workspace.getConfiguration("print", null).colourScheme;
-if (captionByFilename[colourScheme]) {
+if (captionByFilename[vscode.workspace.getConfiguration("print").colourScheme]) {
 	// legacy value, convert
-	vscode.workspace.getConfiguration("print", null).update("colourScheme", captionByFilename[colourScheme]);
+	let cbf = captionByFilename[vscode.workspace.getConfiguration("print").colourScheme];
+	vscode.workspace.getConfiguration("print").update("colourScheme", cbf);
 }
 const printSessions = new Map<string, PrintSession>();
 let _gc: NodeJS.Timer;
