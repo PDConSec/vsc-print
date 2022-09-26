@@ -1,11 +1,5 @@
 # <img width="64px" src="assets/vscode-print-128.png"></img> Print
 
-[Marketplace page](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)
-
-[English version](https://github.com/PeterWone/vsc-print) by Peter Wone
-
-[Chinese Version](https://github.com/kuriyamasss/vsc-print) by Kuriyamasss,中文版本由Kuriyamasss翻译
-
 [ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
 
 # Print, right where it belongs
@@ -49,3 +43,15 @@ Some things you can configure:
 - whether or not you want line numbers
 - alternate browser for printing
 - line spacing (leave yourself more room for handwritten annotation of code)
+
+## Localisation 
+
+[English and French](https://github.com/PeterWone/vsc-print) by Peter Wone
+
+[Chinese](https://github.com/kuriyamasss/vsc-print) by Kuriyamasss,中文版本由Kuriyamasss翻译
+
+Icelandic by Kris Kristinsson
+
+Italian by Fabrizio Di Petro
+
+Urdu by Muhummad Ali Khan
