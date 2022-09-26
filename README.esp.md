@@ -1,3 +1,19 @@
+<div class="translation-links">
+
+[English](README.md) 
+
+[Français](README.fra.md) 
+
+[اردو](README.iri.md)
+
+[Italiano](README.ita.md)
+
+[Íslenska](README.isl.md)
+
+[简体中文](README.zho.md)
+
+</div>
+
 # <img width="64px" src="vscode-print-128.png"></img> Print
 
 [Página del mercado](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print)

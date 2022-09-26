@@ -1,11 +1,22 @@
-# <img width="64px" src="assets/vscode-print-128.png"></img> Print
+<div class="translation-links">
 
-[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
+[English](README.md) 
 
-# Print, right where it belongs
+[Français](README.fra.md) 
+
+[اردو](README.iri.md)
+
+[Italiano](README.ita.md)
+
+[Íslenska](README.isl.md)
+
+[简体中文](README.zho.md)
+
+</div>
+
+# <img width="64px" src="assets/vscode-print-128.png"></img> Print, right where it belongs
 
 ![source](assets/print-icon.png) 
-
 
 ## Cross-platform printing
 
@@ -43,15 +54,3 @@ Some things you can configure:
 - whether or not you want line numbers
 - alternate browser for printing
 - line spacing (leave yourself more room for handwritten annotation of code)
-
-## Localisation 
-
-[English](README.md) and [French](README.fra.md) by Peter Wone
-
-[Chinese](https://github.com/kuriyamasss/vsc-print) by Kuriyamasss,中文版本由Kuriyamasss翻译
-
-Icelandic by Kris Kristinsson
-
-Italian by Fabrizio Di Petro
-
-Urdu by Muhummad Ali Khan

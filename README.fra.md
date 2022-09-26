@@ -1,11 +1,22 @@
-# <img width="64px" src="assets/vscode-print-128.png"></img> Print
+<div class="translation-links">
 
-[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
+[English](README.md) 
 
-# Imprimer, là où il doit être
+[Français](README.fra.md) 
+
+[اردو](README.iri.md)
+
+[Italiano](README.ita.md)
+
+[Íslenska](README.isl.md)
+
+[简体中文](README.zho.md)
+
+</div>
+
+# <img width="64px" src="assets/vscode-print-128.png"></img> Imprimer, là où il doit être
 
 ![source](assets/print-icon.png) 
-
 
 ## Impression multiplateforme
 
@@ -23,19 +34,19 @@ Donc, si vous avez un navigateur local qui peut imprimer, et VS Code peut le lan
 
 ## Expérience utilisateur classique
 
-L’icône d’impression de la barre d’outils imprime le document dans l’éditeur actif.
+L’icône d’impression de la barre d’outils imprime le contenu de l’éditeur actif. Cela peut différer du fichier enregistré lorsqu’il y a des modifications non enregistrées, et bien sûr, vous pouvez imprimer un nouveau document qui n’a jamais été enregistré.
 
-Si vous avez une sélection de texte qui franchit au moins un saut de ligne, vous pouvez cliquer avec le bouton droit de la souris et choisir `Imprimer` dans le menu contextuel pour envoyer uniquement la sélection à l’imprimante. En l’absence d’une sélection multiligne, le document entier est imprimé. Vous pouvez contrôler la position de `Imprimer` dans ce menu, ou la supprimer complètement.
+Si vous avez une sélection de texte qui s’étend au moins un saut de ligne, vous pouvez clic-droit sur la texte et choisir `Imprimer` dans le menu contextuel pour envoyer seulement la sélection à l’imprimante. En l’absence d’une sélection multiligne, le document entier est imprimé. Vous pouvez contrôler la position de `Imprimer` dans ce menu, ou la supprimer complètement.
 
 ![context-menu-editor](assets/context-menu.png)
 
-Vous pouvez également cliquer avec le bouton droit sur un fichier dans le volet de l’explorateur de fichiers et choisir Imprimer dans le menu contextuel.
+Vous pouvez également clic-droit sur un fichier dans le volet de l’explorateur de fichiers et choisir Imprimer dans le menu contextuel.
 
 ![context-menu-file-explorer](assets/tree-context-menu.png)
 
 ## Très configurable
 
-Il existe différents paramètres. La plupart d’entre eux, vous avez juste besoin de lire les descriptions sur la page des paramètres, mais nous sommes de la vieille école et [nous avons écrit un manuel.] (doc/manual.fra.md) Si les choses ne vont pas bien, vous devriez peut-être le lire. Si vous rencontrez des problèmes de première utilisation, le manuel contient un [guide de dépannage] (doc/manual.fra.md#troubleshooting).
+Il existe différents paramètres. La plupart d’entre eux, vous avez juste besoin de lire les descriptions sur la page des paramètres, mais nous sommes de la vieille école et [nous avons écrit un manuel.] (doc/manual.fra.md) Si les choses ne vont pas bien, vous devriez peut-être le lire. Si vous rencontrez des problèmes de première utilisation, le manuel contient un [guide de dépannage] (doc/manual.fra.md#Dépannage).
 
 Quelques-unes des choses que vous pouvez configurer:
 
@@ -43,15 +54,3 @@ Quelques-unes des choses que vous pouvez configurer:
 - si vous voulez ou non des numéros de ligne
 - un navigateur autre que votre navigateur par défaut, à utiliser lors de l’impression
 - interligne (laissez-vous plus de place pour l’annotation manuscrite du code)
-
-## Localisation 
-
-[English](README.md) and [French](README.fra.md) by Peter Wone
-
-[Chinese](https://github.com/kuriyamasss/vsc-print) by Kuriyamasss,中文版本由Kuriyamasss翻译
-
-Icelandic by Kris Kristinsson
-
-Italian by Fabrizio Di Petro
-
-Urdu by Muhummad Ali Khan
