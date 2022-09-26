@@ -2,4 +2,4 @@
 
 ![source](assets/print-icon.png) 
 
-Traduzione in sospeso.
+## Traduzione in sospeso
