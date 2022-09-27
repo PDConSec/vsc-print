@@ -6,7 +6,7 @@ Yes, it's in English. The fellow who translates is busy with his studies. If you
 
 [Français](README.fra.md) 
 
-[اردو](README.iri.md)
+[اردو](README.urd.md)
 
 [Italiano](README.ita.md)
 

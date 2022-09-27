@@ -4,7 +4,7 @@
 
 [Français](README.fra.md) 
 
-[اردو](README.iri.md)
+[اردو](README.urd.md)
 
 [Italiano](README.ita.md)
 
