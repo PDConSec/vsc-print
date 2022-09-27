@@ -5,6 +5,7 @@ const locVal: any = {
 	"en": require("../out/extension.nls.en.json"),
 	"es": require("../out/extension.nls.es.json"),
 	"fr": require("../out/extension.nls.fr.json"),
+  "ur": require("../out/extension.nls.ur.json"),
 	"zh": require("../out/extension.nls.zh.json")
 };
 
