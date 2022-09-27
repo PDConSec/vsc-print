@@ -1,20 +1,6 @@
-<div class="translation-links">
+[English](README.md) | [Français](README.fra.md) | [اردو](README.urd.md) | [Italiano](README.ita.md) | [Íslenska](README.isl.md) | [简体中文](README.zho.md)
 
-[English](README.md) 
-
-[Français](README.fra.md) 
-
-[اردو](README.urd.md)
-
-[Italiano](README.ita.md)
-
-[Íslenska](README.isl.md)
-
-[简体中文](README.zho.md)
-
-</div>
-
-# <img width="64px" src="vscode-print-128.png"></img> Print
+![source](assets/print-icon.png) 
 
 大多数首次使用失败是由于第三方重新打包错误造成的。如果您遇到这种情况。请获取 [我们生产和测试的包装](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print).
 
