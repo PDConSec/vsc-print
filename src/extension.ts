@@ -1,3 +1,4 @@
+import { logger } from './logger';
 import { PrintSession } from './print-session';
 import * as vscode from 'vscode';
 import * as http from "http";
@@ -7,6 +8,7 @@ import * as path from "path";
 import { captionByFilename, filenameByCaption, localise } from './imports';
 import * as nls from 'vscode-nls';
 import { HtmlRenderer } from './html-renderer';
+import { extensionPath } from './extension-path';
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -17,17 +19,20 @@ localize("EMPTY_SELECTION", "x");
 localize("ERROR_PRINTING", "x");
 localize("ACCESS_DENIED_CREATING_WEBSERVER", "x");
 localize("UNEXPECTED_ERROR", "x");
+localize("TOO_MANY_FILES", "x");
+localize("FILE_LIST_DISABLED", "x");
 // #endregion
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
-let colourScheme = vscode.workspace.getConfiguration("print", null).colourScheme;
-if (captionByFilename[colourScheme]) {
+if (captionByFilename[vscode.workspace.getConfiguration("print").colourScheme]) {
 	// legacy value, convert
-	vscode.workspace.getConfiguration("print", null).update("colourScheme", captionByFilename[colourScheme]);
+	let cbf = captionByFilename[vscode.workspace.getConfiguration("print").colourScheme];
+	vscode.workspace.getConfiguration("print").update("colourScheme", cbf);
 }
 const printSessions = new Map<string, PrintSession>();
 let _gc: NodeJS.Timer;
+
 function gc() {
 	const allKvps = Array.from(printSessions);
 	const completed = allKvps.filter(kvp => kvp[1].completed);
@@ -35,7 +40,10 @@ function gc() {
 		printSessions.delete(sessionId);
 	}
 }
+
 export function activate(context: vscode.ExtensionContext) {
+	logger.debug("Print activated");
+
 	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
 		etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton,
 		disposable: vscode.Disposable;
@@ -44,22 +52,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.print", printCommand));
-	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.printFolder", printFolderCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.sessionCount", () => printSessions.size));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.gc", gc));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", () => openDoc("manual")));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", () => openDoc("log")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
-
-	// capture the extension path
-	disposable = vscode.commands.registerCommand('extension.help', async (cmdArgs: any) => {
-		let pathToManual = path.join(context.extensionPath, "manual.md");
-		let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
-		vscode.commands.executeCommand('markdown.showPreview', uriManual);
-	});
 	server = http.createServer(async (request, response) => {
-		if (!connectingToLocalhost(request)) {
-			return request.socket.end();
-		}
 		try {
 			if (request.url) {
 				const urlParts = request.url.split('/',);
@@ -67,10 +66,12 @@ export function activate(context: vscode.ExtensionContext) {
 				if (printSession) {
 					await printSession.respond(urlParts, response);
 				} else {
+					logger.warn(`Dropping connection of ${request.url} does not correspond to a print session`);
 					return request.socket.end();
 				}
 			}
 		} catch (error) {
+			logger.error(error);
 			response.setHeader("Content-Type", "text/plain; charset=utf-8");
 			response.end((error as any).stack);
 		}
@@ -79,19 +80,22 @@ export function activate(context: vscode.ExtensionContext) {
 		if (err) {
 			switch (err.code) {
 				case "EACCES":
+					logger.debug(`ACCESS_DENIED_CREATING_WEBSERVER ${err.code}`);
 					vscode.window.showErrorMessage(localise("ACCESS_DENIED_CREATING_WEBSERVER"));
 					break;
 				default:
+					logger.debug(`UNEXPECTED_ERROR ${err.code}`);
 					vscode.window.showErrorMessage(`${localise("UNEXPECTED_ERROR")}: ${err.code}`);
 			}
 		}
 	});
 	server.on("listening", () => {
-		PrintSession.port = (server!.address() as AddressInfo).port;
+		const addr = server!.address() as AddressInfo;
+		PrintSession.port = addr.port;
+		logger.info(`Began listening on ${addr.address}:${addr.port}`);
 	});
 	let printConfig = vscode.workspace.getConfiguration("print", null);
-	server.listen();
-	context.subscriptions.push(disposable);
+	server.listen(0, "localhost");
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
 			HtmlRenderer.MarkdownEngine = mdparam;
@@ -100,6 +104,23 @@ export function activate(context: vscode.ExtensionContext) {
 	};
 	_gc = setInterval(gc, 2000);
 	return markdownExtensionInstaller;
+}
+
+function openDoc(doc: string) {
+	switch (doc) {
+		case "manual":
+			// todo localise the command that opens the manual
+			let pathToManual = path.join(extensionPath, "doc/manual.md");
+			let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
+			vscode.commands.executeCommand('markdown.showPreview', uriManual);
+			break;
+
+		case "log":
+			let pathToLogFile = path.join(extensionPath, "vscode-print.log");
+			let uriLogFile: vscode.Uri = vscode.Uri.file(pathToLogFile);
+			vscode.workspace.openTextDocument(uriLogFile).then(vscode.window.showTextDocument);
+			break;
+	}
 }
 
 const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
@@ -118,59 +139,15 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 };
 
 function printCommand(cmdArgs: any): PrintSession {
+	logger.debug("Print command was invoked");
 	const printSession = new PrintSession(cmdArgs);
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;
 }
 
-function printFolderCommand(commandArgs: any): PrintSession | undefined {
-	const editor = vscode.window.activeTextEditor;
-	let folderUri: vscode.Uri;
-	if (commandArgs) {
-		folderUri = commandArgs;
-	}
-	else if (editor) {
-		if (editor.document.isUntitled) {
-			vscode.window.showErrorMessage(localise("UNSAVED_FILE"));
-			return;
-		}
-		const cmdArgs = commandArgs as vscode.Uri;
-		folderUri = vscode.Uri.from({
-			scheme: cmdArgs.scheme,
-			path: path.dirname(editor.document.uri.fsPath)
-		});
-	}
-	else {
-		vscode.window.showErrorMessage(localise("NO_SELECTION"));
-		return;
-	}
-	const printSession = new PrintSession(folderUri);
-	printSessions.set(printSession.sessionId, printSession);
-	return printSession;
-}
-
-
 export function deactivate() {
 	server?.close();
 	clearInterval(_gc);
-}
-
-const localhostAddresses: String[] = ["::1", "::ffff:127.0.0.1", "127.0.0.1"]
-dns.lookup("localhost", { all: true, family: 4 }, (err, addresses) => {
-	addresses
-		.map(a => a.address)
-		.filter(a => localhostAddresses.indexOf(a) < 0)
-		.forEach(a => { localhostAddresses.push(a); localhostAddresses.push("::ffff:" + a); });
-})
-dns.lookup("localhost", { all: true, family: 6 }, (err, addresses) => {
-	addresses
-		.map(a => a.address)
-		.filter(a => localhostAddresses.indexOf(a) < 0)
-		.forEach(a => localhostAddresses.push(a));
-})
-
-function connectingToLocalhost(request: http.IncomingMessage): boolean {
-	// console.log(request.socket.localAddress)
-	return localhostAddresses.indexOf(request.socket.localAddress!) >= 0;
+	logger.info("Garbage collection stopped by deactivate")
 }
 

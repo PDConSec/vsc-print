@@ -1,5 +1,41 @@
 # Change Log
 
+### 0.10.4
+
+- Fixed an issue preventing the selected colour scheme from being applied
+
+### 0.10.1
+
+- Fix broken asset path
+- Move localisation credits to end of README.md
+
+### 0.10.0
+
+- Webserver binds only to loopback interface, request origin no longer checked
+- More updates to documentation and localisation 
+  - ancillary documents moved to /doc
+  - images etc moved to /assets
+- `Print: Open the manual` is now localised, falling back to English
+- `Print: Open the log` opens the log file in VS Code for inspection
+- New settings
+	- `Log Level` controls the minimum severity for log messages
+	- `Max Files` limits the number of files that printing a folder can render into a single print job
+
+### 0.9.31
+
+- Control logging level with setting
+- Update documentation and localisation 
+
+### 0.9.30
+
+- Add diagnostic logging
+
+### 0.9.29
+
+- Fix content source analysis
+- Fix printing of never-saved editor buffer
+- Add regression test for printing never-saved editor buffer
+
 ### 0.9.28
 
 - Update references to eliminate vulnerabilities.

@@ -1,3 +1,4 @@
+import { logger } from './logger';
 import { HtmlRenderer } from './html-renderer';
 import * as vscode from 'vscode';
 import * as http from "http";
@@ -11,8 +12,6 @@ import { defaultCss, filenameByCaption } from "./imports";
 const defaultMarkdownCss: string = require("./css/default-markdown.css").default.toString();
 const lineNumbersCss: string = require("./css/line-numbers.css").default.toString();
 let settingsCss: string = require("./css/settings.css").default.toString();
-const colourSchemeName: string = filenameByCaption[vscode.workspace.getConfiguration("print", null).colourScheme];
-const colourSchemeCss: string = require(`highlight.js/styles/${colourSchemeName}.css`).default.toString();
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export class PrintSession {
@@ -27,17 +26,23 @@ export class PrintSession {
 	public sessionId = nodeCrypto.randomUUID();
 	public uri: vscode.Uri | undefined;
 	constructor(cmdArgs?: vscode.Uri) {
+		const printConfig = vscode.workspace.getConfiguration("print", null);
+		logger.debug(`Creating a print session object for ${cmdArgs}`);
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
 				const printConfig = vscode.workspace.getConfiguration("print", null);
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";
-				const contentSource = await this.contentSource(cmdArgs);
+				const contentSource = await this.contentSource(cmdArgs!);
 				switch (contentSource) {
 					case "editor": {
+						logger.debug("Using the buffer of the active editor");
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
+						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
+						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						if (!document) throw "This can't happen";
+						this.uri = document.uri;
 						this.htmlRenderer = new HtmlRenderer(
 							document.uri.fsPath,
 							document.getText(),
@@ -47,7 +52,10 @@ export class PrintSession {
 					}
 						break;
 					case "selection": {
+						logger.debug("Printing the selection in the active editor");
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
+						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
+						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						if (!document) throw "This can't happen";
 						const selection = editor?.selection;
 						if (!selection) throw "This can't happen";
@@ -79,7 +87,10 @@ export class PrintSession {
 						break;
 					case "file":
 						document = await vscode.workspace.openTextDocument(cmdArgs!);
+						logger.debug(`Printing the file ${document.uri.fsPath}`);
 						this.uri = document.uri;
+						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
+						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						this.htmlRenderer = new HtmlRenderer(
 							document.uri.fsPath,
 							document.getText(),
@@ -88,7 +99,12 @@ export class PrintSession {
 						);
 						break;
 					case "folder":
+						logger.debug(`Printing the folder ${cmdArgs!.fsPath}`);
 						this.htmlRenderer = new HtmlRenderer(cmdArgs!.fsPath, "", "folder", printLineNumbers)
+						break;
+					default:
+						logger.error(contentSource);
+						vscode.window.showErrorMessage(contentSource);
 						break;
 				}
 				this.launchBrowser()
@@ -101,8 +117,9 @@ export class PrintSession {
 
 	public async respond(urlParts: string[], response: http.ServerResponse) {
 		await this.ready;
-		
+
 		if (urlParts.length === 3 && urlParts[2] === "") {
+			logger.debug(`Responding to base document request for session ${urlParts[1]}`)
 			const renderer = this.htmlRenderer;
 			const html = await renderer!.asHtml();
 			response.writeHead(200, {
@@ -111,6 +128,7 @@ export class PrintSession {
 			});
 			response.end(html);
 		} else if (urlParts.length === 3 && urlParts[2] === "completed") {
+			logger.debug(`Responding to "completed" request for session ${urlParts[1]}`)
 			this.completed = true;
 			response.writeHead(200, {
 				"Content-Type": "text/plain; charset=utf-8",
@@ -118,15 +136,22 @@ export class PrintSession {
 			});
 			response.end("OK");
 		} else if (urlParts.length === 4 && urlParts[2] === "workspace.resource") {
+			logger.debug(`Responding to workspace.resource request for session ${urlParts[1]}`);
 			const basePath = vscode.workspace.getWorkspaceFolder(this.uri!)?.uri.fsPath!;
 			const resourcePath = path.join(basePath, ...urlParts.slice(3));
 			await relativeResource(resourcePath);
 		} else if (urlParts.length === 4 && urlParts[2] === "vsc-print.resource") {
+			logger.debug(`Responding to vsc-print.resource request for ${urlParts[3]} in session ${urlParts[1]}`);
 			switch (urlParts[3]) {
 				case "colour-scheme.css":
+					let colourScheme = vscode.workspace.getConfiguration("print").colourScheme;
+					let colourSchemeName: string = filenameByCaption[colourScheme];
+					logger.debug(`Loading colour scheme from ${colourSchemeName}`);
+					let colourSchemeCss: string = require(`highlight.js/styles/${colourSchemeName}.css`).default.toString();
 					response.writeHead(200, {
 						"Content-Type": "text/css; charset=utf-8",
-						"Content-Length": colourSchemeCss.length
+						"Content-Length": colourSchemeCss.length,
+						'Cache-Control': 'no-cache'
 					});
 					response.end(colourSchemeCss);
 					break;
@@ -163,6 +188,7 @@ export class PrintSession {
 					response.end(css);
 					break;
 				default:
+					logger.debug(`vsc-print.resource/${urlParts[3]} not found`);
 					response.writeHead(404, {
 						"Content-Type": "text/plain; charset=utf-8",
 						"Content-Length": 9
@@ -220,19 +246,23 @@ export class PrintSession {
 		const testFlags = await vscode.commands.executeCommand("vsc-print.test.flags") as Set<string>;
 		if (!testFlags.has("suppress browser")) {
 			const cmd = PrintSession.getLaunchBrowserCommand();
+			const printConfig = vscode.workspace.getConfiguration("print", null);
+			logger.debug(`Platform detected as "${process.platform}" so launch browser command is "${cmd}"`);
 			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
 				// node on Linux incorrectly calls this error handler, with a null error object
 				if (error) {
-					vscode.window.showErrorMessage(`${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`);
+					const msg = `${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`;
+					logger.error(msg);
+					vscode.window.showErrorMessage(msg);
 				}
 			});
 		}
 		return url;
 	}
 
-	async contentSource(uri?: vscode.Uri): Promise<string> {
-		if (!uri) return "editor"; // unsaved
+	async contentSource(uri: vscode.Uri): Promise<string> {
 		try {
+			await vscode.workspace.fs.stat(uri); // barfs when file does not exist (unsaved)
 			const uristat = await vscode.workspace.fs.stat(uri);
 			if (uristat.type === vscode.FileType.Directory) return "folder";
 			const editor = vscode.window.activeTextEditor;
@@ -240,10 +270,13 @@ export class PrintSession {
 				return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
 			} else {
 				return "file";
-			}			
-		} catch (error) {
-			console.log(`Unexpected error analysing contentSource, uri was ${typeof uri === "undefined" ? "undefined" : JSON.stringify(uri)}`);
-			throw error;
+			}
+		} catch (ex) {
+			if (vscode.window.activeTextEditor) {
+				return "editor";
+			} else {
+				return `Content source could not be determined. "${uri}" does not resolve to a file and there is no active editor.`;
+			}
 		}
 	}
 }

@@ -1,7 +1,10 @@
+import { logger } from './logger';
 import braces = require('braces');
 import hljs = require('highlight.js');
 import path = require('path');
 import * as vscode from 'vscode';
+import { localise } from './imports';
+
 const templateFolderItem = require("./template-folder-item.html").default.toString();
 const template: string = require("./template.html").default.toString();
 
@@ -16,26 +19,40 @@ export class HtmlRenderer {
 	) { }
 	public async asHtml(): Promise<string> {
 		const printConfig = vscode.workspace.getConfiguration("print", null);
+		const EMBEDDED_STYLES = this.getEmbeddedStyles();
 		if (this.language === "folder") {
+			const printConfig = vscode.workspace.getConfiguration("print", null);
+			logger.debug(`Printing a folder`);
 			const docs = await this.docsInFolder();
-			const composite = docs.map(doc => templateFolderItem
+			const summary = printConfig.folder.includeFileList ?
+				`<h3>${docs.length} files</h3><pre>${docs.map(d => d.fileName).join("\n")}</pre>` :
+				`<h3>${docs.length} files</h3><p>(file list disabled)</p>`;
+			const msgTooManyFiles = localise("TOO_MANY_FILES");
+			const flagTooManyFiles = docs.length > printConfig.folder.maxFiles;
+			const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc => templateFolderItem
 				.replace("$FOLDER_ITEM_TITLE", doc.fileName)
 				.replace("$FOLDER_ITEM_CONTENT", () => `<table class="hljs">${this.getRenderedCode(doc.getText(), doc.languageId)}</table>`)
 			).join('\n');
 
+			if (flagTooManyFiles) {
+				vscode.window.showWarningMessage(msgTooManyFiles);
+			}
+
 			return template
 				.replace(/\$TITLE/g, path.basename(this.filename))
 				.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("$CONTENT", () => composite) // replacer fn suppresses interpretation of $
+				.replace("$CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
 				.replace("$DEFAULT_STYLESHEET_LINK",
 					'<link href="vsc-print.resource/default.css" rel="stylesheet" />\n' +
 					'\t<link href="vsc-print.resource/line-numbers.css" rel="stylesheet" />\n' +
 					'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
 					'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
 				.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
+				.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
 				;
 		} else {
 			if (printConfig.renderMarkdown && this.language === "markdown") {
+				logger.debug(`Printing rendered Markdown`);
 				const markdownConfig = vscode.workspace.getConfiguration("markdown", null);
 				return template
 					.replace(/\$TITLE/g, path.basename(this.filename))
@@ -43,8 +60,10 @@ export class HtmlRenderer {
 					.replace("$CONTENT", () => this.getRenderedCode(this.code, this.language)) // replacer fn suppresses interpretation of $
 					.replace("$DEFAULT_STYLESHEET_LINK", '<link href="vsc-print.resource/default-markdown.css" rel="stylesheet" />')
 					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n"))
+					.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
 					;
 			} else {
+				logger.debug(`Printing ${this.filename}`);
 				return template
 					.replace(/\$TITLE/g, path.basename(this.filename))
 					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
@@ -55,9 +74,14 @@ export class HtmlRenderer {
 						'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
 						'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
 					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
+					.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
 					;
 			}
 		}
+	}
+	getEmbeddedStyles() {
+		let editorConfig = vscode.workspace.getConfiguration("editor", null);
+		return `body{tab-size:${editorConfig.tabSize};}`;
 	}
 	getRenderedCode(code: string, languageId: string): string {
 		let renderedCode = "";
@@ -65,6 +89,10 @@ export class HtmlRenderer {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
 			if (printConfig.renderMarkdown && this.language === "markdown") {
 				renderedCode = HtmlRenderer.MarkdownEngine.render(code);
+				const v = renderedCode.lastIndexOf("</style>");
+				if (v != -1) {
+					renderedCode = renderedCode.substring(v + 8);
+				}
 			} else {
 				try {
 					renderedCode = hljs.highlight(code, { language: languageId }).value;
@@ -92,6 +120,7 @@ export class HtmlRenderer {
 				}
 			}
 		} catch {
+			logger.error("Markdown could not be rendered");
 			renderedCode = "<div>Could not render this file.</end>";
 		}
 		return renderedCode;
@@ -161,11 +190,12 @@ export class HtmlRenderer {
 		return out;
 	}
 	async docsInFolder(): Promise<vscode.TextDocument[]> {
+		logger.debug(`Enumerating the files in ${this.filename}`);
 		const printConfig = vscode.workspace.getConfiguration("print", null);
 		// findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
 		let excludePatterns: string[] = printConfig.folder.exclude || [];
 		if (excludePatterns.length == 0) {
-			excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp}");
+			excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp,design}");
 		}
 		let includePatterns: string[] = printConfig.folder.include || [];
 		if (includePatterns.length == 0) {
@@ -183,8 +213,15 @@ export class HtmlRenderer {
 		let rel = new vscode.RelativePattern(this.filename, includes);
 		const maxLineCount = printConfig.folder.maxLines;
 		const matcher = (document: vscode.TextDocument): boolean => document.lineCount < maxLineCount;
-		const fileUris = await vscode.workspace.findFiles(rel, excludes);
-		const docs = await Promise.all(fileUris.map(uri => vscode.workspace.openTextDocument(uri)));
+		let fileUris = await vscode.workspace.findFiles(rel, excludes);
+		logger.debug(`Includes: ${includes}`);
+		logger.debug(`Excludes: ${excludes}`);
+		const docOpenSettlements = await Promise.allSettled(fileUris.map(uri => vscode.workspace.openTextDocument(uri)));
+		const docs = await docOpenSettlements
+			.filter(dos => dos.status === "fulfilled")
+			.map(dos => (dos as PromiseFulfilledResult<vscode.TextDocument>).value);
+		logger.debug(`Eligible: ${fileUris.length} files\n${docs.map(doc => doc.uri.fsPath).join("\n")}`);
+
 		return docs.filter(doc => matcher(doc)).sort((a, b) => {
 			const A = a.fileName;
 			const B = b.fileName;

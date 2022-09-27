@@ -2,8 +2,8 @@
 	"name": "vscode-print",
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
-	"version": "0.9.28",
-	"icon": "vscode-print-128.png",
+	"version": "0.10.4",
+	"icon": "assets/vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
 		"email": "peter.wone@outlook.com"
@@ -11,7 +11,7 @@
 	"publisher": "pdconsec",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/PeterWone/vsc-print"
+		"url": "https://github.com/PDConSec/vsc-print"
 	},
 	"engines": {
 		"vscode": "^1.60.0"
@@ -37,19 +37,19 @@
 				"command": "vsc-print.print",
 				"title": "%commands.title.print%",
 				"icon": {
-					"dark": "./printer-icon-dog-ear-inverse.svg",
-					"light": "./printer-icon-dog-ear.svg"
+					"dark": "assets/printer-icon-dog-ear-inverse.svg",
+					"light": "assets/printer-icon-dog-ear.svg"
 				}
-			},
-			{
-				"category": "%commands.category%",
-				"command": "vsc-print.printFolder",
-				"title": "%commands.title.printFolder%"
 			},
 			{
 				"category": "%commands.category%",
 				"command": "vsc-print.help",
 				"title": "%commands.title.help%"
+			},
+			{
+				"category": "%commands.category%",
+				"command": "vsc-print.openLog",
+				"title": "%commands.title.openLog%"
 			}
 		],
 		"configuration": [
@@ -72,7 +72,6 @@
 						"default": 1
 					},
 					"print.fontSize": {
-						"title": "%print.fontSize.title%",
 						"type": "string",
 						"enum": [
 							"6pt",
@@ -103,9 +102,19 @@
 						],
 						"default": "inherit"
 					},
-					"print.showDiagnostics": {
-						"type": "boolean",
-						"description": "Show diagnostic information as notifications when performing print actions"
+					"print.logLevel": {
+						"type": "string",
+						"markdownDescription": "%print.logLevel.markdownDescription%",
+						"enum": [
+							"error",
+							"warn",
+							"info",
+							"http",
+							"verbose",
+							"debug",
+							"silly"
+						],
+						"default": "error"
 					},
 					"print.alternateBrowser": {
 						"type": "boolean",
@@ -117,7 +126,6 @@
 						"description": "%print.browserPath.description%"
 					},
 					"print.colourScheme": {
-						"title": "%print.colourScheme.title%",
 						"type": "string",
 						"enum": [
 							"A11 Y",
@@ -184,11 +192,9 @@
 					"print.folder.fileNames": {
 						"default": true,
 						"type": "boolean",
-						"title": "%print.folder.fileNames.title%",
 						"description": "%print.folder.fileNames.description%"
 					},
 					"print.folder.include": {
-						"title": "%print.folder.include.title",
 						"default": [],
 						"type": "array",
 						"items": {
@@ -197,12 +203,11 @@
 						"description": "%print.folder.include.description%"
 					},
 					"print.folder.exclude": {
-						"title": "%print.folder.exclude.title",
 						"default": [
 							"{bin,obj,out}",
 							"node_module",
 							"data",
-							"**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo}"
+							"**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo,design}"
 						],
 						"type": "array",
 						"items": {
@@ -211,10 +216,19 @@
 						"description": "%print.folder.exclude.description%"
 					},
 					"print.folder.maxLines": {
-						"title": "%print.folder.maxLines.title%",
 						"default": 1200,
 						"type": "integer",
 						"description": "%print.folder.maxLines.description%"
+					},
+					"print.folder.maxFiles": {
+						"default": 30,
+						"type": "integer",
+						"description": "%print.folder.maxFiles.description%"
+					},
+					"print.folder.includeFileList": {
+						"default": false,
+						"type": "boolean",
+						"description": "%print.folder.includeFileList.description%"
 					}
 				}
 			}
@@ -291,7 +305,6 @@
 		"typescript": "^3.9.10",
 		"vsce": "^2.9.2",
 		"vscode-nls-dev": "^3.3.2",
-		"vscode-test": "^1.6.1",
 		"webpack": "^5.54.0",
 		"webpack-cli": "^4.8.0"
 	},
@@ -300,7 +313,8 @@
 		"@types/markdown-it": "0.0.9",
 		"braces": "^3.0.2",
 		"highlight.js": "^10.7.3",
-		"vscode-nls": "^4.1.2"
+		"vscode-nls": "^4.1.2",
+		"winston": "^3.8.1"
 	},
 	"__metadata": {
 		"id": "05046d70-8146-42f5-ac9e-b97b37c8c0ef",

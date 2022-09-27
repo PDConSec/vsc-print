@@ -4,5 +4,7 @@
   "EMPTY_SELECTION": "没什么可以打印",
   "ERROR_PRINTING": "尝试打印时出错",
   "ACCESS_DENIED_CREATING_WEBSERVER": "启动内置网络服务器时发生错误:拒绝访问",
-  "UNEXPECTED_ERROR": "意外错误"
+  "UNEXPECTED_ERROR": "意外错误",
+	"TOO_MANY_FILES": "目录中的文件太多，无法包含内容。仅打印摘要。",
+	"FILE_LIST_DISABLED": "文件列表已禁用"
 }

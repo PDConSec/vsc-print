@@ -4,5 +4,7 @@
   "EMPTY_SELECTION": "Es gibt nichts zu drucken.",
   "ERROR_PRINTING": "Beim Drucken ist ein Fehler aufgetreten.",
   "ACCESS_DENIED_CREATING_WEBSERVER": "Beim Starten des eingebetteten Webservers ist der Fehler \"Zugriff verweigert\" aufgetreten.",
-  "UNEXPECTED_ERROR": "Ein unerwarteter Fehler ist aufgetreten"
+  "UNEXPECTED_ERROR": "Ein unerwarteter Fehler ist aufgetreten",
+	"TOO_MANY_FILES": "Zu viele Dateien im Verzeichnis, um Inhalte einzuschließen. Nur die Zusammenfassung wird gedruckt.",
+	"FILE_LIST_DISABLED": "Dateiliste ist deaktiviert"
 }
