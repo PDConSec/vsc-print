@@ -1,11 +1,6 @@
-# <img width="64px" src="assets/vscode-print-128.png"></img> Print
-
-[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [اردو](README.urd.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
-
-# پرنٹ کریں، جہاں سے تعلق رکھتا ہے
+[English](README.md) | [Français](README.fra.md) | [اردو](README.urd.md) | [Italiano](README.ita.md) | [Íslenska](README.isl.md) | [简体中文](README.zho.md)
 
 ![source](assets/print-icon.png) 
-
 
 ## کراس پلیٹ فارم پرنٹنگ
 

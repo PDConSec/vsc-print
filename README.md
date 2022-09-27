@@ -1,17 +1,12 @@
-# <img width="64px" src="assets/vscode-print-128.png"></img> Print
-
-[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [اردوURDU](README.urd.md) | [Add a language](how-to-add-a-language.md)
-
-# Print, right where it belongs
+[English](README.md) | [Français](README.fra.md) | [اردو](README.urd.md) | [Italiano](README.ita.md) | [Íslenska](README.isl.md) | [简体中文](README.zho.md)
 
 ![source](assets/print-icon.png) 
-
 
 ## Cross-platform printing
 
 Print-jobs are rendered as styled HTML and served from an embedded webserver. Your local web browser is launched to load the print-job and give you printing options like paper size, page orientation and margin size. 
 
-So if you have a local browser that can print, and VS Code can launch it, you're in business.  
+So if you have a local browser that can print, and VS Code can launch it, you can print.
 
 ## Source code
 
@@ -35,7 +30,7 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 
 ## Highly configurable
 
-There are a number of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](doc/manual.md) If things aren't going your way, maybe you should read it. If you're having first-use problems, the manual contains a [troubleshooting guide](doc/manual.eng.md#troubleshooting).
+There are a number of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](doc/manual.eng.md) If things aren't going your way, maybe you should read it. If you're having first-use problems, the manual contains a [troubleshooting guide](doc/manual.eng.md#troubleshooting).
 
 Some things you can configure:
 
@@ -43,15 +38,3 @@ Some things you can configure:
 - whether or not you want line numbers
 - alternate browser for printing
 - line spacing (leave yourself more room for handwritten annotation of code)
-
-## Localisation 
-
-[English and French](https://github.com/PeterWone/vsc-print) by Peter Wone
-
-[Chinese](https://github.com/kuriyamasss/vsc-print) by Kuriyamasss,中文版本由Kuriyamasss翻译
-
-Icelandic by Kris Kristinsson
-
-Italian by Fabrizio Di Petro
-
-Urdu by Muhummad Ali Khan

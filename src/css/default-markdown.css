@@ -36,3 +36,9 @@ th {
 img {
 	max-width: 100%;
 }
+
+@media print {
+	.no-print {
+		visibility: hidden;
+	}
+}
