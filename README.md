@@ -6,7 +6,7 @@
 
 [Chinese Version](https://github.com/kuriyamasss/vsc-print) by Kuriyamasss,中文版本由Kuriyamasss翻译
 
-[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [Add a language](how-to-add-a-language.md)
+[ENGLISH](README.md) | [FRANCAISE](README.fra.md) | [DEUTSCH](README.deu.md) | [ESPAGNOLE](README.esp.md) | [中文CHINESE](README.zho.md) | [اردوURDU](README.urd.md) | [Add a language](how-to-add-a-language.md)
 
 Most failure on first use is due to faulty repackaging by a third party. If this happens to you, obtain the [package produced and tested by us](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print).
 
