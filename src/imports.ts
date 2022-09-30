@@ -28,7 +28,7 @@ export const filenameByCaption: any = {
   "Atelier Plateau": "atelier-plateau-light",
   "Atelier Savanna": "atelier-savanna-light",
   "Atelier Seaside": "atelier-seaside-light",
-  "Atelier Suplhur Pool": "atelier-sulphurpool-light",
+  "Atelier Sulphur Pool": "atelier-sulphurpool-light",
   "Color Brewer": "color-brewer",
   "Docco": "docco",
   "Foundation": "foundation",
