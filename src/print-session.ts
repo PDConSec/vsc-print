@@ -236,7 +236,7 @@ export class PrintSession {
 
 	public getUrl(): string { return `http://localhost:${PrintSession.port}/${this.sessionId}/`; }
 	public static getLaunchBrowserCommand(): string {
-		const printConfig = vscode.workspace.getConfiguration("print", null);
+		const printConfig = vscode.workspace.getConfiguration("print");
 		const cmd = printConfig.alternateBrowser && printConfig.browserPath ? escapePath(printConfig.browserPath) : browserLaunchMap[process.platform];
 		return cmd;
 	}
@@ -246,8 +246,11 @@ export class PrintSession {
 		const testFlags = await vscode.commands.executeCommand("vsc-print.test.flags") as Set<string>;
 		if (!testFlags.has("suppress browser")) {
 			const cmd = PrintSession.getLaunchBrowserCommand();
-			const printConfig = vscode.workspace.getConfiguration("print", null);
-			logger.debug(`Platform detected as "${process.platform}" so launch browser command is "${cmd}"`);
+			const printConfig = vscode.workspace.getConfiguration("print");
+			const activeBrowser = printConfig.alternateBrowser ? "alternate" : "default";
+			logger.debug(`Platform detected as "${process.platform}"`);
+			logger.debug(`Selected browser is ${ activeBrowser }`);
+			logger.debug(`Browser launch command is "${cmd}"`);
 			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
 				// node on Linux incorrectly calls this error handler, with a null error object
 				if (error) {
