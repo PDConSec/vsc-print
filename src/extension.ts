@@ -125,16 +125,16 @@ function openDoc(doc: string) {
 
 const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 	if (e.affectsConfiguration('print.editorContextMenuItemPosition')) {
-		vscode.commands.executeCommand(
-			"setContext", "ecmPrint",
-			vscode.workspace.getConfiguration("print", null)
-				.get('editorContextMenuItemPosition'));
+		const ecmip = vscode.workspace.getConfiguration("print")
+			.editorContextMenuItemPosition as string;
+		logger.info(`editorContextMenuItemPosition set to ${ecmip}`)
+		vscode.commands.executeCommand("setContext", "ecmPrint", ecmip);
 	}
 	else if (e.affectsConfiguration('print.editorTitleMenuButton')) {
-		vscode.commands.executeCommand(
-			"setContext", "etmButton",
-			vscode.workspace.getConfiguration("print", null)
-				.get<boolean>('editorTitleMenuButton'));
+		const etmb = vscode.workspace.getConfiguration("print", null)
+			.get<boolean>('editorTitleMenuButton');
+		logger.info(`editorTitleMenuButton set to ${etmb}`);
+		vscode.commands.executeCommand("setContext", "etmButton", etmb);
 	}
 };
 
