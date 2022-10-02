@@ -1,5 +1,12 @@
 # Change Log
 
+### 0.10.7
+
+- Urdu localisation
+- Enhanced debug logging of printing files from remote filesystems
+- Fix typo in internal identifier for Atelier Sulphur 
+Pool colour scheme
+
 ### 0.10.4
 
 - Fixed an issue preventing the selected colour scheme from being applied
