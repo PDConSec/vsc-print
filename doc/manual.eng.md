@@ -194,6 +194,7 @@ Patches like this will be lost at the next update for an extension, so if your p
 ## Prerequisites
 
 * Start by making sure you can print a web page from your browser.
+* To print from a remote workspace hosted on Linux, you must have `xdg-open` installed on the remote host. Desktop Ubuntu is ready to go out of the box.
 * Firefox is _not_ an ideal choice but if you prefer it as your default browser then you will be pleased to learn that you can you can configure printing to use a non-default browser &mdash; you can have it both ways.
 * The user as which VS Code runs must be able to establish a listening socket.
 

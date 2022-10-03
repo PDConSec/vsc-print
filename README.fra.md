@@ -20,7 +20,7 @@ Donc, si vous avez un navigateur local qui peut imprimer, et VS Code peut le lan
 
 L’icône d’impression de la barre d’outils imprime le contenu de l’éditeur actif. Cela peut différer du fichier enregistré lorsqu’il y a des modifications non enregistrées, et bien sûr, vous pouvez imprimer un nouveau document qui n’a jamais été enregistré.
 
-Si vous avez une sélection de texte qui s’étend au moins un saut de ligne, vous pouvez clic-droit sur la texte et choisir `Imprimer` dans le menu contextuel pour envoyer seulement la sélection à l’imprimante. En l’absence d’une sélection multiligne, le document entier est imprimé. Vous pouvez contrôler la position de `Imprimer` dans ce menu, ou la supprimer complètement.
+Si vous avez une sélection de texte qui s’étend au moins un saut de ligne, vous pouvez clic-droit sur la texte et choisir `Imprimer` dans le menu contextuel pour envoyer seulement la sélection à l’imprimante. En l’absence d’une sélection multiligne, le document complet sera imprimé. Vous pouvez contrôler la position de `Imprimer` dans ce menu, ou la supprimer complètement.
 
 ![context-menu-editor](assets/context-menu.png)
 
