@@ -9,6 +9,7 @@ import { captionByFilename, filenameByCaption, localise } from './imports';
 import * as nls from 'vscode-nls';
 import { HtmlRenderer } from './html-renderer';
 import { extensionPath } from './extension-path';
+import { DocumentRenderer } from './document-renderer';
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -58,6 +59,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", () => openDoc("manual")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", () => openDoc("log")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
+	context.subscriptions.push(vscode.commands.registerCommand("print.registerDocumentRenderer", registerDocumentRenderer));
+
 	server = http.createServer(async (request, response) => {
 		try {
 			if (request.url) {
@@ -104,6 +107,40 @@ export function activate(context: vscode.ExtensionContext) {
 	};
 	_gc = setInterval(gc, 2000);
 	return markdownExtensionInstaller;
+}
+
+const documentRenderers = new Map<string, DocumentRenderer>();
+const defaultDocumentRenderer = new DocumentRenderer(
+	(raw: string) => {
+		// default HTML render ie highlightjs
+	},
+	() => {
+		// source code CSS list including colour scheme
+	},
+	(uri: vscode.Uri) => {
+		// title from Uri
+	},
+	(resourceName: string) => {
+		//get named resource
+	}
+);
+
+function registerDocumentRenderer(
+	langIds: string | string[],
+	getBodyHtml: Function,
+	getCssUriArray?: Function,
+	getTitle?: Function,
+	getResource?: Function) {
+	const documentRenderer = new DocumentRenderer(getBodyHtml, getCssUriArray, getTitle, getResource);
+	if (typeof langIds === "string") {
+		documentRenderers.set(langIds, documentRenderer);
+	} else {
+		langIds.forEach(langId => documentRenderers.set(langId, documentRenderer));
+	}
+}
+
+function getDocumentRenderer(langId: string) {
+	return documentRenderers.get(langId) ?? defaultDocumentRenderer;
 }
 
 function openDoc(doc: string) {
