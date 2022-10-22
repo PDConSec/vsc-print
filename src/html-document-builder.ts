@@ -53,7 +53,7 @@ export class HtmlDocumentBuilder {
 		} else {
 			if (printConfig.renderMarkdown && this.language === "markdown") {
 				logger.debug(`Printing rendered Markdown`);
-				const markdownConfig = vscode.workspace.getConfiguration("markdown", null);
+				const markdownConfig = vscode.workspace.getConfiguration("markdown");
 				return template
 					.replace(/\$TITLE/g, path.basename(this.filename))
 					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
@@ -227,5 +227,10 @@ export class HtmlDocumentBuilder {
 			const B = b.fileName;
 			return A < B ? -1 : A > B ? 1 : 0;
 		});
+	}
+	getCssLinks(uriStrings:Array<string>): string {
+		return uriStrings
+			.map(uriString=>`\t<link href="${uriString}" rel="stylesheet" />\n`)
+			.join();
 	}
 }
