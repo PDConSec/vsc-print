@@ -1,5 +1,5 @@
 import { logger } from './logger';
-import { PageBuilder } from './page-builder';
+import { HtmlDocumentBuilder } from './html-document-builder';
 import * as vscode from 'vscode';
 import * as http from "http";
 import * as path from "path";
@@ -21,7 +21,7 @@ export class PrintSession {
 	public age(): number {
 		return new Date().valueOf() - this.created;
 	}
-	pageBuilder: PageBuilder | undefined;
+	pageBuilder: HtmlDocumentBuilder | undefined;
 	public ready: Promise<void>;
 	public sessionId = nodeCrypto.randomUUID();
 	public uri: vscode.Uri | undefined;
@@ -43,7 +43,7 @@ export class PrintSession {
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						if (!document) throw "This can't happen";
 						this.uri = document.uri;
-						this.pageBuilder = new PageBuilder(
+						this.pageBuilder = new HtmlDocumentBuilder(
 							document.uri.fsPath,
 							document.getText(),
 							document.languageId,
@@ -64,7 +64,7 @@ export class PrintSession {
 							const selectedText = document!.getText().replace(/\s*$/, "");
 							const langId = document!.languageId;
 							const startLine = selection.start.line + 1; // zero based to one based
-							this.pageBuilder = new PageBuilder(
+							this.pageBuilder = new HtmlDocumentBuilder(
 								document.uri.fsPath,
 								selectedText,
 								langId,
@@ -75,7 +75,7 @@ export class PrintSession {
 							const selectedText = document!.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
 							const langId = document!.languageId;
 							const startLine = selection.start.line + 1; // zero based to one based
-							this.pageBuilder = new PageBuilder(
+							this.pageBuilder = new HtmlDocumentBuilder(
 								document.uri.fsPath,
 								selectedText,
 								langId,
@@ -91,7 +91,7 @@ export class PrintSession {
 						this.uri = document.uri;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
-						this.pageBuilder = new PageBuilder(
+						this.pageBuilder = new HtmlDocumentBuilder(
 							document.uri.fsPath,
 							document.getText(),
 							document.languageId,
@@ -100,7 +100,7 @@ export class PrintSession {
 						break;
 					case "folder":
 						logger.debug(`Printing the folder ${cmdArgs!.fsPath}`);
-						this.pageBuilder = new PageBuilder(cmdArgs!.fsPath, "", "folder", printLineNumbers)
+						this.pageBuilder = new HtmlDocumentBuilder(cmdArgs!.fsPath, "", "folder", printLineNumbers)
 						break;
 					default:
 						logger.error(contentSource);

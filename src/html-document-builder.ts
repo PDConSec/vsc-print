@@ -8,7 +8,7 @@ import { localise } from './imports';
 const templateFolderItem = require("./template-folder-item.html").default.toString();
 const template: string = require("./template.html").default.toString();
 
-export class PageBuilder {
+export class HtmlDocumentBuilder {
 	static MarkdownEngine: any;
 	constructor(
 		public filename: string,
@@ -88,7 +88,7 @@ export class PageBuilder {
 		try {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
 			if (printConfig.renderMarkdown && this.language === "markdown") {
-				renderedCode = PageBuilder.MarkdownEngine.render(code);
+				renderedCode = HtmlDocumentBuilder.MarkdownEngine.render(code);
 				const v = renderedCode.lastIndexOf("</style>");
 				if (v != -1) {
 					renderedCode = renderedCode.substring(v + 8);

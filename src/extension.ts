@@ -6,11 +6,11 @@ import { AddressInfo } from 'net';
 import * as path from "path";
 import { captionByFilename, filenameByCaption, localise } from './imports';
 import * as nls from 'vscode-nls';
-import { PageBuilder } from './page-builder';
+import { HtmlDocumentBuilder } from './html-document-builder';
 import { extensionPath } from './extension-path';
 import { DocumentRenderer } from './document-renderer';
-import * as drSvg from "./document-renderer-svg";
-import * as drSource from "./document-renderer-sourcecode";
+import * as hrSvg from "./html-renderer-svg";
+import * as hrSource from "./html-renderer-sourcecode";
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -102,7 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
 	server.listen(0, "localhost");
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
-			PageBuilder.MarkdownEngine = mdparam;
+			HtmlDocumentBuilder.MarkdownEngine = mdparam;
 			return mdparam;
 		}
 	};
@@ -112,10 +112,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 const documentRenderers = new Map<string, DocumentRenderer>();
 const defaultDocumentRenderer = new DocumentRenderer(
-	drSource.getBodyHtml,
-	drSource.getCssUriArray,
-	drSource.getTitle,
-	drSource.getResource
+	hrSource.getBodyHtml,
+	hrSource.getCssUriArray,
+	hrSource.getTitle,
+	hrSource.getResource
 );
 
 function registerDocumentRenderer(
@@ -133,8 +133,8 @@ function registerDocumentRenderer(
 }
 
 registerDocumentRenderer("svg",
-	drSvg.getBodyHtml, drSvg.getCssUriArray,
-	drSvg.getTitle, drSvg.getResource);
+	hrSvg.getBodyHtml, hrSvg.getCssUriArray,
+	hrSvg.getTitle, hrSvg.getResource);
 
 function getDocumentRenderer(langId: string) {
 	return documentRenderers.get(langId) ?? defaultDocumentRenderer;
