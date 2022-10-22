@@ -2,14 +2,15 @@ import { logger } from './logger';
 import { PrintSession } from './print-session';
 import * as vscode from 'vscode';
 import * as http from "http";
-import * as dns from "dns";
 import { AddressInfo } from 'net';
 import * as path from "path";
 import { captionByFilename, filenameByCaption, localise } from './imports';
 import * as nls from 'vscode-nls';
-import { HtmlRenderer } from './html-renderer';
+import { PageBuilder } from './page-builder';
 import { extensionPath } from './extension-path';
 import { DocumentRenderer } from './document-renderer';
+import * as drSvg from "./document-renderer-svg";
+import * as drSource from "./document-renderer-sourcecode";
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -101,7 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
 	server.listen(0, "localhost");
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
-			HtmlRenderer.MarkdownEngine = mdparam;
+			PageBuilder.MarkdownEngine = mdparam;
 			return mdparam;
 		}
 	};
@@ -111,18 +112,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 const documentRenderers = new Map<string, DocumentRenderer>();
 const defaultDocumentRenderer = new DocumentRenderer(
-	(raw: string) => {
-		// default HTML render ie highlightjs
-	},
-	() => {
-		// source code CSS list including colour scheme
-	},
-	(uri: vscode.Uri) => {
-		// title from Uri
-	},
-	(resourceName: string) => {
-		//get named resource
-	}
+	drSource.getBodyHtml,
+	drSource.getCssUriArray,
+	drSource.getTitle,
+	drSource.getResource
 );
 
 function registerDocumentRenderer(
@@ -138,6 +131,10 @@ function registerDocumentRenderer(
 		langIds.forEach(langId => documentRenderers.set(langId, documentRenderer));
 	}
 }
+
+registerDocumentRenderer("svg",
+	drSvg.getBodyHtml, drSvg.getCssUriArray,
+	drSvg.getTitle, drSvg.getResource);
 
 function getDocumentRenderer(langId: string) {
 	return documentRenderers.get(langId) ?? defaultDocumentRenderer;

@@ -8,7 +8,7 @@ import { localise } from './imports';
 const templateFolderItem = require("./template-folder-item.html").default.toString();
 const template: string = require("./template.html").default.toString();
 
-export class HtmlRenderer {
+export class PageBuilder {
 	static MarkdownEngine: any;
 	constructor(
 		public filename: string,
@@ -17,7 +17,7 @@ export class HtmlRenderer {
 		public printLineNumbers: boolean,
 		public startLine: number = 1
 	) { }
-	public async asHtml(): Promise<string> {
+	public async build(): Promise<string> {
 		const printConfig = vscode.workspace.getConfiguration("print", null);
 		const EMBEDDED_STYLES = this.getEmbeddedStyles();
 		if (this.language === "folder") {
@@ -88,7 +88,7 @@ export class HtmlRenderer {
 		try {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
 			if (printConfig.renderMarkdown && this.language === "markdown") {
-				renderedCode = HtmlRenderer.MarkdownEngine.render(code);
+				renderedCode = PageBuilder.MarkdownEngine.render(code);
 				const v = renderedCode.lastIndexOf("</style>");
 				if (v != -1) {
 					renderedCode = renderedCode.substring(v + 8);

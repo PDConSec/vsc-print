@@ -1,5 +1,5 @@
 import { logger } from './logger';
-import { HtmlRenderer } from './html-renderer';
+import { PageBuilder } from './page-builder';
 import * as vscode from 'vscode';
 import * as http from "http";
 import * as path from "path";
@@ -21,7 +21,7 @@ export class PrintSession {
 	public age(): number {
 		return new Date().valueOf() - this.created;
 	}
-	htmlRenderer: HtmlRenderer | undefined;
+	pageBuilder: PageBuilder | undefined;
 	public ready: Promise<void>;
 	public sessionId = nodeCrypto.randomUUID();
 	public uri: vscode.Uri | undefined;
@@ -43,7 +43,7 @@ export class PrintSession {
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						if (!document) throw "This can't happen";
 						this.uri = document.uri;
-						this.htmlRenderer = new HtmlRenderer(
+						this.pageBuilder = new PageBuilder(
 							document.uri.fsPath,
 							document.getText(),
 							document.languageId,
@@ -64,7 +64,7 @@ export class PrintSession {
 							const selectedText = document!.getText().replace(/\s*$/, "");
 							const langId = document!.languageId;
 							const startLine = selection.start.line + 1; // zero based to one based
-							this.htmlRenderer = new HtmlRenderer(
+							this.pageBuilder = new PageBuilder(
 								document.uri.fsPath,
 								selectedText,
 								langId,
@@ -75,7 +75,7 @@ export class PrintSession {
 							const selectedText = document!.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
 							const langId = document!.languageId;
 							const startLine = selection.start.line + 1; // zero based to one based
-							this.htmlRenderer = new HtmlRenderer(
+							this.pageBuilder = new PageBuilder(
 								document.uri.fsPath,
 								selectedText,
 								langId,
@@ -91,7 +91,7 @@ export class PrintSession {
 						this.uri = document.uri;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
-						this.htmlRenderer = new HtmlRenderer(
+						this.pageBuilder = new PageBuilder(
 							document.uri.fsPath,
 							document.getText(),
 							document.languageId,
@@ -100,7 +100,7 @@ export class PrintSession {
 						break;
 					case "folder":
 						logger.debug(`Printing the folder ${cmdArgs!.fsPath}`);
-						this.htmlRenderer = new HtmlRenderer(cmdArgs!.fsPath, "", "folder", printLineNumbers)
+						this.pageBuilder = new PageBuilder(cmdArgs!.fsPath, "", "folder", printLineNumbers)
 						break;
 					default:
 						logger.error(contentSource);
@@ -120,8 +120,8 @@ export class PrintSession {
 
 		if (urlParts.length === 3 && urlParts[2] === "") {
 			logger.debug(`Responding to base document request for session ${urlParts[1]}`)
-			const renderer = this.htmlRenderer;
-			const html = await renderer!.asHtml();
+			const renderer = this.pageBuilder;
+			const html = await renderer!.build();
 			response.writeHead(200, {
 				"Content-Type": "text/html; charset=utf-8",
 				"Content-Length": Buffer.byteLength(html, 'utf-8')
