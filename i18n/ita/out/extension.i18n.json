@@ -1,0 +1,10 @@
+{
+	"NO_FILE": "Nessun file è aperto. Aprire un file e riprovare.",
+	"UNSAVED_FILE": "L'editor contiene un file non salvato. Salvare il file o aprire un file salvato su disco e riprovare.",
+	"EMPTY_SELECTION": "Niente da stampare",
+	"ERROR_PRINTING": "Errore durante il tentativo di stampa",
+	"ACCESS_DENIED_CREATING_WEBSERVER": "Si è verificato un errore di “Accesso negato” durante l'avvio del webserver incorporato.",
+	"UNEXPECTED_ERROR": "Errore inatteso",
+	"TOO_MANY_FILES": "Troppi file nella cartella per includere il contenuto. Verrà stampato solo il sommario.",
+	"FILE_LIST_DISABLED": "L'elenco dei file è disabilitato."
+}

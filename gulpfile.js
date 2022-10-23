@@ -33,6 +33,7 @@ const languages = [
 	{ folderName: 'fra', id: 'fr' },
 	{ folderName: 'zho', id: 'zh' },
 	{ folderName: 'urd', id: 'ur' },
+	{ folderName: 'ita', id: 'it' },
 	{ folderName: 'pseudo', id: 'qps-ploc' }
 ];
 
