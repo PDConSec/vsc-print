@@ -3,7 +3,7 @@ import * as hrSource from "./html-renderer-sourcecode";
 export class DocumentRenderer {
 	constructor(
 		public getBodyHtml: Function,
-		public getCssUriArray?: Function,
+		public getCssUriStrings?: Function,
 		public getTitle?: Function,
 		public getResource?: Function
 	) { }
@@ -20,10 +20,10 @@ export class DocumentRenderer {
 	public static register(
 		langIds: string | string[],
 		getBodyHtml: Function,
-		getCssUriArray?: Function,
+		getCssUriStrings?: Function,
 		getTitle?: Function,
 		getResource?: Function) {
-		const documentRenderer = new DocumentRenderer(getBodyHtml, getCssUriArray, getTitle, getResource);
+		const documentRenderer = new DocumentRenderer(getBodyHtml, getCssUriStrings, getTitle, getResource);
 		langIds = typeof langIds === "string" ? [langIds] : langIds;
 		langIds.forEach(langId =>
 			DocumentRenderer.__documentRenderers.set(langId, documentRenderer)
