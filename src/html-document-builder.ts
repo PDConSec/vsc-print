@@ -32,8 +32,8 @@ export class HtmlDocumentBuilder {
 			const msgTooManyFiles = localise("TOO_MANY_FILES");
 			const flagTooManyFiles = docs.length > printConfig.folder.maxFiles;
 			const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc => templateFolderItem
-				.replace("$FOLDER_ITEM_TITLE", doc.fileName)
-				.replace("$FOLDER_ITEM_CONTENT", () => `<table class="hljs">${this.getRenderedCode(doc.getText(), doc.languageId)}</table>`)
+				.replace("FOLDER_ITEM_TITLE", doc.fileName)
+				.replace("FOLDER_ITEM_CONTENT", () => `<table class="hljs">${this.getRenderedCode(doc.getText(), doc.languageId)}</table>`)
 			).join('\n');
 
 			if (flagTooManyFiles) {
@@ -57,22 +57,22 @@ export class HtmlDocumentBuilder {
 				logger.debug(`Printing rendered Markdown`);
 				const markdownConfig = vscode.workspace.getConfiguration("markdown");
 				return template
-					.replace(/\$TITLE/g, path.basename(this.filename))
-					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
-					.replace("$CONTENT", () => this.getRenderedCode(this.code, this.language)) // replacer fn suppresses interpretation of $
-					.replace("$DEFAULT_STYLESHEET_LINK", '<link href="vsc-print.resource/default-markdown.css" rel="stylesheet" />')
-					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n"))
-					.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
+					.replace(/DOCUMENT_TITLE/g, path.basename(this.filename))
+					.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
+					.replace("CONTENT", () => this.getRenderedCode(this.code, this.language)) // replacer fn suppresses interpretation of $
+					.replace("DEFAULT_STYLESHEET_LINK", '<link href="vsc-print.resource/default-markdown.css" rel="stylesheet" />')
+					.replace("VSCODE_MARKDOWN_STYLESHEET_LINKS", markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n"))
+					.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
 					;
 			} else {
 				logger.debug(`Printing ${this.filename}`);
 				return template
-					.replace(/\$TITLE/g, documentRenderer.getTitle(this.filename))
-					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
-					.replace("$CONTENT", () => `<table class="hljs">${documentRenderer.getBodyHtml(this.code, this.language)}</table>`) // replacer fn suppresses $
-					.replace("$DEFAULT_STYLESHEET_LINK", documentRenderer.getCssLinks())
-					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
-					.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
+					.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.filename))
+					.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
+					.replace("CONTENT", () => `<table class="hljs">${documentRenderer.getBodyHtml(this.code, this.language)}</table>`) // replacer fn suppresses $
+					.replace("DEFAULT_STYLESHEET_LINK", documentRenderer.getCssLinks())
+					.replace("VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
+					.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
 					;
 			}
 		}
