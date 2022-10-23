@@ -1,51 +1,17 @@
 import path = require('path');
 import * as vscode from 'vscode';
 import { logger } from './logger';
+import hljs = require('highlight.js');
 
-export function getBodyHtml(raw: string) {
-	// return getRenderedCode
-}
-
-export function getCssUriStringArray(): Array<string> {
-	return [
-		"vsc-print.resource/default.css",
-		"vsc-print.resource/line-numbers.css",
-		"vsc-print.resource/colour-scheme.css",
-		"vsc-print.resource/settings.css",
-	];
-}
-
-export function getTitle(uri: vscode.Uri) {
-	let result: string = uri.path;
-	const parts = result.split(path.sep);
-	if (parts.length > 3) {
-		result = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
-	} else {
-		result = path.basename(uri.path);
-	}
-	return result;
-}
-
-export function getResource(uri: vscode.Uri): Buffer | string {
-	let result = "";
-	// todo fetch resources from provider
-	return result;
-}
-
-function getEmbeddedStyles() {
-	let editorConfig = vscode.workspace.getConfiguration("editor");
-	return `body{tab-size:${editorConfig.tabSize};}`;
-}
-
-function getRenderedCode(code: string, languageId: string): string {
+export function getBodyHtml(raw: string, languageId: string): string {
 	const printConfig = vscode.workspace.getConfiguration("print");
 	let renderedCode = "";
 	try {
 		try {
-			renderedCode = hljs.highlight(code, { language: languageId }).value;
+			renderedCode = hljs.highlight(raw, { language: languageId }).value;
 		}
 		catch (err) {
-			renderedCode = hljs.highlightAuto(code).value;
+			renderedCode = hljs.highlightAuto(raw).value;
 		}
 		renderedCode = fixMultilineSpans(renderedCode);
 		renderedCode = renderedCode
@@ -60,6 +26,34 @@ function getRenderedCode(code: string, languageId: string): string {
 		renderedCode = "<div>Could not render this file.</end>";
 	}
 	return renderedCode;
+}
+
+export function getCssUriStringArray(): Array<string> {
+	return [
+		"vsc-print.resource/default.css",
+		"vsc-print.resource/line-numbers.css",
+		"vsc-print.resource/colour-scheme.css",
+		"vsc-print.resource/settings.css",
+	];
+}
+
+export function getTitle(filename: string) {
+	const parts = filename.split(path.sep);
+	if (parts.length > 3) {
+		filename = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
+	}
+	return filename;
+}
+
+export function getResource(uri: vscode.Uri): Buffer | string {
+	let result = "";
+	// todo fetch resources from provider
+	return result;
+}
+
+function getEmbeddedStyles() {
+	let editorConfig = vscode.workspace.getConfiguration("editor");
+	return `body{tab-size:${editorConfig.tabSize};}`;
 }
 
 function fixMultilineSpans(text: string): string {

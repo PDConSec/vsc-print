@@ -19,8 +19,8 @@ export class HtmlDocumentBuilder {
 		public startLine: number = 1
 	) { }
 	public async build(): Promise<string> {
-		const documentRenderer = DocumentRenderer.resolve(this.language);
-		const printConfig = vscode.workspace.getConfiguration("print", null);
+		const documentRenderer = DocumentRenderer.get(this.language);
+		const printConfig = vscode.workspace.getConfiguration("print");
 		const EMBEDDED_STYLES = this.getEmbeddedStyles();
 		if (this.language === "folder") {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
@@ -67,14 +67,10 @@ export class HtmlDocumentBuilder {
 			} else {
 				logger.debug(`Printing ${this.filename}`);
 				return template
-					.replace(/\$TITLE/g, path.basename(this.filename))
+					.replace(/\$TITLE/g, documentRenderer.getTitle(this.filename))
 					.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
-					.replace("$CONTENT", () => `<table class="hljs">${this.getRenderedCode(this.code, this.language)}</table>`) // replacer fn suppresses $
-					.replace("$DEFAULT_STYLESHEET_LINK",
-						'<link href="vsc-print.resource/default.css" rel="stylesheet" />\n' +
-						'\t<link href="vsc-print.resource/line-numbers.css" rel="stylesheet" />\n' +
-						'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
-						'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
+					.replace("$CONTENT", () => `<table class="hljs">${documentRenderer.getBodyHtml(this.code, this.language)}</table>`) // replacer fn suppresses $
+					.replace("$DEFAULT_STYLESHEET_LINK", documentRenderer.getCssLinks())
 					.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
 					.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
 					;
@@ -229,10 +225,5 @@ export class HtmlDocumentBuilder {
 			const B = b.fileName;
 			return A < B ? -1 : A > B ? 1 : 0;
 		});
-	}
-	getCssLinks(uriStrings:Array<string>): string {
-		return uriStrings
-			.map(uriString=>`\t<link href="${uriString}" rel="stylesheet" />\n`)
-			.join();
 	}
 }

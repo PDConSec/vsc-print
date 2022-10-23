@@ -1,11 +1,12 @@
+import { Uri } from 'vscode';
 import * as hrSource from "./html-renderer-sourcecode";
 
 export class DocumentRenderer {
 	constructor(
-		public getBodyHtml: Function,
-		public getCssUriStrings?: Function,
-		public getTitle?: Function,
-		public getResource?: Function
+		public getBodyHtml: (raw: string, languageId: string) => string,
+		public getCssUriStrings: () => Array<string>,
+		public getTitle: (filename: string) => string,
+		public getResource?: (uri: Uri) => Buffer | string
 	) { }
 
 	static __documentRenderers = new Map<string, DocumentRenderer>();
@@ -19,10 +20,10 @@ export class DocumentRenderer {
 
 	public static register(
 		langIds: string | string[],
-		getBodyHtml: Function,
-		getCssUriStrings?: Function,
-		getTitle?: Function,
-		getResource?: Function) {
+		getBodyHtml: (raw: string, languageId: string) => string,
+		getCssUriStrings: () => Array<string>,
+		getTitle: (filename: string) => string,
+		getResource?: (uri: Uri) => Buffer | string) {
 		const documentRenderer = new DocumentRenderer(getBodyHtml, getCssUriStrings, getTitle, getResource);
 		langIds = typeof langIds === "string" ? [langIds] : langIds;
 		langIds.forEach(langId =>
@@ -30,9 +31,15 @@ export class DocumentRenderer {
 		);
 	}
 
-	public static resolve(langId: string) {
+	public static get(langId: string) {
 		return DocumentRenderer.__documentRenderers.get(langId)
 			?? DocumentRenderer.__defaultDocumentRenderer;
+	}
+
+	public getCssLinks(): string {
+		return this.getCssUriStrings()
+			.map(uriString => `\t<link href="${uriString}" rel="stylesheet" />`)
+			.join("\n");
 	}
 
 }

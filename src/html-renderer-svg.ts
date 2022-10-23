@@ -8,8 +8,8 @@ export function getCssUriStringArray(): Array<string> {
 	return [];
 }
 
-export function getTitle(uri: Uri) {
-	return uri.path;
+export function getTitle(filename: string) {
+	return filename;
 }
 
 export function getResource(uri: Uri): Buffer | string {
