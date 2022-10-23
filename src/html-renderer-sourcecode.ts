@@ -1,11 +1,12 @@
+import path = require('path');
 import * as vscode from 'vscode';
 import { logger } from './logger';
 
 export function getBodyHtml(raw: string) {
-	//
+	// return getRenderedCode
 }
 
-export function getCssUriArray(): Array<string> {
+export function getCssUriStringArray(): Array<string> {
 	return [
 		"vsc-print.resource/default.css",
 		"vsc-print.resource/line-numbers.css",
@@ -15,17 +16,27 @@ export function getCssUriArray(): Array<string> {
 }
 
 export function getTitle(uri: vscode.Uri) {
-	return uri.path;
+	let result: string = uri.path;
+	const parts = result.split(path.sep);
+	if (parts.length > 3) {
+		result = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
+	} else {
+		result = path.basename(uri.path);
+	}
+	return result;
 }
 
 export function getResource(uri: vscode.Uri): Buffer | string {
-	return "";
+	let result = "";
+	// todo fetch resources from provider
+	return result;
 }
 
 function getEmbeddedStyles() {
 	let editorConfig = vscode.workspace.getConfiguration("editor");
 	return `body{tab-size:${editorConfig.tabSize};}`;
 }
+
 function getRenderedCode(code: string, languageId: string): string {
 	const printConfig = vscode.workspace.getConfiguration("print");
 	let renderedCode = "";

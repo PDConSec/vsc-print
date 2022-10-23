@@ -10,7 +10,6 @@ import { HtmlDocumentBuilder } from './html-document-builder';
 import { extensionPath } from './extension-path';
 import { DocumentRenderer } from './document-renderer';
 import * as hrSvg from "./html-renderer-svg";
-import * as hrSource from "./html-renderer-sourcecode";
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -60,7 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", () => openDoc("manual")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", () => openDoc("log")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
-	context.subscriptions.push(vscode.commands.registerCommand("print.registerDocumentRenderer", registerDocumentRenderer));
+	context.subscriptions.push(vscode.commands.registerCommand("print.registerDocumentRenderer", DocumentRenderer.register));
 
 	server = http.createServer(async (request, response) => {
 		try {
@@ -110,35 +109,9 @@ export function activate(context: vscode.ExtensionContext) {
 	return markdownExtensionInstaller;
 }
 
-const documentRenderers = new Map<string, DocumentRenderer>();
-const defaultDocumentRenderer = new DocumentRenderer(
-	hrSource.getBodyHtml,
-	hrSource.getCssUriArray,
-	hrSource.getTitle,
-	hrSource.getResource
-);
-
-function registerDocumentRenderer(
-	langIds: string | string[],
-	getBodyHtml: Function,
-	getCssUriArray?: Function,
-	getTitle?: Function,
-	getResource?: Function) {
-	const documentRenderer = new DocumentRenderer(getBodyHtml, getCssUriArray, getTitle, getResource);
-	if (typeof langIds === "string") {
-		documentRenderers.set(langIds, documentRenderer);
-	} else {
-		langIds.forEach(langId => documentRenderers.set(langId, documentRenderer));
-	}
-}
-
-registerDocumentRenderer("svg",
-	hrSvg.getBodyHtml, hrSvg.getCssUriArray,
+DocumentRenderer.register("svg",
+	hrSvg.getBodyHtml, hrSvg.getCssUriStringArray,
 	hrSvg.getTitle, hrSvg.getResource);
-
-function getDocumentRenderer(langId: string) {
-	return documentRenderers.get(langId) ?? defaultDocumentRenderer;
-}
 
 function openDoc(doc: string) {
 	switch (doc) {

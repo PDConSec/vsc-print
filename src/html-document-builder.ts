@@ -4,6 +4,7 @@ import hljs = require('highlight.js');
 import path = require('path');
 import * as vscode from 'vscode';
 import { localise } from './imports';
+import { DocumentRenderer } from './document-renderer';
 
 const templateFolderItem = require("./template-folder-item.html").default.toString();
 const template: string = require("./template.html").default.toString();
@@ -18,6 +19,7 @@ export class HtmlDocumentBuilder {
 		public startLine: number = 1
 	) { }
 	public async build(): Promise<string> {
+		const documentRenderer = DocumentRenderer.resolve(this.language);
 		const printConfig = vscode.workspace.getConfiguration("print", null);
 		const EMBEDDED_STYLES = this.getEmbeddedStyles();
 		if (this.language === "folder") {
