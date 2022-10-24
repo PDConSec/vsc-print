@@ -109,9 +109,7 @@ export function activate(context: vscode.ExtensionContext) {
 	return markdownExtensionInstaller;
 }
 
-DocumentRenderer.register("svg",
-	hrSvg.getBodyHtml, hrSvg.getCssUriStringArray,
-	hrSvg.getTitle, hrSvg.getResource);
+DocumentRenderer.register("svg", hrSvg.getBodyHtml);
 
 function openDoc(doc: string) {
 	switch (doc) {

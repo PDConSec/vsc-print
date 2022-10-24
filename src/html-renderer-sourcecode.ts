@@ -1,4 +1,3 @@
-import path = require('path');
 import * as vscode from 'vscode';
 import { logger } from './logger';
 import hljs = require('highlight.js');
@@ -28,7 +27,7 @@ export function getBodyHtml(raw: string, languageId: string): string {
 	return renderedCode;
 }
 
-export function getCssUriStringArray(): Array<string> {
+export function getCssUriStrings(): Array<string> {
 	return [
 		"vsc-print.resource/default.css",
 		"vsc-print.resource/line-numbers.css",
@@ -37,18 +36,8 @@ export function getCssUriStringArray(): Array<string> {
 	];
 }
 
-export function getTitle(filename: string) {
-	const parts = filename.split(path.sep);
-	if (parts.length > 3) {
-		filename = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
-	}
-	return filename;
-}
-
 export function getResource(uri: vscode.Uri): Buffer | string {
-	let result = "";
-	// todo fetch resources from provider
-	return result;
+	throw new Error("ERR_NOTIMPL");	
 }
 
 function getEmbeddedStyles() {
