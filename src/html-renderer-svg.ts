@@ -1,4 +1,9 @@
-import { languages } from 'vscode';
+import * as vscode from 'vscode';
+
+export function isEnabled(): boolean {
+	return vscode.workspace.getConfiguration("print").renderSvg;
+}
+
 export function getBodyHtml(raw: string, languageId:string) {
 	return raw;
 }

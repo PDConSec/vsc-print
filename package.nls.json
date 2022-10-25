@@ -23,5 +23,6 @@
 	"print.lineSpacing.double": "Double spaced",
 	"print.printAndClose.description": "Show the Print dialog when the browser is ready, and try to close the page after printing is done or cancelled",
 	"print.renderMarkdown.description": "Render Markdown as HTML when printing",
+	"print.renderSvg.description": "Render SVG when printing",
 	"print.logLevel.markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Debug` is good for troubleshooting. `Silly` will log absolutely everything but the log file will grow fast."
 }

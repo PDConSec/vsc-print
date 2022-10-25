@@ -23,5 +23,6 @@
   "print.lineSpacing.double": "双倍行距",
 	"print.printAndClose.description": "浏览器就绪时显示打印对话框，打印完成或取消后尝试关闭页面",
 	"print.renderMarkdown.description": "打印时将 Markdown 渲染为 HTML",
+	"print.renderSvg.description": "Render SVG when printing",
 	"print.logLevel.markdownDescription": "日志级别 `error` 将仅记录错误（很少的条目），而 `info` 将记录错误、警告和信息。`silly`将记录绝对的一切。`debug` 适用于故障排除。`silly`将记录绝对的所有内容，但日志文件将很快变得巨大。"
 }

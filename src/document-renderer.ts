@@ -1,12 +1,13 @@
 import * as path from "path";
-import { languages, Uri } from "vscode";
+import * as vscode from "vscode";
 import * as htmlRendererSourcecode from "./html-renderer-sourcecode";
 
 export interface IDocumentRenderer {
+	isEnabled?: () => boolean;
 	getBodyHtml: (raw: string, languageId: string) => string,
 	getTitle?: (filepath: string) => string,
 	getCssUriStrings?: () => Array<string>,
-	getResource?: (uri: Uri) => Buffer | string
+	getResource?: (uri: vscode.Uri) => Buffer | string
 }
 
 export class DocumentRenderer {
@@ -33,11 +34,15 @@ export class DocumentRenderer {
 		}
 	}
 
+	public isEnabled() {
+		return this.options.isEnabled ? this.options.isEnabled() : true;
+	}
+
 	static __documentRenderers = new Map<string, DocumentRenderer>();
 
 	static __defaultDocumentOptions: IDocumentRenderer = {
 		getBodyHtml: htmlRendererSourcecode.getBodyHtml,
-		getCssUriStrings: htmlRendererSourcecode.getCssUriStrings
+		getCssUriStrings: htmlRendererSourcecode.getCssUriStrings,
 	};
 
 	static __defaultDocumentRenderer = new DocumentRenderer(DocumentRenderer.__defaultDocumentOptions);
@@ -51,8 +56,10 @@ export class DocumentRenderer {
 	}
 
 	public static get(langId: string) {
-		return DocumentRenderer.__documentRenderers.get(langId)
+		const documentRenderer = DocumentRenderer.__documentRenderers.get(langId)
 			?? DocumentRenderer.__defaultDocumentRenderer;
+		return documentRenderer.isEnabled() ? documentRenderer
+			: DocumentRenderer.__defaultDocumentRenderer;
 	}
 
 	public getCssLinks(): string {
@@ -61,11 +68,11 @@ export class DocumentRenderer {
 			.join("\n") : "";
 	}
 
-	public getResource(uri: Uri): Buffer | string {
+	public getResource(uri: vscode.Uri): Buffer | string {
 		if (this.options.getResource) {
 			return this.options.getResource(uri);
 		} else {
-			throw new Error("Document renderer does not implement getResource");
+			throw new Error(`Document renderer produced HTML that references "${uri.path}" but does not implement getResource`);
 		}
 	}
 

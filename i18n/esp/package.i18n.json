@@ -23,5 +23,6 @@
   "print.lineSpacing.double": "Doble espacio",
 	"print.printAndClose.description": "Muestre el cuadro de diálogo Imprimir cuando el navegador esté listo e intente cerrar la página después de finalizar o cancelar la impresión.",
 	"print.renderMarkdown.description": "Renderizar Markdown como HTML al imprimir",
+	"print.renderSvg.description": "Render SVG when printing",
 	"print.logLevel.markdownDescription": "El nivel de registro `Error` solo registrará errores (muy pocas entradas), mientras que `info` registrará errores, advertencias e información. `debug` es bueno para solucionar problemas. `silly registrará absolutamente todo, pero el archivo de registro crecerá rápidamente."
 }

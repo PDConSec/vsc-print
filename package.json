@@ -92,6 +92,11 @@
 						"default": true,
 						"description": "%print.renderMarkdown.description%"
 					},
+					"print.renderSvg": {
+						"type": "boolean",
+						"default": true,
+						"description": "%print.renderSvg.description%"
+					},
 					"print.lineNumbers": {
 						"type": "string",
 						"description": "%print.lineNumbers.description%",
