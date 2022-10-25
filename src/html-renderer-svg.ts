@@ -1,10 +1,11 @@
-import { Uri } from 'vscode';
-
-export function getBodyHtml(raw: string) {
+import { languages } from 'vscode';
+export function getBodyHtml(raw: string, languageId:string) {
 	return raw;
 }
 
-export function getTitle(filename: string) {
-	return filename;
+// demo only, not actually specified by registration
+// default behaviour is more appropriate (shortened filepath)
+export function getTitle(filepath: string) {
+	return "SVG custom title";
 }
 

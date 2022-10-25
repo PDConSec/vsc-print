@@ -1,43 +1,49 @@
 import * as path from "path";
-import { Uri } from "vscode";
-import * as hrSource from "./html-renderer-sourcecode";
+import { languages, Uri } from "vscode";
+import * as htmlRendererSourcecode from "./html-renderer-sourcecode";
+
+export interface IDocumentRenderer {
+	getBodyHtml: (raw: string, languageId: string) => string,
+	getTitle?: (filepath: string) => string,
+	getCssUriStrings?: () => Array<string>,
+	getResource?: (uri: Uri) => Buffer | string
+}
 
 export class DocumentRenderer {
-	constructor(
-		public getBodyHtml: (raw: string, languageId: string) => string,
-		public getTitle?: (filename: string) => string,
-		public getCssUriStrings?: () => Array<string>,
-		public getResource?: (uri: Uri) => Buffer | string
-	) {
-		if (!getTitle) {
-			getTitle = (filename: string) => {
-				const parts = filename.split(path.sep);
-				if (parts.length > 3) {
-					filename = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
-				}
-				return filename;			
+
+	options: IDocumentRenderer;
+
+	constructor(options: IDocumentRenderer) {
+		this.options = options;
+	}
+
+	public getBodyHtml(raw: string, languageId: string) {
+		return this.options.getBodyHtml(raw, languageId);
+	}
+
+	public getTitle(filename: string) {
+		if (this.options.getTitle) {
+			return this.options.getTitle(filename);
+		} else {
+			const parts = filename.split(path.sep);
+			if (parts.length > 3) {
+				filename = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
 			}
-		}
-		if (!getCssUriStrings) {
-			getCssUriStrings = () => [];
+			return filename;
 		}
 	}
 
 	static __documentRenderers = new Map<string, DocumentRenderer>();
 
-	static __defaultDocumentRenderer = new DocumentRenderer(
-		hrSource.getBodyHtml,
-		undefined,
-		hrSource.getCssUriStrings
-	);
+	static __defaultDocumentOptions: IDocumentRenderer = {
+		getBodyHtml: htmlRendererSourcecode.getBodyHtml,
+		getCssUriStrings: htmlRendererSourcecode.getCssUriStrings
+	};
 
-	public static register(
-		langIds: string | string[],
-		getBodyHtml: (raw: string, languageId: string) => string,
-		getCssUriStrings: () => Array<string>,
-		getTitle: (filename: string) => string,
-		getResource?: (uri: Uri) => Buffer | string) {
-		const documentRenderer = new DocumentRenderer(getBodyHtml, undefined, getCssUriStrings);
+	static __defaultDocumentRenderer = new DocumentRenderer(DocumentRenderer.__defaultDocumentOptions);
+
+	public static register(langIds: string | string[], options: IDocumentRenderer) {
+		const documentRenderer = new DocumentRenderer(options);
 		langIds = typeof langIds === "string" ? [langIds] : langIds;
 		langIds.forEach(langId =>
 			DocumentRenderer.__documentRenderers.set(langId, documentRenderer)
@@ -50,9 +56,17 @@ export class DocumentRenderer {
 	}
 
 	public getCssLinks(): string {
-		return this.getCssUriStrings ? this.getCssUriStrings()
+		return this.options.getCssUriStrings ? this.options.getCssUriStrings()
 			.map(uriString => `\t<link href="${uriString}" rel="stylesheet" />`)
 			.join("\n") : "";
+	}
+
+	public getResource(uri: Uri): Buffer | string {
+		if (this.options.getResource) {
+			return this.options.getResource(uri);
+		} else {
+			throw new Error("Document renderer does not implement getResource");
+		}
 	}
 
 }

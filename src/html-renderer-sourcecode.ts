@@ -36,10 +36,6 @@ export function getCssUriStrings(): Array<string> {
 	];
 }
 
-export function getResource(uri: vscode.Uri): Buffer | string {
-	throw new Error("ERR_NOTIMPL");	
-}
-
 function getEmbeddedStyles() {
 	let editorConfig = vscode.workspace.getConfiguration("editor");
 	return `body{tab-size:${editorConfig.tabSize};}`;

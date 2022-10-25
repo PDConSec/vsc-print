@@ -9,7 +9,7 @@ import * as nls from 'vscode-nls';
 import { HtmlDocumentBuilder } from './html-document-builder';
 import { extensionPath } from './extension-path';
 import { DocumentRenderer } from './document-renderer';
-import * as hrSvg from "./html-renderer-svg";
+import * as htmlRendererSvg from "./html-renderer-svg";
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -97,7 +97,6 @@ export function activate(context: vscode.ExtensionContext) {
 		PrintSession.port = addr.port;
 		logger.info(`Began listening on ${addr.address}:${addr.port}`);
 	});
-	let printConfig = vscode.workspace.getConfiguration("print", null);
 	server.listen(0, "localhost");
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
@@ -109,7 +108,10 @@ export function activate(context: vscode.ExtensionContext) {
 	return markdownExtensionInstaller;
 }
 
-DocumentRenderer.register("svg", hrSvg.getBodyHtml);
+DocumentRenderer.register("svg", {
+	getBodyHtml: htmlRendererSvg.getBodyHtml,
+	// getTitle: htmlRendererSvg.getTitle //demo only
+});
 
 function openDoc(doc: string) {
 	switch (doc) {
