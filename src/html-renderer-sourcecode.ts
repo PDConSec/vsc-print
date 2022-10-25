@@ -3,7 +3,6 @@ import { logger } from './logger';
 import hljs = require('highlight.js');
 
 export function getBodyHtml(raw: string, languageId: string): string {
-	const printConfig = vscode.workspace.getConfiguration("print");
 	let renderedCode = "";
 	try {
 		try {
