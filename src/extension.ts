@@ -45,8 +45,8 @@ function gc() {
 export function activate(context: vscode.ExtensionContext) {
 	logger.debug("Print activated");
 
-	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
-		etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton,
+	let ecmPrint = vscode.workspace.getConfiguration("print").editorContextMenuItemPosition,
+		etmButton = vscode.workspace.getConfiguration("print").editorTitleMenuButton,
 		disposable: vscode.Disposable;
 	vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
 	vscode.commands.executeCommand("setContext", "etmButton", etmButton);
