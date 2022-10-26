@@ -1,3 +1,4 @@
+import { logger } from './logger';
 import * as path from "path";
 import * as vscode from "vscode";
 import * as htmlRendererSourcecode from "./html-renderer-sourcecode";
@@ -35,7 +36,12 @@ export class DocumentRenderer {
 	}
 
 	public isEnabled() {
-		return this.options.isEnabled ? this.options.isEnabled() : true;
+		if (this.options.isEnabled) {
+			return this.options.isEnabled();
+		} else {
+			logger.debug("HTML renderer does not implement isEnabled, defaulting to true");
+			return true;
+		}
 	}
 
 	static __documentRenderers = new Map<string, DocumentRenderer>();
@@ -56,10 +62,20 @@ export class DocumentRenderer {
 	}
 
 	public static get(langId: string) {
-		const documentRenderer = DocumentRenderer.__documentRenderers.get(langId)
-			?? DocumentRenderer.__defaultDocumentRenderer;
-		return documentRenderer.isEnabled() ? documentRenderer
-			: DocumentRenderer.__defaultDocumentRenderer;
+		const documentRenderer = DocumentRenderer.__documentRenderers.get(langId);
+		if (!documentRenderer) {
+			logger.debug(`No document renderer is registered for ${langId}, using default (source code renderer)`);
+			return this.__defaultDocumentRenderer;
+		} else {
+			const isEnabled = documentRenderer.isEnabled();
+			if (documentRenderer.isEnabled()) {
+				logger.debug(`Using the document renderer for ${langId}`);
+				return documentRenderer;
+			} else {
+				logger.debug(`Document renderer for ${langId} is disabled, using default (source code renderer)`);
+				return this.__defaultDocumentRenderer;
+			}
+		}
 	}
 
 	public getCssLinks(): string {

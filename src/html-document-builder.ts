@@ -31,9 +31,10 @@ export class HtmlDocumentBuilder {
 				`<h3>${docs.length} files</h3><p>(file list disabled)</p>`;
 			const msgTooManyFiles = localise("TOO_MANY_FILES");
 			const flagTooManyFiles = docs.length > printConfig.folder.maxFiles;
-			const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc => templateFolderItem
-				.replace("FOLDER_ITEM_TITLE", doc.fileName)
-				.replace("FOLDER_ITEM_CONTENT", () => `<table class="hljs">${this.getRenderedCode(doc.getText(), doc.languageId)}</table>`)
+			const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc =>
+				templateFolderItem
+					.replace("FOLDER_ITEM_TITLE", doc.fileName)
+					.replace("FOLDER_ITEM_CONTENT", () => `<table class="hljs">${DocumentRenderer.get(doc.languageId).getBodyHtml(doc.getText(), doc.languageId)}</table>`)
 			).join('\n');
 
 			if (flagTooManyFiles) {
@@ -41,123 +42,31 @@ export class HtmlDocumentBuilder {
 			}
 
 			return template
-				.replace(/\$TITLE/g, path.basename(this.filename))
-				.replace("$PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("$CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
-				.replace("$DEFAULT_STYLESHEET_LINK",
+				.replace(/DOCUMENT_TITLE/g, path.basename(this.filename))
+				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
+				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
+				.replace("STYLESHEET_LINKS",
 					'<link href="vsc-print.resource/default.css" rel="stylesheet" />\n' +
 					'\t<link href="vsc-print.resource/line-numbers.css" rel="stylesheet" />\n' +
 					'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
 					'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
-				.replace("$VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
-				.replace("$EMBEDDED_STYLES", EMBEDDED_STYLES)
+				.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
 				;
 		} else {
-			if (printConfig.renderMarkdown && this.language === "markdown") {
-				logger.debug(`Printing rendered Markdown`);
-				const markdownConfig = vscode.workspace.getConfiguration("markdown");
-				return template
-					.replace(/DOCUMENT_TITLE/g, path.basename(this.filename))
-					.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-					.replace("CONTENT", () => this.getRenderedCode(this.code, this.language)) // replacer fn suppresses interpretation of $
-					.replace("DEFAULT_STYLESHEET_LINK", '<link href="vsc-print.resource/default-markdown.css" rel="stylesheet" />')
-					.replace("VSCODE_MARKDOWN_STYLESHEET_LINKS", markdownConfig.styles.map((cssFilename: string) => `<link href="${cssFilename}" rel="stylesheet" />`).join("\n"))
-					.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
-					;
-			} else {
-				logger.debug(`Printing ${this.filename}`);
-				return template
-					.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.filename))
-					.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-					.replace("CONTENT", () => `<table class="hljs">${documentRenderer.getBodyHtml(this.code, this.language)}</table>`) // replacer fn suppresses $
-					.replace("DEFAULT_STYLESHEET_LINK", documentRenderer.getCssLinks())
-					.replace("VSCODE_MARKDOWN_STYLESHEET_LINKS", "")
-					.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
-					;
-			}
+			logger.debug(`Printing ${this.filename}`);
+			return template
+				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.filename))
+				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
+				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language))
+				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
+				.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
+				;
 		}
 	}
 	getEmbeddedStyles() {
 		let editorConfig = vscode.workspace.getConfiguration("editor", null);
 		return `body{tab-size:${editorConfig.tabSize};}`;
 	}
-	getRenderedCode(code: string, languageId: string): string {
-		let renderedCode = "";
-		try {
-			const printConfig = vscode.workspace.getConfiguration("print", null);
-			if (printConfig.renderMarkdown && this.language === "markdown") {
-				renderedCode = HtmlDocumentBuilder.MarkdownEngine.render(code);
-				const v = renderedCode.lastIndexOf("</style>");
-				if (v != -1) {
-					renderedCode = renderedCode.substring(v + 8);
-				}
-			} else {
-				try {
-					renderedCode = hljs.highlight(code, { language: languageId }).value;
-				}
-				catch (err) {
-					renderedCode = hljs.highlightAuto(code).value;
-				}
-				renderedCode = this.fixMultilineSpans(renderedCode);
-				if (this.printLineNumbers) {
-					renderedCode = renderedCode
-						.split("\n")
-						.map(line => line || "&nbsp;")
-						.map((line, i) => `<tr><td class="line-number">${this.startLine + i}</td><td class="line-text">${line.replace(/([^ -<]{40})/g, "$1<wbr>")}</td></tr>`)
-						.join("\n")
-						.replace("\n</td>", "</td>")
-						;
-				} else {
-					renderedCode = renderedCode
-						.split("\n")
-						.map(line => line || "&nbsp;")
-						.map((line, i) => `<tr><td class="line-text">${line.replace(/([^ -<]{40})/g, "$1<wbr>")}</td></tr>`)
-						.join("\n")
-						.replace("\n</td>", "</td>")
-						;
-				}
-			}
-		} catch {
-			logger.error("Markdown could not be rendered");
-			renderedCode = "<div>Could not render this file.</end>";
-		}
-		return renderedCode;
-	}
-	fixMultilineSpans(text: string): string {
-		let classes: string[] = [];
-
-		// since this code runs on simple, well-behaved, escaped HTML, we can just
-		// use regex matching for the span tags and classes
-
-		// first capture group is if it's a closing tag, second is tag attributes
-		const spanRegex = /<(\/?)span(.*?)>/g;
-		// https://stackoverflow.com/questions/317053/regular-expression-for-extracting-tag-attributes
-		// matches single html attribute, first capture group is attr name and second is value
-		const tagAttrRegex = /(\S+)=["']?((?:.(?!["']?\s+(?:\S+)=|\s*\/?[>"']))+.)["']?/g;
-
-		return text.split("\n").map(line => {
-			const pre = classes.map(classVal => `<span class="${classVal}">`);
-
-			let spanMatch;
-			spanRegex.lastIndex = 0; // exec maintains state which we need to reset
-			while ((spanMatch = spanRegex.exec(line)) !== null) {
-				if (spanMatch[1] !== "") {
-					classes.pop();
-					continue;
-				}
-				let attrMatch;
-				tagAttrRegex.lastIndex = 0;
-				while ((attrMatch = tagAttrRegex.exec(spanMatch[2])) !== null) {
-					if (attrMatch[1].toLowerCase().trim() === "class") {
-						classes.push(attrMatch[2]);
-					}
-				}
-			}
-
-			return pre + line + "</span>".repeat(classes.length);
-		}).join("\n");
-	}
-	
 	async docsInFolder(): Promise<vscode.TextDocument[]> {
 		logger.debug(`Enumerating the files in ${this.filename}`);
 		const printConfig = vscode.workspace.getConfiguration("print", null);

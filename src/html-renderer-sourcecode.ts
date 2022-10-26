@@ -23,7 +23,7 @@ export function getBodyHtml(raw: string, languageId: string): string {
 		logger.error("Markdown could not be rendered");
 		renderedCode = "<div>Could not render this file.</end>";
 	}
-	return renderedCode;
+	return `<table class="hljs">\n${renderedCode}\n</table>`;
 }
 
 export function getCssUriStrings(): Array<string> {

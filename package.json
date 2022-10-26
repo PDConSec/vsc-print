@@ -52,6 +52,17 @@
 				"title": "%commands.title.openLog%"
 			}
 		],
+		"languages": [
+			{
+				"id": "svg",
+				"extensions": [
+					".svg"
+				],
+				"aliases": [
+					"Simple Vector Graphics"
+				]
+			}
+		],
 		"configuration": [
 			{
 				"title": "%configuration.title.print%",
