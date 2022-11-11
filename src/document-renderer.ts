@@ -56,9 +56,11 @@ export class DocumentRenderer {
 	public static register(langIds: string | string[], options: IDocumentRenderer) {
 		const documentRenderer = new DocumentRenderer(options);
 		langIds = typeof langIds === "string" ? [langIds] : langIds;
-		langIds.forEach(langId =>
+		langIds.forEach(langId => 
 			DocumentRenderer.__documentRenderers.set(langId, documentRenderer)
 		);
+		logger.debug(`Registered a document renderer for the following languages: ${langIds.join(", ")}`);
+		return logger;
 	}
 
 	public static get(langId: string) {

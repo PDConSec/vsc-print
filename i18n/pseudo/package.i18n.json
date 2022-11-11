@@ -23,6 +23,5 @@
 	"print.lineSpacing.double": "PSEUDO:Double spaced",
 	"print.printAndClose.description": "PSEUDO:Show the Print dialog when the browser is ready, and try to close the page after printing is done or cancelled",
 	"print.renderMarkdown.description": "PSEUDO:Render Markdown as HTML when printing",
-	"print.renderSvg.description": "PSEUDO:Render SVG when printing",
 	"print.logLevel.markdownDescription": "PSEUDO:Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Silly` will log absolutely everything. `Debug` is good for troubleshooting but the log file will grow fast."
 }

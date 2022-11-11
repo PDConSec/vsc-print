@@ -23,6 +23,5 @@
 	"print.lineSpacing.double": "Doppelter Zeilenabstand",
 	"print.printAndClose.description": "Zeige mir das Druckfenster an wenn der Browser bereit ist und versuche diese Meldung nach dem Druck zu schließen, sollte der Druckbefehl erledigt sein oder abgebrochen werden",
 	"print.renderMarkdown.description": "Anwenden von Stilen auf Markdown, anstatt als Rohtext zu drucken",
-	"print.renderSvg.description": "PSEUDO:Render SVG when printing",
 	"print.logLevel.markdownDescription": "Die Protokollebene `error` protokolliert nur Fehler (sehr wenige Einträge), während `info` Fehler, Warnungen und Informationen protokolliert. `debug` eignet sich gut für die Fehlerbehebung.  `silly` wird absolut alles protokollieren, aber die Protokolldatei wird bald riesig werden."
 }

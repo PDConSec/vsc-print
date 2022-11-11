@@ -24,6 +24,5 @@
 	"print.logLevel.markdownDescription": "Log level",
   "print.printAndClose.description": "براؤزر کے تیار ہونے پر پرنٹ ڈائیلاگ دکھائیں، اور پرنٹنگ یا منسوخ ہونے کے بعد صفحہ بند کرنے کی کوشش کریں۔",
   "print.renderMarkdown.description": "پرنٹ کرتے وقت مارک ڈاون کو HTML کے بطور رینڈر کریں۔",
-	"print.renderSvg.description":"Render SVG when printing",
   "print.webserverUptimeSeconds.description": "سیکنڈوں میں وقت جب ایمبیڈڈ ویب سرور پرنٹ جاب کی سروس شروع کرنے کے بعد دستیاب رہتا ہے۔"
 }

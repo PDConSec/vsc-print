@@ -1,3 +1,4 @@
+import { PrintPreview } from './print-preview';
 import { logger } from './logger';
 import { PrintSession } from './print-session';
 import * as vscode from 'vscode';
@@ -9,7 +10,6 @@ import * as nls from 'vscode-nls';
 import { HtmlDocumentBuilder } from './html-document-builder';
 import { extensionPath } from './extension-path';
 import { DocumentRenderer } from './document-renderer';
-import * as htmlRendererSvg from "./html-renderer-svg";
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -52,6 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.executeCommand("setContext", "etmButton", etmButton);
 
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.preview", previewCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.print", printCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.sessionCount", () => printSessions.size));
@@ -108,11 +109,6 @@ export function activate(context: vscode.ExtensionContext) {
 	return markdownExtensionInstaller;
 }
 
-DocumentRenderer.register("svg", {
-	getBodyHtml: htmlRendererSvg.getBodyHtml,
-	// getTitle: htmlRendererSvg.getTitle //demo only
-});
-
 function openDoc(doc: string) {
 	switch (doc) {
 		case "manual":
@@ -147,7 +143,14 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 
 function printCommand(cmdArgs: any): PrintSession {
 	logger.debug("Print command was invoked");
-	const printSession = new PrintSession(cmdArgs);
+	const printSession = new PrintSession(cmdArgs, false);
+	printSessions.set(printSession.sessionId, printSession);
+	return printSession;
+}
+
+function previewCommand(cmdArgs: any) {
+	logger.debug("Preview command was invoked");
+	const printSession = new PrintSession(cmdArgs, true);
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;
 }

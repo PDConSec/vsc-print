@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
-	"version": "0.10.7",
+	"version": "0.10.10",
 	"icon": "assets/vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
@@ -43,6 +43,11 @@
 			},
 			{
 				"category": "%commands.category%",
+				"command": "vsc-print.preview",
+				"title": "Preview"
+			},
+			{
+				"category": "%commands.category%",
 				"command": "vsc-print.help",
 				"title": "%commands.title.help%"
 			},
@@ -50,17 +55,6 @@
 				"category": "%commands.category%",
 				"command": "vsc-print.openLog",
 				"title": "%commands.title.openLog%"
-			}
-		],
-		"languages": [
-			{
-				"id": "svg",
-				"extensions": [
-					".svg"
-				],
-				"aliases": [
-					"Simple Vector Graphics"
-				]
 			}
 		],
 		"configuration": [
@@ -102,11 +96,6 @@
 						"type": "boolean",
 						"default": true,
 						"description": "%print.renderMarkdown.description%"
-					},
-					"print.renderSvg": {
-						"type": "boolean",
-						"default": true,
-						"description": "%print.renderSvg.description%"
 					},
 					"print.lineNumbers": {
 						"type": "string",

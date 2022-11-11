@@ -1,3 +1,4 @@
+import { PrintPreview } from './print-preview';
 import { logger } from './logger';
 import { HtmlDocumentBuilder } from './html-document-builder';
 import * as vscode from 'vscode';
@@ -25,16 +26,15 @@ export class PrintSession {
 	public ready: Promise<void>;
 	public sessionId = nodeCrypto.randomUUID();
 	public uri: vscode.Uri | undefined;
-	constructor(cmdArgs?: vscode.Uri) {
-		const printConfig = vscode.workspace.getConfiguration("print", null);
-		logger.debug(`Creating a print session object for ${cmdArgs}`);
+	constructor(uri?: vscode.Uri, preview: boolean = true) {
+		logger.debug(`Creating a print session object for ${uri}`);
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
 				const printConfig = vscode.workspace.getConfiguration("print", null);
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";
-				const contentSource = await this.contentSource(cmdArgs!);
+				const contentSource = await this.contentSource(uri!);
 				switch (contentSource) {
 					case "editor": {
 						logger.debug("Using the buffer of the active editor");
@@ -86,7 +86,7 @@ export class PrintSession {
 					}
 						break;
 					case "file":
-						document = await vscode.workspace.openTextDocument(cmdArgs!);
+						document = await vscode.workspace.openTextDocument(uri!);
 						logger.debug(`Printing the file ${document.uri.fsPath}`);
 						this.uri = document.uri;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
@@ -99,15 +99,21 @@ export class PrintSession {
 						);
 						break;
 					case "folder":
-						logger.debug(`Printing the folder ${cmdArgs!.fsPath}`);
-						this.pageBuilder = new HtmlDocumentBuilder(cmdArgs!.fsPath, "", "folder", printLineNumbers)
+						logger.debug(`Printing the folder ${uri!.fsPath}`);
+						this.pageBuilder = new HtmlDocumentBuilder(uri!.fsPath, "", "folder", printLineNumbers)
 						break;
 					default:
 						logger.error(contentSource);
 						vscode.window.showErrorMessage(contentSource);
 						break;
 				}
-				this.launchBrowser()
+				if (preview) {
+					const renderer = this.pageBuilder;
+					const html = await renderer!.build();
+					PrintPreview.show(html)
+				} else {
+					this.launchBrowser();
+				}
 				resolve();
 			} catch (err) {
 				reject(err);
@@ -249,7 +255,7 @@ export class PrintSession {
 			const printConfig = vscode.workspace.getConfiguration("print");
 			const activeBrowser = printConfig.alternateBrowser ? "alternate" : "default";
 			logger.debug(`Platform detected as "${process.platform}"`);
-			logger.debug(`Selected browser is ${ activeBrowser }`);
+			logger.debug(`Selected browser is ${activeBrowser}`);
 			logger.debug(`Browser launch command is "${cmd}"`);
 			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
 				// node on Linux incorrectly calls this error handler, with a null error object
