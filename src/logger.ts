@@ -1,9 +1,9 @@
-import { extensionPath } from './extension-path';
+import { Metadata } from './metadata';
 import * as winston from "winston";
 import * as vscode from "vscode";
 
 const logFileName = `vscode-print.log`;
-const logFileDir = `${extensionPath}`;
+const logFileDir = `${Metadata.ExtensionContext.extensionPath}`;
 const logLevel = vscode.workspace.getConfiguration("print", null).logLevel;
 
 const transports = [
