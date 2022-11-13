@@ -310,8 +310,8 @@
 		"typescript": "^3.9.10",
 		"vsce": "^2.9.2",
 		"vscode-nls-dev": "^3.3.2",
-		"webpack": "^5.54.0",
-		"webpack-cli": "^4.8.0"
+		"webpack": "^5.75.0",
+		"webpack-cli": "^4.10.0"
 	},
 	"dependencies": {
 		"@types/highlight.js": "^10.1.0",

@@ -34,8 +34,8 @@ export class PrintSession {
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";
-				const contentSource = await this.contentSource(uri!);
-				switch (contentSource) {
+				const rootDocumentContentSource = await this.rootDocumentContentSource(uri!);
+				switch (rootDocumentContentSource) {
 					case "editor": {
 						logger.debug("Using the buffer of the active editor");
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
@@ -103,8 +103,8 @@ export class PrintSession {
 						this.pageBuilder = new HtmlDocumentBuilder(uri!.fsPath, "", "folder", printLineNumbers)
 						break;
 					default:
-						logger.error(contentSource);
-						vscode.window.showErrorMessage(contentSource);
+						logger.error(rootDocumentContentSource);
+						vscode.window.showErrorMessage(rootDocumentContentSource);
 						break;
 				}
 				if (preview) {
@@ -146,8 +146,8 @@ export class PrintSession {
 			const basePath = vscode.workspace.getWorkspaceFolder(this.uri!)?.uri.fsPath!;
 			const resourcePath = path.join(basePath, ...urlParts.slice(3));
 			await relativeResource(resourcePath);
-		} else if (urlParts.length === 4 && urlParts[2] === "vsc-print.resource") {
-			logger.debug(`Responding to vsc-print.resource request for ${urlParts[3]} in session ${urlParts[1]}`);
+		} else if (urlParts.length === 4 && urlParts[2] === "bundled") {
+			logger.debug(`Responding to bundled request for ${urlParts[3]} in session ${urlParts[1]}`);
 			switch (urlParts[3]) {
 				case "colour-scheme.css":
 					let colourScheme = vscode.workspace.getConfiguration("print").colourScheme;
@@ -194,12 +194,18 @@ export class PrintSession {
 					response.end(css);
 					break;
 				default:
-					logger.debug(`vsc-print.resource/${urlParts[3]} not found`);
-					response.writeHead(404, {
-						"Content-Type": "text/plain; charset=utf-8",
-						"Content-Length": 9
-					});
-					response.end("Not found");
+					try {
+						throw "E_NOTIMPL";
+						// todo keep root doc renderer in session object for resolving resources
+						// this.rootDocRenderer.getResource()
+					} catch {
+						logger.debug(`bundled/${urlParts[3]} not found`);
+						response.writeHead(404, {
+							"Content-Type": "text/plain; charset=utf-8",
+							"Content-Length": 9
+						});
+						response.end("Not found");
+					}
 					break;
 			}
 		} else {
@@ -269,7 +275,7 @@ export class PrintSession {
 		return url;
 	}
 
-	async contentSource(uri: vscode.Uri): Promise<string> {
+	async rootDocumentContentSource(uri: vscode.Uri): Promise<string> {
 		try {
 			await vscode.workspace.fs.stat(uri); // barfs when file does not exist (unsaved)
 			const uristat = await vscode.workspace.fs.stat(uri);

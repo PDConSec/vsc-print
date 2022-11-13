@@ -1,3 +1,4 @@
+import { Metadata } from './metadata';
 import { PrintPreview } from './print-preview';
 import { logger } from './logger';
 import { PrintSession } from './print-session';
@@ -8,7 +9,6 @@ import * as path from "path";
 import { captionByFilename, filenameByCaption, localise } from './imports';
 import * as nls from 'vscode-nls';
 import { HtmlDocumentBuilder } from './html-document-builder';
-import { extensionPath } from './extension-path';
 import { DocumentRenderer } from './document-renderer';
 
 // #region necessary for vscode-nls-dev
@@ -113,13 +113,13 @@ function openDoc(doc: string) {
 	switch (doc) {
 		case "manual":
 			// todo localise the command that opens the manual
-			let pathToManual = path.join(extensionPath, "doc/manual.md");
+			let pathToManual = path.join(Metadata.ExtensionContext.extensionPath, "doc/manual.md");
 			let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
 			vscode.commands.executeCommand('markdown.showPreview', uriManual);
 			break;
 
 		case "log":
-			let pathToLogFile = path.join(extensionPath, "vscode-print.log");
+			let pathToLogFile = path.join(Metadata.ExtensionContext.extensionPath, "vscode-print.log");
 			let uriLogFile: vscode.Uri = vscode.Uri.file(pathToLogFile);
 			vscode.workspace.openTextDocument(uriLogFile).then(vscode.window.showTextDocument);
 			break;

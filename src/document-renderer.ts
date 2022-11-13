@@ -8,7 +8,7 @@ export interface IDocumentRenderer {
 	getBodyHtml: (raw: string, languageId: string) => string,
 	getTitle?: (filepath: string) => string,
 	getCssUriStrings?: () => Array<string>,
-	getResource?: (uri: vscode.Uri) => Buffer | string
+	getResource?: (name: string) => Buffer | string
 }
 
 export class DocumentRenderer {
@@ -86,11 +86,11 @@ export class DocumentRenderer {
 			.join("\n") : "";
 	}
 
-	public getResource(uri: vscode.Uri): Buffer | string {
+	public getResource(name:string): Buffer | string {
 		if (this.options.getResource) {
-			return this.options.getResource(uri);
+			return this.options.getResource(name);
 		} else {
-			throw new Error(`Document renderer produced HTML that references "${uri.path}" but does not implement getResource`);
+			throw new Error(`Document renderer produced HTML that references "${name}" but does not implement getResource`);
 		}
 	}
 

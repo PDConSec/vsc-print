@@ -46,10 +46,10 @@ export class HtmlDocumentBuilder {
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
 				.replace("STYLESHEET_LINKS",
-					'<link href="vsc-print.resource/default.css" rel="stylesheet" />\n' +
-					'\t<link href="vsc-print.resource/line-numbers.css" rel="stylesheet" />\n' +
-					'\t<link href="vsc-print.resource/colour-scheme.css" rel="stylesheet" />\n' +
-					'\t<link href="vsc-print.resource/settings.css" rel = "stylesheet" /> ')
+					'<link href="bundled/default.css" rel="stylesheet" />\n' +
+					'\t<link href="bundled/line-numbers.css" rel="stylesheet" />\n' +
+					'\t<link href="bundled/colour-scheme.css" rel="stylesheet" />\n' +
+					'\t<link href="bundled/settings.css" rel = "stylesheet" /> ')
 				.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
 				;
 		} else {

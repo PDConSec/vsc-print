@@ -20,7 +20,7 @@ export function getBodyHtml(raw: string): string {
 export function getCssUriStrings(): Array<string> {
 	const markdownConfig = vscode.workspace.getConfiguration("markdown");
 	return [
-		"vsc-print.resource/default-markdown.css",
+		"bundled/default-markdown.css",
 		...markdownConfig.styles
 	];
 }

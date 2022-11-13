@@ -169,7 +169,7 @@ suite('Print Extension Test Suite', () => {
 		const session = (await vscode.commands.executeCommand<PrintSession>("vsc-print.print", uri))!;
 		await session.ready;
 		const url = session.getUrl();
-		const response = await axios.get(`${url}vsc-print.resource/default-markdown.css`);
+		const response = await axios.get(`${url}bundled/default-markdown.css`);
 		assert.equal(response.status, 200);
 		assert.equal(response.headers["content-type"], "text/css; charset=utf-8");
 		await axios.get(`${url}completed`);

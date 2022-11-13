@@ -28,10 +28,10 @@ export function getBodyHtml(raw: string, languageId: string): string {
 
 export function getCssUriStrings(): Array<string> {
 	return [
-		"vsc-print.resource/default.css",
-		"vsc-print.resource/line-numbers.css",
-		"vsc-print.resource/colour-scheme.css",
-		"vsc-print.resource/settings.css",
+		"bundled/default.css",
+		"bundled/line-numbers.css",
+		"bundled/colour-scheme.css",
+		"bundled/settings.css",
 	];
 }
 
