@@ -3,14 +3,7 @@ import { logger } from './logger';
 import * as path from "path";
 import * as vscode from "vscode";
 import * as htmlRendererSourcecode from "./html-renderer-sourcecode";
-
-export interface IDocumentRenderer {
-	isEnabled?: () => boolean;
-	getBodyHtml: (raw: string, languageId: string) => string,
-	getTitle?: (filepath: string) => string,
-	getCssUriStrings?: () => Array<string>,
-	getResource?: (name: string) => IResourceDescriptor
-}
+import { IDocumentRenderer } from './IDocumentRenderer';
 
 export class DocumentRenderer {
 
@@ -20,8 +13,8 @@ export class DocumentRenderer {
 		this.options = options;
 	}
 
-	public getBodyHtml(raw: string, languageId: string) {
-		return this.options.getBodyHtml(raw, languageId);
+	public getBodyHtml(raw: string, languageId: string, options?:any) {
+		return this.options.getBodyHtml(raw, languageId, options);
 	}
 
 	public getTitle(filename: string) {
@@ -50,6 +43,7 @@ export class DocumentRenderer {
 	static __defaultDocumentOptions: IDocumentRenderer = {
 		getBodyHtml: htmlRendererSourcecode.getBodyHtml,
 		getCssUriStrings: htmlRendererSourcecode.getCssUriStrings,
+		getResource: htmlRendererSourcecode.getResource
 	};
 
 	static __defaultDocumentRenderer = new DocumentRenderer(DocumentRenderer.__defaultDocumentOptions);
@@ -84,8 +78,8 @@ export class DocumentRenderer {
 	public getCssLinks(): string {
 		let result: string = "";
 		if (this.options.getCssUriStrings) {
-			let us = this.options.getCssUriStrings();
-			let result = us.map(uriString => `\t<link href="${uriString}" rel="stylesheet" />`).join("\n");
+			const us = this.options.getCssUriStrings();
+			result = us.map(uriString => `\t<link href="${uriString}" rel="stylesheet" />`).join("\n");
 		}
 		return result;
 	}

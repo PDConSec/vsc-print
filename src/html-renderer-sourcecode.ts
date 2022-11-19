@@ -1,8 +1,23 @@
+import { IResourceDescriptor } from './IResourceDescriptor';
 import * as vscode from 'vscode';
 import { logger } from './logger';
 import hljs = require('highlight.js');
 
-export function getBodyHtml(raw: string, languageId: string): string {
+const resources = new Map<string, IResourceDescriptor>();
+resources.set("default.css", {
+	content: require("highlight.js/styles/default.css").default.toString(),
+	mimeType: "text/css; charset=utf-8;"
+})
+resources.set("default-markdown.css", {
+	content: require("./css/default-markdown.css").default.toString(),
+	mimeType: "text/css; charset=utf-8;"
+});
+resources.set("line-numbers.css", {
+	content: require("./css/line-numbers.css").default.toString(),
+	mimeType: "text/css; charset=utf-8;"
+});
+
+export function getBodyHtml(raw: string, languageId: string, options?:any): string {
 	let renderedCode = "";
 	try {
 		try {
@@ -12,14 +27,24 @@ export function getBodyHtml(raw: string, languageId: string): string {
 			renderedCode = hljs.highlightAuto(raw).value;
 		}
 		renderedCode = fixMultilineSpans(renderedCode);
-		renderedCode = renderedCode
-			.split("\n")
-			.map(line => line || "&nbsp;")
-			.map((line, i) => `<tr><td class="line-text">${line.replace(/([^ -<]{40})/g, "$1<wbr>")}</td></tr>`)
-			.join("\n")
-			.replace("\n</td>", "</td>")
-			;
-	} catch {
+		const printConfig = vscode.workspace.getConfiguration("print");
+		if (printConfig.lineNumbers === "on") {
+			renderedCode = renderedCode
+				.split("\n")
+				.map(line => line || "&nbsp;")
+				.map((line, i) => `<tr><td class="line-number">${options.startLine + i}</td><td class="line-text">${line.replace(/([^ -<]{40})/g, "$1<wbr>")}</td></tr>`)
+				.join("\n")
+				.replace("\n</td>", "</td>")
+				;
+		} else {
+			renderedCode = renderedCode
+				.split("\n")
+				.map(line => line || "&nbsp;")
+				.map((line, i) => `<tr><td class="line-text">${line.replace(/([^ -<]{40})/g, "$1<wbr>")}</td></tr>`)
+				.join("\n")
+				.replace("\n</td>", "</td>")
+				;
+		}	} catch {
 		logger.error("Markdown could not be rendered");
 		renderedCode = "<div>Could not render this file.</end>";
 	}
@@ -33,6 +58,10 @@ export function getCssUriStrings(): Array<string> {
 		"bundled/colour-scheme.css",
 		"bundled/settings.css",
 	];
+}
+
+export function getResource(name: string): IResourceDescriptor {
+	return resources.get(name)!;
 }
 
 function getEmbeddedStyles() {

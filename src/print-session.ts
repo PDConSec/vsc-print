@@ -9,10 +9,10 @@ import * as child_process from "child_process";
 import { localise } from './imports';
 import * as nodeCrypto from "crypto";
 import { defaultCss, filenameByCaption } from "./imports";
+import { DocumentRenderer } from './document-renderer';
 
-const defaultMarkdownCss: string = require("./css/default-markdown.css").default.toString();
-const lineNumbersCss: string = require("./css/line-numbers.css").default.toString();
 let settingsCss: string = require("./css/settings.css").default.toString();
+
 const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export class PrintSession {
@@ -161,27 +161,27 @@ export class PrintSession {
 					});
 					response.end(colourSchemeCss);
 					break;
-				case "default.css":
-					response.writeHead(200, {
-						"Content-Type": "text/css; charset=utf-8",
-						"Content-Length": Buffer.byteLength(defaultCss, 'utf-8')
-					});
-					response.end(defaultCss);
-					break;
-				case "default-markdown.css":
-					response.writeHead(200, {
-						"Content-Type": "text/css; charset=utf-8",
-						"Content-Length": Buffer.byteLength(defaultMarkdownCss, 'utf-8')
-					});
-					response.end(defaultMarkdownCss);
-					break;
-				case "line-numbers.css":
-					response.writeHead(200, {
-						"Content-Type": "text/css; charset=utf-8",
-						"Content-Length": Buffer.byteLength(lineNumbersCss, "utf-8")
-					});
-					response.end(lineNumbersCss);
-					break;
+				// case "default.css":
+				// 	response.writeHead(200, {
+				// 		"Content-Type": "text/css; charset=utf-8",
+				// 		"Content-Length": Buffer.byteLength(defaultCss, 'utf-8')
+				// 	});
+				// 	response.end(defaultCss);
+				// 	break;
+				// case "default-markdown.css":
+				// 	response.writeHead(200, {
+				// 		"Content-Type": "text/css; charset=utf-8",
+				// 		"Content-Length": Buffer.byteLength(defaultMarkdownCss, 'utf-8')
+				// 	});
+				// 	response.end(defaultMarkdownCss);
+				// 	break;
+				// case "line-numbers.css":
+				// 	response.writeHead(200, {
+				// 		"Content-Type": "text/css; charset=utf-8",
+				// 		"Content-Length": Buffer.byteLength(lineNumbersCss, "utf-8")
+				// 	});
+				// 	response.end(lineNumbersCss);
+				// 	break;
 				case "settings.css":
 					const printConfig = vscode.workspace.getConfiguration("print", null);
 					const css = settingsCss
@@ -195,9 +195,19 @@ export class PrintSession {
 					break;
 				default:
 					try {
-						throw "E_NOTIMPL";
-						// todo keep root doc renderer in session object for resolving resources
-						// this.rootDocRenderer.getResource()
+						const rootDocumentRenderer = DocumentRenderer.get(this.pageBuilder!.language);
+						const resourceDescriptor = rootDocumentRenderer.getResource(urlParts[3]);
+						let contentLength: number;
+						if (typeof resourceDescriptor.content === "string") {
+							contentLength = Buffer.byteLength(resourceDescriptor.content, "utf-8")
+						} else {
+							contentLength = resourceDescriptor.content.byteLength;
+						}
+						response.writeHead(200, {
+							"Content-Type": resourceDescriptor.mimeType,
+							"Content-Length": contentLength
+						});
+						response.end(resourceDescriptor.content);
 					} catch {
 						logger.debug(`bundled/${urlParts[3]} not found`);
 						response.writeHead(404, {

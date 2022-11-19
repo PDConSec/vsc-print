@@ -1,6 +1,5 @@
 import { logger } from './logger';
 import braces = require('braces');
-import hljs = require('highlight.js');
 import path = require('path');
 import * as vscode from 'vscode';
 import { localise } from './imports';
@@ -34,7 +33,7 @@ export class HtmlDocumentBuilder {
 			const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc =>
 				templateFolderItem
 					.replace("FOLDER_ITEM_TITLE", doc.fileName)
-					.replace("FOLDER_ITEM_CONTENT", () => `<table class="hljs">${DocumentRenderer.get(doc.languageId).getBodyHtml(doc.getText(), doc.languageId)}</table>`)
+					.replace("FOLDER_ITEM_CONTENT", () => `<table class="hljs">${DocumentRenderer.get(doc.languageId).getBodyHtml(doc.getText(), doc.languageId, { startLine: this.startLine })}</table>`)
 			).join('\n');
 
 			if (flagTooManyFiles) {
@@ -57,7 +56,7 @@ export class HtmlDocumentBuilder {
 			return template
 				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.filename))
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language))
+				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, {startLine: this.startLine}))
 				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
 				.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
 				;
