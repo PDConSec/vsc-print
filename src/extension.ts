@@ -10,6 +10,7 @@ import { captionByFilename, filenameByCaption, localise } from './imports';
 import * as nls from 'vscode-nls';
 import { HtmlDocumentBuilder } from './html-document-builder';
 import { DocumentRenderer } from './document-renderer';
+import * as htmlRendererMarkdown from "./html-renderer-markdown";
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -62,6 +63,15 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", () => openDoc("log")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("print.registerDocumentRenderer", DocumentRenderer.register));
+
+	// Could call DocumentRenderer.register directly,
+	// but this shows how a third party HTML renderer 
+	// would do it.
+	vscode.commands.executeCommand("print.registerDocumentRenderer", "markdown", {
+		getBodyHtml: htmlRendererMarkdown.getBodyHtml,
+		getCssUriStrings: htmlRendererMarkdown.getCssUriStrings,
+		getResource: htmlRendererMarkdown.getResource
+	});
 
 	server = http.createServer(async (request, response) => {
 		try {

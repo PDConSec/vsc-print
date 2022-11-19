@@ -30,7 +30,7 @@ export class PrintSession {
 		logger.debug(`Creating a print session object for ${uri}`);
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
-				const printConfig = vscode.workspace.getConfiguration("print", null);
+				const printConfig = vscode.workspace.getConfiguration("print");
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";

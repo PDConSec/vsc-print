@@ -7,10 +7,6 @@ const resources = new Map<string, IResourceDescriptor>();
 resources.set("default.css", {
 	content: require("highlight.js/styles/default.css").default.toString(),
 	mimeType: "text/css; charset=utf-8;"
-})
-resources.set("default-markdown.css", {
-	content: require("./css/default-markdown.css").default.toString(),
-	mimeType: "text/css; charset=utf-8;"
 });
 resources.set("line-numbers.css", {
 	content: require("./css/line-numbers.css").default.toString(),
@@ -28,11 +24,12 @@ export function getBodyHtml(raw: string, languageId: string, options?:any): stri
 		}
 		renderedCode = fixMultilineSpans(renderedCode);
 		const printConfig = vscode.workspace.getConfiguration("print");
+		const bpre = /([^ -<]{40}|\)\]\},)/g;
 		if (printConfig.lineNumbers === "on") {
 			renderedCode = renderedCode
 				.split("\n")
 				.map(line => line || "&nbsp;")
-				.map((line, i) => `<tr><td class="line-number">${options.startLine + i}</td><td class="line-text">${line.replace(/([^ -<]{40})/g, "$1<wbr>")}</td></tr>`)
+				.map((line, i) => `<tr><td class="line-number">${options.startLine + i}</td><td class="line-text">${line.replace(bpre, "$1<wbr>")}</td></tr>`)
 				.join("\n")
 				.replace("\n</td>", "</td>")
 				;
@@ -40,7 +37,7 @@ export function getBodyHtml(raw: string, languageId: string, options?:any): stri
 			renderedCode = renderedCode
 				.split("\n")
 				.map(line => line || "&nbsp;")
-				.map((line, i) => `<tr><td class="line-text">${line.replace(/([^ -<]{40})/g, "$1<wbr>")}</td></tr>`)
+				.map((line, i) => `<tr><td class="line-text">${line.replace(bpre, "$1<wbr>")}</td></tr>`)
 				.join("\n")
 				.replace("\n</td>", "</td>")
 				;
