@@ -43,6 +43,7 @@ function gc() {
 }
 
 export function activate(context: vscode.ExtensionContext) {
+	Metadata.ExtensionContext = context;
 	logger.debug("Print activated");
 
 	let ecmPrint = vscode.workspace.getConfiguration("print").editorContextMenuItemPosition,
@@ -113,13 +114,13 @@ function openDoc(doc: string) {
 	switch (doc) {
 		case "manual":
 			// todo localise the command that opens the manual
-			let pathToManual = path.join(Metadata.ExtensionContext.extensionPath, "doc/manual.md");
+			let pathToManual = path.join(Metadata.ExtensionPath, "doc/manual.md");
 			let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
 			vscode.commands.executeCommand('markdown.showPreview', uriManual);
 			break;
 
 		case "log":
-			let pathToLogFile = path.join(Metadata.ExtensionContext.extensionPath, "vscode-print.log");
+			let pathToLogFile = path.join(Metadata.ExtensionPath, "vscode-print.log");
 			let uriLogFile: vscode.Uri = vscode.Uri.file(pathToLogFile);
 			vscode.workspace.openTextDocument(uriLogFile).then(vscode.window.showTextDocument);
 			break;

@@ -3,7 +3,7 @@ import * as winston from "winston";
 import * as vscode from "vscode";
 
 const logFileName = `vscode-print.log`;
-const logFileDir = `${Metadata.ExtensionContext.extensionPath}`;
+const logFileDir = `${Metadata.ExtensionPath}`;
 const logLevel = vscode.workspace.getConfiguration("print", null).logLevel;
 
 const transports = [

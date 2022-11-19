@@ -1,5 +1,6 @@
-import { ExtensionContext } from "vscode";
+import * as vscode from "vscode";
 
 export class Metadata {
-	static ExtensionContext: ExtensionContext;
+	static ExtensionPath: string = vscode.extensions.getExtension("pdconsec.vscode-print")!.extensionPath;
+	static ExtensionContext: vscode.ExtensionContext;
 }
