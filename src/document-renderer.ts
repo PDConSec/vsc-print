@@ -1,3 +1,4 @@
+import { IResourceDescriptor } from './IResourceDescriptor';
 import { logger } from './logger';
 import * as path from "path";
 import * as vscode from "vscode";
@@ -8,7 +9,7 @@ export interface IDocumentRenderer {
 	getBodyHtml: (raw: string, languageId: string) => string,
 	getTitle?: (filepath: string) => string,
 	getCssUriStrings?: () => Array<string>,
-	getResource?: (name: string) => Buffer | string
+	getResource?: (name: string) => IResourceDescriptor
 }
 
 export class DocumentRenderer {
@@ -81,12 +82,15 @@ export class DocumentRenderer {
 	}
 
 	public getCssLinks(): string {
-		return this.options.getCssUriStrings ? this.options.getCssUriStrings()
-			.map(uriString => `\t<link href="${uriString}" rel="stylesheet" />`)
-			.join("\n") : "";
+		let result: string = "";
+		if (this.options.getCssUriStrings) {
+			let us = this.options.getCssUriStrings();
+			let result = us.map(uriString => `\t<link href="${uriString}" rel="stylesheet" />`).join("\n");
+		}
+		return result;
 	}
 
-	public getResource(name:string): Buffer | string {
+	public getResource(name:string): IResourceDescriptor {
 		if (this.options.getResource) {
 			return this.options.getResource(name);
 		} else {
