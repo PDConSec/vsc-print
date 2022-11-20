@@ -30,6 +30,7 @@ export class PrintSession {
 		logger.debug(`Creating a print session object for ${uri}`);
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
+				const baseUrl = `http://localhost:${PrintSession.port}/${this.sessionId}/`;
 				const printConfig = vscode.workspace.getConfiguration("print");
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
@@ -44,6 +45,7 @@ export class PrintSession {
 						if (!document) throw "This can't happen";
 						this.uri = document.uri;
 						this.pageBuilder = new HtmlDocumentBuilder(
+							baseUrl,
 							document.uri.fsPath,
 							document.getText(),
 							document.languageId,
@@ -65,6 +67,7 @@ export class PrintSession {
 							const langId = document!.languageId;
 							const startLine = selection.start.line + 1; // zero based to one based
 							this.pageBuilder = new HtmlDocumentBuilder(
+								baseUrl,
 								document.uri.fsPath,
 								selectedText,
 								langId,
@@ -76,6 +79,7 @@ export class PrintSession {
 							const langId = document!.languageId;
 							const startLine = selection.start.line + 1; // zero based to one based
 							this.pageBuilder = new HtmlDocumentBuilder(
+								baseUrl,
 								document.uri.fsPath,
 								selectedText,
 								langId,
@@ -92,6 +96,7 @@ export class PrintSession {
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						this.pageBuilder = new HtmlDocumentBuilder(
+							baseUrl,
 							document.uri.fsPath,
 							document.getText(),
 							document.languageId,
@@ -100,7 +105,7 @@ export class PrintSession {
 						break;
 					case "folder":
 						logger.debug(`Printing the folder ${uri!.fsPath}`);
-						this.pageBuilder = new HtmlDocumentBuilder(uri!.fsPath, "", "folder", printLineNumbers)
+						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, uri!.fsPath, "", "folder", printLineNumbers)
 						break;
 					default:
 						logger.error(rootDocumentContentSource);

@@ -4,6 +4,7 @@ import path = require('path');
 import * as vscode from 'vscode';
 import { localise } from './imports';
 import { DocumentRenderer } from './document-renderer';
+import { PrintSession } from './print-session';
 
 const templateFolderItem = require("./template-folder-item.html").default.toString();
 const template: string = require("./template.html").default.toString();
@@ -11,6 +12,7 @@ const template: string = require("./template.html").default.toString();
 export class HtmlDocumentBuilder {
 	static MarkdownEngine: any;
 	constructor(
+		public baseUrl: string,
 		public filename: string,
 		public code: string = "",
 		public language: string = "",
@@ -41,6 +43,7 @@ export class HtmlDocumentBuilder {
 			}
 
 			return template
+				.replace("BASE_URL", this.baseUrl)
 				.replace(/DOCUMENT_TITLE/g, path.basename(this.filename))
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
@@ -54,9 +57,10 @@ export class HtmlDocumentBuilder {
 		} else {
 			logger.debug(`Printing ${this.filename}`);
 			return template
+				.replace("BASE_URL", this.baseUrl)
 				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.filename))
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, {startLine: this.startLine}))
+				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine }))
 				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
 				.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
 				;
