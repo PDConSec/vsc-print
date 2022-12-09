@@ -166,32 +166,13 @@ export class PrintSession {
 					});
 					response.end(colourSchemeCss);
 					break;
-				// case "default.css":
-				// 	response.writeHead(200, {
-				// 		"Content-Type": "text/css; charset=utf-8",
-				// 		"Content-Length": Buffer.byteLength(defaultCss, 'utf-8')
-				// 	});
-				// 	response.end(defaultCss);
-				// 	break;
-				// case "default-markdown.css":
-				// 	response.writeHead(200, {
-				// 		"Content-Type": "text/css; charset=utf-8",
-				// 		"Content-Length": Buffer.byteLength(defaultMarkdownCss, 'utf-8')
-				// 	});
-				// 	response.end(defaultMarkdownCss);
-				// 	break;
-				// case "line-numbers.css":
-				// 	response.writeHead(200, {
-				// 		"Content-Type": "text/css; charset=utf-8",
-				// 		"Content-Length": Buffer.byteLength(lineNumbersCss, "utf-8")
-				// 	});
-				// 	response.end(lineNumbersCss);
-				// 	break;
 				case "settings.css":
-					const printConfig = vscode.workspace.getConfiguration("print", null);
+					const printConfig = vscode.workspace.getConfiguration("print");
+					const editorConfig = vscode.workspace.getConfiguration("editor");
 					const css = settingsCss
-						.replace("$FONT_SIZE", printConfig.fontSize)
-						.replace("$LINE_SPACING", printConfig.lineSpacing)
+						.replace("FONT_SIZE", printConfig.fontSize)
+						.replace("LINE_SPACING", printConfig.lineSpacing)
+						.replace("TAB_SIZE", editorConfig.tabSize)
 					response.writeHead(200, {
 						"Content-Type": "text/css; charset=utf-8",
 						"Content-Length": Buffer.byteLength(css, "utf-8")
@@ -237,6 +218,7 @@ export class PrintSession {
 				case ".gif":
 				case ".png":
 				case ".svg":
+				case ".webp":
 					response.writeHead(200, {
 						"Content-Type": `image/${fileExt.substring(1).toLowerCase()}`,
 						"Content-Length": (await vscode.workspace.fs.stat(fileUri)).size

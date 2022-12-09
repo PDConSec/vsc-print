@@ -22,7 +22,6 @@ export class HtmlDocumentBuilder {
 	public async build(): Promise<string> {
 		const documentRenderer = DocumentRenderer.get(this.language);
 		const printConfig = vscode.workspace.getConfiguration("print");
-		const EMBEDDED_STYLES = this.getEmbeddedStyles();
 		if (this.language === "folder") {
 			const printConfig = vscode.workspace.getConfiguration("print", null);
 			logger.debug(`Printing a folder`);
@@ -52,7 +51,6 @@ export class HtmlDocumentBuilder {
 					'\t<link href="bundled/line-numbers.css" rel="stylesheet" />\n' +
 					'\t<link href="bundled/colour-scheme.css" rel="stylesheet" />\n' +
 					'\t<link href="bundled/settings.css" rel = "stylesheet" /> ')
-				.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
 				;
 		} else {
 			logger.debug(`Printing ${this.filename}`);
@@ -62,13 +60,8 @@ export class HtmlDocumentBuilder {
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine }))
 				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
-				.replace("EMBEDDED_STYLES", EMBEDDED_STYLES)
 				;
 		}
-	}
-	getEmbeddedStyles() {
-		let editorConfig = vscode.workspace.getConfiguration("editor", null);
-		return `body{tab-size:${editorConfig.tabSize};}`;
 	}
 	async docsInFolder(): Promise<vscode.TextDocument[]> {
 		logger.debug(`Enumerating the files in ${this.filename}`);
