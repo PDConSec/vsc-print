@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
-	"version": "0.10.14",
+	"version": "0.10.15",
 	"icon": "assets/vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
@@ -40,11 +40,6 @@
 					"dark": "assets/printer-icon-dog-ear-inverse.svg",
 					"light": "assets/printer-icon-dog-ear.svg"
 				}
-			},
-			{
-				"category": "%commands.category%",
-				"command": "vsc-print.preview",
-				"title": "Preview"
 			},
 			{
 				"category": "%commands.category%",

@@ -13,7 +13,7 @@ resources.set("line-numbers.css", {
 	mimeType: "text/css; charset=utf-8;"
 });
 
-export function getBodyHtml(raw: string, languageId: string, options?:any): string {
+export function getBodyHtml(raw: string, languageId: string, options?: any): string {
 	let renderedCode = "";
 	try {
 		try {
@@ -21,6 +21,9 @@ export function getBodyHtml(raw: string, languageId: string, options?:any): stri
 		}
 		catch (err) {
 			renderedCode = hljs.highlightAuto(raw).value;
+		}
+		if (languageId === "css") {
+			renderedCode = addCssColourSwatches(renderedCode);
 		}
 		renderedCode = fixMultilineSpans(renderedCode);
 		const printConfig = vscode.workspace.getConfiguration("print");
@@ -41,7 +44,8 @@ export function getBodyHtml(raw: string, languageId: string, options?:any): stri
 				.join("\n")
 				.replace("\n</td>", "</td>")
 				;
-		}	} catch {
+		}
+	} catch {
 		logger.error("Markdown could not be rendered");
 		renderedCode = "<div>Could not render this file.</end>";
 	}
@@ -59,11 +63,6 @@ export function getCssUriStrings(): Array<string> {
 
 export function getResource(name: string): IResourceDescriptor {
 	return resources.get(name)!;
-}
-
-function getEmbeddedStyles() {
-	let editorConfig = vscode.workspace.getConfiguration("editor");
-	return `body{tab-size:${editorConfig.tabSize};}`;
 }
 
 function fixMultilineSpans(text: string): string {
@@ -99,4 +98,14 @@ function fixMultilineSpans(text: string): string {
 
 		return pre + line + "</span>".repeat(classes.length);
 	}).join("\n");
+}
+
+function addCssColourSwatches(text: string): string {
+	return text.replace(
+		/(:\s*<span class="hljs-number">)([#A-Za-z][A-Za-z0-9]+)/g,
+		'$1<svg height="0.9em" width="0.9em"><rect width="0.9em" height="0.9em" style="fill:$2; stroke:black"/></svg> $2'
+	).replace(
+		/(<span class="hljs-attribute">.*<\/span>\s*:\s*)(aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|grey|green|greenyellow|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|navyblue|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen)(?:\s*);/gm,
+		'$1<svg height="0.9em" width="0.9em"><rect width="0.9em" height="0.9em" style="fill:$2; stroke:black"/></svg> $2'
+	);
 }
