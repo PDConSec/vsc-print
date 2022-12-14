@@ -61,7 +61,6 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.gc", gc));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", () => openDoc("manual")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", () => openDoc("log")));
-	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("print.registerDocumentRenderer", DocumentRenderer.register));
 
 	// Could call DocumentRenderer.register directly,

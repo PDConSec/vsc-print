@@ -4,16 +4,13 @@ import { HtmlDocumentBuilder } from './html-document-builder';
 import * as vscode from 'vscode';
 import * as http from "http";
 import * as path from "path";
-import { escapePath } from './escape-path';
 import * as child_process from "child_process";
 import { localise } from './imports';
 import * as nodeCrypto from "crypto";
-import { defaultCss, filenameByCaption } from "./imports";
+import { filenameByCaption } from "./imports";
 import { DocumentRenderer } from './document-renderer';
 
 let settingsCss: string = require("./css/settings.css").default.toString();
-
-const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export class PrintSession {
 	static port: number;
@@ -117,7 +114,11 @@ export class PrintSession {
 					const html = await renderer!.build();
 					PrintPreview.show(html)
 				} else {
-					this.launchBrowser();
+					if (printConfig.alternateBrowser) {
+						launchAlternateBrowser(this.getUrl())
+					} else {
+						vscode.env.openExternal(vscode.Uri.parse(this.getUrl()));
+					}
 				}
 				resolve();
 			} catch (err) {
@@ -244,33 +245,6 @@ export class PrintSession {
 	}
 
 	public getUrl(): string { return `http://localhost:${PrintSession.port}/${this.sessionId}/`; }
-	public static getLaunchBrowserCommand(): string {
-		const printConfig = vscode.workspace.getConfiguration("print");
-		const cmd = printConfig.alternateBrowser && printConfig.browserPath ? escapePath(printConfig.browserPath) : browserLaunchMap[process.platform];
-		return cmd;
-	}
-
-	public async launchBrowser(): Promise<string> {
-		const url = this.getUrl();
-		const testFlags = await vscode.commands.executeCommand("vsc-print.test.flags") as Set<string>;
-		if (!testFlags.has("suppress browser")) {
-			const cmd = PrintSession.getLaunchBrowserCommand();
-			const printConfig = vscode.workspace.getConfiguration("print");
-			const activeBrowser = printConfig.alternateBrowser ? "alternate" : "default";
-			logger.debug(`Platform detected as "${process.platform}"`);
-			logger.debug(`Selected browser is ${activeBrowser}`);
-			logger.debug(`Browser launch command is "${cmd}"`);
-			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
-				// node on Linux incorrectly calls this error handler, with a null error object
-				if (error) {
-					const msg = `${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`;
-					logger.error(msg);
-					vscode.window.showErrorMessage(msg);
-				}
-			});
-		}
-		return url;
-	}
 
 	async rootDocumentContentSource(uri: vscode.Uri): Promise<string> {
 		try {
@@ -293,3 +267,39 @@ export class PrintSession {
 	}
 }
 
+async function launchAlternateBrowser(url: string) {
+	const printConfig = vscode.workspace.getConfiguration("print");
+	const cmds = await vscode.commands.getCommands(true);
+	const pc = cmds.filter(x => x.startsWith("print"));
+	const isRemoteWorkspace = true;// !!vscode.env.remoteName;
+	if (isRemoteWorkspace) {
+		try {
+			const isBrowserPathDefined = !!vscode.workspace.getConfiguration("print").browserPath;
+			if (isBrowserPathDefined) {
+				vscode.commands.executeCommand("print.launchBrowser", url);
+			} else {
+				vscode.window.showWarningMessage("Alternate browser is selected but no path has been supplied. As a result the default browser has been used.");
+				vscode.env.openExternal(vscode.Uri.parse(url));
+			}
+		} catch {
+			vscode.window.showWarningMessage("You printed from a remote workspace but the remote printing agent is not answering. As a result the default browser has been used.");
+			vscode.env.openExternal(vscode.Uri.parse(url));
+		}
+	} else {
+		const cmd = escapePath(printConfig.browserPath);
+		child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
+			if (error || stderr) {
+				vscode.window.showErrorMessage(error ? error.message : stderr);
+			}
+		});
+	}
+}
+
+function escapePath(path: string) {
+	switch (process.platform) {
+		case "win32":
+			return path.includes('"') || !path.includes(" ") ? path : `"${path}"`;
+		default:
+			return path.replace(/ /g, "\\ ");
+	}
+}
