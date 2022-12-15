@@ -268,21 +268,27 @@ export class PrintSession {
 }
 
 async function launchAlternateBrowser(url: string) {
+	logger.debug("Alternate browser is selected");
 	const printConfig = vscode.workspace.getConfiguration("print");
-	const cmds = await vscode.commands.getCommands(true);
-	const pc = cmds.filter(x => x.startsWith("print"));
 	const isRemoteWorkspace = true;// !!vscode.env.remoteName;
-	if (isRemoteWorkspace) {
+	const forceUseAgent = true;
+	if (forceUseAgent || isRemoteWorkspace) {
+		logger.debug(`forceUseAgent=${forceUseAgent}, isRemoteWorkspace=${isRemoteWorkspace}`)
 		try {
 			const isBrowserPathDefined = !!vscode.workspace.getConfiguration("print").browserPath;
 			if (isBrowserPathDefined) {
+				logger.debug("Browser path is defined, attempting to command remote browser agent");
 				vscode.commands.executeCommand("print.launchBrowser", url);
 			} else {
-				vscode.window.showWarningMessage("Alternate browser is selected but no path has been supplied. As a result the default browser has been used.");
+				const msg = "Alternate browser cannot be used because browser path has not been supplied. The default browser is being used.";
+				logger.warn(msg);
+				vscode.window.showWarningMessage(msg);
 				vscode.env.openExternal(vscode.Uri.parse(url));
 			}
 		} catch {
-			vscode.window.showWarningMessage("You printed from a remote workspace but the remote printing agent is not answering. As a result the default browser has been used.");
+			const msg = "The remote printing agent is not answering. As a result the default browser has been used."
+			logger.warn(msg);
+			vscode.window.showWarningMessage(msg);
 			vscode.env.openExternal(vscode.Uri.parse(url));
 		}
 	} else {
