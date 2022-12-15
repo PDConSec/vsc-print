@@ -1,5 +1,12 @@
 # Change Log
 
+### 1.0.0
+
+- API support providing print and preview services to other extensions. Internal renderers now use the API.
+- Colour samples when printing CSS source code (as for VS Code editor).
+- Changes to browser launch method to work around broken command routing.
+- Default browser works for local and remote but alternate browser is currently available only for local workspaces.
+
 ### 0.10.7
 
 - Urdu localisation
