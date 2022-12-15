@@ -4,4 +4,4 @@
 
 ![Document relative resource](./vscode-print-128.png)  
 
-![Bundled resource](vsc-print.resource/default-markdown.css)  
+![Bundled resource](bundled/default-markdown.css)  

@@ -211,7 +211,7 @@ The browser used will affect your experience.
 
 ### Recommended for printing
 
-For best printing results, install a Chromium based browser. If you don't want to make this your default browser, take advantage of the alternate-browser settings. 
+For best printing results, install a Chromium based browser. If you don't want to make this your default browser, take advantage of the alternate-browser settings. **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
 
 The following are known to work well.
 * Brave

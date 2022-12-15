@@ -2,6 +2,7 @@ html,
 body {
 	margin: 0;
 	padding: 0;
+	tab-size: TAB_SIZE;
 }
 
 .hljs {
@@ -10,7 +11,7 @@ body {
 
 .line-number,
 .line-text {
-	font-size: $FONT_SIZE;
-	line-height: $LINE_SPACINGem;
+	font-size: FONT_SIZE;
+	line-height: LINE_SPACINGem;
 	padding-bottom: 3px;
 }

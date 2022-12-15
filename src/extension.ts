@@ -1,14 +1,16 @@
+import { Metadata } from './metadata';
+import { PrintPreview } from './print-preview';
 import { logger } from './logger';
 import { PrintSession } from './print-session';
 import * as vscode from 'vscode';
 import * as http from "http";
-import * as dns from "dns";
 import { AddressInfo } from 'net';
 import * as path from "path";
 import { captionByFilename, filenameByCaption, localise } from './imports';
 import * as nls from 'vscode-nls';
-import { HtmlRenderer } from './html-renderer';
-import { extensionPath } from './extension-path';
+import { HtmlDocumentBuilder } from './html-document-builder';
+import { DocumentRenderer } from './document-renderer';
+import * as htmlRendererMarkdown from "./html-renderer-markdown";
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -42,22 +44,34 @@ function gc() {
 }
 
 export function activate(context: vscode.ExtensionContext) {
+	Metadata.ExtensionContext = context;
 	logger.debug("Print activated");
 
-	let ecmPrint = vscode.workspace.getConfiguration("print", null).editorContextMenuItemPosition,
-		etmButton = vscode.workspace.getConfiguration("print", null).editorTitleMenuButton,
+	let ecmPrint = vscode.workspace.getConfiguration("print").editorContextMenuItemPosition,
+		etmButton = vscode.workspace.getConfiguration("print").editorTitleMenuButton,
 		disposable: vscode.Disposable;
 	vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
 	vscode.commands.executeCommand("setContext", "etmButton", etmButton);
 
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.preview", previewCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.print", printCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.sessionCount", () => printSessions.size));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.gc", gc));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", () => openDoc("manual")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", () => openDoc("log")));
-	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.browserLaunchCommand", PrintSession.getLaunchBrowserCommand));
+	context.subscriptions.push(vscode.commands.registerCommand("print.registerDocumentRenderer", DocumentRenderer.register));
+
+	// Could call DocumentRenderer.register directly,
+	// but this shows how a third party HTML renderer 
+	// would do it.
+	vscode.commands.executeCommand("print.registerDocumentRenderer", "markdown", {
+		getBodyHtml: htmlRendererMarkdown.getBodyHtml,
+		getCssUriStrings: htmlRendererMarkdown.getCssUriStrings,
+		getResource: htmlRendererMarkdown.getResource
+	});
+
 	server = http.createServer(async (request, response) => {
 		try {
 			if (request.url) {
@@ -94,11 +108,10 @@ export function activate(context: vscode.ExtensionContext) {
 		PrintSession.port = addr.port;
 		logger.info(`Began listening on ${addr.address}:${addr.port}`);
 	});
-	let printConfig = vscode.workspace.getConfiguration("print", null);
 	server.listen(0, "localhost");
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
-			HtmlRenderer.MarkdownEngine = mdparam;
+			HtmlDocumentBuilder.MarkdownEngine = mdparam;
 			return mdparam;
 		}
 	};
@@ -110,13 +123,13 @@ function openDoc(doc: string) {
 	switch (doc) {
 		case "manual":
 			// todo localise the command that opens the manual
-			let pathToManual = path.join(extensionPath, "doc/manual.md");
+			let pathToManual = path.join(Metadata.ExtensionPath, "doc/manual.md");
 			let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
 			vscode.commands.executeCommand('markdown.showPreview', uriManual);
 			break;
 
 		case "log":
-			let pathToLogFile = path.join(extensionPath, "vscode-print.log");
+			let pathToLogFile = path.join(Metadata.ExtensionPath, "vscode-print.log");
 			let uriLogFile: vscode.Uri = vscode.Uri.file(pathToLogFile);
 			vscode.workspace.openTextDocument(uriLogFile).then(vscode.window.showTextDocument);
 			break;
@@ -140,7 +153,14 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 
 function printCommand(cmdArgs: any): PrintSession {
 	logger.debug("Print command was invoked");
-	const printSession = new PrintSession(cmdArgs);
+	const printSession = new PrintSession(cmdArgs, false);
+	printSessions.set(printSession.sessionId, printSession);
+	return printSession;
+}
+
+function previewCommand(cmdArgs: any) {
+	logger.debug("Preview command was invoked");
+	const printSession = new PrintSession(cmdArgs, true);
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;
 }

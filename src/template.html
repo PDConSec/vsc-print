@@ -2,11 +2,11 @@
 <html>
 
 <head>
-	<title>$TITLE</title>
+	<base href="BASE_URL" />
+	<title>DOCUMENT_TITLE</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	$VSCODE_MARKDOWN_STYLESHEET_LINKS
-	$DEFAULT_STYLESHEET_LINK
+	STYLESHEET_LINKS
 	<script type="text/javascript">
 		function printAndClose(enabled) {
 			if (enabled) {
@@ -17,13 +17,10 @@
 			}
 		} 
 	</script>
-	<style>
-		$EMBEDDED_STYLES
-	</style>
 </head>
 
-<body onload="printAndClose($PRINT_AND_CLOSE)">
-	$CONTENT
+<body onload="printAndClose(PRINT_AND_CLOSE)">
+	CONTENT
 </body>
 
 </html>

@@ -38,3 +38,17 @@ Quelques-unes des choses que vous pouvez configurer:
 - si vous voulez ou non des numéros de ligne
 - un navigateur autre que votre navigateur par défaut, à utiliser lors de l’impression
 - interligne (laissez-vous plus de place pour l’annotation manuscrite du code)
+
+## Extensible
+
+À partir de la version 1.0.0, Print exporte une API qui permet à une autre extension de s’inscrire aux services d’impression et de prévisualisation.
+
+Le Kit de développement logiciel (SDK) d’impression inclut un exemple complet qui montre comment
+* Inscrivez-vous aux services de prévisualisation et d’impression pour les fichiers SVG
+* Intégrer des ressources (comme CSS et des fichiers image) dans le bundle Webpack de l’extension
+* Extrayez ces ressources du bundle Webpack de votre extension dans le cache prêt à répondre aux demandes pour eux.
+* Utiliser des ressources groupées dans le code HTML généré
+* Enregistrer une commande « Prévisualisation » transférant la demande à l’extension Print
+* Gérer le rendu de SVG en HTML stylisé
+
+L’exemple est annoté avec des commentaires `// todo` pour vous aider à l’utiliser comme base de votre propre extension. Le regroupement de webpacks est déjà configuré, y compris la personnalisation requise pour intégrer des ressources textuelles et binaires et des démonstrations sur la façon de les charger à partir du bundle dans votre cache pour la livraison.

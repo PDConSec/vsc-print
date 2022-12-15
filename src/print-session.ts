@@ -1,18 +1,16 @@
+import { PrintPreview } from './print-preview';
 import { logger } from './logger';
-import { HtmlRenderer } from './html-renderer';
+import { HtmlDocumentBuilder } from './html-document-builder';
 import * as vscode from 'vscode';
 import * as http from "http";
 import * as path from "path";
-import { escapePath } from './escape-path';
 import * as child_process from "child_process";
 import { localise } from './imports';
 import * as nodeCrypto from "crypto";
-import { defaultCss, filenameByCaption } from "./imports";
+import { filenameByCaption } from "./imports";
+import { DocumentRenderer } from './document-renderer';
 
-const defaultMarkdownCss: string = require("./css/default-markdown.css").default.toString();
-const lineNumbersCss: string = require("./css/line-numbers.css").default.toString();
 let settingsCss: string = require("./css/settings.css").default.toString();
-const browserLaunchMap: any = { darwin: "open", linux: "xdg-open", win32: "start" };
 
 export class PrintSession {
 	static port: number;
@@ -21,21 +19,21 @@ export class PrintSession {
 	public age(): number {
 		return new Date().valueOf() - this.created;
 	}
-	htmlRenderer: HtmlRenderer | undefined;
+	pageBuilder: HtmlDocumentBuilder | undefined;
 	public ready: Promise<void>;
 	public sessionId = nodeCrypto.randomUUID();
 	public uri: vscode.Uri | undefined;
-	constructor(cmdArgs?: vscode.Uri) {
-		const printConfig = vscode.workspace.getConfiguration("print", null);
-		logger.debug(`Creating a print session object for ${cmdArgs}`);
+	constructor(uri?: vscode.Uri, preview: boolean = true) {
+		logger.debug(`Creating a print session object for ${uri}`);
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
-				const printConfig = vscode.workspace.getConfiguration("print", null);
+				const baseUrl = `http://localhost:${PrintSession.port}/${this.sessionId}/`;
+				const printConfig = vscode.workspace.getConfiguration("print");
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";
-				const contentSource = await this.contentSource(cmdArgs!);
-				switch (contentSource) {
+				const rootDocumentContentSource = await this.rootDocumentContentSource(uri!);
+				switch (rootDocumentContentSource) {
 					case "editor": {
 						logger.debug("Using the buffer of the active editor");
 						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
@@ -43,7 +41,8 @@ export class PrintSession {
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						if (!document) throw "This can't happen";
 						this.uri = document.uri;
-						this.htmlRenderer = new HtmlRenderer(
+						this.pageBuilder = new HtmlDocumentBuilder(
+							baseUrl,
 							document.uri.fsPath,
 							document.getText(),
 							document.languageId,
@@ -64,7 +63,8 @@ export class PrintSession {
 							const selectedText = document!.getText().replace(/\s*$/, "");
 							const langId = document!.languageId;
 							const startLine = selection.start.line + 1; // zero based to one based
-							this.htmlRenderer = new HtmlRenderer(
+							this.pageBuilder = new HtmlDocumentBuilder(
+								baseUrl,
 								document.uri.fsPath,
 								selectedText,
 								langId,
@@ -75,7 +75,8 @@ export class PrintSession {
 							const selectedText = document!.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
 							const langId = document!.languageId;
 							const startLine = selection.start.line + 1; // zero based to one based
-							this.htmlRenderer = new HtmlRenderer(
+							this.pageBuilder = new HtmlDocumentBuilder(
+								baseUrl,
 								document.uri.fsPath,
 								selectedText,
 								langId,
@@ -86,12 +87,13 @@ export class PrintSession {
 					}
 						break;
 					case "file":
-						document = await vscode.workspace.openTextDocument(cmdArgs!);
+						document = await vscode.workspace.openTextDocument(uri!);
 						logger.debug(`Printing the file ${document.uri.fsPath}`);
 						this.uri = document.uri;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
-						this.htmlRenderer = new HtmlRenderer(
+						this.pageBuilder = new HtmlDocumentBuilder(
+							baseUrl,
 							document.uri.fsPath,
 							document.getText(),
 							document.languageId,
@@ -99,15 +101,25 @@ export class PrintSession {
 						);
 						break;
 					case "folder":
-						logger.debug(`Printing the folder ${cmdArgs!.fsPath}`);
-						this.htmlRenderer = new HtmlRenderer(cmdArgs!.fsPath, "", "folder", printLineNumbers)
+						logger.debug(`Printing the folder ${uri!.fsPath}`);
+						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, uri!.fsPath, "", "folder", printLineNumbers)
 						break;
 					default:
-						logger.error(contentSource);
-						vscode.window.showErrorMessage(contentSource);
+						logger.error(rootDocumentContentSource);
+						vscode.window.showErrorMessage(rootDocumentContentSource);
 						break;
 				}
-				this.launchBrowser()
+				if (preview) {
+					const renderer = this.pageBuilder;
+					const html = await renderer!.build();
+					PrintPreview.show(html)
+				} else {
+					if (printConfig.alternateBrowser) {
+						launchAlternateBrowser(this.getUrl())
+					} else {
+						vscode.env.openExternal(vscode.Uri.parse(this.getUrl()));
+					}
+				}
 				resolve();
 			} catch (err) {
 				reject(err);
@@ -120,8 +132,8 @@ export class PrintSession {
 
 		if (urlParts.length === 3 && urlParts[2] === "") {
 			logger.debug(`Responding to base document request for session ${urlParts[1]}`)
-			const renderer = this.htmlRenderer;
-			const html = await renderer!.asHtml();
+			const renderer = this.pageBuilder;
+			const html = await renderer!.build();
 			response.writeHead(200, {
 				"Content-Type": "text/html; charset=utf-8",
 				"Content-Length": Buffer.byteLength(html, 'utf-8')
@@ -140,8 +152,8 @@ export class PrintSession {
 			const basePath = vscode.workspace.getWorkspaceFolder(this.uri!)?.uri.fsPath!;
 			const resourcePath = path.join(basePath, ...urlParts.slice(3));
 			await relativeResource(resourcePath);
-		} else if (urlParts.length === 4 && urlParts[2] === "vsc-print.resource") {
-			logger.debug(`Responding to vsc-print.resource request for ${urlParts[3]} in session ${urlParts[1]}`);
+		} else if (urlParts.length === 4 && urlParts[2] === "bundled") {
+			logger.debug(`Responding to bundled request for ${urlParts[3]} in session ${urlParts[1]}`);
 			switch (urlParts[3]) {
 				case "colour-scheme.css":
 					let colourScheme = vscode.workspace.getConfiguration("print").colourScheme;
@@ -155,32 +167,13 @@ export class PrintSession {
 					});
 					response.end(colourSchemeCss);
 					break;
-				case "default.css":
-					response.writeHead(200, {
-						"Content-Type": "text/css; charset=utf-8",
-						"Content-Length": Buffer.byteLength(defaultCss, 'utf-8')
-					});
-					response.end(defaultCss);
-					break;
-				case "default-markdown.css":
-					response.writeHead(200, {
-						"Content-Type": "text/css; charset=utf-8",
-						"Content-Length": Buffer.byteLength(defaultMarkdownCss, 'utf-8')
-					});
-					response.end(defaultMarkdownCss);
-					break;
-				case "line-numbers.css":
-					response.writeHead(200, {
-						"Content-Type": "text/css; charset=utf-8",
-						"Content-Length": Buffer.byteLength(lineNumbersCss, "utf-8")
-					});
-					response.end(lineNumbersCss);
-					break;
 				case "settings.css":
-					const printConfig = vscode.workspace.getConfiguration("print", null);
+					const printConfig = vscode.workspace.getConfiguration("print");
+					const editorConfig = vscode.workspace.getConfiguration("editor");
 					const css = settingsCss
-						.replace("$FONT_SIZE", printConfig.fontSize)
-						.replace("$LINE_SPACING", printConfig.lineSpacing)
+						.replace("FONT_SIZE", printConfig.fontSize)
+						.replace("LINE_SPACING", printConfig.lineSpacing)
+						.replace("TAB_SIZE", editorConfig.tabSize)
 					response.writeHead(200, {
 						"Content-Type": "text/css; charset=utf-8",
 						"Content-Length": Buffer.byteLength(css, "utf-8")
@@ -188,12 +181,28 @@ export class PrintSession {
 					response.end(css);
 					break;
 				default:
-					logger.debug(`vsc-print.resource/${urlParts[3]} not found`);
-					response.writeHead(404, {
-						"Content-Type": "text/plain; charset=utf-8",
-						"Content-Length": 9
-					});
-					response.end("Not found");
+					try {
+						const rootDocumentRenderer = DocumentRenderer.get(this.pageBuilder!.language);
+						const resourceDescriptor = rootDocumentRenderer.getResource(urlParts[3]);
+						let contentLength: number;
+						if (typeof resourceDescriptor.content === "string") {
+							contentLength = Buffer.byteLength(resourceDescriptor.content, "utf-8")
+						} else {
+							contentLength = resourceDescriptor.content.byteLength;
+						}
+						response.writeHead(200, {
+							"Content-Type": resourceDescriptor.mimeType,
+							"Content-Length": contentLength
+						});
+						response.end(resourceDescriptor.content);
+					} catch {
+						logger.debug(`bundled/${urlParts[3]} not found`);
+						response.writeHead(404, {
+							"Content-Type": "text/plain; charset=utf-8",
+							"Content-Length": 9
+						});
+						response.end("Not found");
+					}
 					break;
 			}
 		} else {
@@ -210,6 +219,7 @@ export class PrintSession {
 				case ".gif":
 				case ".png":
 				case ".svg":
+				case ".webp":
 					response.writeHead(200, {
 						"Content-Type": `image/${fileExt.substring(1).toLowerCase()}`,
 						"Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
@@ -235,35 +245,8 @@ export class PrintSession {
 	}
 
 	public getUrl(): string { return `http://localhost:${PrintSession.port}/${this.sessionId}/`; }
-	public static getLaunchBrowserCommand(): string {
-		const printConfig = vscode.workspace.getConfiguration("print");
-		const cmd = printConfig.alternateBrowser && printConfig.browserPath ? escapePath(printConfig.browserPath) : browserLaunchMap[process.platform];
-		return cmd;
-	}
 
-	public async launchBrowser(): Promise<string> {
-		const url = this.getUrl();
-		const testFlags = await vscode.commands.executeCommand("vsc-print.test.flags") as Set<string>;
-		if (!testFlags.has("suppress browser")) {
-			const cmd = PrintSession.getLaunchBrowserCommand();
-			const printConfig = vscode.workspace.getConfiguration("print");
-			const activeBrowser = printConfig.alternateBrowser ? "alternate" : "default";
-			logger.debug(`Platform detected as "${process.platform}"`);
-			logger.debug(`Selected browser is ${ activeBrowser }`);
-			logger.debug(`Browser launch command is "${cmd}"`);
-			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
-				// node on Linux incorrectly calls this error handler, with a null error object
-				if (error) {
-					const msg = `${localise("ERROR_PRINTING")}: ${error ? error.message : stderr}`;
-					logger.error(msg);
-					vscode.window.showErrorMessage(msg);
-				}
-			});
-		}
-		return url;
-	}
-
-	async contentSource(uri: vscode.Uri): Promise<string> {
+	async rootDocumentContentSource(uri: vscode.Uri): Promise<string> {
 		try {
 			await vscode.workspace.fs.stat(uri); // barfs when file does not exist (unsaved)
 			const uristat = await vscode.workspace.fs.stat(uri);
@@ -284,3 +267,45 @@ export class PrintSession {
 	}
 }
 
+async function launchAlternateBrowser(url: string) {
+	logger.debug("Alternate browser is selected");
+	const printConfig = vscode.workspace.getConfiguration("print");
+	const isRemoteWorkspace = true;// !!vscode.env.remoteName;
+	const forceUseAgent = true;
+	if (forceUseAgent || isRemoteWorkspace) {
+		logger.debug(`forceUseAgent=${forceUseAgent}, isRemoteWorkspace=${isRemoteWorkspace}`)
+		try {
+			const isBrowserPathDefined = !!vscode.workspace.getConfiguration("print").browserPath;
+			if (isBrowserPathDefined) {
+				logger.debug("Browser path is defined, attempting to command remote browser agent");
+				vscode.commands.executeCommand("print.launchBrowser", url);
+			} else {
+				const msg = "Alternate browser cannot be used because browser path has not been supplied. The default browser is being used.";
+				logger.warn(msg);
+				vscode.window.showWarningMessage(msg);
+				vscode.env.openExternal(vscode.Uri.parse(url));
+			}
+		} catch {
+			const msg = "The remote printing agent is not answering. As a result the default browser has been used."
+			logger.warn(msg);
+			vscode.window.showWarningMessage(msg);
+			vscode.env.openExternal(vscode.Uri.parse(url));
+		}
+	} else {
+		const cmd = escapePath(printConfig.browserPath);
+		child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
+			if (error || stderr) {
+				vscode.window.showErrorMessage(error ? error.message : stderr);
+			}
+		});
+	}
+}
+
+function escapePath(path: string) {
+	switch (process.platform) {
+		case "win32":
+			return path.includes('"') || !path.includes(" ") ? path : `"${path}"`;
+		default:
+			return path.replace(/ /g, "\\ ");
+	}
+}
