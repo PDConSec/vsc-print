@@ -266,7 +266,44 @@
 					"group": "Z_commands"
 				}
 			]
-		}
+		},
+		"walkthroughs": [
+			{
+				"id": "how-to-print",
+				"title": "Get Started with Print",
+				"description": "Discover in-editor printing for source code and documentation.",
+				"steps": [
+					{
+						"id": "print-editor-active",
+						"title": "Print the entire content of the active editor",
+						"media": {
+							"markdown": "assets/print-entire-content-active-editor.md"
+						}
+					},
+					{
+						"id": "print-multiline-selection",
+						"title": "Print a selection",
+						"media": {
+							"markdown": "assets/print-a-selection.md"
+						}
+					},
+					{
+						"id": "print-markdown-rendered",
+						"title": "Print a Markdown file as a formatted PDF",
+						"media": {
+							"markdown": "assets/print-md-as-pdf.md"
+						}
+					},
+					{
+						"id": "print-remote",
+						"title": "Print a file from a remote workspace",
+						"media": {
+							"markdown": "assets/enable-remote-print.md"
+						}
+					}
+				]
+			}
+		]
 	},
 	"extensionKind": [
 		"workspace"
