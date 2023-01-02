@@ -203,8 +203,6 @@ As a result, if you would like rendered printing for a particular format for whi
 ## Prerequisites
 
 * Start by making sure you can print a web page from your browser.
-* To print from a remote workspace hosted on Linux, you must have `xdg-open` installed on the remote host. Desktop Ubuntu is ready to go out of the box.
-* Firefox is _not_ an ideal choice but if you prefer it as your default browser then you will be pleased to learn that you can you can configure printing to use a non-default browser &mdash; you can have it both ways.
 * The user as which VS Code runs must be able to establish a listening socket.
 
 ## First launch hassles
@@ -220,17 +218,17 @@ The browser used will affect your experience.
 
 ### Recommended for printing
 
-For best printing results, install a Chromium based browser. If you don't want to make this your default browser, take advantage of the alternate-browser settings. **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
+For best printing results, install a Chromium based browser or Firefox. If you don't want to make this your default browser, take advantage of the alternate-browser settings. **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
 
 The following are known to work well.
 * Brave
 * Chromium
 * Chrome
 * Edge
+* Firefox
 
 ### NOT recommended for printing
 
-* Firefox prints well enough but doesn't close the browser afterward. 
 * Edge Classic is no longer supported.
 * Internet Explorer is not supported.
 
