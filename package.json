@@ -349,7 +349,7 @@
 		"@types/highlight.js": "^10.1.0",
 		"@types/markdown-it": "0.0.9",
 		"braces": "^3.0.2",
-		"highlight.js": "^10.7.3",
+		"highlight.js": "^11.7.0",
 		"vscode-nls": "^4.1.2",
 		"winston": "^3.8.1"
 	},

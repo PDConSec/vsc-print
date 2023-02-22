@@ -18,6 +18,9 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 	try {
 		try {
 			renderedCode = hljs.highlight(raw, { language: languageId }).value;
+			if (!renderedCode.includes('"hljs-keyword"')) {
+				renderedCode = hljs.highlightAuto(raw).value;
+			}
 		}
 		catch (err) {
 			renderedCode = hljs.highlightAuto(raw).value;
@@ -96,7 +99,7 @@ function fixMultilineSpans(text: string): string {
 			}
 		}
 
-		return pre + line + "</span>".repeat(classes.length);
+		return `${pre.join("")}${line}${"</span>".repeat(classes.length)}`;
 	}).join("\n");
 }
 
