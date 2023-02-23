@@ -270,11 +270,15 @@ export class PrintSession {
 async function launchAlternateBrowser(url: string) {
 	logger.debug("Alternate browser is selected");
 	const printConfig = vscode.workspace.getConfiguration("print");
-	const isRemoteWorkspace = true;// !!vscode.env.remoteName;
-	const forceUseAgent = true;
+	const isRemoteWorkspace = !!vscode.env.remoteName;
+	const forceUseAgent = false;
 	if (forceUseAgent || isRemoteWorkspace) {
 		logger.debug(`forceUseAgent=${forceUseAgent}, isRemoteWorkspace=${isRemoteWorkspace}`)
 		try {
+			const cmds = await vscode.commands.getCommands(true);
+			if (!cmds.includes("print.launchBrowser")) {
+				throw new Error("The remote printing agent is not accessible");
+			}
 			const isBrowserPathDefined = !!vscode.workspace.getConfiguration("print").browserPath;
 			if (isBrowserPathDefined) {
 				logger.debug("Browser path is defined, attempting to command remote browser agent");

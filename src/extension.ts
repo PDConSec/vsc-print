@@ -1,12 +1,11 @@
 import { Metadata } from './metadata';
-import { PrintPreview } from './print-preview';
 import { logger } from './logger';
 import { PrintSession } from './print-session';
 import * as vscode from 'vscode';
 import * as http from "http";
 import { AddressInfo } from 'net';
 import * as path from "path";
-import { captionByFilename, filenameByCaption, localise } from './imports';
+import { captionByFilename, localise } from './imports';
 import * as nls from 'vscode-nls';
 import { HtmlDocumentBuilder } from './html-document-builder';
 import { DocumentRenderer } from './document-renderer';
@@ -43,7 +42,7 @@ function gc() {
 	}
 }
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 	Metadata.ExtensionContext = context;
 	logger.debug("Print activated");
 
@@ -76,12 +75,17 @@ export function activate(context: vscode.ExtensionContext) {
 		try {
 			if (request.url) {
 				const urlParts = request.url.split('/',);
-				const printSession = printSessions.get(urlParts[1]);
-				if (printSession) {
-					await printSession.respond(urlParts, response);
+				if (urlParts[1] === "whatsnew") {
+					response.writeHead(302, { 'Location': 'https://pdconsec.net' });
+					response.end();
 				} else {
-					logger.warn(`Dropping connection of ${request.url} does not correspond to a print session`);
-					return request.socket.end();
+					const printSession = printSessions.get(urlParts[1]);
+					if (printSession) {
+						await printSession.respond(urlParts, response);
+					} else {
+						logger.warn(`Dropping connection of ${request.url} does not correspond to a print session`);
+						return request.socket.end();
+					}
 				}
 			}
 		} catch (error) {
@@ -109,6 +113,27 @@ export function activate(context: vscode.ExtensionContext) {
 		logger.info(`Began listening on ${addr.address}:${addr.port}`);
 	});
 	server.listen(0, "localhost");
+
+	const currentVersion = context.extension.packageJSON.version as string;
+	const lastVersion = context.globalState.get("version") as string ?? "0.0.0"
+	if (!lastVersion) {
+		// first run ever
+	} else if (lastVersion !== currentVersion) {
+		const lastVersionPart = lastVersion.split(".");
+		const currVersionPart = currentVersion.split(".");
+		if (lastVersionPart[0] !== currVersionPart[0]) {
+			// major version change
+			advertiseWalkthrough();
+			if (lastVersionPart[1] !== currVersionPart[1]) {
+				// minor version change
+				launchWhatsNew();
+			} {
+				// maintenance version change
+				// don't pester user
+			}
+		}
+	}
+
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
 			HtmlDocumentBuilder.MarkdownEngine = mdparam;
@@ -171,3 +196,12 @@ export function deactivate() {
 	logger.info("Garbage collection stopped by deactivate")
 }
 
+function launchWhatsNew() {
+	const addr = server!.address() as AddressInfo;
+	const redirectToWhatsNewWithoutUpsettingVscode = vscode.Uri.parse(`http://localhost:${addr.port}/whatsnew`);
+	vscode.env.openExternal(redirectToWhatsNewWithoutUpsettingVscode);
+}
+
+function advertiseWalkthrough() {
+	
+}
