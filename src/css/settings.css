@@ -11,6 +11,7 @@ body {
 
 .line-number,
 .line-text {
+	font-family: FONT_FAMILY;
 	font-size: FONT_SIZE;
 	line-height: LINE_SPACINGem;
 	padding-bottom: 3px;
