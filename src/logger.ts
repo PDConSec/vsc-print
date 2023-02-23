@@ -1,9 +1,10 @@
 import { Metadata } from './metadata';
 import * as winston from "winston";
 import * as vscode from "vscode";
+import * as path from "path";
 
 const logFileName = `vscode-print.log`;
-const logFileDir = `${Metadata.ExtensionPath}`;
+const logFileDir = path.resolve(path.join(`${Metadata.ExtensionPath}`, ".."));
 const logLevel = vscode.workspace.getConfiguration("print", null).logLevel;
 
 const transports = [

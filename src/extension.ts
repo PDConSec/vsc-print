@@ -116,9 +116,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const currentVersion = context.extension.packageJSON.version as string;
 	const lastVersion = context.globalState.get("version") as string ?? "0.0.0"
-	if (!lastVersion) {
-		// first run ever
-	} else if (lastVersion !== currentVersion) {
+	if (lastVersion !== currentVersion) {
+		logger.warn(`Updated to ${currentVersion}`);
 		const lastVersionPart = lastVersion.split(".");
 		const currVersionPart = currentVersion.split(".");
 		if (lastVersionPart[0] !== currVersionPart[0]) {
@@ -127,11 +126,11 @@ export async function activate(context: vscode.ExtensionContext) {
 			if (lastVersionPart[1] !== currVersionPart[1]) {
 				// minor version change
 				launchWhatsNew();
-			} {
-				// maintenance version change
-				// don't pester user
+			} else {
+				// it's a maintenance version change so don't pester the user
 			}
 		}
+		context.globalState.update("version", currentVersion);
 	}
 
 	const markdownExtensionInstaller = {
@@ -154,7 +153,7 @@ function openDoc(doc: string) {
 			break;
 
 		case "log":
-			let pathToLogFile = path.join(Metadata.ExtensionPath, "vscode-print.log");
+			let pathToLogFile = path.join(Metadata.ExtensionPath,"..", "vscode-print.log");
 			let uriLogFile: vscode.Uri = vscode.Uri.file(pathToLogFile);
 			vscode.workspace.openTextDocument(uriLogFile).then(vscode.window.showTextDocument);
 			break;
@@ -203,5 +202,9 @@ function launchWhatsNew() {
 }
 
 function advertiseWalkthrough() {
-	
+	vscode.commands.executeCommand(
+		"workbench.action.openWalkthrough",
+		"pdconsec.translation-manager#how-to-print",
+		true
+	);
 }
