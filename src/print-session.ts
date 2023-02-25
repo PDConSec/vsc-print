@@ -25,10 +25,10 @@ export class PrintSession {
 	public uri: vscode.Uri | undefined;
 	constructor(uri?: vscode.Uri, preview: boolean = true) {
 		logger.debug(`Creating a print session object for ${uri}`);
+		const printConfig = vscode.workspace.getConfiguration("print");
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
 				const baseUrl = `http://localhost:${PrintSession.port}/${this.sessionId}/`;
-				const printConfig = vscode.workspace.getConfiguration("print");
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";
@@ -247,22 +247,26 @@ export class PrintSession {
 
 	public getUrl(): string { return `http://localhost:${PrintSession.port}/${this.sessionId}/`; }
 
-	async rootDocumentContentSource(uri: vscode.Uri): Promise<string> {
-		try {
-			await vscode.workspace.fs.stat(uri); // barfs when file does not exist (unsaved)
-			const uristat = await vscode.workspace.fs.stat(uri);
-			if (uristat.type === vscode.FileType.Directory) return "folder";
-			const editor = vscode.window.activeTextEditor;
-			if (editor && uri.toString() === editor.document.uri.toString()) {
-				return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
-			} else {
-				return "file";
-			}
-		} catch (ex) {
-			if (vscode.window.activeTextEditor) {
-				return "editor";
-			} else {
-				return `Content source could not be determined. "${uri}" does not resolve to a file and there is no active editor.`;
+	async rootDocumentContentSource(source: vscode.Uri | Array<vscode.Uri>): Promise<string> {
+		if (Array.isArray(source))
+			return "multiselection";
+		else {
+			try {
+				await vscode.workspace.fs.stat(source); // barfs when file does not exist (unsaved)
+				const uristat = await vscode.workspace.fs.stat(source);
+				if (uristat.type === vscode.FileType.Directory) return "folder";
+				const editor = vscode.window.activeTextEditor;
+				if (editor && source.toString() === editor.document.uri.toString()) {
+					return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
+				} else {
+					return "file";
+				}
+			} catch (ex) {
+				if (vscode.window.activeTextEditor) {
+					return "editor";
+				} else {
+					return `Content source could not be determined. "${source}" does not resolve to a file and there is no active editor.`;
+				}
 			}
 		}
 	}
