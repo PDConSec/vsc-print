@@ -193,7 +193,6 @@ Des correctifs comme celui-ci seront perdus lors de la prochaine mise à jour d�
 ## Prérequis
 
 * Commencez par vous assurer que vous pouvez imprimer une page Web à partir de votre navigateur.
-* Firefox n’est _pas_ un choix idéal, mais si vous le préférez comme navigateur par défaut, vous serez heureux d’apprendre que vous pouvez configurer l’impression pour utiliser un navigateur non par défaut - vous pouvez l’avoir dans les deux sens.
 * L’utilisateur comme lequel VS Code s’exécute doit être en mesure d’établir un socket d’écoute.
 
 ## Premiers tracas de lancement
@@ -212,10 +211,10 @@ Le navigateur utilisé affectera votre expérience.
 Pour de meilleurs résultats d’impression, installez un navigateur basé sur Chromium. Si vous ne souhaitez pas en faire votre navigateur par défaut, profitez des paramètres du navigateur alternatif. 
 
 Les éléments suivants sont connus pour bien fonctionner.
-* Courageux
+* Brave
 * Chrome
-* Chrome
-* Bord
+* Chromium
+* Edge
 
 ### NON recommandé pour l’impression
 
@@ -229,7 +228,7 @@ Pour utiliser Imprimer avec un hôte distant, vous devez l’installer **sur l�
 
 Pour bénéficier d’une extension Markdown lors de l’impression d’un document à partir d’un hôte distant, l’extension Markdown doit être construite avec un `extensionKind` de `workspace` _et_ elle doit être installée sur l’hôte distant. 
 
-La plupart de ces extensions ne sont pas conçues pour `workspace`. Ils peuvent être corrigés trivialement en modifiant leur `package.json`. Malheureusement, ce correctif manuel est susceptible d’être perdu chaque fois que l’extension est mise à jour, vous devez donc soulever un problème avec l’auteur des extensions que vous corrigez.
+La plupart de ces extensions ne sont pas conçues pour `workspace`. Ils peuvent être corrigés trivialement en modifiant leur `package.json`. Malheureusement, ce correctif manuel est susceptible d’être perdu chaque fois que l’extension est mise à jour, vous devez donc enregistre un problème avec l’auteur des extensions que vous corrigez.
 
 ## Autre navigateur
 

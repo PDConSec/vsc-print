@@ -22,17 +22,17 @@ export class PrintSession {
 	pageBuilder: HtmlDocumentBuilder | undefined;
 	public ready: Promise<void>;
 	public sessionId = nodeCrypto.randomUUID();
-	public uri: vscode.Uri | undefined;
-	constructor(uri?: vscode.Uri, preview: boolean = true) {
-		logger.debug(`Creating a print session object for ${uri}`);
+	public source: any;
+	constructor(source: any, preview: boolean = true) {
+		logger.debug(`Creating a print session object for ${source}`);
+		const printConfig = vscode.workspace.getConfiguration("print");
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
 				const baseUrl = `http://localhost:${PrintSession.port}/${this.sessionId}/`;
-				const printConfig = vscode.workspace.getConfiguration("print");
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";
-				const rootDocumentContentSource = await this.rootDocumentContentSource(uri!);
+				const rootDocumentContentSource = await this.rootDocumentContentSource(source!);
 				switch (rootDocumentContentSource) {
 					case "editor": {
 						logger.debug("Using the buffer of the active editor");
@@ -40,7 +40,7 @@ export class PrintSession {
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						if (!document) throw "This can't happen";
-						this.uri = document.uri;
+						this.source = document.uri;
 						this.pageBuilder = new HtmlDocumentBuilder(
 							baseUrl,
 							document.uri.fsPath,
@@ -58,7 +58,7 @@ export class PrintSession {
 						if (!document) throw "This can't happen";
 						const selection = editor?.selection;
 						if (!selection) throw "This can't happen";
-						this.uri = document.uri;
+						this.source = document.uri;
 						if (selection.isEmpty) { // use entire doc
 							const selectedText = document!.getText().replace(/\s*$/, "");
 							const langId = document!.languageId;
@@ -87,9 +87,9 @@ export class PrintSession {
 					}
 						break;
 					case "file":
-						document = await vscode.workspace.openTextDocument(uri!);
+						document = await vscode.workspace.openTextDocument(source!);
 						logger.debug(`Printing the file ${document.uri.fsPath}`);
-						this.uri = document.uri;
+						this.source = document.uri;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						this.pageBuilder = new HtmlDocumentBuilder(
@@ -101,8 +101,13 @@ export class PrintSession {
 						);
 						break;
 					case "folder":
-						logger.debug(`Printing the folder ${uri!.fsPath}`);
-						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, uri!.fsPath, "", "folder", printLineNumbers)
+						logger.debug(`Printing the folder ${source!.fsPath}`);
+						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, source!.fsPath, "", "folder", printLineNumbers);
+						break;
+					case "multiselection":
+						logger.debug(`Printing multiselection`);
+						const multiselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.name;
+						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, multiselectionPath, "", "multiselection", printLineNumbers, 1, source);
 						break;
 					default:
 						logger.error(rootDocumentContentSource);
@@ -149,7 +154,7 @@ export class PrintSession {
 			response.end("OK");
 		} else if (urlParts.length === 4 && urlParts[2] === "workspace.resource") {
 			logger.debug(`Responding to workspace.resource request for session ${urlParts[1]}`);
-			const basePath = vscode.workspace.getWorkspaceFolder(this.uri!)?.uri.fsPath!;
+			const basePath = vscode.workspace.getWorkspaceFolder(this.source!)?.uri.fsPath!;
 			const resourcePath = path.join(basePath, ...urlParts.slice(3));
 			await relativeResource(resourcePath);
 		} else if (urlParts.length === 4 && urlParts[2] === "bundled") {
@@ -171,6 +176,7 @@ export class PrintSession {
 					const printConfig = vscode.workspace.getConfiguration("print");
 					const editorConfig = vscode.workspace.getConfiguration("editor");
 					const css = settingsCss
+						.replace("FONT_FAMILY", editorConfig.fontFamily)
 						.replace("FONT_SIZE", printConfig.fontSize)
 						.replace("LINE_SPACING", printConfig.lineSpacing)
 						.replace("TAB_SIZE", editorConfig.tabSize)
@@ -206,7 +212,7 @@ export class PrintSession {
 					break;
 			}
 		} else {
-			const basePath = path.dirname(this.uri!.fsPath);
+			const basePath = path.dirname(this.source!.fsPath);
 			const resourcePath = path.join(basePath, ...urlParts.slice(2));
 			await relativeResource(resourcePath);
 		}
@@ -246,22 +252,26 @@ export class PrintSession {
 
 	public getUrl(): string { return `http://localhost:${PrintSession.port}/${this.sessionId}/`; }
 
-	async rootDocumentContentSource(uri: vscode.Uri): Promise<string> {
-		try {
-			await vscode.workspace.fs.stat(uri); // barfs when file does not exist (unsaved)
-			const uristat = await vscode.workspace.fs.stat(uri);
-			if (uristat.type === vscode.FileType.Directory) return "folder";
-			const editor = vscode.window.activeTextEditor;
-			if (editor && uri.toString() === editor.document.uri.toString()) {
-				return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
-			} else {
-				return "file";
-			}
-		} catch (ex) {
-			if (vscode.window.activeTextEditor) {
-				return "editor";
-			} else {
-				return `Content source could not be determined. "${uri}" does not resolve to a file and there is no active editor.`;
+	async rootDocumentContentSource(source: vscode.Uri | Array<vscode.Uri>): Promise<string> {
+		if (Array.isArray(source))
+			return "multiselection";
+		else {
+			try {
+				await vscode.workspace.fs.stat(source); // barfs when file does not exist (unsaved)
+				const uristat = await vscode.workspace.fs.stat(source);
+				if (uristat.type === vscode.FileType.Directory) return "folder";
+				const editor = vscode.window.activeTextEditor;
+				if (editor && source.toString() === editor.document.uri.toString()) {
+					return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
+				} else {
+					return "file";
+				}
+			} catch (ex) {
+				if (vscode.window.activeTextEditor) {
+					return "editor";
+				} else {
+					return `Content source could not be determined. "${source}" does not resolve to a file and there is no active editor.`;
+				}
 			}
 		}
 	}
@@ -270,11 +280,15 @@ export class PrintSession {
 async function launchAlternateBrowser(url: string) {
 	logger.debug("Alternate browser is selected");
 	const printConfig = vscode.workspace.getConfiguration("print");
-	const isRemoteWorkspace = true;// !!vscode.env.remoteName;
-	const forceUseAgent = true;
+	const isRemoteWorkspace = !!vscode.env.remoteName;
+	const forceUseAgent = false;
 	if (forceUseAgent || isRemoteWorkspace) {
 		logger.debug(`forceUseAgent=${forceUseAgent}, isRemoteWorkspace=${isRemoteWorkspace}`)
 		try {
+			const cmds = await vscode.commands.getCommands(true);
+			if (!cmds.includes("print.launchBrowser")) {
+				throw new Error("The remote printing agent is not accessible");
+			}
 			const isBrowserPathDefined = !!vscode.workspace.getConfiguration("print").browserPath;
 			if (isBrowserPathDefined) {
 				logger.debug("Browser path is defined, attempting to command remote browser agent");

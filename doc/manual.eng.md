@@ -10,7 +10,8 @@ English version by Peter Wone
 2. [Customising your setup](#customising-your-setup)
 3. [Markdown](#markdown)
 4. [Markdown extensions and remote workspaces](#markdown-extensions-and-remote-workspaces)
-5. [Troubleshooting](#troubleshooting)
+5. [Printing other formats rendered](#printing-other-formats-rendered)
+6. [Troubleshooting](#troubleshooting)
 
 # General use
 
@@ -74,6 +75,8 @@ You can control whether the "Print" menu item appears at the top, bottom or nowh
 When the `Print and Close` setting is checked, printing something will automatically open the browser's Print dialog and then automatically close the browser after you either print or cancel. Turning this off will open the browser with the rendered document ready for inspection. If you then manually open the Print dialog, printing or cancelling it will not close the browser.
 
 ## Using a particular browser to print
+
+**At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
 
 By default, printing will use your default browser. However, printing works best with a Chromium derived browser, and it may not be possible or desirable to change your default browser. 
 
@@ -189,13 +192,17 @@ If your need is urgent, you can patch extensions yourself.
 
 Patches like this will be lost at the next update for an extension, so if your patch was successful you may want to submit a PR to the publisher.
 
+# Printing other formats rendered
+
+Issues have been logged requesting rendered printing of formats other than Markdown. Examples include sheet music from the ABC music markup, and Jupyter Notebooks. To support this without taking on the unmanageable burden of keeping up with every text based document format used with VS Code, we have exposed an API and published an SDK allowing the maintainers to incorporate printing into their preview capability.
+
+As a result, if you would like rendered printing for a particular format for which you already have an extension providing preview, raise an issue with the publisher of that extension. Explain your desire to print and refer them for printing and referring them to 
+
 # Troubleshooting
 
 ## Prerequisites
 
 * Start by making sure you can print a web page from your browser.
-* To print from a remote workspace hosted on Linux, you must have `xdg-open` installed on the remote host. Desktop Ubuntu is ready to go out of the box.
-* Firefox is _not_ an ideal choice but if you prefer it as your default browser then you will be pleased to learn that you can you can configure printing to use a non-default browser &mdash; you can have it both ways.
 * The user as which VS Code runs must be able to establish a listening socket.
 
 ## First launch hassles
@@ -211,17 +218,17 @@ The browser used will affect your experience.
 
 ### Recommended for printing
 
-For best printing results, install a Chromium based browser. If you don't want to make this your default browser, take advantage of the alternate-browser settings. **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
+For best printing results, install a Chromium based browser or Firefox. If you don't want to make this your default browser, take advantage of the alternate-browser settings. **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
 
 The following are known to work well.
 * Brave
 * Chromium
 * Chrome
 * Edge
+* Firefox
 
 ### NOT recommended for printing
 
-* Firefox prints well enough but doesn't close the browser afterward. 
 * Edge Classic is no longer supported.
 * Internet Explorer is not supported.
 
@@ -234,6 +241,8 @@ To get the benefit of a Markdown extension when printing a document from a remot
 Most such extensions are not built for `workspace`. They can be trivially fixed by modifying their `package.json`. Unfortunately this manual patch is likely to be lost whenever the extension is updated, so you should raise an issue with the author of extensions you patch.
 
 ## Alternate browser
+
+**At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
 
 You cannot supply command-line options on the alternate browser path. On Windows, we automatically put quotes around your path in case of spaces in file or folder names. On other platforms, spaces are automatically escaped.
 

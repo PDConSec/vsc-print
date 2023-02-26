@@ -41,7 +41,6 @@ Los trabajos de impresión se representan como HTML con estilo y se sirven desde
 La impresión funcionó para cincuenta mil personas desde el primer momento, pero a veces la configuración y los permisos locales pueden estropear la diversión. Aquí hay algunos problemas que la gente ha encontrado y qué hacer. Si algo más está mal o si tiene una idea de mejora, lo invitamos a registrar un problema en el repositorio de GitHub.
 
 * Parece que no pasa nada &mdash; reinicie el código VS.
-* El navegador Firefox es problemático. Instale Chromium (o Chrome, Edge, Brave...) y conviértalo en el navegador predeterminado o configure la extensión Imprimir para usar un navegador específico (RTFM).
 * El navegador se inicia pero no se carga la página &mdash; verifique los permisos de red.
 * El navegador muestra un mensaje de error sobre no encontrar un archivo CSS &mdash; instaló desde un VSIX que no fue preparado por nosotros. Obtenga el [paquete oficial](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print) y vuelva a intentarlo.
 

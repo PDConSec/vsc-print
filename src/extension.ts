@@ -1,12 +1,11 @@
 import { Metadata } from './metadata';
-import { PrintPreview } from './print-preview';
 import { logger } from './logger';
 import { PrintSession } from './print-session';
 import * as vscode from 'vscode';
 import * as http from "http";
 import { AddressInfo } from 'net';
 import * as path from "path";
-import { captionByFilename, filenameByCaption, localise } from './imports';
+import { captionByFilename, localise } from './imports';
 import * as nls from 'vscode-nls';
 import { HtmlDocumentBuilder } from './html-document-builder';
 import { DocumentRenderer } from './document-renderer';
@@ -43,7 +42,7 @@ function gc() {
 	}
 }
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 	Metadata.ExtensionContext = context;
 	logger.debug("Print activated");
 
@@ -54,6 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.executeCommand("setContext", "etmButton", etmButton);
 
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.whatsnew", launchWhatsNew));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.preview", previewCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.print", printCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
@@ -76,12 +76,17 @@ export function activate(context: vscode.ExtensionContext) {
 		try {
 			if (request.url) {
 				const urlParts = request.url.split('/',);
-				const printSession = printSessions.get(urlParts[1]);
-				if (printSession) {
-					await printSession.respond(urlParts, response);
+				if (urlParts[1] === "whatsnew") {
+					response.writeHead(302, { 'Location': 'https://pdconsec.net/vscode-print/whatsnew' });
+					response.end();
 				} else {
-					logger.warn(`Dropping connection of ${request.url} does not correspond to a print session`);
-					return request.socket.end();
+					const printSession = printSessions.get(urlParts[1]);
+					if (printSession) {
+						await printSession.respond(urlParts, response);
+					} else {
+						logger.warn(`Dropping connection of ${request.url} does not correspond to a print session`);
+						return request.socket.end();
+					}
 				}
 			}
 		} catch (error) {
@@ -109,6 +114,27 @@ export function activate(context: vscode.ExtensionContext) {
 		logger.info(`Began listening on ${addr.address}:${addr.port}`);
 	});
 	server.listen(0, "localhost");
+
+	const currentVersion = context.extension.packageJSON.version as string;
+	const lastVersion = context.globalState.get("version") as string ?? "0.0.0"
+	if (lastVersion !== currentVersion) {
+		logger.warn(`Updated to ${currentVersion}`);
+		const lastVersionPart = lastVersion.split(".");
+		const currVersionPart = currentVersion.split(".");
+		if (lastVersionPart[0] !== currVersionPart[0]) {
+			// major version change
+			advertiseWalkthrough();
+			if (lastVersionPart[1] !== currVersionPart[1]) {
+				// minor version change
+				//todo re-enable when website is ready
+				// launchWhatsNew();
+			} else {
+				// it's a maintenance version change so don't pester the user
+			}
+		}
+		context.globalState.update("version", currentVersion);
+	}
+
 	const markdownExtensionInstaller = {
 		extendMarkdownIt(mdparam: any) {
 			HtmlDocumentBuilder.MarkdownEngine = mdparam;
@@ -129,7 +155,7 @@ function openDoc(doc: string) {
 			break;
 
 		case "log":
-			let pathToLogFile = path.join(Metadata.ExtensionPath, "vscode-print.log");
+			let pathToLogFile = path.join(Metadata.ExtensionPath,"..", "vscode-print.log");
 			let uriLogFile: vscode.Uri = vscode.Uri.file(pathToLogFile);
 			vscode.workspace.openTextDocument(uriLogFile).then(vscode.window.showTextDocument);
 			break;
@@ -151,8 +177,11 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 	}
 };
 
-function printCommand(cmdArgs: any): PrintSession {
+function printCommand(cmdArgs: any, multiselection: Array<vscode.Uri>): PrintSession {
 	logger.debug("Print command was invoked");
+	if (multiselection?.length > 1) {
+		cmdArgs = multiselection;
+	}
 	const printSession = new PrintSession(cmdArgs, false);
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;
@@ -171,3 +200,16 @@ export function deactivate() {
 	logger.info("Garbage collection stopped by deactivate")
 }
 
+function launchWhatsNew() {
+	const addr = server!.address() as AddressInfo;
+	const redirectToWhatsNewWithoutUpsettingVscode = vscode.Uri.parse(`http://localhost:${addr.port}/whatsnew`);
+	vscode.env.openExternal(redirectToWhatsNewWithoutUpsettingVscode);
+}
+
+function advertiseWalkthrough() {
+	vscode.commands.executeCommand(
+		"workbench.action.openWalkthrough",
+		"pdconsec.vscode-print#how-to-print",
+		true
+	);
+}
