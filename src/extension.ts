@@ -177,7 +177,9 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
 
 function printCommand(cmdArgs: any, multiselection: Array<vscode.Uri>): PrintSession {
 	logger.debug("Print command was invoked");
-	if (multiselection && multiselection.length > 1) cmdArgs = multiselection;
+	if (multiselection?.length > 1) {
+		cmdArgs = multiselection;
+	}
 	const printSession = new PrintSession(cmdArgs, false);
 	printSessions.set(printSession.sessionId, printSession);
 	return printSession;

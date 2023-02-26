@@ -318,6 +318,8 @@
 	},
 	"devDependencies": {
 		"@types/braces": "^3.0.1",
+		"@types/highlight.js": "10.1.0",
+		"@types/markdown-it": "^12.2.3",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^18.0.0",
 		"@types/vscode": "^1.60.0",
@@ -346,10 +348,9 @@
 		"webpack-cli": "^4.10.0"
 	},
 	"dependencies": {
-		"@types/highlight.js": "^10.1.0",
-		"@types/markdown-it": "0.0.9",
 		"braces": "^3.0.2",
-		"highlight.js": "^11.7.0",
+		"highlight.js": "<11.0.0",
+		"minimatch": "^7.1.4",
 		"vscode-nls": "^4.1.2",
 		"winston": "^3.8.1"
 	},

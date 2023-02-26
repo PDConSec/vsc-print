@@ -22,9 +22,9 @@ export class PrintSession {
 	pageBuilder: HtmlDocumentBuilder | undefined;
 	public ready: Promise<void>;
 	public sessionId = nodeCrypto.randomUUID();
-	public uri: vscode.Uri | undefined;
-	constructor(uri?: vscode.Uri, preview: boolean = true) {
-		logger.debug(`Creating a print session object for ${uri}`);
+	public source: any;
+	constructor(source: any, preview: boolean = true) {
+		logger.debug(`Creating a print session object for ${source}`);
 		const printConfig = vscode.workspace.getConfiguration("print");
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
@@ -32,7 +32,7 @@ export class PrintSession {
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
 				let printLineNumbers = printConfig.lineNumbers === "on";
-				const rootDocumentContentSource = await this.rootDocumentContentSource(uri!);
+				const rootDocumentContentSource = await this.rootDocumentContentSource(source!);
 				switch (rootDocumentContentSource) {
 					case "editor": {
 						logger.debug("Using the buffer of the active editor");
@@ -40,7 +40,7 @@ export class PrintSession {
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						if (!document) throw "This can't happen";
-						this.uri = document.uri;
+						this.source = document.uri;
 						this.pageBuilder = new HtmlDocumentBuilder(
 							baseUrl,
 							document.uri.fsPath,
@@ -58,7 +58,7 @@ export class PrintSession {
 						if (!document) throw "This can't happen";
 						const selection = editor?.selection;
 						if (!selection) throw "This can't happen";
-						this.uri = document.uri;
+						this.source = document.uri;
 						if (selection.isEmpty) { // use entire doc
 							const selectedText = document!.getText().replace(/\s*$/, "");
 							const langId = document!.languageId;
@@ -87,9 +87,9 @@ export class PrintSession {
 					}
 						break;
 					case "file":
-						document = await vscode.workspace.openTextDocument(uri!);
+						document = await vscode.workspace.openTextDocument(source!);
 						logger.debug(`Printing the file ${document.uri.fsPath}`);
-						this.uri = document.uri;
+						this.source = document.uri;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						this.pageBuilder = new HtmlDocumentBuilder(
@@ -101,8 +101,13 @@ export class PrintSession {
 						);
 						break;
 					case "folder":
-						logger.debug(`Printing the folder ${uri!.fsPath}`);
-						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, uri!.fsPath, "", "folder", printLineNumbers)
+						logger.debug(`Printing the folder ${source!.fsPath}`);
+						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, source!.fsPath, "", "folder", printLineNumbers);
+						break;
+					case "multiselection":
+						logger.debug(`Printing multiselection`);
+						const multiselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.name;
+						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, multiselectionPath, "", "multiselection", printLineNumbers, 1, source);
 						break;
 					default:
 						logger.error(rootDocumentContentSource);
@@ -149,7 +154,7 @@ export class PrintSession {
 			response.end("OK");
 		} else if (urlParts.length === 4 && urlParts[2] === "workspace.resource") {
 			logger.debug(`Responding to workspace.resource request for session ${urlParts[1]}`);
-			const basePath = vscode.workspace.getWorkspaceFolder(this.uri!)?.uri.fsPath!;
+			const basePath = vscode.workspace.getWorkspaceFolder(this.source!)?.uri.fsPath!;
 			const resourcePath = path.join(basePath, ...urlParts.slice(3));
 			await relativeResource(resourcePath);
 		} else if (urlParts.length === 4 && urlParts[2] === "bundled") {
@@ -207,7 +212,7 @@ export class PrintSession {
 					break;
 			}
 		} else {
-			const basePath = path.dirname(this.uri!.fsPath);
+			const basePath = path.dirname(this.source!.fsPath);
 			const resourcePath = path.join(basePath, ...urlParts.slice(2));
 			await relativeResource(resourcePath);
 		}
