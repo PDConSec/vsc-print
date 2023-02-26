@@ -1,10 +1,10 @@
-import minimatch from 'minimatch';
 import { logger } from './logger';
 import braces = require('braces');
 import path = require('path');
 import * as vscode from 'vscode';
 import { localise } from './imports';
 import { DocumentRenderer } from './document-renderer';
+import micromatch = require('micromatch');
 
 const templateFolderItem = require("./template-folder-item.html").default.toString();
 const template: string = require("./template.html").default.toString();
@@ -97,7 +97,7 @@ export class HtmlDocumentBuilder {
 		let excludes: string = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
 		excludePatterns = braces.expand(excludes); //no braces in patterns
 		excludes = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
-		const fileUris = this.multiselection.filter(uri => !minimatch(uri.path, excludes));
+		const fileUris = this.multiselection.filter(uri => !micromatch.isMatch(uri.path, excludes));
 		const docOpenSettlements = await Promise.allSettled(fileUris.map(uri => vscode.workspace.openTextDocument(uri)));
 		const docs = await docOpenSettlements
 			.filter(dos => dos.status === "fulfilled")

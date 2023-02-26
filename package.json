@@ -348,9 +348,10 @@
 		"webpack-cli": "^4.10.0"
 	},
 	"dependencies": {
+		"@types/micromatch": "^4.0.2",
 		"braces": "^3.0.2",
 		"highlight.js": "<11.0.0",
-		"minimatch": "^7.1.4",
+		"micromatch": "^4.0.5",
 		"vscode-nls": "^4.1.2",
 		"winston": "^3.8.1"
 	},
