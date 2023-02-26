@@ -1,4 +1,7 @@
 # Change Log
+### 0.10.23
+
+- #187 fix settings force alt browser on with broken alt browser path check
 
 ### 0.10.22 
 

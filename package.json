@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
-	"version": "0.10.22",
+	"version": "0.10.23",
 	"icon": "assets/vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
@@ -119,7 +119,7 @@
 					"print.alternateBrowser": {
 						"type": "boolean",
 						"description": "%print.alternateBrowser.description%",
-						"default": true
+						"default": false
 					},
 					"print.browserPath": {
 						"type": "string",

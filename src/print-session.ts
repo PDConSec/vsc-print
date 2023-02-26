@@ -281,6 +281,15 @@ async function launchAlternateBrowser(url: string) {
 	logger.debug("Alternate browser is selected");
 	const printConfig = vscode.workspace.getConfiguration("print");
 	const isRemoteWorkspace = !!vscode.env.remoteName;
+	logger.debug(`Workspace is ${isRemoteWorkspace ? "remote" : "local"}`);
+	const isBrowserPathDefined = !!printConfig.browserPath;
+	logger.debug(`Browser path ${isBrowserPathDefined ? "IS" : "is NOT"} defined`);
+
+	if (!isBrowserPathDefined) {
+		const msg = "Alternate browser path not set. Default browser will be used.";
+		logger.warn(msg);
+		vscode.window.showWarningMessage(msg);
+	}
 	const forceUseAgent = false;
 	if (forceUseAgent || isRemoteWorkspace) {
 		logger.debug(`forceUseAgent=${forceUseAgent}, isRemoteWorkspace=${isRemoteWorkspace}`)
@@ -289,14 +298,9 @@ async function launchAlternateBrowser(url: string) {
 			if (!cmds.includes("print.launchBrowser")) {
 				throw new Error("The remote printing agent is not accessible");
 			}
-			const isBrowserPathDefined = !!vscode.workspace.getConfiguration("print").browserPath;
 			if (isBrowserPathDefined) {
-				logger.debug("Browser path is defined, attempting to command remote browser agent");
 				vscode.commands.executeCommand("print.launchBrowser", url);
 			} else {
-				const msg = "Alternate browser cannot be used because browser path has not been supplied. The default browser is being used.";
-				logger.warn(msg);
-				vscode.window.showWarningMessage(msg);
 				vscode.env.openExternal(vscode.Uri.parse(url));
 			}
 		} catch {
@@ -306,12 +310,16 @@ async function launchAlternateBrowser(url: string) {
 			vscode.env.openExternal(vscode.Uri.parse(url));
 		}
 	} else {
-		const cmd = escapePath(printConfig.browserPath);
-		child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
-			if (error || stderr) {
-				vscode.window.showErrorMessage(error ? error.message : stderr);
-			}
-		});
+		if (isBrowserPathDefined) {
+			const cmd = escapePath(printConfig.browserPath);
+			child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
+				if (error || stderr) {
+					vscode.window.showErrorMessage(error ? error.message : stderr);
+				}
+			});
+		} else {
+			vscode.env.openExternal(vscode.Uri.parse(url));
+		}
 	}
 }
 
