@@ -1,6 +1,13 @@
 # Change Log
 
-### 1.0.0
+### 0.10.22 
+
+- support for walkthrough
+- fix #181 use editor font when printing source code (broken by refactoring)
+- fix #182 file explorer context-menu print now supports multiselection 
+- fix #183 unexpected commas
+
+### 0.10.20
 
 - API support providing print and preview services to other extensions. Internal renderers now use the API.
 - Colour samples when printing CSS source code (as for VS Code editor).

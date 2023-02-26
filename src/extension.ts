@@ -53,6 +53,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.commands.executeCommand("setContext", "etmButton", etmButton);
 
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.whatsnew", launchWhatsNew));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.preview", previewCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.print", printCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
@@ -76,7 +77,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			if (request.url) {
 				const urlParts = request.url.split('/',);
 				if (urlParts[1] === "whatsnew") {
-					response.writeHead(302, { 'Location': 'https://pdconsec.net' });
+					response.writeHead(302, { 'Location': 'https://pdconsec.net/vscode-print/whatsnew' });
 					response.end();
 				} else {
 					const printSession = printSessions.get(urlParts[1]);
@@ -125,7 +126,8 @@ export async function activate(context: vscode.ExtensionContext) {
 			advertiseWalkthrough();
 			if (lastVersionPart[1] !== currVersionPart[1]) {
 				// minor version change
-				launchWhatsNew();
+				//todo re-enable when website is ready
+				// launchWhatsNew();
 			} else {
 				// it's a maintenance version change so don't pester the user
 			}
@@ -207,7 +209,7 @@ function launchWhatsNew() {
 function advertiseWalkthrough() {
 	vscode.commands.executeCommand(
 		"workbench.action.openWalkthrough",
-		"pdconsec.translation-manager#how-to-print",
+		"pdconsec.vscode-print#how-to-print",
 		true
 	);
 }

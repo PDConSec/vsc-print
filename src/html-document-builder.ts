@@ -104,7 +104,6 @@ export class HtmlDocumentBuilder {
 			.map(dos => (dos as PromiseFulfilledResult<vscode.TextDocument>).value);
 		return docs;
 	}
-
 	async docsInFolder(): Promise<vscode.TextDocument[]> {
 		logger.debug(`Enumerating the files in ${this.filepath}`);
 		const printConfig = vscode.workspace.getConfiguration("print", null);
