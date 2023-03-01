@@ -80,7 +80,7 @@ export class HtmlDocumentBuilder {
 				.replace("BASE_URL", this.baseUrl)
 				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.filepath))
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine }))
+				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine, filepathTitle: printConfig.filepathAsDocumentHeading ? `<h3>${this.filepath.replace(/([\\/])/g,"$1<wbr />")}</h3>` : "" }))
 				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
 				;
 		}

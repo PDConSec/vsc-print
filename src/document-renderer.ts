@@ -43,7 +43,8 @@ export class DocumentRenderer {
 	static __defaultDocumentOptions: IDocumentRenderer = {
 		getBodyHtml: htmlRendererSourcecode.getBodyHtml,
 		getCssUriStrings: htmlRendererSourcecode.getCssUriStrings,
-		getResource: htmlRendererSourcecode.getResource
+		getResource: htmlRendererSourcecode.getResource,
+		getTitle: htmlRendererSourcecode.getTitle
 	};
 
 	static __defaultDocumentRenderer = new DocumentRenderer(DocumentRenderer.__defaultDocumentOptions);
