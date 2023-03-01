@@ -56,6 +56,23 @@
 			{
 				"title": "%configuration.title.print%",
 				"properties": {
+					"print.filepathAsDocumentHeading": {
+						"description": "Use the full file path as a heading on the first page of a source file",
+						"type": "boolean",
+						"default": true
+					},
+					"print.filepathInDocumentTitle": {
+						"type": "string",
+						"default": "No path",
+						"enum": [
+							"No path",
+							"Abbreviated path"
+						],
+						"markdownEnumDescriptions": [
+							"`filename.ext`",
+							"`C:\\...\\folder-containing\\filename.ext` (you will have to edit the name when saving a PDF)"
+						]
+					},
 					"print.lineSpacing": {
 						"type": "number",
 						"enum": [
