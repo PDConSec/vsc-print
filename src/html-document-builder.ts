@@ -11,15 +11,18 @@ const template: string = require("./template.html").default.toString();
 
 export class HtmlDocumentBuilder {
 	static MarkdownEngine: any;
+	private filepath: string;
 	constructor(
 		public baseUrl: string,
-		public filepath: string,
+		public uri: vscode.Uri,
 		public code: string = "",
 		public language: string = "",
 		public printLineNumbers: boolean,
 		public startLine: number = 1,
 		public multiselection: Array<vscode.Uri> = []
-	) { }
+	) {
+		this.filepath = uri.fsPath;
+	}
 	public async build(): Promise<string> {
 		const documentRenderer = DocumentRenderer.get(this.language);
 		const printConfig = vscode.workspace.getConfiguration("print");
@@ -76,11 +79,25 @@ export class HtmlDocumentBuilder {
 				;
 		} else {
 			logger.debug(`Printing ${this.filepath}`);
+			let docHeading = "";
+			switch (printConfig.filepathAsDocumentHeading) {
+				case "None":
+					docHeading = "";
+					break;
+				case "Absolute":
+					docHeading = `<h3>${this.filepath.replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+				case "Relative":
+					const wf = vscode.workspace.getWorkspaceFolder(this.uri);
+					// if no workspace then absolute path
+					const relativePath = wf ? path.relative(wf!.uri.fsPath, this.filepath) : this.filepath;
+					docHeading = `<h3>${relativePath.replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+					break;
+			}
 			return template
 				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.filepath))
+				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine, filepathTitle: printConfig.filepathAsDocumentHeading ? `<h3>${this.filepath.replace(/([\\/])/g,"$1<wbr />")}</h3>` : "" }))
+				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine, filepathTitle: docHeading}))
 				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
 				;
 		}

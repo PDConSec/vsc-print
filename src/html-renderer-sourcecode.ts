@@ -106,16 +106,26 @@ function fixMultilineSpans(text: string): string {
 	}).join("\n");
 }
 
-export function getTitle(filename: string) {
+export function getTitle(uri:vscode.Uri):string {
 	const printConfig = vscode.workspace.getConfiguration("print");
+	let filename = uri.fsPath;
 	const parts = filename.split(path.sep);
-	if (printConfig.filepathInDocumentTitle === "No path") {
-		return parts[parts.length - 1];
-	} else {
-		if (parts.length > 3) {
-			filename = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
-		}
-		return filename;
+	switch (printConfig.filepathInDocumentTitle) {
+		case "No path":
+			return parts[parts.length - 1];
+		case "Abbreviated path":
+			if (parts.length > 3) {
+				filename = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
+			}
+			return filename;
+		case "Workspace relative":
+			const wf = vscode.workspace.getWorkspaceFolder(uri);
+			if (wf)
+				return path.relative(wf.uri.fsPath, filename);
+			else
+				return uri.fsPath; // it's not IN a workspace 
+		default:
+			throw "THIS CANNOT HAPPEN";
 	}
 }
 

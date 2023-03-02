@@ -17,10 +17,11 @@ export class DocumentRenderer {
 		return this.options.getBodyHtml(raw, languageId, options);
 	}
 
-	public getTitle(filename: string) {
+	public getTitle(uri: vscode.Uri) {
 		if (this.options.getTitle) {
-			return this.options.getTitle(filename);
+			return this.options.getTitle(uri);
 		} else {
+			let filename = uri.fsPath;
 			const parts = filename.split(path.sep);
 			if (parts.length > 3) {
 				filename = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
