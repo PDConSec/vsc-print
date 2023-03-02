@@ -20,10 +20,12 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 		try {
 			renderedCode = hljs.highlight(raw, { language: languageId }).value;
 			if (!renderedCode.includes('"hljs-keyword"')) {
+				logger.warning(`Language identifier "${languageId}" could not be honoured. Autodetecting.`);
 				renderedCode = hljs.highlightAuto(raw).value;
 			}
 		}
 		catch (err) {
+			logger.warning(`Language identifier "${languageId}" could not be honoured. Autodetecting.`);
 			renderedCode = hljs.highlightAuto(raw).value;
 		}
 		if (languageId === "css") {
