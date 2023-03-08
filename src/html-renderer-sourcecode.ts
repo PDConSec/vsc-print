@@ -20,12 +20,12 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 		try {
 			renderedCode = hljs.highlight(raw, { language: languageId }).value;
 			if (!renderedCode.includes('"hljs-keyword"')) {
-				logger.warning(`Language identifier "${languageId}" could not be honoured. Autodetecting.`);
+				logger.warn(`Language identifier "${languageId}" could not be honoured. Autodetecting.`);
 				renderedCode = hljs.highlightAuto(raw).value;
 			}
 		}
 		catch (err) {
-			logger.warning(`Language identifier "${languageId}" could not be honoured. Autodetecting.`);
+			logger.warn(`Language identifier "${languageId}" could not be honoured. Autodetecting.`);
 			renderedCode = hljs.highlightAuto(raw).value;
 		}
 		if (languageId === "css") {
@@ -51,8 +51,8 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 				.replace("\n</td>", "</td>")
 				;
 		}
-	} catch {
-		logger.error("Markdown could not be rendered");
+	} catch (err) {
+		logger.error(`Markdown could not be rendered\n${err}`);
 		renderedCode = "<div>Could not render this file.</end>";
 	}
 	return `${options.filepathTitle}<table class="hljs">\n${renderedCode}\n</table>`;
