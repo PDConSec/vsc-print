@@ -102,7 +102,7 @@ export class PrintSession {
 						break;
 					case "folder":
 						logger.debug(`Printing the folder ${source!.fsPath}`);
-						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, source!.fsPath, "", "folder", printLineNumbers);
+						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, source, "", "folder", printLineNumbers);
 						break;
 					case "multiselection":
 						logger.debug(`Printing multiselection`);

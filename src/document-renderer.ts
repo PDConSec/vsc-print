@@ -4,6 +4,7 @@ import * as path from "path";
 import * as vscode from "vscode";
 import * as htmlRendererSourcecode from "./html-renderer-sourcecode";
 import { IDocumentRenderer } from './IDocumentRenderer';
+import tildify from 'tildify';
 
 export class DocumentRenderer {
 
@@ -21,12 +22,26 @@ export class DocumentRenderer {
 		if (this.options.getTitle) {
 			return this.options.getTitle(uri);
 		} else {
+			const printConfig = vscode.workspace.getConfiguration("print");
 			let filename = uri.fsPath;
 			const parts = filename.split(path.sep);
-			if (parts.length > 3) {
-				filename = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
+			switch (printConfig.filepathInDocumentTitle) {
+				case "No path":
+					return parts[parts.length - 1];
+				case "Abbreviated path":
+					if (parts.length > 3) {
+						filename = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
+					}
+					return filename;
+				case "Workspace relative":
+					const wf = vscode.workspace.getWorkspaceFolder(uri);
+					if (wf)
+						return path.relative(wf.uri.fsPath, filename);
+					else
+						return tildify(uri.fsPath); // it's not IN a workspace 
+				default:
+					throw "THIS CANNOT HAPPEN";
 			}
-			return filename;
 		}
 	}
 
@@ -44,8 +59,7 @@ export class DocumentRenderer {
 	static __defaultDocumentOptions: IDocumentRenderer = {
 		getBodyHtml: htmlRendererSourcecode.getBodyHtml,
 		getCssUriStrings: htmlRendererSourcecode.getCssUriStrings,
-		getResource: htmlRendererSourcecode.getResource,
-		getTitle: htmlRendererSourcecode.getTitle
+		getResource: htmlRendererSourcecode.getResource
 	};
 
 	static __defaultDocumentRenderer = new DocumentRenderer(DocumentRenderer.__defaultDocumentOptions);

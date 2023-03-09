@@ -57,7 +57,7 @@
 				"title": "%configuration.title.print%",
 				"properties": {
 					"print.filepathAsDocumentHeading": {
-						"description": "Use the file path as a heading on the first page of a source file",
+						"description": "Optional heading at the start of each file",
 						"type": "string",
 						"default": "Relative",
 						"enum": [
@@ -69,6 +69,7 @@
 					"print.filepathInDocumentTitle": {
 						"type": "string",
 						"default": "No path",
+						"markdownDescription": "HTML page title, used by some browsers in the page header (to control the heading that can appear at the start of the document, use **Filepath as Document Heading**)",
 						"enum": [
 							"No path",
 							"Abbreviated path",
@@ -376,6 +377,7 @@
 		"braces": "^3.0.2",
 		"highlight.js": "<11.0.0",
 		"micromatch": "^4.0.5",
+		"tildify": "^3.0.0",
 		"vscode-nls": "^4.1.2",
 		"winston": "^3.8.1"
 	},
