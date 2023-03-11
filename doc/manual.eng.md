@@ -19,8 +19,18 @@ There are a couple of ways you can print.
 
 * You can print the active document, by icon or context menu.
 * You can print a selection from the active document, by icon or context menu.
-* You can print a file directly from the file explorer panel,  without opening the file first, by context menu.
-* You can print all the files in a folder subject to exclusion lists.
+* You can print one or more filse directly from the file explorer panel, by context menu on a folder, file or multi-selection of files.
+* Files can be titled with their filepath. The title does not appear in the document but may be used in headers by some browsers.
+	- You can choose from the following formats. 
+		- No path
+		- Abbreviated (like `D:\...\containing-folder\file.ext`)
+		- Workspace relative 
+* Files can have their filepath appear as a heading at the start of the document.
+	- A setting determines whether to use relative or absolute file paths.
+	- Non-workspace files always use absolute.
+	- Absolute paths are converted to tilde paths when they are inside the user's home directory.
+* A setting determines whether a file path heading appears at the start of individually printed files.
+* Exclusion lists apply to both folder and file selections. The purpose of these is to ignore unprintable binary files.
 
 Markdown documents can be rendered and styled. This is detailed in the Markdown section.
 
@@ -65,6 +75,9 @@ Here is a list of available setting names as they appear in the configuration fi
 * `print.folder.maxFiles`: the maximum number of files for which content is rendered when printing a folder
 * `print.folder.maxLines`: files containing more lines than this threshold will be ignored
 * `print.logLevel`: controls the level of detail going into the log file
+* `print.filepathAsDocumentHeading`: controls use of the file path as a heading at the start of a document
+* `print.filepathAsDocumentTitle`: controls use of the file path as a document title (used by some browsers in the page header)
+* `print.filepathHeadingForIndividuallyPrintedDocuments`: controls whether the file path header appears at the start of individually printed documents
 
 ## Customising the user interface
 

@@ -81,7 +81,6 @@ export class HtmlDocumentBuilder {
 			if (flagTooManyFiles) {
 				vscode.window.showWarningMessage(msgTooManyFiles);
 			}
-			let folderTitle: string;
 
 			return template
 				.replace("BASE_URL", this.baseUrl)
