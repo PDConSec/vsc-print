@@ -43,7 +43,7 @@ export class PrintSession {
 						this.source = document.uri;
 						this.pageBuilder = new HtmlDocumentBuilder(
 							baseUrl,
-							document.uri.fsPath,
+							document.uri,
 							document.getText(),
 							document.languageId,
 							printLineNumbers
@@ -65,7 +65,7 @@ export class PrintSession {
 							const startLine = selection.start.line + 1; // zero based to one based
 							this.pageBuilder = new HtmlDocumentBuilder(
 								baseUrl,
-								document.uri.fsPath,
+								document.uri,
 								selectedText,
 								langId,
 								printLineNumbers,
@@ -77,7 +77,7 @@ export class PrintSession {
 							const startLine = selection.start.line + 1; // zero based to one based
 							this.pageBuilder = new HtmlDocumentBuilder(
 								baseUrl,
-								document.uri.fsPath,
+								document.uri,
 								selectedText,
 								langId,
 								printLineNumbers,
@@ -94,7 +94,7 @@ export class PrintSession {
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						this.pageBuilder = new HtmlDocumentBuilder(
 							baseUrl,
-							document.uri.fsPath,
+							document.uri,
 							document.getText(),
 							document.languageId,
 							printLineNumbers
@@ -102,11 +102,11 @@ export class PrintSession {
 						break;
 					case "folder":
 						logger.debug(`Printing the folder ${source!.fsPath}`);
-						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, source!.fsPath, "", "folder", printLineNumbers);
+						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, source, "", "folder", printLineNumbers);
 						break;
 					case "multiselection":
 						logger.debug(`Printing multiselection`);
-						const multiselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.name;
+						const multiselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.uri;
 						this.pageBuilder = new HtmlDocumentBuilder(baseUrl, multiselectionPath, "", "multiselection", printLineNumbers, 1, source);
 						break;
 					default:

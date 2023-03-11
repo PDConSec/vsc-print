@@ -2,7 +2,6 @@ import { IResourceDescriptor } from './IResourceDescriptor';
 import * as vscode from 'vscode';
 import { logger } from './logger';
 import hljs = require('highlight.js');
-import * as path from "path";
 
 const resources = new Map<string, IResourceDescriptor>();
 resources.set("default.css", {
@@ -20,12 +19,12 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 		try {
 			renderedCode = hljs.highlight(raw, { language: languageId }).value;
 			if (!renderedCode.includes('"hljs-keyword"')) {
-				logger.warning(`Language identifier "${languageId}" could not be honoured. Autodetecting.`);
+				logger.warn(`Language identifier "${languageId}" could not be honoured. Autodetecting.`);
 				renderedCode = hljs.highlightAuto(raw).value;
 			}
 		}
 		catch (err) {
-			logger.warning(`Language identifier "${languageId}" could not be honoured. Autodetecting.`);
+			logger.warn(`Language identifier "${languageId}" could not be honoured. Autodetecting.`);
 			renderedCode = hljs.highlightAuto(raw).value;
 		}
 		if (languageId === "css") {
@@ -51,11 +50,11 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 				.replace("\n</td>", "</td>")
 				;
 		}
-	} catch {
-		logger.error("Markdown could not be rendered");
+	} catch (err) {
+		logger.error(`Markdown could not be rendered\n${err}`);
 		renderedCode = "<div>Could not render this file.</end>";
 	}
-	return `${options.filepathTitle}<table class="hljs">\n${renderedCode}\n</table>`;
+	return `<table class="hljs">\n${renderedCode}\n</table>`;
 }
 
 export function getCssUriStrings(): Array<string> {
@@ -104,19 +103,6 @@ function fixMultilineSpans(text: string): string {
 
 		return `${pre.join("")}${line}${"</span>".repeat(classes.length)}`;
 	}).join("\n");
-}
-
-export function getTitle(filename: string) {
-	const printConfig = vscode.workspace.getConfiguration("print");
-	const parts = filename.split(path.sep);
-	if (printConfig.filepathInDocumentTitle === "No path") {
-		return parts[parts.length - 1];
-	} else {
-		if (parts.length > 3) {
-			filename = [parts[0], "...", parts[parts.length - 2], parts[parts.length - 1]].join(path.sep);
-		}
-		return filename;
-	}
 }
 
 function addCssColourSwatches(text: string): string {

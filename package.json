@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
-	"version": "0.10.23",
+	"version": "0.11.0",
 	"icon": "assets/vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
@@ -57,20 +57,32 @@
 				"title": "%configuration.title.print%",
 				"properties": {
 					"print.filepathAsDocumentHeading": {
-						"description": "Use the full file path as a heading on the first page of a source file",
+						"description": "Optional heading at the start of each file",
+						"type": "string",
+						"default": "Relative",
+						"enum": [
+							"Absolute",
+							"Relative"
+						]
+					},
+					"print.filepathHeadingForIndividuallyPrintedDocuments": {
+						"description": "Show the file path as a heading when a document is printed individually",
 						"type": "boolean",
 						"default": true
 					},
 					"print.filepathInDocumentTitle": {
 						"type": "string",
 						"default": "No path",
+						"markdownDescription": "HTML page title, used by some browsers in the page header (to control the heading that can appear at the start of the document, use **Filepath as Document Heading**)",
 						"enum": [
 							"No path",
-							"Abbreviated path"
+							"Abbreviated path",
+							"Workspace relative"
 						],
 						"markdownEnumDescriptions": [
 							"`filename.ext`",
-							"`C:\\...\\folder-containing\\filename.ext` (you will have to edit the name when saving a PDF)"
+							"`C:\\...\\folder-containing\\filename.ext` (you will have to edit the name when saving a PDF)",
+							"A path relative to the workspace folder"
 						]
 					},
 					"print.lineSpacing": {

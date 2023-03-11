@@ -5,21 +5,25 @@ import * as vscode from 'vscode';
 import { localise } from './imports';
 import { DocumentRenderer } from './document-renderer';
 import micromatch = require('micromatch');
+import tildify from './tildify';
 
 const templateFolderItem = require("./template-folder-item.html").default.toString();
 const template: string = require("./template.html").default.toString();
 
 export class HtmlDocumentBuilder {
 	static MarkdownEngine: any;
+	private filepath: string;
 	constructor(
 		public baseUrl: string,
-		public filepath: string,
+		public uri: vscode.Uri,
 		public code: string = "",
 		public language: string = "",
 		public printLineNumbers: boolean,
 		public startLine: number = 1,
 		public multiselection: Array<vscode.Uri> = []
-	) { }
+	) {
+		this.filepath = uri.fsPath;
+	}
 	public async build(): Promise<string> {
 		const documentRenderer = DocumentRenderer.get(this.language);
 		const printConfig = vscode.workspace.getConfiguration("print");
@@ -27,16 +31,23 @@ export class HtmlDocumentBuilder {
 			logger.debug(`Printing multiple files`);
 			const docs = await this.docsInMultiselection();
 			const summary =
-				`<h3>${docs.length} files</h3><pre>${docs.map(d => d.fileName).join("\n")}</pre>\r`;
+				`<h3>${docs.length} files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
 			const composite = docs.map(doc =>
 				templateFolderItem
-					.replace("FOLDER_ITEM_TITLE", doc.fileName)
-					.replace("FOLDER_ITEM_CONTENT", () => `<table class="hljs">${DocumentRenderer.get(doc.languageId).getBodyHtml(doc.getText(), doc.languageId, { startLine: this.startLine })}</table>`)
-			).join('\n');
+					.replace("FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
+					.replace("FOLDER_ITEM_CONTENT", () => {
+						const renderer = DocumentRenderer.get(doc.languageId);
+						const bodyText = doc.getText();
+						const langId = doc.languageId;
+						const options = { startLine: 1 };
+						const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
+						return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
+					})
+			).join('');
 
 			return template
 				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_TITLE/g, path.basename(this.filepath))
+				.replace(/DOCUMENT_TITLE/g, "Multiple files")
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
 				.replace("STYLESHEET_LINKS",
@@ -47,17 +58,25 @@ export class HtmlDocumentBuilder {
 				;
 		} else if (this.language === "folder") {
 			logger.debug(`Printing a folder`);
+			this.filepath = this.uri.fsPath;
 			const docs = await this.docsInFolder();
 			const summary = printConfig.folder.includeFileList ?
-				`<h3>${docs.length} files</h3><pre>${docs.map(d => d.fileName).join("\n")}</pre>` :
+				`<h3>${docs.length} files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
 				`<h3>${docs.length} files</h3><p>(file list disabled)</p>`;
 			const msgTooManyFiles = localise("TOO_MANY_FILES");
 			const flagTooManyFiles = docs.length > printConfig.folder.maxFiles;
 			const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc =>
 				templateFolderItem
-					.replace("FOLDER_ITEM_TITLE", doc.fileName)
-					.replace("FOLDER_ITEM_CONTENT", () => `<table class="hljs">${DocumentRenderer.get(doc.languageId).getBodyHtml(doc.getText(), doc.languageId, { startLine: this.startLine })}</table>`)
-			).join('\n');
+					.replace("FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
+					.replace("FOLDER_ITEM_CONTENT", () => {
+						const renderer = DocumentRenderer.get(doc.languageId);
+						const bodyText = doc.getText();
+						const langId = doc.languageId;
+						const options = { startLine: 1 };
+						const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
+						return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
+					})
+			).join('');
 
 			if (flagTooManyFiles) {
 				vscode.window.showWarningMessage(msgTooManyFiles);
@@ -65,7 +84,7 @@ export class HtmlDocumentBuilder {
 
 			return template
 				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_TITLE/g, path.basename(this.filepath))
+				.replace(/DOCUMENT_TITLE/g, this.workspacePath(this.uri))
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
 				.replace("STYLESHEET_LINKS",
@@ -76,11 +95,29 @@ export class HtmlDocumentBuilder {
 				;
 		} else {
 			logger.debug(`Printing ${this.filepath}`);
+			let docHeading = "";
+			if (printConfig.filepathHeadingForIndividuallyPrintedDocuments) {
+				switch (printConfig.filepathAsDocumentHeading) {
+					case "Absolute":
+						docHeading = `<h3>${tildify(this.filepath).replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+					case "Relative":
+						const wf = vscode.workspace.getWorkspaceFolder(this.uri);
+						// if no workspace then absolute path
+						const relativePath = wf ? path.relative(wf!.uri.fsPath, this.filepath) : this.filepath;
+						docHeading = `<h3>${relativePath.replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+						break;
+				}
+			}
+			let homedir=vscode.env.shell
+			let thePath = tildify(this.uri.fsPath);
+			if (printConfig.filepathAsDocumentHeading === "Relative") thePath = this.workspacePath(this.uri);
+
 			return template
 				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.filepath))
+				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
+				.replace(/DOCUMENT_HEADING/g, thePath)
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine, filepathTitle: printConfig.filepathAsDocumentHeading ? `<h3>${this.filepath.replace(/([\\/])/g,"$1<wbr />")}</h3>` : "" }))
+				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine }))
 				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
 				;
 		}
@@ -94,10 +131,10 @@ export class HtmlDocumentBuilder {
 		}
 		// one item should not be surrounded with braces, they would be treated as literals
 		// but flatten them anyway in case the single pattern contains nested braces
-		let excludes: string = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
-		excludePatterns = braces.expand(excludes); //no braces in patterns
-		excludes = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
-		const fileUris = this.multiselection.filter(uri => !micromatch.isMatch(uri.path, excludes));
+		let excludeString: string;
+		excludePatterns = this.flatten(excludePatterns); //prevent nested alternations
+		excludeString = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
+		const fileUris = this.multiselection.filter(uri => !micromatch.isMatch(uri.path, excludeString));
 		const docOpenSettlements = await Promise.allSettled(fileUris.map(uri => vscode.workspace.openTextDocument(uri)));
 		const docs = await docOpenSettlements
 			.filter(dos => dos.status === "fulfilled")
@@ -119,7 +156,7 @@ export class HtmlDocumentBuilder {
 		// one item should not be surrounded with braces, they would be treated as literals
 		// but flatten them anyway in case the single pattern contains nested braces
 		let excludes: string = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
-		excludePatterns = braces.expand(excludes); //no braces in patterns
+		excludePatterns = this.flatten(excludePatterns); //prevent nested alternations
 		excludes = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
 		let includes: string = includePatterns.length == 1 ? includePatterns[0] : `{${includePatterns.join(",")}}`;
 		includePatterns = braces.expand(includes);
@@ -142,5 +179,23 @@ export class HtmlDocumentBuilder {
 			const B = b.fileName;
 			return A < B ? -1 : A > B ? 1 : 0;
 		});
+	}
+	private flatten(patterns: Array<string>): Array<string> {
+		const result = new Array<string>();
+		for (const p of patterns) {
+			if (p.includes("{")) {
+				let subexpressions = braces.expand(p);
+				subexpressions = this.flatten(subexpressions);
+				result.splice(0, 0, ...subexpressions);
+			}
+			else {
+				result.push(p)
+			}
+		}
+		return result;
+	}
+	workspacePath(uri: vscode.Uri) {
+		const wf = vscode.workspace.getWorkspaceFolder(uri);
+		return wf ? path.relative(wf!.uri.fsPath, uri.fsPath) : tildify(uri.fsPath);
 	}
 }

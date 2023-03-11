@@ -10,6 +10,7 @@ import * as nls from 'vscode-nls';
 import { HtmlDocumentBuilder } from './html-document-builder';
 import { DocumentRenderer } from './document-renderer';
 import * as htmlRendererMarkdown from "./html-renderer-markdown";
+import * as htmlRendererPlaintext from "./html-renderer-plaintext";
 
 // #region necessary for vscode-nls-dev
 const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
@@ -71,6 +72,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		getCssUriStrings: htmlRendererMarkdown.getCssUriStrings,
 		getResource: htmlRendererMarkdown.getResource
 	});
+	// and here it is as a direct call just so you can compare them
+	DocumentRenderer.register("plaintext", { getBodyHtml: htmlRendererPlaintext.getBodyHtml });
 
 	server = http.createServer(async (request, response) => {
 		try {

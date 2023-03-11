@@ -1,7 +1,19 @@
 # Change Log
-### 0.10.23
+### 0.11.0
 
-- #187 fix settings force alt browser on with broken alt browser path check
+- #187 bugfixes
+	- don't force alternate browser on
+	- fix alternate browser path check logic
+- #194 add a renderer for plaintext documents so they aren't treated as source code
+- #184 filepath as header at start of document (controlled by a setting)
+- #184 format control for file paths in headings of documents
+	- Relative
+	- Absolute, with tilde pathing for paths in the user's home directory
+- #188 format control for file paths in document titles (used in page headers by some browsers)
+	- No path
+	- Relative
+
+Please note that localisation has not been done for these UI changes due to delays in development of localisation management toolchain.
 
 ### 0.10.22 
 
