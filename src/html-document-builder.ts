@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import { localise } from './imports';
 import { DocumentRenderer } from './document-renderer';
 import micromatch = require('micromatch');
-import tildify from 'tildify';
+import tildify from './tildify';
 
 const templateFolderItem = require("./template-folder-item.html").default.toString();
 const template: string = require("./template.html").default.toString();
@@ -47,7 +47,7 @@ export class HtmlDocumentBuilder {
 
 			return template
 				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_TITLE/g, path.basename(this.filepath))
+				.replace(/DOCUMENT_TITLE/g, "Multiple files")
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
 				.replace("STYLESHEET_LINKS",
@@ -81,10 +81,11 @@ export class HtmlDocumentBuilder {
 			if (flagTooManyFiles) {
 				vscode.window.showWarningMessage(msgTooManyFiles);
 			}
+			let folderTitle: string;
 
 			return template
 				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_TITLE/g, path.basename(this.filepath))
+				.replace(/DOCUMENT_TITLE/g, this.workspacePath(this.uri))
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
 				.replace("STYLESHEET_LINKS",
@@ -96,22 +97,26 @@ export class HtmlDocumentBuilder {
 		} else {
 			logger.debug(`Printing ${this.filepath}`);
 			let docHeading = "";
-			switch (printConfig.filepathAsDocumentHeading) {
-				case "None":
-					docHeading = "";
-					break;
-				case "Absolute":
-					docHeading = `<h3>${tildify(this.filepath).replace(/([\\/])/g, "$1<wbr />")}</h3>`;
-				case "Relative":
-					const wf = vscode.workspace.getWorkspaceFolder(this.uri);
-					// if no workspace then absolute path
-					const relativePath = wf ? path.relative(wf!.uri.fsPath, this.filepath) : this.filepath;
-					docHeading = `<h3>${relativePath.replace(/([\\/])/g, "$1<wbr />")}</h3>`;
-					break;
+			if (printConfig.filepathHeadingForIndividuallyPrintedDocuments) {
+				switch (printConfig.filepathAsDocumentHeading) {
+					case "Absolute":
+						docHeading = `<h3>${tildify(this.filepath).replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+					case "Relative":
+						const wf = vscode.workspace.getWorkspaceFolder(this.uri);
+						// if no workspace then absolute path
+						const relativePath = wf ? path.relative(wf!.uri.fsPath, this.filepath) : this.filepath;
+						docHeading = `<h3>${relativePath.replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+						break;
+				}
 			}
+			let homedir=vscode.env.shell
+			let thePath = tildify(this.uri.fsPath);
+			if (printConfig.filepathAsDocumentHeading === "Relative") thePath = this.workspacePath(this.uri);
+
 			return template
 				.replace("BASE_URL", this.baseUrl)
 				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
+				.replace(/DOCUMENT_HEADING/g, thePath)
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine }))
 				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
