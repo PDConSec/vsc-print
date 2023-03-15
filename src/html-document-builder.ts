@@ -108,9 +108,17 @@ export class HtmlDocumentBuilder {
 						break;
 				}
 			}
-			let homedir=vscode.env.shell
-			let thePath = tildify(this.uri.fsPath);
-			if (printConfig.filepathAsDocumentHeading === "Relative") thePath = this.workspacePath(this.uri);
+
+			let thePath = "";
+			if (printConfig.filepathHeadingForIndividuallyPrintedDocuments)
+				switch (printConfig.filepathAsDocumentHeading) {
+					case "Absolute":
+						thePath = `<h3>${tildify(this.uri.fsPath)}</h3>`;
+						break;
+					case "Relative":
+						thePath = `<h3>${this.workspacePath(this.uri)}</h3>`;
+						break;
+				}
 
 			return template
 				.replace("BASE_URL", this.baseUrl)
