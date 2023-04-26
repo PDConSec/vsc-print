@@ -12,6 +12,24 @@ resources.set("default-markdown.css", {
 export function getBodyHtml(raw: string): string {
 	let renderedCode = "";
 	try {
+		let rules = HtmlDocumentBuilder.MarkdownEngine.renderer.rules;
+		rules.link_open = (tokens: Array<any>, idx: number, options: any, env: any, self: any) => {
+			const token = tokens[idx];
+			const hrefIndex = token.attrIndex('href');
+
+			if (hrefIndex >= 0 && token.attrs[hrefIndex][1].startsWith('#')) {
+				token.attrSet('href', token.attrs[hrefIndex][1]);
+				token.attrSet('data-scroll', ''); // add the data-scroll attribute to trigger smooth scrolling
+
+				// set the target attribute to null to prevent it from being added
+				const targetIndex = token.attrIndex('target');
+				if (targetIndex >= 0) {
+					token.attrs.splice(targetIndex, 1);
+				}
+			}
+
+			return self.renderToken(tokens, idx, options);
+		};
 		renderedCode = HtmlDocumentBuilder.MarkdownEngine.render(raw);
 		const v = renderedCode.lastIndexOf("</style>");
 		if (v != -1) {
