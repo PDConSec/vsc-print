@@ -224,10 +224,16 @@ export class PrintSession {
 				case ".jpg":
 				case ".gif":
 				case ".png":
-				case ".svg":
 				case ".webp":
 					response.writeHead(200, {
 						"Content-Type": `image/${fileExt.substring(1).toLowerCase()}`,
+						"Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
+					});
+					response.end(await vscode.workspace.fs.readFile(fileUri));
+					break;
+				case ".svg":
+					response.writeHead(200, {
+						"Content-Type": `image/svg+xml`,
 						"Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
 					});
 					response.end(await vscode.workspace.fs.readFile(fileUri));
