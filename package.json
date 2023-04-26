@@ -349,6 +349,7 @@
 		"@types/braces": "^3.0.1",
 		"@types/highlight.js": "10.1.0",
 		"@types/markdown-it": "^12.2.3",
+		"@types/micromatch": "^4.0.2",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^18.0.0",
 		"@types/vscode": "^1.60.0",
@@ -377,7 +378,6 @@
 		"webpack-cli": "^4.10.0"
 	},
 	"dependencies": {
-		"@types/micromatch": "^4.0.2",
 		"braces": "^3.0.2",
 		"highlight.js": "<11.0.0",
 		"micromatch": "^4.0.5",

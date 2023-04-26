@@ -28,7 +28,7 @@ export class HtmlDocumentBuilder {
 		const documentRenderer = DocumentRenderer.get(this.language);
 		const printConfig = vscode.workspace.getConfiguration("print");
 		if (this.multiselection!.length) {
-			logger.debug(`Printing multiple files`);
+			logger.debug(`Selected files`);
 			const docs = await this.docsInMultiselection();
 			const summary =
 				`<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
@@ -47,7 +47,7 @@ export class HtmlDocumentBuilder {
 
 			return template
 				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_TITLE/g, "Multiple files")
+				.replace(/DOCUMENT_(?:TITLE|HEADING)/g, "<h2>Selected files</h2>")
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
 				.replace("STYLESHEET_LINKS",
@@ -57,7 +57,7 @@ export class HtmlDocumentBuilder {
 					'\t<link href="bundled/settings.css" rel = "stylesheet" /> ')
 				;
 		} else if (this.language === "folder") {
-			logger.debug(`Printing a folder`);
+			logger.debug(`Folder ${this.workspacePath(this.uri)}`);
 			this.filepath = this.uri.fsPath;
 			const docs = await this.docsInFolder();
 			const summary = printConfig.folder.includeFileList ?
