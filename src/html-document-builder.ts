@@ -28,10 +28,10 @@ export class HtmlDocumentBuilder {
 		const documentRenderer = DocumentRenderer.get(this.language);
 		const printConfig = vscode.workspace.getConfiguration("print");
 		if (this.multiselection!.length) {
-			logger.debug(`Printing multiple files`);
+			logger.debug(`Selected files`);
 			const docs = await this.docsInMultiselection();
 			const summary =
-				`<h3>${docs.length} files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
+				`<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
 			const composite = docs.map(doc =>
 				templateFolderItem
 					.replace("FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
@@ -47,7 +47,7 @@ export class HtmlDocumentBuilder {
 
 			return template
 				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_TITLE/g, "Multiple files")
+				.replace(/DOCUMENT_(?:TITLE|HEADING)/g, "<h2>Selected files</h2>")
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
 				.replace("STYLESHEET_LINKS",
@@ -57,12 +57,12 @@ export class HtmlDocumentBuilder {
 					'\t<link href="bundled/settings.css" rel = "stylesheet" /> ')
 				;
 		} else if (this.language === "folder") {
-			logger.debug(`Printing a folder`);
+			logger.debug(`Folder ${this.workspacePath(this.uri)}`);
 			this.filepath = this.uri.fsPath;
 			const docs = await this.docsInFolder();
 			const summary = printConfig.folder.includeFileList ?
-				`<h3>${docs.length} files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
-				`<h3>${docs.length} files</h3><p>(file list disabled)</p>`;
+				`<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
+				`<h3>${docs.length} printable files</h3><p>(file list disabled)</p>`;
 			const msgTooManyFiles = localise("TOO_MANY_FILES");
 			const flagTooManyFiles = docs.length > printConfig.folder.maxFiles;
 			const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc =>
@@ -85,6 +85,7 @@ export class HtmlDocumentBuilder {
 			return template
 				.replace("BASE_URL", this.baseUrl)
 				.replace(/DOCUMENT_TITLE/g, this.workspacePath(this.uri))
+				.replace(/DOCUMENT_HEADING/g, `<h2>Folder ${this.workspacePath(this.uri)}</h2>`)
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
 				.replace("STYLESHEET_LINKS",
@@ -108,9 +109,17 @@ export class HtmlDocumentBuilder {
 						break;
 				}
 			}
-			let homedir=vscode.env.shell
-			let thePath = tildify(this.uri.fsPath);
-			if (printConfig.filepathAsDocumentHeading === "Relative") thePath = this.workspacePath(this.uri);
+
+			let thePath = "";
+			if (printConfig.filepathHeadingForIndividuallyPrintedDocuments)
+				switch (printConfig.filepathAsDocumentHeading) {
+					case "Absolute":
+						thePath = `<h3>${tildify(this.uri.fsPath)}</h3>`;
+						break;
+					case "Relative":
+						thePath = `<h3>${this.workspacePath(this.uri)}</h3>`;
+						break;
+				}
 
 			return template
 				.replace("BASE_URL", this.baseUrl)
@@ -196,6 +205,12 @@ export class HtmlDocumentBuilder {
 	}
 	workspacePath(uri: vscode.Uri) {
 		const wf = vscode.workspace.getWorkspaceFolder(uri);
-		return wf ? path.relative(wf!.uri.fsPath, uri.fsPath) : tildify(uri.fsPath);
+		let result: string;
+		if (wf) {
+			result = path.relative(wf!.uri.fsPath, uri.fsPath)
+		} else {
+			result = tildify(uri.fsPath);
+		}
+		return result;
 	}
 }

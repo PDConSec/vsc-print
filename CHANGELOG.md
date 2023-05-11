@@ -1,4 +1,12 @@
 # Change Log
+### 0.11.2
+
+- [#203](https://github.com/PDConSec/vsc-print/issues/203)
+
+### 0.11.1
+
+- [#198](https://github.com/PDConSec/vsc-print/issues/198)
+
 ### 0.11.0
 
 - #187 bugfixes
