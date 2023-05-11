@@ -265,8 +265,14 @@
 		"menus": {
 			"explorer/context": [
 				{
+					"when": "ecmPrint == Top",
 					"command": "vsc-print.print",
 					"group": "navigation"
+				},
+				{
+					"when": "ecmPrint == Bottom",
+					"command": "vsc-print.print",
+					"group": "Z_commands"
 				}
 			],
 			"editor/title": [
@@ -278,9 +284,14 @@
 			],
 			"editor/title/context": [
 				{
-					"when": "editorLangId",
+					"when": "editorLangId && ecmPrint == Top",
 					"command": "vsc-print.print",
 					"group": "navigation"
+				},
+				{
+					"when": "editorLangId && ecmPrint == Bottom",
+					"command": "vsc-print.print",
+					"group": "Z_commands"
 				}
 			],
 			"editor/context": [
