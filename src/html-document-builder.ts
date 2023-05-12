@@ -126,7 +126,7 @@ export class HtmlDocumentBuilder {
 				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
 				.replace(/DOCUMENT_HEADING/g, thePath)
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine }))
+				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine, lineNumbers: this.printLineNumbers }))
 				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
 				;
 		}

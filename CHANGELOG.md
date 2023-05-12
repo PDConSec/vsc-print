@@ -1,11 +1,17 @@
 # Change Log
+
+### 0.11.3
+
+- [#208 Context menu for file explorer does not respect Print item position](https://github.com/PDConSec/vsc-print/issues/208)
+- [#207 Line Numbers "Inherit" not working as expected](https://github.com/PDConSec/vsc-print/issues/207)
+
 ### 0.11.2
 
-- [#203](https://github.com/PDConSec/vsc-print/issues/203)
+- [#203 `DOCUMENT_HEADING` not being replaced when printing folders](https://github.com/PDConSec/vsc-print/issues/203)
 
 ### 0.11.1
 
-- [#198](https://github.com/PDConSec/vsc-print/issues/198)
+- [#198 How to remove the file path as document heading?](https://github.com/PDConSec/vsc-print/issues/198)
 
 ### 0.11.0
 
