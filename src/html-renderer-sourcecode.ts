@@ -33,7 +33,8 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 		renderedCode = fixMultilineSpans(renderedCode);
 		const printConfig = vscode.workspace.getConfiguration("print");
 		const bpre = /([^ -<]{40}|\)\]\},)/g;
-		if (printConfig.lineNumbers === "on") {
+		logger.debug(`Line numbering: ${printConfig.lineNumbers} (resolves to ${options.lineNumbers})`)
+		if (options.lineNumbers) {
 			renderedCode = renderedCode
 				.split("\n")
 				.map(line => line || "&nbsp;")
