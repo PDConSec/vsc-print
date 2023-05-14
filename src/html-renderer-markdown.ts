@@ -13,9 +13,12 @@ export function getBodyHtml(raw: string): string {
 	let renderedCode = "";
 	try {
 		renderedCode = HtmlDocumentBuilder.MarkdownEngine.render(raw);
-		const v = renderedCode.lastIndexOf("</style>");
-		if (v != -1) {
-			renderedCode = renderedCode.substring(v + 8);
+		const startOffset = renderedCode.indexOf('<style id="mmd-vscode-style">');
+		const endOffset = renderedCode.indexOf("</style>", startOffset);
+		if (startOffset !== -1) {
+			const mmdVscodeStyle = renderedCode.substring(startOffset, endOffset);
+			renderedCode = renderedCode.replace(mmdVscodeStyle, "");
+			// todo keep the styling, support delivering it as a linked stylesheet and add an option to do so
 		}
 	} catch {
 		logger.error("Markdown could not be rendered");
