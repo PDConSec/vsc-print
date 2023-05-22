@@ -39,7 +39,7 @@ export class HtmlDocumentBuilder {
 						const renderer = DocumentRenderer.get(doc.languageId);
 						const bodyText = doc.getText();
 						const langId = doc.languageId;
-						const options = { startLine: 1 };
+						const options = { startLine: 1, lineNumbers: this.printLineNumbers };
 						const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
 						return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
 					})
@@ -72,7 +72,7 @@ export class HtmlDocumentBuilder {
 						const renderer = DocumentRenderer.get(doc.languageId);
 						const bodyText = doc.getText();
 						const langId = doc.languageId;
-						const options = { startLine: 1 };
+						const options = { startLine: 1, lineNumbers: this.printLineNumbers };
 						const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
 						return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
 					})
