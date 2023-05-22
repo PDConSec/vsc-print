@@ -31,12 +31,11 @@ export class PrintSession {
 				const baseUrl = `http://localhost:${PrintSession.port}/${this.sessionId}/`;
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
-				let printLineNumbers = printConfig.lineNumbers === "on";
+				let printLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0);
 				const rootDocumentContentSource = await this.rootDocumentContentSource(source!);
 				switch (rootDocumentContentSource) {
 					case "editor": {
 						logger.debug("Using the buffer of the active editor");
-						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						if (!document) throw "This can't happen";
@@ -52,7 +51,6 @@ export class PrintSession {
 						break;
 					case "selection": {
 						logger.debug("Printing the selection in the active editor");
-						printLineNumbers = printLineNumbers || printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0;
 						logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
 						logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
 						if (!document) throw "This can't happen";
