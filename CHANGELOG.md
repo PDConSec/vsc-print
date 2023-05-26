@@ -1,11 +1,13 @@
 # Change Log
+### 0.11.4
+
+- [#234 Support line-numbering for multifile printjobs](https://github.com/PDConSec/vsc-print/issues/234)
 
 ### 0.11.3
 
 - [#212 Broken removal of MarkdownIT embedded styles](https://github.com/PDConSec/vsc-print/issues/212)
 - [#208 Context menu for file explorer does not respect Print item position](https://github.com/PDConSec/vsc-print/issues/208)
 - [#207 Line Numbers "Inherit" not working as expected](https://github.com/PDConSec/vsc-print/issues/207)
-- [#234 Support line-numbering for multifile printjobs](https://github.com/PDConSec/vsc-print/issues/234)
 
 ### 0.11.2
 
