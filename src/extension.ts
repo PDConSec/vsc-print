@@ -63,6 +63,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", () => openDoc("manual")));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.openLog", () => openDoc("log")));
 	context.subscriptions.push(vscode.commands.registerCommand("print.registerDocumentRenderer", DocumentRenderer.register));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.dumpCommands", dumpCommands));
+	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.dumpProperties", dumpProperties));
 
 	// Could call DocumentRenderer.register directly,
 	// but this shows how a third party HTML renderer 
@@ -158,7 +160,7 @@ function openDoc(doc: string) {
 			break;
 
 		case "log":
-			let pathToLogFile = path.join(Metadata.ExtensionPath,"..", "vscode-print.log");
+			let pathToLogFile = path.join(Metadata.ExtensionPath, "..", "vscode-print.log");
 			let uriLogFile: vscode.Uri = vscode.Uri.file(pathToLogFile);
 			vscode.workspace.openTextDocument(uriLogFile).then(vscode.window.showTextDocument);
 			break;
@@ -215,4 +217,41 @@ function advertiseWalkthrough() {
 		"pdconsec.vscode-print#how-to-print",
 		true
 	);
+}
+
+function dumpCommands(): any {
+	vscode.window.showInputBox({ prompt: "Dump commands beginning with" }).then(prefix => {
+		for (const extension of vscode.extensions.all) {
+			let commands = extension.packageJSON.contributes?.commands;
+			if (Array.isArray(commands)) {
+				const matchingCommands = commands.filter(cmd=>cmd.command.startsWith(prefix))
+				for (const command of matchingCommands) {
+					console.log(`${extension.id}: ${command.command}`);
+				}
+			}
+		}
+	});
+}
+function dumpProperties(): any {
+	vscode.window.showInputBox({ prompt: "Dump properties beginning with" }).then(prefix => {
+		let matchCount = 0;
+		for (const extension of vscode.extensions.all) {
+			let configuration = extension.packageJSON.contributes?.configuration;
+			if (Array.isArray(configuration)) {
+				for (const item of configuration) {
+					if (item.properties) {
+						const propNames = Object.keys(item.properties);
+						const matchingPropNames = prefix === "" ? propNames : propNames.filter(n => n.startsWith(prefix!));
+						matchCount += matchingPropNames.length;
+						for (const propname of matchingPropNames)
+							if (propname) {
+								const property = item.properties[propname];
+								console.log(`${extension.id}: ${propname}`);
+							}
+					}
+				}
+			}
+		}
+		console.log(`${matchCount} properties start with ${prefix}`);		
+	});
 }
