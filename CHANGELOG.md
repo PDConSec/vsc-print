@@ -1,4 +1,9 @@
 # Change Log
+
+### 0.11.5
+
+- diagnostic commands "Dump commands" and "Dump properties" for resolving name collisions with commands and properties
+
 ### 0.11.4
 
 - [#234 Support line-numbering for multifile printjobs](https://github.com/PDConSec/vsc-print/issues/234)

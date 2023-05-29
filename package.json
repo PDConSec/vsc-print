@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
-	"version": "0.11.5",
+	"version": "0.11.6",
 	"icon": "assets/vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
@@ -50,6 +50,14 @@
 				"category": "%commands.category%",
 				"command": "vsc-print.openLog",
 				"title": "%commands.title.openLog%"
+			},
+			{
+				"command": "vsc-print.dumpCommands",
+				"title": "Dump commands"
+			},
+			{
+				"command": "vsc-print.dumpProperties",
+				"title": "Dump properties"
 			}
 		],
 		"configuration": [
