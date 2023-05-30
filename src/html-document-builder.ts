@@ -39,7 +39,7 @@ export class HtmlDocumentBuilder {
 						const renderer = DocumentRenderer.get(doc.languageId);
 						const bodyText = doc.getText();
 						const langId = doc.languageId;
-						const options = { startLine: 1, lineNumbers: this.printLineNumbers };
+						const options = { startLine: 1, lineNumbers: this.printLineNumbers, baseUrl: this.baseUrl };
 						const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
 						return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
 					})
@@ -72,7 +72,7 @@ export class HtmlDocumentBuilder {
 						const renderer = DocumentRenderer.get(doc.languageId);
 						const bodyText = doc.getText();
 						const langId = doc.languageId;
-						const options = { startLine: 1, lineNumbers: this.printLineNumbers };
+						const options = { startLine: 1, lineNumbers: this.printLineNumbers, baseUrl: this.baseUrl };
 						const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
 						return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
 					})
@@ -120,13 +120,17 @@ export class HtmlDocumentBuilder {
 						thePath = `<h3>${this.workspacePath(this.uri)}</h3>`;
 						break;
 				}
-
+			let options = {
+				startLine: this.startLine,
+				lineNumbers: this.printLineNumbers,
+				baseUrl: this.baseUrl
+			};
 			return template
 				.replace("BASE_URL", this.baseUrl)
 				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
 				.replace(/DOCUMENT_HEADING/g, thePath)
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine, lineNumbers: this.printLineNumbers }))
+				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, options))
 				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
 				;
 		}

@@ -1,6 +1,10 @@
 # Change Log
 
-### 0.11.5
+### 0.11.7
+
+- pass baseUrl in renderer options
+
+### 0.11.6
 
 - diagnostic commands "Dump commands" and "Dump properties" for resolving name collisions with commands and properties
 
