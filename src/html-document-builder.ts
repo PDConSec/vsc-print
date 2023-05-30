@@ -39,7 +39,7 @@ export class HtmlDocumentBuilder {
 						const renderer = DocumentRenderer.get(doc.languageId);
 						const bodyText = doc.getText();
 						const langId = doc.languageId;
-						const options = { startLine: 1, lineNumbers: this.printLineNumbers, baseUrl: this.baseUrl };
+						const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
 						const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
 						return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
 					})
@@ -72,7 +72,7 @@ export class HtmlDocumentBuilder {
 						const renderer = DocumentRenderer.get(doc.languageId);
 						const bodyText = doc.getText();
 						const langId = doc.languageId;
-						const options = { startLine: 1, lineNumbers: this.printLineNumbers, baseUrl: this.baseUrl };
+						const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
 						const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
 						return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
 					})
@@ -123,7 +123,7 @@ export class HtmlDocumentBuilder {
 			let options = {
 				startLine: this.startLine,
 				lineNumbers: this.printLineNumbers,
-				baseUrl: this.baseUrl
+				uri: this.uri
 			};
 			return template
 				.replace("BASE_URL", this.baseUrl)
@@ -131,7 +131,7 @@ export class HtmlDocumentBuilder {
 				.replace(/DOCUMENT_HEADING/g, thePath)
 				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, options))
-				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
+				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks(this.uri))
 				;
 		}
 	}

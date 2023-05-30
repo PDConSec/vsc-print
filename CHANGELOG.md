@@ -1,8 +1,8 @@
 # Change Log
 
-### 0.11.7
+### 0.11.8
 
-- pass baseUrl in renderer options
+- pass uri in renderer options
 
 ### 0.11.6
 
