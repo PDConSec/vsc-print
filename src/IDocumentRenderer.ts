@@ -7,5 +7,5 @@ export interface IDocumentRenderer {
 	getBodyHtml: (raw: string, languageId: string, options?: any) => string;
 	getTitle?: (uri: vscode.Uri) => string;
 	getCssUriStrings?: (uri: vscode.Uri) => Array<string>;
-	getResource?: (name: string) => IResourceDescriptor;
+	getResource?: (name: string, requestingUri: any) => IResourceDescriptor;
 }

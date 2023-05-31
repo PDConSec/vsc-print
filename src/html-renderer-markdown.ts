@@ -27,7 +27,7 @@ export function getBodyHtml(raw: string): string {
 	return renderedCode;
 }
 
-export function getCssUriStrings(): Array<string> {
+export function getCssUriStrings(uri: vscode.Uri): Array<string> {
 	const markdownConfig = vscode.workspace.getConfiguration("markdown");
 	return [
 		"bundled/default-markdown.css",
