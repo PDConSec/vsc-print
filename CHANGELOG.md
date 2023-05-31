@@ -1,6 +1,12 @@
 # Change Log
 
-### 0.11.5
+### 0.11.11
+
+- pass root document uri in renderer options
+- use raw-loader for template files so they don't minify (debugging aid)
+- [#243 No active editor makes line number inherit resolve to false](https://github.com/PDConSec/vsc-print/issues/243)
+
+### 0.11.6
 
 - diagnostic commands "Dump commands" and "Dump properties" for resolving name collisions with commands and properties
 

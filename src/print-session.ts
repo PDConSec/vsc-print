@@ -26,12 +26,13 @@ export class PrintSession {
 	constructor(source: any, preview: boolean = true) {
 		logger.debug(`Creating a print session object for ${source}`);
 		const printConfig = vscode.workspace.getConfiguration("print");
+		const editorConfig = vscode.workspace.getConfiguration("editor");
 		this.ready = new Promise(async (resolve, reject) => {
 			try {
 				const baseUrl = `http://localhost:${PrintSession.port}/${this.sessionId}/`;
 				const editor = vscode.window.activeTextEditor;
 				let document = editor?.document;
-				let printLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && (editor?.options.lineNumbers ?? 0) > 0);
+				let printLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && editorConfig.lineNumbers === "on");
 				const rootDocumentContentSource = await this.rootDocumentContentSource(source!);
 				switch (rootDocumentContentSource) {
 					case "editor": {
@@ -187,7 +188,7 @@ export class PrintSession {
 				default:
 					try {
 						const rootDocumentRenderer = DocumentRenderer.get(this.pageBuilder!.language);
-						const resourceDescriptor = rootDocumentRenderer.getResource(urlParts[3]);
+						const resourceDescriptor = rootDocumentRenderer.getResource(urlParts[3], this.source);
 						let contentLength: number;
 						if (typeof resourceDescriptor.content === "string") {
 							contentLength = Buffer.byteLength(resourceDescriptor.content, "utf-8")

@@ -58,7 +58,7 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 	return `<table class="hljs">\n${renderedCode}\n</table>`;
 }
 
-export function getCssUriStrings(): Array<string> {
+export function getCssUriStrings(uri: vscode.Uri): Array<string> {
 	return [
 		"bundled/default.css",
 		"bundled/line-numbers.css",

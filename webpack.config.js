@@ -46,7 +46,7 @@ const config = {
 			{
 				test: /\.html$/,
 				use: [
-					'html-loader'
+					'raw-loader'
 				]
 			},
       {

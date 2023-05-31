@@ -34,23 +34,23 @@ export class HtmlDocumentBuilder {
 				`<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
 			const composite = docs.map(doc =>
 				templateFolderItem
-					.replace("FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
-					.replace("FOLDER_ITEM_CONTENT", () => {
+					.replace("VSCODE_PRINT_FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
+					.replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", () => {
 						const renderer = DocumentRenderer.get(doc.languageId);
 						const bodyText = doc.getText();
 						const langId = doc.languageId;
-						const options = { startLine: 1, lineNumbers: this.printLineNumbers };
+						const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
 						const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
 						return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
 					})
 			).join('');
 
 			return template
-				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_(?:TITLE|HEADING)/g, "<h2>Selected files</h2>")
-				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
-				.replace("STYLESHEET_LINKS",
+				.replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
+				.replace(/VSCODE_PRINT_DOCUMENT_(?:TITLE|HEADING)/g, "<h2>Selected files</h2>")
+				.replace("VSCODE_PRINT_PRINT_AND_CLOSE", printConfig.printAndClose)
+				.replace("VSCODE_PRINT_CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
+				.replace("VSCODE_PRINT_STYLESHEET_LINKS",
 					'<link href="bundled/default.css" rel="stylesheet" />\n' +
 					'\t<link href="bundled/line-numbers.css" rel="stylesheet" />\n' +
 					'\t<link href="bundled/colour-scheme.css" rel="stylesheet" />\n' +
@@ -67,12 +67,12 @@ export class HtmlDocumentBuilder {
 			const flagTooManyFiles = docs.length > printConfig.folder.maxFiles;
 			const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc =>
 				templateFolderItem
-					.replace("FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
-					.replace("FOLDER_ITEM_CONTENT", () => {
+					.replace("VSCODE_PRINT_FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
+					.replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", () => {
 						const renderer = DocumentRenderer.get(doc.languageId);
 						const bodyText = doc.getText();
 						const langId = doc.languageId;
-						const options = { startLine: 1, lineNumbers: this.printLineNumbers };
+						const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
 						const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
 						return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
 					})
@@ -83,12 +83,12 @@ export class HtmlDocumentBuilder {
 			}
 
 			return template
-				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_TITLE/g, this.workspacePath(this.uri))
-				.replace(/DOCUMENT_HEADING/g, `<h2>Folder ${this.workspacePath(this.uri)}</h2>`)
-				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
-				.replace("STYLESHEET_LINKS",
+				.replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
+				.replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, this.workspacePath(this.uri))
+				.replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, `<h2>Folder ${this.workspacePath(this.uri)}</h2>`)
+				.replace("VSCODE_PRINT_PRINT_AND_CLOSE", printConfig.printAndClose)
+				.replace("VSCODE_PRINT_CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
+				.replace("VSCODE_PRINT_STYLESHEET_LINKS",
 					'<link href="bundled/default.css" rel="stylesheet" />\n' +
 					'\t<link href="bundled/line-numbers.css" rel="stylesheet" />\n' +
 					'\t<link href="bundled/colour-scheme.css" rel="stylesheet" />\n' +
@@ -120,14 +120,18 @@ export class HtmlDocumentBuilder {
 						thePath = `<h3>${this.workspacePath(this.uri)}</h3>`;
 						break;
 				}
-
+			let options = {
+				startLine: this.startLine,
+				lineNumbers: this.printLineNumbers,
+				uri: this.uri
+			};
 			return template
-				.replace("BASE_URL", this.baseUrl)
-				.replace(/DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
-				.replace(/DOCUMENT_HEADING/g, thePath)
-				.replace("PRINT_AND_CLOSE", printConfig.printAndClose)
-				.replace("CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, { startLine: this.startLine, lineNumbers: this.printLineNumbers }))
-				.replace("STYLESHEET_LINKS", documentRenderer.getCssLinks())
+				.replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
+				.replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
+				.replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, thePath)
+				.replace("VSCODE_PRINT_PRINT_AND_CLOSE", printConfig.printAndClose)
+				.replace("VSCODE_PRINT_CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, options))
+				.replace("VSCODE_PRINT_STYLESHEET_LINKS", documentRenderer.getCssLinks(this.uri))
 				;
 		}
 	}

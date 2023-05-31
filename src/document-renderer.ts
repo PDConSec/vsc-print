@@ -14,7 +14,7 @@ export class DocumentRenderer {
 		this.options = options;
 	}
 
-	public getBodyHtml(raw: string, languageId: string, options?:any) {
+	public getBodyHtml(raw: string, languageId: string, options?: any) {
 		return this.options.getBodyHtml(raw, languageId, options);
 	}
 
@@ -67,7 +67,7 @@ export class DocumentRenderer {
 	public static register(langIds: string | string[], options: IDocumentRenderer) {
 		const documentRenderer = new DocumentRenderer(options);
 		langIds = typeof langIds === "string" ? [langIds] : langIds;
-		langIds.forEach(langId => 
+		langIds.forEach(langId =>
 			DocumentRenderer.__documentRenderers.set(langId, documentRenderer)
 		);
 		logger.debug(`Registered a document renderer for the following languages: ${langIds.join(", ")}`);
@@ -91,18 +91,18 @@ export class DocumentRenderer {
 		}
 	}
 
-	public getCssLinks(): string {
+	public getCssLinks(uri: vscode.Uri): string {
 		let result: string = "";
 		if (this.options.getCssUriStrings) {
-			const us = this.options.getCssUriStrings();
+			const us = this.options.getCssUriStrings(uri);
 			result = us.map(uriString => `\t<link href="${uriString}" rel="stylesheet" />`).join("\n");
 		}
 		return result;
 	}
 
-	public getResource(name:string): IResourceDescriptor {
+	public getResource(name: string, requestingUri: any): IResourceDescriptor {
 		if (this.options.getResource) {
-			return this.options.getResource(name);
+			return this.options.getResource(name, requestingUri);
 		} else {
 			throw new Error(`Document renderer produced HTML that references "${name}" but does not implement getResource`);
 		}
