@@ -132,6 +132,7 @@ export class HtmlDocumentBuilder {
 				.replace("VSCODE_PRINT_PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("VSCODE_PRINT_CONTENT", () => documentRenderer.getBodyHtml(this.code, this.language, options))
 				.replace("VSCODE_PRINT_STYLESHEET_LINKS", documentRenderer.getCssLinks(this.uri))
+				.replace("VSCODE_PRINT_SCRIPT_TAGS", documentRenderer.getScriptTags(this.uri))
 				;
 		}
 	}

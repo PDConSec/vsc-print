@@ -1,5 +1,11 @@
 # Change Log
 
+### 0.11.14
+
+- Support for document renderers to linking and serving script files
+- Support for document renderers to obtain document state when generating settings driven CSS or script
+- Changes to package.json to link various capabilities from the marketplace page
+
 ### 0.11.11
 
 - pass root document uri in renderer options
