@@ -2,7 +2,7 @@
 	"name": "vscode-print",
 	"displayName": "Print",
 	"description": "Rendered Markdown, coloured code.",
-	"version": "0.11.11",
+	"version": "0.11.14",
 	"icon": "assets/vscode-print-128.png",
 	"author": {
 		"name": "Peter Wone",
@@ -13,6 +13,11 @@
 		"type": "git",
 		"url": "https://github.com/PDConSec/vsc-print"
 	},
+	"qna": "https://github.com/PDConSec/vsc-print/discussions/categories/q-a",
+	"bugs": {
+		"url": "https://github.com/PDConSec/vsc-print/issues"
+	},
+	"homepage": "https://github.com/PDConSec/vsc-print/discussions/categories/announcements",
 	"engines": {
 		"vscode": "^1.60.0"
 	},

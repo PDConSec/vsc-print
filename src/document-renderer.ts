@@ -100,6 +100,15 @@ export class DocumentRenderer {
 		return result;
 	}
 
+	public getScriptTags(uri: vscode.Uri): string{
+		let result: string = "";
+		if (this.options.getScriptUriStrings) {
+			const us = this.options.getScriptUriStrings(uri);
+			result = us.map(uriString => `\t<script src="${uriString}"></script>`).join("\n");
+		}
+		return result;
+	}
+
 	public getResource(name: string, requestingUri: any): IResourceDescriptor {
 		if (this.options.getResource) {
 			return this.options.getResource(name, requestingUri);
