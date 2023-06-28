@@ -72,7 +72,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.commands.executeCommand("print.registerDocumentRenderer", "markdown", {
 		getBodyHtml: htmlRendererMarkdown.getBodyHtml,
 		getCssUriStrings: htmlRendererMarkdown.getCssUriStrings,
-		getResource: htmlRendererMarkdown.getResource
+		getResource: htmlRendererMarkdown.getResource,
+		isEnabled: htmlRendererMarkdown.isEnabled
 	});
 	// and here it is as a direct call just so you can compare them
 	DocumentRenderer.register("plaintext", { getBodyHtml: htmlRendererPlaintext.getBodyHtml });
