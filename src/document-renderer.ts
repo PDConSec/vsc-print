@@ -81,7 +81,7 @@ export class DocumentRenderer {
 			return this.__defaultDocumentRenderer;
 		} else {
 			const isEnabled = documentRenderer.isEnabled();
-			if (documentRenderer.isEnabled()) {
+			if (isEnabled) {
 				logger.debug(`Using the document renderer for ${langId}`);
 				return documentRenderer;
 			} else {

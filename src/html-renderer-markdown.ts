@@ -40,5 +40,6 @@ export function getResource(name: string): IResourceDescriptor {
 }
 
 export function isEnabled(): boolean {
-	return vscode.workspace.getConfiguration("print").renderMarkdown;
+	const printConfig = vscode.workspace.getConfiguration("print");
+	return printConfig.renderMarkdown;
 }
