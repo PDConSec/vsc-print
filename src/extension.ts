@@ -81,7 +81,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	server = http.createServer(async (request, response) => {
 		try {
 			if (request.url) {
-				const urlParts = request.url.split('/',);
+				const urlParts = decodeURI(request.url).split('/',);
 				if (urlParts[1] === "whatsnew") {
 					response.writeHead(302, { 'Location': 'https://pdconsec.net/vscode-print/whatsnew' });
 					response.end();
@@ -90,7 +90,7 @@ export async function activate(context: vscode.ExtensionContext) {
 					if (printSession) {
 						await printSession.respond(urlParts, response);
 					} else {
-						logger.warn(`Dropping connection of ${request.url} does not correspond to a print session`);
+						logger.warn(`Dropping connection: ${request.url} does not correspond to a print session`);
 						return request.socket.end();
 					}
 				}

@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.11.17
+
+- [#259](https://github.com/PDConSec/vsc-print/issues/259) Markdown resource paths may contain URL encoding, apply `decodeURI` before attempting to resolve resource path 
+
 ### 0.11.14
 
 - Support for document renderers to linking and serving script files
