@@ -16,6 +16,9 @@ Liebe grüsse
 ### Relative file path
 ![Relative file path](2158834-45134090-2560-1440.jpg)  
 
+### Relative file path including special characters needing percent-encoding
+![Relative file path including special characters needing percent-encoding](<rect black.svg>)
+
 ### Relative file path subfolder
 ![Relative file path](./subfolder/vscode-print-128.png)  
 
