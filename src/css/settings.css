@@ -10,7 +10,8 @@ body {
 }
 
 .line-number,
-.line-text {
+.line-text,
+h3 {
 	font-family: FONT_FAMILY;
 	font-size: FONT_SIZE;
 	line-height: LINE_SPACINGem;
