@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.11.16
+
+- Line breaking bugfix
+
 ### 0.11.14
 
 - Support for document renderers to linking and serving script files
