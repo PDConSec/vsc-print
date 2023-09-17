@@ -32,7 +32,7 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 		}
 		renderedCode = fixMultilineSpans(renderedCode);
 		const printConfig = vscode.workspace.getConfiguration("print");
-		const pattern = /((?:[\])},;=](?![^<>]*>))|(?:(?![^<>]*>)[A-Za-z0-9]{40}))/g;
+		const pattern = /((?:(?:[A-Za-z0-9_]{40}|[\])},;=]))(?![^<>]*>))/g;
 		const replacement = "$1<wbr>";
 		logger.debug(`Line numbering: ${printConfig.lineNumbers} (resolves to ${options.lineNumbers})`)
 		if (options.lineNumbers) {
