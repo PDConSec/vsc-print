@@ -50,6 +50,7 @@ export class HtmlDocumentBuilder {
 				.replace(/VSCODE_PRINT_DOCUMENT_(?:TITLE|HEADING)/g, "<h2>Selected files</h2>")
 				.replace("VSCODE_PRINT_PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("VSCODE_PRINT_CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
+				.replace("VSCODE_PRINT_SCRIPT_TAGS", "")
 				.replace("VSCODE_PRINT_STYLESHEET_LINKS",
 					'<link href="bundled/default.css" rel="stylesheet" />\n' +
 					'\t<link href="bundled/line-numbers.css" rel="stylesheet" />\n' +
@@ -88,6 +89,7 @@ export class HtmlDocumentBuilder {
 				.replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, `<h2>Folder ${this.workspacePath(this.uri)}</h2>`)
 				.replace("VSCODE_PRINT_PRINT_AND_CLOSE", printConfig.printAndClose)
 				.replace("VSCODE_PRINT_CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
+				.replace("VSCODE_PRINT_SCRIPT_TAGS", "")
 				.replace("VSCODE_PRINT_STYLESHEET_LINKS",
 					'<link href="bundled/default.css" rel="stylesheet" />\n' +
 					'\t<link href="bundled/line-numbers.css" rel="stylesheet" />\n' +
