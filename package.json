@@ -25,7 +25,8 @@
 		"print",
 		"PDF",
 		"Markdown",
-		"remote"
+		"remote",
+		"print code"
 	],
 	"categories": [
 		"Other"
