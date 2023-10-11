@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.11.18
+
+- #274 close vulnerability
+- change tags
+
 ### 0.11.17
 
 - #272 bugfix
