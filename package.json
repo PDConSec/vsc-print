@@ -380,7 +380,7 @@
 		"@types/vscode": "^1.60.0",
 		"@vscode/test-electron": "^2.1.5",
 		"await-exec": "^0.1.2",
-		"axios": "^0.28.0",
+		"axios": "^1.6.0",
 		"copy-webpack-plugin": "^9.0.1",
 		"css-loader": "^6.3.0",
 		"del": "^5.1.0",
