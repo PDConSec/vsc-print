@@ -31,8 +31,8 @@ jobs:
       tag: ${{ steps.setup-tag.outputs.tag }}
       version: ${{ steps.setup-tag.outputs.version }}
     steps:
-      - uses: actions/checkout@v4.1.1
-      - uses: actions/setup-node@v4.02
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.x
           registry-url: https://registry.npmjs.org/
@@ -49,7 +49,7 @@ jobs:
           VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
         run: npx gulp package
       
-      - uses: actions/upload-artifact@v4.3.1
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.setup.outputs.packageName }}
           path: ${{ steps.setup.outputs.packageName }}
@@ -73,8 +73,8 @@ jobs:
     needs: package
     if: github.event.inputs.publishMS == 'true'
     steps:
-      - uses: actions/checkout@v4.1.1
-      - uses: actions/download-artifact@v4.3.1
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.package.outputs.packageName }}
       - name: Publish to MS marketplace
@@ -86,8 +86,8 @@ jobs:
     needs: package
     if: github.event.inputs.publishOVSX == 'true'
     steps:
-      - uses: actions/checkout@v4.1.1
-      - uses: actions/download-artifact@v4.1.3
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.package.outputs.packageName }}
       - name: Publish to OpenVSX
@@ -99,7 +99,7 @@ jobs:
     needs: package
     if: github.event.inputs.publishGH == 'true'
     steps:
-      - uses: actions/download-artifact@v4.3.1
+      - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.package.outputs.packageName }}
 
@@ -111,7 +111,7 @@ jobs:
           
       - name: Create Release
         id: create-release
-        uses: actions/create-release@v1.1.4
+        uses: actions/create-release@v1
         env:
           PRINT_RELEASE: ${{ secrets.PRINT_RELEASE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
