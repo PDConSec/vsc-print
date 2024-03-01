@@ -273,7 +273,7 @@ export class PrintSession {
 				}
 			} catch (ex) {
 				if (vscode.window.activeTextEditor) {
-					return "editor";
+					return vscode.window.activeTextEditor.selection ? "selection" : "editor";
 				} else {
 					return `Content source could not be determined. "${source}" does not resolve to a file and there is no active editor.`;
 				}
