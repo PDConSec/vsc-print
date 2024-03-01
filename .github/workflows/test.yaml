@@ -21,15 +21,15 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         # os: [ubuntu-latest, windows-latest, macos-latest]
         include:
         - os: ubuntu-latest
           path: ~/.cache/pip
-        # - os: macos-latest
-        #   path: ~/Library/Caches/pip
-        # - os: windows-latest
-        #   path: ~\AppData\Local\pip\Cache
+        - os: macos-latest
+          path: ~/Library/Caches/pip
+        - os: windows-latest
+          path: ~\AppData\Local\pip\Cache
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/cache@v4
