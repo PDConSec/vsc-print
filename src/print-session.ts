@@ -174,10 +174,12 @@ export class PrintSession {
 				case "settings.css":
 					const printConfig = vscode.workspace.getConfiguration("print");
 					const editorConfig = vscode.workspace.getConfiguration("editor");
+					const fontPixelHeight = printConfig.fontSize.replace("pt", "") / (.75); // Point to pixels
+					const lineHeightPadding = ((fontPixelHeight + 4) / fontPixelHeight) - 1; // Adjust line height to add four pixels of padding (3px above, 1px below)
 					const css = settingsCss
 						.replace("FONT_FAMILY", editorConfig.fontFamily)
 						.replace("FONT_SIZE", printConfig.fontSize)
-						.replace("LINE_SPACING", printConfig.lineSpacing)
+						.replace("LINE_SPACING", (printConfig.lineSpacing + lineHeightPadding).toFixed(4))
 						.replace("TAB_SIZE", editorConfig.tabSize)
 					response.writeHead(200, {
 						"Content-Type": "text/css; charset=utf-8",
