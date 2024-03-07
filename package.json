@@ -366,7 +366,7 @@
 		"vscode:prepublish": "webpack --mode production",
 		"webpack": "webpack --mode development",
 		"webpack-dev": "webpack --mode development --watch",
-		"compile": "npm run webpack",
+		"compile": "gulp && npm run webpack",
 		"watch": "tsc -watch -p ./",
 		"test": "node ./out/test/runTest.js"
 	},
