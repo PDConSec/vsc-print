@@ -66,7 +66,7 @@ jobs:
           AZURE_TRANSLATOR_REGION: westus2
 
       - name: Translate readme
-        run: node --experimental-modules translate.mjs manual.md westus ${{ secrets.AZURE_TRANSLATOR_KEY }}
+        run: node --experimental-modules translate.mjs README.md westus ${{ secrets.AZURE_TRANSLATOR_KEY }}
         env:
           AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
           AZURE_TRANSLATOR_REGION: westus2
