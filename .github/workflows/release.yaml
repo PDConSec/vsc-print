@@ -10,7 +10,7 @@ on:
         description: 'Publish to MS marketplace'
         type: boolean
         required: true
-        default: "true"
+        default: "false"
       publishOVSX:
         description: 'Publish to OpenVSX'
         type: boolean
@@ -20,7 +20,7 @@ on:
         description: 'Publish to GitHub releases'
         type: boolean
         required: true
-        default: "true"
+        default: "false"
 
 jobs:
   package:
@@ -31,14 +31,45 @@ jobs:
       tag: ${{ steps.setup-tag.outputs.tag }}
       version: ${{ steps.setup-tag.outputs.version }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 18.x
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
         run: npm i
+
+      - name: Create l10n directory
+        run: |
+          mkdir ./l10n 
+
+      - name: Extract localisable strings from app
+        run: |
+          npx @vscode/l10n-dev export --outDir ./l10n ./src 
+
+      - name: Show localisable strings file
+        run: |
+          cat l10n/bundle.l10n.json
+
+      - name: Translate app strings
+        run: |
+          npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json --debug -l zh-Hans -l ja -l es -l ru -l pt-br -l fr -l ko -l zh-Hant -l it -l pl -l hu -l cs -l bg -l tr -l my -l ca -l lt -l hy
+        env:
+          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
+          AZURE_TRANSLATOR_REGION: westus
+
+      - name: Translate manual
+        run: node translate.mjs doc/manual.md westus ${{ secrets.AZURE_TRANSLATOR_KEY }}
+        env:
+          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
+          AZURE_TRANSLATOR_REGION: westus
+
+      - name: Translate readme
+        run: node translate.mjs manual.md westus ${{ secrets.AZURE_TRANSLATOR_KEY }}
+        env:
+          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
+          AZURE_TRANSLATOR_REGION: westus
 
       - name: Setup package path
         id: setup
@@ -49,7 +80,7 @@ jobs:
           VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
         run: npx gulp package
       
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.setup.outputs.packageName }}
           path: ${{ steps.setup.outputs.packageName }}
@@ -65,7 +96,7 @@ jobs:
         
       - if: failure()
         name: Delete tag
-        uses: pr-mpt/actions-delete-tag@v1
+        uses: prompt/actions-delete-tag@v1
 
   publishMS:
     name: Publish to MS marketplace
@@ -73,8 +104,8 @@ jobs:
     needs: package
     if: github.event.inputs.publishMS == 'true'
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.package.outputs.packageName }}
       - name: Publish to MS marketplace
@@ -86,8 +117,8 @@ jobs:
     needs: package
     if: github.event.inputs.publishOVSX == 'true'
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.package.outputs.packageName }}
       - name: Publish to OpenVSX
@@ -99,7 +130,7 @@ jobs:
     needs: package
     if: github.event.inputs.publishGH == 'true'
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.package.outputs.packageName }}
 
