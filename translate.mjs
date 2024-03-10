@@ -106,6 +106,7 @@ for (const token of tokens) {
 						targetLanguages.forEach(language => doc[language] += `[${xlat[language]}](${t.href})`);
 						break;
 					case "html":
+					case "image":
 						targetLanguages.forEach(language => doc[language] += t.raw); //passthrough
 						break;
 					default:
