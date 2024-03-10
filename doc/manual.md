@@ -1,17 +1,14 @@
 # Using the Print extension
 
-English version by Peter Wone
-
-[ENGLISH](manual.eng.md) | [FRANCAISE](mania.fra.md) | [DEUTSCH](manual.deu.md) | [ESPAGNOLE](manual.esp.md) | [中文CHINESE](manual.zho.md) | [Add a language](how-to-add-a-language.md)
-
 # Contents
 
-1. [General use](#general-use)
-2. [Customising your setup](#customising-your-setup)
-3. [Markdown](#markdown)
-4. [Markdown extensions and remote workspaces](#markdown-extensions-and-remote-workspaces)
-5. [Printing other formats rendered](#printing-other-formats-rendered)
-6. [Troubleshooting](#troubleshooting)
+1. [General use](#1)
+2. [Customising your setup](#2)
+3. [Markdown](#3)
+5. [Printing other formats rendered](#4)
+6. [Troubleshooting](#5)
+
+<a name="1"></a>
 
 # General use
 
@@ -52,7 +49,7 @@ To print a file other than the active document, find it in the EXPLORER pane and
 
 If you press `F1` and type `print folder` you will find that you can print all the printable files in the folder that contains the active document. A single print job is created with all the files separated by headings showing their names.
 
-
+<a name="2"></a>
 
 # Customising your setup
 
@@ -112,6 +109,8 @@ If you print the active document and there is a multi-line selection, only the s
 Typeface is determined by VS Code editor settings. If you see Fira Code on screen, that's what will be printed. 
 
 The _size_ of printed text is a Print setting because the size that works best on screen may not be the size that works best on paper. 
+
+If you're wondering why we call it a typeface and not a font, it's because a font is a particular typeface in a specific size and treatment. "12pt Times italic" is a font. "Times" is a typeface. It does not help that the Windows Font Picker (which _does_ pick a font, you have to specify typeface, size and treatment) mislabels the typeface as "Font".
 
 ## Printing Markdown
 
@@ -210,6 +209,8 @@ Patches like this will be lost at the next update for an extension, so if your p
 Issues have been logged requesting rendered printing of formats other than Markdown. Examples include sheet music from the ABC music markup, and Jupyter Notebooks. To support this without taking on the unmanageable burden of keeping up with every text based document format used with VS Code, we have exposed an API and published an SDK allowing the maintainers to incorporate printing into their preview capability.
 
 As a result, if you would like rendered printing for a particular format for which you already have an extension providing preview, raise an issue with the publisher of that extension. Explain your desire to print and refer them for printing and referring them to 
+
+<a name=""></a>
 
 # Troubleshooting
 
