@@ -9,6 +9,9 @@
 		"email": "peter.wone@outlook.com"
 	},
 	"publisher": "pdconsec",
+	"galleryBanner": {
+		"color": "Azure"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/PDConSec/vsc-print"
@@ -19,7 +22,7 @@
 	},
 	"homepage": "https://github.com/PDConSec/vsc-print/discussions/categories/announcements",
 	"engines": {
-		"vscode": "^1.60.0"
+		"vscode": "^1.87.0"
 	},
 	"keywords": [
 		"print",
@@ -362,55 +365,45 @@
 	"extensionKind": [
 		"workspace"
 	],
-	"scripts": {
-		"vscode:prepublish": "webpack --mode production",
-		"webpack": "webpack --mode development",
-		"webpack-dev": "webpack --mode development --watch",
-		"compile": "npm run webpack",
-		"watch": "tsc -watch -p ./",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/braces": "^3.0.1",
-		"@types/highlight.js": "10.1.0",
-		"@types/markdown-it": "^12.2.3",
-		"@types/micromatch": "^4.0.2",
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^18.0.0",
-		"@types/vscode": "^1.60.0",
-		"@vscode/test-electron": "^2.1.5",
-		"await-exec": "^0.1.2",
-		"axios": "^0.27.2",
-		"copy-webpack-plugin": "^9.0.1",
-		"css-loader": "^6.3.0",
-		"del": "^5.1.0",
-		"event-stream": "^4.0.1",
-		"file-loader": "^6.2.0",
-		"gulp": "^4.0.2",
-		"gulp-filter": "^6.0.0",
-		"gulp-sourcemaps": "^2.6.5",
-		"gulp-typescript": "^5.0.1",
-		"html-loader": "^3.1.2",
-		"json-loader": "^0.5.7",
-		"mocha": "^10.0.0",
-		"raw-loader": "^4.0.2",
-		"run-sequence": "^2.2.1",
-		"source-map": "^0.7.4",
-		"ts-loader": "^8.3.0",
-		"tslint": "^5.20.1",
-		"typescript": "^3.9.10",
-		"vsce": "^2.9.2",
-		"vscode-nls-dev": "^3.3.2",
-		"webpack": "^5.76.0",
-		"webpack-cli": "^4.10.0"
-	},
 	"dependencies": {
 		"braces": "^3.0.2",
-		"highlight.js": "<11.0.0",
+		"highlight.js": "^11.9.0",
 		"micromatch": "^4.0.5",
-		"vscode-nls": "^4.1.2",
-		"winston": "^3.8.1"
+		"winston": "^3.11.0"
 	},
+	"scripts": {
+		"vscode:prepublish": "npm run package",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "npm run compile-tests && npm run compile && npm run lint",
+		"lint": "eslint src --ext ts",
+		"test": "vscode-test"
+	},
+	"devDependencies": {
+		"@types/braces": "^3.0.4",
+		"@types/markdown-it": "^13.0.7",
+		"@types/micromatch": "^4.0.6",
+		"@types/mocha": "^10.0.6",
+		"@types/node": "^20.11.24",
+		"@types/vscode": "^1.87.0",
+		"@typescript-eslint/eslint-plugin": "^7.0.2",
+		"@typescript-eslint/parser": "^7.0.2",
+		"@vscode/test-cli": "^0.0.6",
+		"@vscode/test-electron": "^2.3.9",
+		"axios": "^1.6.7",
+		"css-loader": "^6.10.0",
+		"eslint": "^8.56.0",
+		"markdown-it": "^14.0.0",
+		"raw-loader": "^4.0.2",
+		"ts-loader": "^9.5.1",
+		"typescript": "^5.3.3",
+		"webpack": "^5.90.3",
+		"webpack-cli": "^5.1.4"
+	},
+	"l10n": "./l10n",
 	"__metadata": {
 		"id": "05046d70-8146-42f5-ac9e-b97b37c8c0ef",
 		"publisherDisplayName": "PD Consulting",

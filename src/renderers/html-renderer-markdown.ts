@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
-import { logger } from './logger';
+import { logger } from '../logger';
 import { HtmlDocumentBuilder } from './html-document-builder';
 import { IResourceDescriptor } from './IResourceDescriptor';
 
 const resources = new Map<string, IResourceDescriptor>();
 resources.set("default-markdown.css", {
-	content: require("./css/default-markdown.css").default.toString(),
+	content: require("../css/default-markdown.css").default.toString(),
 	mimeType: "text/css; charset=utf-8;"
 });
 
