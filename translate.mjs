@@ -24,8 +24,8 @@ const targetLanguages = [
 	"lt",      // Lithuanian
 	"hy"       // Armenian
 ];
-const apiKey = process.argv[4];
-const region = process.argv[3];
+const apiKey = process.env.AZURE_TRANSLATOR_KEY;
+const region = process.env.AZURE_TRANSLATOR_REGION;
 const translateEndpoint = `https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=en&to=${targetLanguages.join("&to=")}`;
 const doc = [];
 const sourcePath = process.argv[2];
