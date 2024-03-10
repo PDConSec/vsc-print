@@ -25,7 +25,7 @@ on:
 jobs:
   package:
     name: Package the extension
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     outputs:
       packageName: ${{ steps.setup.outputs.packageName }}
       tag: ${{ steps.setup-tag.outputs.tag }}
@@ -57,19 +57,19 @@ jobs:
           npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt-br fr ko zh-Hant it pl hu cs bg tr my ca lt hy
         env:
           AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
-          AZURE_TRANSLATOR_REGION: westus
+          AZURE_TRANSLATOR_REGION: westus2
 
       - name: Translate manual
         run: node translate.mjs doc/manual.md westus ${{ secrets.AZURE_TRANSLATOR_KEY }}
         env:
           AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
-          AZURE_TRANSLATOR_REGION: westus
+          AZURE_TRANSLATOR_REGION: westus2
 
       - name: Translate readme
         run: node translate.mjs manual.md westus ${{ secrets.AZURE_TRANSLATOR_KEY }}
         env:
           AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
-          AZURE_TRANSLATOR_REGION: westus
+          AZURE_TRANSLATOR_REGION: westus2
 
       - name: Setup package path
         id: setup
