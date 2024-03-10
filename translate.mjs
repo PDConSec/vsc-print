@@ -8,7 +8,7 @@ const targetLanguages = [
 	"ja",      // Japanese
 	"es",      // Spanish
 	"ru",      // Russian
-	"pt-br",   // Portuguese (Brazil)
+	"pt",      // Portuguese (Brazil)
 	"fr",      // French
 	"ko",      // Korean
 	"de",      // German
