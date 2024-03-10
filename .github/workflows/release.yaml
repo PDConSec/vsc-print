@@ -25,7 +25,7 @@ on:
 jobs:
   package:
     name: Package the extension
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     outputs:
       packageName: ${{ steps.setup.outputs.packageName }}
       tag: ${{ steps.setup-tag.outputs.tag }}
@@ -54,7 +54,7 @@ jobs:
 
       - name: Translate app strings
         run: |
-          npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json --debug -l zh-Hans -l ja -l es -l ru -l pt-br -l fr -l ko -l zh-Hant -l it -l pl -l hu -l cs -l bg -l tr -l my -l ca -l lt -l hy
+          npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt-br fr ko zh-Hant it pl hu cs bg tr my ca lt hy
         env:
           AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
           AZURE_TRANSLATOR_REGION: westus
