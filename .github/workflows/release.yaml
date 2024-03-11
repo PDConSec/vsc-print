@@ -56,20 +56,20 @@ jobs:
         run: |
           npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy
         env:
-          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
-          AZURE_TRANSLATOR_REGION: westus2
+          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY_FREE }}
+          AZURE_TRANSLATOR_REGION: global
 
-      - name: Translate manual
-        run: node --trace-uncaught --experimental-modules translate.mjs doc/manual.md 
-        env:
-          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
-          AZURE_TRANSLATOR_REGION: westus2
+      # - name: Translate manual
+      #   run: node --trace-uncaught --experimental-modules translate.mjs doc/manual.md 
+      #   env:
+      #     AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
+      #     AZURE_TRANSLATOR_REGION: westus2
 
-      - name: Translate readme
-        run: node --trace-uncaught --experimental-modules translate.mjs README.md 
-        env:
-          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
-          AZURE_TRANSLATOR_REGION: westus2
+      # - name: Translate readme
+      #   run: node --trace-uncaught --experimental-modules translate.mjs README.md 
+      #   env:
+      #     AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
+      #     AZURE_TRANSLATOR_REGION: westus2
 
       - name: Setup package path
         id: setup

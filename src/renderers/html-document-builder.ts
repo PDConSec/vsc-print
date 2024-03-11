@@ -1,9 +1,9 @@
 import { logger } from '../logger';
 import braces from 'braces';
-import path = require('path');
+import path from 'path';
 import * as vscode from 'vscode';
 import { DocumentRenderer } from './document-renderer';
-import micromatch = require('micromatch');
+import micromatch from 'micromatch';
 import tildify from '../tildify';
 
 const templateFolderItem = require("../templates/folder-item.html").default.toString();

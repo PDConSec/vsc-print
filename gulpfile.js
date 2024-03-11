@@ -33,7 +33,6 @@ const languages = [
 	{ folderName: 'fra', id: 'fr' },
 	{ folderName: 'zho', id: 'zh' },
 	{ folderName: 'urd', id: 'ur' },
-	{ folderName: 'pseudo', id: 'qps-ploc' }
 ];
 
 const cleanTask = function () {

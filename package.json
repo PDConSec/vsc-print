@@ -324,6 +324,189 @@
 				}
 			]
 		},
+		"languages": [
+			{
+				"id": "en",
+				"aliases": [
+					"en-us",
+					"en-gb"
+				],
+				"translations": [
+					{
+						"id": "package.nls.en",
+						"path": "./i18n/package.nls.en.json"
+					}
+				]
+			},
+			{
+				"id": "zh-cn",
+				"aliases": [
+					"zh-hans"
+				],
+				"translations": [
+					{
+						"id": "package.nls.zh-cn",
+						"path": "./i18n/package.nls.zh-cn.json"
+					}
+				]
+			},
+			{
+				"id": "ja",
+				"translations": [
+					{
+						"id": "package.nls.ja",
+						"path": "./i18n/package.nls.ja.json"
+					}
+				]
+			},
+			{
+				"id": "es",
+				"translations": [
+					{
+						"id": "package.nls.es",
+						"path": "./i18n/package.nls.es.json"
+					}
+				]
+			},
+			{
+				"id": "ru",
+				"translations": [
+					{
+						"id": "package.nls.ru",
+						"path": "./i18n/package.nls.ru.json"
+					}
+				]
+			},
+			{
+				"id": "pt",
+				"translations": [
+					{
+						"id": "package.nls.pt",
+						"path": "./i18n/package.nls.pt.json"
+					}
+				]
+			},
+			{
+				"id": "fr",
+				"translations": [
+					{
+						"id": "package.nls.fr",
+						"path": "./i18n/package.nls.fr.json"
+					}
+				]
+			},
+			{
+				"id": "ko",
+				"translations": [
+					{
+						"id": "package.nls.ko",
+						"path": "./i18n/package.nls.ko.json"
+					}
+				]
+			},
+			{
+				"id": "zh-hant",
+				"aliases": [
+					"zh-tw"
+				],
+				"translations": [
+					{
+						"id": "package.nls.zh-hant",
+						"path": "./i18n/package.nls.zh-hant.json"
+					}
+				]
+			},
+			{
+				"id": "it",
+				"translations": [
+					{
+						"id": "package.nls.it",
+						"path": "./i18n/package.nls.it.json"
+					}
+				]
+			},
+			{
+				"id": "pl",
+				"translations": [
+					{
+						"id": "package.nls.pl",
+						"path": "./i18n/package.nls.pl.json"
+					}
+				]
+			},
+			{
+				"id": "hu",
+				"translations": [
+					{
+						"id": "package.nls.hu",
+						"path": "./i18n/package.nls.hu.json"
+					}
+				]
+			},
+			{
+				"id": "cs",
+				"translations": [
+					{
+						"id": "package.nls.cs",
+						"path": "./i18n/package.nls.cs.json"
+					}
+				]
+			},
+			{
+				"id": "bg",
+				"translations": [
+					{
+						"id": "package.nls.bg",
+						"path": "./i18n/package.nls.bg.json"
+					}
+				]
+			},
+			{
+				"id": "tr",
+				"translations": [
+					{
+						"id": "package.nls.tr",
+						"path": "./i18n/package.nls.tr.json"
+					}
+				]
+			},
+			{
+				"id": "my",
+				"translations": [
+					{
+						"id": "package.nls.my",
+						"path": "./i18n/package.nls.my.json"
+					}
+				]
+			},
+			{
+				"id": "ca",
+				"translations": [
+					{
+						"id": "package.nls.ca",
+						"path": "./i18n/package.nls.ca.json"
+					}
+				]
+			},
+			{
+				"id": "lt",
+				"translations": [
+					{
+						"id": "package.nls.lt",
+						"path": "./i18n/package.nls.lt.json"
+					}
+				]
+			},
+			{
+				"id": "hy",
+				"translations": [
+					{
+						"id": "package.nls.hy",
+						"path": "./i18n/package.nls.hy.json"
+					}
+				]
+			}
+		],
 		"walkthroughs": [
 			{
 				"id": "how-to-print",
@@ -393,8 +576,10 @@
 		"@typescript-eslint/parser": "^7.0.2",
 		"@vscode/test-cli": "^0.0.6",
 		"@vscode/test-electron": "^2.3.9",
+		"await-exec": "^0.1.2",
 		"axios": "^1.6.7",
 		"css-loader": "^6.10.0",
+		"del": "^6.1.1",
 		"eslint": "^8.56.0",
 		"gulp": "^4.0.2",
 		"gulp-cli": "^2.3.0",
@@ -403,8 +588,11 @@
 		"markdown-it": "^14.0.0",
 		"marked": "^12.0.1",
 		"raw-loader": "^4.0.2",
+		"run-sequence": "^2.2.1",
 		"ts-loader": "^9.5.1",
 		"typescript": "^5.3.3",
+		"vsce": "^2.15.0",
+		"vscode-nls-dev": "^4.0.4",
 		"webpack": "^5.90.3",
 		"webpack-cli": "^5.1.4"
 	},
