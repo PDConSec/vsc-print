@@ -90,8 +90,8 @@ jobs:
         run: |
           $version = (Get-Content ./package.json -Raw | ConvertFrom-Json).version
           Write-Host "tag: release/$version"
-          echo "tag=release/$version" >> $GITHUB_OUTPUT
-          echo "version=$version" >> $GITHUB_OUTPUT
+          Write-Host "::set-output name=tag::release/$version"
+          Write-Host "::set-output name=version::$version"
         shell: pwsh
         
       - if: failure()
