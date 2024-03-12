@@ -130,9 +130,10 @@ jobs:
     needs: package
     if: github.event.inputs.publishGH == 'true'
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.package.outputs.packageName }}
+      - name: Diagnostic dump
+        run: ls $VSIX_PACKAGE_PATH
+        env:
+          VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
 
       - name: Commit tagger
         uses: tvdias/github-tagger@v0.0.2
@@ -152,9 +153,6 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: List release assets
-        run: ls $VSIX_PACKAGE_PATH
-          
       - name: Upload assets to a Release
         uses: AButler/upload-release-assets@v2.0
         with:
