@@ -151,6 +151,9 @@ jobs:
           release_name: Release ${{ needs.package.outputs.version }}
           draft: false
           prerelease: false
+
+      - name: List release assets
+        run: ls $VSIX_PACKAGE_PATH
           
       - name: Upload assets to a Release
         uses: AButler/upload-release-assets@v2.0
