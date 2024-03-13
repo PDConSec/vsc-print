@@ -120,7 +120,7 @@ jobs:
           echo "VSIX_PACKAGE_PATH: ${{env.VSIX_PACKAGE_PATH}}"
           ls -l ${{env.VSIX_PACKAGE_PATH}}
         env:
-          VSIX_PACKAGE_PATH: ${{ publishVSIX.outputs.packageName }}
+          VSIX_PACKAGE_PATH: ${{ packageVSIX.outputs.packageName }}
 
       - name: Commit tagger
         uses: tvdias/github-tagger@v0.0.2
