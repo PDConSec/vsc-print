@@ -10,17 +10,12 @@ on:
         description: 'Publish to MS marketplace'
         type: boolean
         required: true
-        default: "false"
-      # publishOVSX:
-      #   description: 'Publish to OpenVSX'
-      #   type: boolean
-      #   required: true
-      #   default: "false"
+        default: false
       publishGH:
         description: 'Publish to GitHub releases'
         type: boolean
         required: true
-        default: "true"
+        default: true
 
 jobs:
   packageVSIX:
@@ -110,9 +105,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.package.outputs.packageName }}
+          name: ${{ needs.packageVSIX.outputs.packageName }}
       - name: Publish to MS marketplace
-        run: npm run publish --packagePath ./${{ needs.package.outputs.packageName }} -p ${{ secrets.AZUREDEVOPS_PRINT_RELEASE }} 
+        run: vsce publish --packagePath ./${{ needs.packageVSIX.outputs.packageName }} -p ${{ secrets.AZUREDEVOPS_PRINT_RELEASE }} 
 
   publishGH:
     name: Publish to GitHub releases
@@ -125,7 +120,7 @@ jobs:
           echo "VSIX_PACKAGE_PATH: ${{env.VSIX_PACKAGE_PATH}}"
           ls -l ${{env.VSIX_PACKAGE_PATH}}
         env:
-          VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
+          VSIX_PACKAGE_PATH: ${{ publishVSIX.outputs.packageName }}
 
       - name: Commit tagger
         uses: tvdias/github-tagger@v0.0.2
