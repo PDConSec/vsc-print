@@ -115,6 +115,10 @@ jobs:
     needs: packageVSIX
     if: github.event.inputs.publishGH == 'true'
     steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: ${{ needs.packageVSIX.outputs.packageName }}
+
       - name: Commit tagger
         uses: tvdias/github-tagger@v0.0.2
         with:
