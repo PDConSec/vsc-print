@@ -99,7 +99,7 @@ jobs:
         uses: prompt/actions-delete-tag@v1
 
       - name: Export the packageName to an environment variable
-        run: echo "VSIX_PACKAGE_PATH=${{ steps.setup.outputs.packageName }}"" >> $GITHUB_ENV
+        run: echo "VSIX_PACKAGE_PATH=${{ steps.setup.outputs.packageName }}" >> $GITHUB_ENV
 
   publishMS:
     name: Publish to MS marketplace
