@@ -115,13 +115,6 @@ jobs:
     needs: packageVSIX
     if: github.event.inputs.publishGH == 'true'
     steps:
-      - name: Diagnostic dump in Publish to GitHub releases
-        run: |
-          echo "VSIX_PACKAGE_PATH: ${{env.VSIX_PACKAGE_PATH}}"
-          ls -l ${{env.VSIX_PACKAGE_PATH}}
-        env:
-          VSIX_PACKAGE_PATH: ${{ needs.packageVSIX.outputs.packageName }}
-
       - name: Commit tagger
         uses: tvdias/github-tagger@v0.0.2
         with:
