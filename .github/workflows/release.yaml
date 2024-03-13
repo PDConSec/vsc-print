@@ -20,10 +20,10 @@ on:
         description: 'Publish to GitHub releases'
         type: boolean
         required: true
-        default: "false"
+        default: "true"
 
 jobs:
-  package:
+  packageVSIX:
     name: Package the extension
     runs-on: ubuntu-latest
     outputs:
@@ -75,7 +75,7 @@ jobs:
         id: setup
         run: echo "::set-output name=packageName::$(node -e "console.log(require('./package.json').name + '-' + require('./package.json').version + '.vsix')")"
 
-      - name: Package
+      - name: Bundle using Webpack
         env:
           VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
         run: webpack --mode production --output-path $VSIX_PACKAGE_PATH
@@ -98,12 +98,8 @@ jobs:
         name: Delete tag
         uses: prompt/actions-delete-tag@v1
 
-      - name: Diagnostic dump in Package the extension
-        run: |
-          echo "VSIX_PACKAGE_PATH: $VSIX_PACKAGE_PATH"
-          ls -l $VSIX_PACKAGE_PATH
-        env:
-          VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
+      - name: Export the packageName to an environment variable
+        run: echo "VSIX_PACKAGE_PATH=${{ steps.setup.outputs.packageName }}"" >> $GITHUB_ENV
 
   publishMS:
     name: Publish to MS marketplace
@@ -121,13 +117,13 @@ jobs:
   publishGH:
     name: Publish to GitHub releases
     runs-on: ubuntu-latest
-    needs: package
+    needs: packageVSIX
     if: github.event.inputs.publishGH == 'true'
     steps:
       - name: Diagnostic dump in Publish to GitHub releases
         run: |
-          echo "VSIX_PACKAGE_PATH: $VSIX_PACKAGE_PATH"
-          ls -l $VSIX_PACKAGE_PATH
+          echo "VSIX_PACKAGE_PATH: ${{env.VSIX_PACKAGE_PATH}}"
+          ls -l ${{env.VSIX_PACKAGE_PATH}}
         env:
           VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
 
