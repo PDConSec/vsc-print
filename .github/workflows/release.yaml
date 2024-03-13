@@ -120,13 +120,13 @@ jobs:
           echo "VSIX_PACKAGE_PATH: ${{env.VSIX_PACKAGE_PATH}}"
           ls -l ${{env.VSIX_PACKAGE_PATH}}
         env:
-          VSIX_PACKAGE_PATH: ${{ packageVSIX.outputs.packageName }}
+          VSIX_PACKAGE_PATH: ${{ needs.packageVSIX.outputs.packageName }}
 
       - name: Commit tagger
         uses: tvdias/github-tagger@v0.0.2
         with:
           repo-token: ${{ secrets.PRINT_RELEASE }}
-          tag: ${{ needs.package.outputs.tag }}
+          tag: ${{ needs.packageVSIX.outputs.tag }}
           
       - name: Create Release
         id: create-release
@@ -135,15 +135,15 @@ jobs:
           PRINT_RELEASE: ${{ secrets.PRINT_RELEASE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ needs.package.outputs.tag }}
-          release_name: Release ${{ needs.package.outputs.version }}
+          tag_name: ${{ needs.packageVSIX.outputs.tag }}
+          release_name: Release ${{ needs.packageVSIX.outputs.version }}
           draft: false
           prerelease: false
 
       - name: Upload assets to a Release
         uses: AButler/upload-release-assets@v2.0
         with:
-          files: ${{ needs.package.outputs.packageName }}
-          release-tag:  ${{ needs.package.outputs.tag }}
+          files: ${{ needs.packageVSIX.outputs.packageName }}
+          release-tag:  ${{ needs.packageVSIX.outputs.tag }}
           repo-token: ${{ secrets.PRINT_RELEASE }}
           
