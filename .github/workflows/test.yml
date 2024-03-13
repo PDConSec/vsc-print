@@ -1,9 +1,9 @@
 name: Compute and Use Value
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types:
+      - published
 
 jobs:
   compute-value:
