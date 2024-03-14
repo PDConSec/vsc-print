@@ -6,3 +6,4 @@ node_modules
 /package.nls.*.json
 vscode-print.log
 doc/manual-*.md
+bundle.*

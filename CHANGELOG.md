@@ -1,6 +1,6 @@
 # Change Log
 
-### 0.11.19
+### 0.11.23
 
 - [#297 Update unit test support](https://github.com/PDConSec/vsc-print/issues/297)
 - [#298 Update localisation support](https://github.com/PDConSec/vsc-print/issues/298)

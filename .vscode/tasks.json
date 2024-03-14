@@ -17,21 +17,10 @@
 			}
 		},
 		{
+			// requires environment variables AZURE_TRANSLATOR_KEY and AZURE_TRANSLATOR_REGION
+			"label": "Localise application strings",
 			"type": "npm",
-			"script": "install",
-			"problemMatcher": [
-				"$tsc"
-			]
-		},
-		{
-			"type": "gulp",
-			"task": "clean",
-			"problemMatcher": []
-		},
-		{
-			"label": "gulp-build",
-			"type": "gulp",
-			"task": "build",
+			"script": "localise",
 			"problemMatcher": [
 				"$tsc"
 			]
