@@ -75,7 +75,7 @@ jobs:
           VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
         run: webpack --mode production --output-path $VSIX_PACKAGE_PATH
       
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.setup.outputs.packageName }}
           path: ${{ steps.setup.outputs.packageName }}
@@ -103,7 +103,7 @@ jobs:
     if: github.event.inputs.publishMS == 'true'
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v3
         with:
           name: ${{ needs.packageVSIX.outputs.packageName }}
       - name: Publish to MS marketplace
@@ -115,7 +115,7 @@ jobs:
     needs: packageVSIX
     if: github.event.inputs.publishGH == 'true'
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: ${{ needs.packageVSIX.outputs.packageName }}
 

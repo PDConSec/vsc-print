@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       createRelease:
-        description: 'Create GitHub Release?'
+        description: 'Create GitHub Release'
         required: true
         default: 'yes'
       publishMarketplace:
-        description: 'Publish to Marketplace?'
+        description: 'Publish to Marketplace'
         required: true
         default: 'no'
 
