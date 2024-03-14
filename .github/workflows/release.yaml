@@ -111,8 +111,7 @@ jobs:
           AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
           AZURE_TRANSLATOR_REGION: westus2
 
-
-	publishGH:
+  publishGH:
     name: Publish to GitHub releases
     runs-on: ubuntu-latest
     needs: packageVSIX
