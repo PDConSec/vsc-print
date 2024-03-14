@@ -73,9 +73,7 @@ jobs:
       - name: Bundle using Webpack
         env:
           VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
-        run: |
-					webpack --mode production --output-path $VSIX_PACKAGE_PATH
-					echo $VSIX_PACKAGE_PATH
+        run: vsce package
       
       - uses: actions/upload-artifact@v3
         with:
