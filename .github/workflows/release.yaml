@@ -33,7 +33,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: npm i
+        run: npm ci
 
       - name: Create l10n directory
         run: |
@@ -73,7 +73,9 @@ jobs:
       - name: Bundle using Webpack
         env:
           VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
-        run: webpack --mode production --output-path $VSIX_PACKAGE_PATH
+        run: |
+					webpack --mode production --output-path $VSIX_PACKAGE_PATH
+					echo $VSIX_PACKAGE_PATH
       
       - uses: actions/upload-artifact@v3
         with:
@@ -92,9 +94,6 @@ jobs:
       - if: failure()
         name: Delete tag
         uses: prompt/actions-delete-tag@v1
-
-      - name: Export the packageName to an environment variable
-        run: echo "VSIX_PACKAGE_PATH=${{ steps.setup.outputs.packageName }}" >> $GITHUB_ENV
 
   publishMS:
     name: Publish to MS marketplace
