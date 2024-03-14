@@ -572,6 +572,7 @@
 		"@typescript-eslint/parser": "^7.0.2",
 		"@vscode/test-cli": "^0.0.6",
 		"@vscode/test-electron": "^2.3.9",
+		"@vscode/vsce": "^2.24.0",
 		"axios": "^1.6.7",
 		"css-loader": "^6.10.0",
 		"eslint": "^8.56.0",
@@ -580,7 +581,6 @@
 		"raw-loader": "^4.0.2",
 		"ts-loader": "^9.5.1",
 		"typescript": "^5.3.3",
-		"vsce": "^2.15.0",
 		"webpack": "^5.90.3",
 		"webpack-cli": "^5.1.4"
 	},
