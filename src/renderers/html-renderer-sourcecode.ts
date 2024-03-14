@@ -1,7 +1,7 @@
 import { IResourceDescriptor } from './IResourceDescriptor';
 import * as vscode from 'vscode';
-import { logger } from './logger';
-import hljs = require('highlight.js');
+import { logger } from '../logger';
+import hljs from 'highlight.js';
 
 const resources = new Map<string, IResourceDescriptor>();
 resources.set("default.css", {
@@ -9,7 +9,7 @@ resources.set("default.css", {
 	mimeType: "text/css; charset=utf-8;"
 });
 resources.set("line-numbers.css", {
-	content: require("./css/line-numbers.css").default.toString(),
+	content: require("../css/line-numbers.css").default.toString(),
 	mimeType: "text/css; charset=utf-8;"
 });
 

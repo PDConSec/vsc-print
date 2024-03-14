@@ -1,10 +1,10 @@
 import { IResourceDescriptor } from './IResourceDescriptor';
-import { logger } from './logger';
+import { logger } from '../logger';
 import * as path from "path";
 import * as vscode from "vscode";
 import * as htmlRendererSourcecode from "./html-renderer-sourcecode";
 import { IDocumentRenderer } from './IDocumentRenderer';
-import tildify from './tildify';
+import tildify from '../tildify';
 
 export class DocumentRenderer {
 

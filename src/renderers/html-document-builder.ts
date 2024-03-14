@@ -1,14 +1,13 @@
-import { logger } from './logger';
-import braces = require('braces');
-import path = require('path');
+import { logger } from '../logger';
+import braces from 'braces';
+import path from 'path';
 import * as vscode from 'vscode';
-import { localise } from './imports';
 import { DocumentRenderer } from './document-renderer';
-import micromatch = require('micromatch');
-import tildify from './tildify';
+import micromatch from 'micromatch';
+import tildify from '../tildify';
 
-const templateFolderItem = require("./template-folder-item.html").default.toString();
-const template: string = require("./template.html").default.toString();
+const templateFolderItem = require("../templates/folder-item.html").default.toString();
+const templateDocument: string = require("../templates/document.html").default.toString();
 
 export class HtmlDocumentBuilder {
 	static MarkdownEngine: any;
@@ -45,7 +44,7 @@ export class HtmlDocumentBuilder {
 					})
 			).join('');
 
-			return template
+			return templateDocument
 				.replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
 				.replace(/VSCODE_PRINT_DOCUMENT_(?:TITLE|HEADING)/g, "<h2>Selected files</h2>")
 				.replace("VSCODE_PRINT_PRINT_AND_CLOSE", printConfig.printAndClose)
@@ -64,7 +63,7 @@ export class HtmlDocumentBuilder {
 			const summary = printConfig.folder.includeFileList ?
 				`<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
 				`<h3>${docs.length} printable files</h3><p>(file list disabled)</p>`;
-			const msgTooManyFiles = localise("TOO_MANY_FILES");
+			const msgTooManyFiles = vscode.l10n.t("The selected directory contains too many files to print them all. Only the summary will be printed.");
 			const flagTooManyFiles = docs.length > printConfig.folder.maxFiles;
 			const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc =>
 				templateFolderItem
@@ -83,7 +82,7 @@ export class HtmlDocumentBuilder {
 				vscode.window.showWarningMessage(msgTooManyFiles);
 			}
 
-			return template
+			return templateDocument
 				.replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
 				.replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, this.workspacePath(this.uri))
 				.replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, `<h2>Folder ${this.workspacePath(this.uri)}</h2>`)
@@ -127,7 +126,7 @@ export class HtmlDocumentBuilder {
 				lineNumbers: this.printLineNumbers,
 				uri: this.uri
 			};
-			return template
+			return templateDocument
 				.replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
 				.replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
 				.replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, thePath)
