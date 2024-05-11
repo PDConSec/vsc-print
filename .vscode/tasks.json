@@ -15,15 +15,6 @@
 				"kind": "build",
 				"isDefault": true
 			}
-		},
-		{
-			// requires environment variables AZURE_TRANSLATOR_KEY and AZURE_TRANSLATOR_REGION
-			"label": "Localise application strings",
-			"type": "npm",
-			"script": "localise",
-			"problemMatcher": [
-				"$tsc"
-			]
 		}
 	]
 }

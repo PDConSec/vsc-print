@@ -30,7 +30,7 @@ Or you can right-click on a file in the file explorer pane and choose Print from
 
 ## Highly configurable
 
-There are a number of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](doc/manual.eng.md) If things aren't going your way, maybe you should read it. If you have first-use problems, the manual contains a [troubleshooting guide](doc/manual.eng.md#troubleshooting).
+There are a number of settings. Most of them you just need to read the descriptions on the settings page, but we're old school and [we wrote a manual.](doc/manual.eng.md) If things aren't going well, consider reading it. If you have first-use problems, the manual contains a [troubleshooting guide](doc/manual.eng.md#troubleshooting).
 
 Some things you can configure:
 
@@ -39,16 +39,8 @@ Some things you can configure:
 - alternate browser for printing
 - line spacing (leave yourself more room for handwritten annotation of code)
 
-## Extensible
+## Planned changes
 
-As of version 1.0.0 Print exports an API that allows another extension to register for print and preview services.
+Machine translation to support major languages. 
+This has already been applied to the extension and its settings but high quality automated translation of documentation is proving more difficult.
 
-The Print SDK includes a complete worked example that demonstrates how to
-* Register for preview and print services for SVG files
-* Embed resources (like CSS and image files) in the extension's Webpack bundle
-* Extract those resources from your extension's Webpack bundle into cache ready to service requests for them.
-* Use bundled resources in generated HTML
-* Register a "Preview" command forwarding the request to the Print extension
-* Handle rendering of SVG into styled HTML
-
-The sample is annotated with `// todo` comments to help you use it as the basis of your own extension. Webpack bundling is already set up including the customisation required for you to embed textual and binary resources and demonstrations of how to load them from the bundle into your cache for delivery.

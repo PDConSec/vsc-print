@@ -11,13 +11,18 @@ on:
         type: boolean
         required: true
         default: false
+      publishOVSX:
+        description: 'Publish to OpenVSX'
+        type: boolean
+        required: true
+        default: false
       publishGH:
         description: 'Publish to GitHub releases'
         type: boolean
         required: true
         default: true
       translateDoc:
-        description: 'Translate the manual and readme.'
+        description: 'Translate documentation'
         type: boolean
         required: true
         default: false
@@ -94,6 +99,19 @@ jobs:
           name: ${{ needs.packageVSIX.outputs.packageName }}
       - name: Publish to MS marketplace
         run: vsce publish --packagePath ./${{ needs.packageVSIX.outputs.packageName }} -p ${{ secrets.AZUREDEVOPS_PRINT_RELEASE }} 
+
+  publishOVSX:
+    name: Publish to OpenVSX
+    runs-on: ubuntu-latest
+    needs: packageVSIX
+    if: github.event.inputs.publishOVSX == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.packageVSIX.outputs.packageName }}
+      - name: Publish to OpenVSX
+        run: npx ovsx publish ./${{ needs.packageVSIX.outputs.packageName }} -p ${{ secrets.OVSX_PAT }} 
 
   translateDoc:
     name: Translate documentation
