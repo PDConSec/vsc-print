@@ -21,11 +21,6 @@ on:
         type: boolean
         required: true
         default: true
-      translateDoc:
-        description: 'Translate documentation'
-        type: boolean
-        required: true
-        default: false
 
 jobs:
   packageVSIX:
@@ -112,22 +107,6 @@ jobs:
           name: ${{ needs.packageVSIX.outputs.packageName }}
       - name: Publish to OpenVSX
         run: npx ovsx publish ./${{ needs.packageVSIX.outputs.packageName }} -p ${{ secrets.OVSX_PAT }} 
-
-  translateDoc:
-    name: Translate documentation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Translate manual
-        run: node --trace-uncaught --experimental-modules translate.mjs doc/manual.md 
-        env:
-          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
-          AZURE_TRANSLATOR_REGION: westus2
-
-      - name: Translate readme
-        run: node --trace-uncaught --experimental-modules translate.mjs README.md 
-        env:
-          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
-          AZURE_TRANSLATOR_REGION: westus2
 
   publishGH:
     name: Publish to GitHub releases
