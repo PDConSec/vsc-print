@@ -1,14 +1,13 @@
 import { PrintPreview } from './print-preview';
 import { logger } from './logger';
-import { HtmlDocumentBuilder } from './html-document-builder';
+import { HtmlDocumentBuilder } from './renderers/html-document-builder';
 import * as vscode from 'vscode';
 import * as http from "http";
 import * as path from "path";
 import * as child_process from "child_process";
-import { localise } from './imports';
 import * as nodeCrypto from "crypto";
-import { filenameByCaption } from "./imports";
-import { DocumentRenderer } from './document-renderer';
+import { DocumentRenderer } from './renderers/document-renderer';
+import { filenameByCaption } from './imports';
 
 let settingsCss: string = require("./css/settings.css").default.toString();
 

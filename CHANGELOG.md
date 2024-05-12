@@ -1,5 +1,14 @@
 # Change Log
 
+### 0.11.27
+
+- [#297 Update unit test support](https://github.com/PDConSec/vsc-print/issues/297)
+- [#298 Update localisation support](https://github.com/PDConSec/vsc-print/issues/298)
+- We are now targetting all 19 languages for which Language Packs are available
+- [#299 webpack 5 and highlightjs 11 compatibility problems](https://github.com/PDConSec/vsc-print/issues/299)
+- [#293 Update GitHub workflows and action versions](https://github.com/PDConSec/vsc-print/issues/293)
+- [#290 Printing from command palette prints only whole document not selection](https://github.com/PDConSec/vsc-print/issues/290)
+
 ### 0.11.18
 
 - #274 close vulnerability

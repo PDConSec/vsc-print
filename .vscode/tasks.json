@@ -15,26 +15,6 @@
 				"kind": "build",
 				"isDefault": true
 			}
-		},
-		{
-			"type": "npm",
-			"script": "install",
-			"problemMatcher": [
-				"$tsc"
-			]
-		},
-		{
-			"type": "gulp",
-			"task": "clean",
-			"problemMatcher": []
-		},
-		{
-			"label": "gulp-build",
-			"type": "gulp",
-			"task": "build",
-			"problemMatcher": [
-				"$tsc"
-			]
 		}
 	]
 }

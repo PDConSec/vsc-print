@@ -5,3 +5,5 @@ node_modules
 *.vsix
 /package.nls.*.json
 vscode-print.log
+doc/manual-*.md
+bundle.*

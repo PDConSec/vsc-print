@@ -5,25 +5,11 @@ import * as vscode from 'vscode';
 import * as http from "http";
 import { AddressInfo } from 'net';
 import * as path from "path";
-import { captionByFilename, localise } from './imports';
-import * as nls from 'vscode-nls';
-import { HtmlDocumentBuilder } from './html-document-builder';
-import { DocumentRenderer } from './document-renderer';
-import * as htmlRendererMarkdown from "./html-renderer-markdown";
-import * as htmlRendererPlaintext from "./html-renderer-plaintext";
-
-// #region necessary for vscode-nls-dev
-const localize = nls.config({ messageFormat: nls.MessageFormat.file })();
-// function localise(s: string): string { return localize(s, "x"); }
-localize("NO_FILE", "x");
-localize("UNSAVED_FILE", "x");
-localize("EMPTY_SELECTION", "x");
-localize("ERROR_PRINTING", "x");
-localize("ACCESS_DENIED_CREATING_WEBSERVER", "x");
-localize("UNEXPECTED_ERROR", "x");
-localize("TOO_MANY_FILES", "x");
-localize("FILE_LIST_DISABLED", "x");
-// #endregion
+import { HtmlDocumentBuilder } from './renderers/html-document-builder';
+import { DocumentRenderer } from './renderers/document-renderer';
+import * as htmlRendererMarkdown from "./renderers/html-renderer-markdown";
+import * as htmlRendererPlaintext from "./renderers/html-renderer-plaintext";
+import { captionByFilename } from './imports';
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
@@ -33,7 +19,7 @@ if (captionByFilename[vscode.workspace.getConfiguration("print").colourScheme]) 
 	vscode.workspace.getConfiguration("print").update("colourScheme", cbf);
 }
 const printSessions = new Map<string, PrintSession>();
-let _gc: NodeJS.Timer;
+let _gc: NodeJS.Timeout;
 
 function gc() {
 	const allKvps = Array.from(printSessions);
@@ -57,7 +43,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.whatsnew", launchWhatsNew));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.preview", previewCommand));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.print", printCommand));
-	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
+	// context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.flags", () => testFlags));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.test.sessionCount", () => printSessions.size));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.gc", gc));
 	context.subscriptions.push(vscode.commands.registerCommand("vsc-print.help", () => openDoc("manual")));
@@ -105,12 +91,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		if (err) {
 			switch (err.code) {
 				case "EACCES":
-					logger.debug(`ACCESS_DENIED_CREATING_WEBSERVER ${err.code}`);
-					vscode.window.showErrorMessage(localise("ACCESS_DENIED_CREATING_WEBSERVER"));
+					logger.debug(`An “Access Denied” error occurred while starting the embedded webserver: ${err.code}`);
+					vscode.window.showErrorMessage(vscode.l10n.t("An “Access Denied” error occurred while starting the embedded webserver"));
 					break;
 				default:
-					logger.debug(`UNEXPECTED_ERROR ${err.code}`);
-					vscode.window.showErrorMessage(`${localise("UNEXPECTED_ERROR")}: ${err.code}`);
+					logger.debug(`An unexpected error occurred: ${err.code}`);
+					vscode.window.showErrorMessage(`${vscode.l10n.t("An unexpected error occurred")}: ${err.code}`);
 			}
 		}
 	});
@@ -225,7 +211,7 @@ function dumpCommands(): any {
 		for (const extension of vscode.extensions.all) {
 			let commands = extension.packageJSON.contributes?.commands;
 			if (Array.isArray(commands)) {
-				const matchingCommands = commands.filter(cmd=>cmd.command.startsWith(prefix))
+				const matchingCommands = commands.filter(cmd => cmd.command.startsWith(prefix))
 				for (const command of matchingCommands) {
 					console.log(`${extension.id}: ${command.command}`);
 				}
@@ -253,6 +239,6 @@ function dumpProperties(): any {
 				}
 			}
 		}
-		console.log(`${matchCount} properties start with ${prefix}`);		
+		console.log(`${matchCount} properties start with ${prefix}`);
 	});
 }

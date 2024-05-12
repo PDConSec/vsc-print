@@ -10,20 +10,20 @@ on:
         description: 'Publish to MS marketplace'
         type: boolean
         required: true
-        default: "true"
+        default: false
       publishOVSX:
         description: 'Publish to OpenVSX'
         type: boolean
         required: true
-        default: "false"
+        default: false
       publishGH:
         description: 'Publish to GitHub releases'
         type: boolean
         required: true
-        default: "true"
+        default: true
 
 jobs:
-  package:
+  packageVSIX:
     name: Package the extension
     runs-on: ubuntu-latest
     outputs:
@@ -31,25 +31,40 @@ jobs:
       tag: ${{ steps.setup-tag.outputs.tag }}
       version: ${{ steps.setup-tag.outputs.version }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 18.x
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: npm i
+        run: npm ci
+
+      - name: Create l10n directory
+        run: |
+          mkdir ./l10n 
+
+      - name: Extract localisable strings from app
+        run: |
+          npx @vscode/l10n-dev export --outDir ./l10n ./src 
+
+      - name: Translate app strings
+        run: |
+          npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy
+        env:
+          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY_FREE }}
+          AZURE_TRANSLATOR_REGION: global
 
       - name: Setup package path
         id: setup
         run: echo "::set-output name=packageName::$(node -e "console.log(require('./package.json').name + '-' + require('./package.json').version + '.vsix')")"
 
-      - name: Package
+      - name: Bundle using Webpack
         env:
           VSIX_PACKAGE_PATH: ${{ steps.setup.outputs.packageName }}
-        run: npx gulp package
+        run: npx @vscode/vsce package
       
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.setup.outputs.packageName }}
           path: ${{ steps.setup.outputs.packageName }}
@@ -65,49 +80,49 @@ jobs:
         
       - if: failure()
         name: Delete tag
-        uses: pr-mpt/actions-delete-tag@v1
+        uses: prompt/actions-delete-tag@v1
 
   publishMS:
     name: Publish to MS marketplace
     runs-on: ubuntu-latest
-    needs: package
+    needs: packageVSIX
     if: github.event.inputs.publishMS == 'true'
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v3
         with:
-          name: ${{ needs.package.outputs.packageName }}
+          name: ${{ needs.packageVSIX.outputs.packageName }}
       - name: Publish to MS marketplace
-        run: npx vsce publish --packagePath ./${{ needs.package.outputs.packageName }} -p ${{ secrets.AZUREDEVOPS_PRINT_RELEASE }} 
+        run: vsce publish --packagePath ./${{ needs.packageVSIX.outputs.packageName }} -p ${{ secrets.AZUREDEVOPS_PRINT_RELEASE }} 
 
   publishOVSX:
     name: Publish to OpenVSX
     runs-on: ubuntu-latest
-    needs: package
+    needs: packageVSIX
     if: github.event.inputs.publishOVSX == 'true'
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.package.outputs.packageName }}
+          name: ${{ needs.packageVSIX.outputs.packageName }}
       - name: Publish to OpenVSX
-        run: npx ovsx publish ./${{ needs.package.outputs.packageName }} -p ${{ secrets.OVSX_PAT }} 
-  
+        run: npx ovsx publish ./${{ needs.packageVSIX.outputs.packageName }} -p ${{ secrets.OVSX_PAT }} 
+
   publishGH:
     name: Publish to GitHub releases
     runs-on: ubuntu-latest
-    needs: package
+    needs: packageVSIX
     if: github.event.inputs.publishGH == 'true'
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
-          name: ${{ needs.package.outputs.packageName }}
+          name: ${{ needs.packageVSIX.outputs.packageName }}
 
       - name: Commit tagger
         uses: tvdias/github-tagger@v0.0.2
         with:
           repo-token: ${{ secrets.PRINT_RELEASE }}
-          tag: ${{ needs.package.outputs.tag }}
+          tag: ${{ needs.packageVSIX.outputs.tag }}
           
       - name: Create Release
         id: create-release
@@ -116,15 +131,15 @@ jobs:
           PRINT_RELEASE: ${{ secrets.PRINT_RELEASE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ needs.package.outputs.tag }}
-          release_name: Release ${{ needs.package.outputs.version }}
+          tag_name: ${{ needs.packageVSIX.outputs.tag }}
+          release_name: Release ${{ needs.packageVSIX.outputs.version }}
           draft: false
           prerelease: false
-          
+
       - name: Upload assets to a Release
         uses: AButler/upload-release-assets@v2.0
         with:
-          files: ${{ needs.package.outputs.packageName }}
-          release-tag:  ${{ needs.package.outputs.tag }}
+          files: ${{ needs.packageVSIX.outputs.packageName }}
+          release-tag:  ${{ needs.packageVSIX.outputs.tag }}
           repo-token: ${{ secrets.PRINT_RELEASE }}
           
