@@ -15,5 +15,6 @@ h3 {
 	font-family: FONT_FAMILY;
 	font-size: FONT_SIZE;
 	line-height: LINE_SPACINGem;
-	padding-bottom: 3px;
+	padding-bottom: 0px;
+	padding-top: 0px; /* Table cell has inherited 1px of padding */
 }
