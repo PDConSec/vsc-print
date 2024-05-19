@@ -11,6 +11,7 @@ body {
 
 .line-number,
 .line-text,
+.plaintext,
 h3 {
 	font-family: FONT_FAMILY;
 	font-size: FONT_SIZE;
