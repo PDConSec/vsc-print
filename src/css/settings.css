@@ -11,10 +11,17 @@ body {
 
 .line-number,
 .line-text,
-.plaintext,
 h3 {
 	font-family: FONT_FAMILY;
 	font-size: FONT_SIZE;
 	line-height: LINE_SPACINGem;
 	padding-bottom: 3px;
+}
+
+pre.plaintext {
+	font-family: FONT_FAMILY;
+	font-size: FONT_SIZE;
+	line-height: LINE_SPACINGem;
+	padding-bottom: 3px;
+	white-space: pre-wrap;
 }
