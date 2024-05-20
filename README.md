@@ -41,6 +41,6 @@ Some things you can configure:
 
 ## Planned changes
 
-Machine translation to support major languages. 
+- Machine translation to support major languages.
 This has already been applied to the extension and its settings but high quality automated translation of documentation is proving more difficult.
-
+- Our own `marked` based Markdown rendering pipeline. We used the VS Code internal rendering pipeline in order to pick up any Markdown extensions that you might have installed for use with the internal Markdown preview. Microsoft does not support use of the internal pipeline and has no compunction about making unannounced breaking changes to it, so we will be our own renderer. Long experience shows that there are only a handful of widely used Markdown extensions so we plan to bake them in.
