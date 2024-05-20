@@ -62,7 +62,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		isEnabled: htmlRendererMarkdown.isEnabled
 	});
 	// and here it is as a direct call just so you can compare them
-	DocumentRenderer.register("plaintext", { getBodyHtml: htmlRendererPlaintext.getBodyHtml });
+	DocumentRenderer.register("plaintext", {
+		getBodyHtml: htmlRendererPlaintext.getBodyHtml,
+		getCssUriStrings: htmlRendererPlaintext.getCssUriStrings
+	});
 
 	server = http.createServer(async (request, response) => {
 		try {
