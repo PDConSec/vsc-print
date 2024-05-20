@@ -174,10 +174,10 @@ export class PrintSession {
 					const printConfig = vscode.workspace.getConfiguration("print");
 					const editorConfig = vscode.workspace.getConfiguration("editor");
 					const css = settingsCss
-						.replace("FONT_FAMILY", editorConfig.fontFamily)
-						.replace("FONT_SIZE", printConfig.fontSize)
-						.replace("LINE_SPACING", printConfig.lineSpacing)
-						.replace("TAB_SIZE", editorConfig.tabSize)
+						.replace(/FONT_FAMILY/g, editorConfig.fontFamily)
+						.replace(/FONT_SIZE/g, printConfig.fontSize)
+						.replace(/LINE_SPACING/g, printConfig.lineSpacing)
+						.replace(/TAB_SIZE/g, editorConfig.tabSize)
 					response.writeHead(200, {
 						"Content-Type": "text/css; charset=utf-8",
 						"Content-Length": Buffer.byteLength(css, "utf-8")
