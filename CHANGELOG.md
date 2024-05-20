@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.11.28
+
+- [#308](https://github.com/PDConSec/vsc-print/issues/308) editor font settings apply to plaintext
+- Per #309 discussion plaintext documents should wrap
+
 ### 0.11.27
 
 - [#297 Update unit test support](https://github.com/PDConSec/vsc-print/issues/297)
