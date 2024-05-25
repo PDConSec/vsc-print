@@ -176,7 +176,7 @@ export class PrintSession {
 					const css = settingsCss
 						.replace(/FONT_FAMILY/g, editorConfig.fontFamily)
 						.replace(/FONT_SIZE/g, printConfig.fontSize)
-						.replace(/LINE_SPACING/g, printConfig.lineSpacing)
+						.replace(/LINE_SPACING/g, (1.3 * printConfig.lineSpacing).toString())
 						.replace(/TAB_SIZE/g, editorConfig.tabSize)
 					response.writeHead(200, {
 						"Content-Type": "text/css; charset=utf-8",
