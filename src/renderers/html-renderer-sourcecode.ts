@@ -2,7 +2,7 @@ import { IResourceDescriptor } from './IResourceDescriptor';
 import * as vscode from 'vscode';
 import { logger } from '../logger';
 import hljs from 'highlight.js';
-
+// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxzzzzzzzzzzzzzzzzzzzzzzzzz
 const resources = new Map<string, IResourceDescriptor>();
 resources.set("default.css", {
 	content: require("highlight.js/styles/default.css").default.toString(),
@@ -32,14 +32,12 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 		}
 		renderedCode = fixMultilineSpans(renderedCode);
 		const printConfig = vscode.workspace.getConfiguration("print");
-		const pattern = /((?:(?:[A-Za-z0-9_]{40}|[\])},;=]))(?![^<>]*>))/g;
-		const replacement = "$1<wbr>";
 		logger.debug(`Line numbering: ${printConfig.lineNumbers} (resolves to ${options.lineNumbers})`)
 		if (options.lineNumbers) {
 			renderedCode = renderedCode
 				.split("\n")
 				.map(line => line || "&nbsp;")
-				.map((line, i) => `<tr><td class="line-number">${options.startLine + i}</td><td class="line-text">${line.replace(pattern, replacement)}</td></tr>`)
+				.map((line, i) => `<tr><td class="line-number">${options.startLine + i}</td><td class="line-text">${line.replace(/(\w{20})/g, "$1&shy;")}</td></tr>`)
 				.join("\n")
 				.replace("\n</td>", "</td>")
 				;
@@ -47,7 +45,7 @@ export function getBodyHtml(raw: string, languageId: string, options?: any): str
 			renderedCode = renderedCode
 				.split("\n")
 				.map(line => line || "&nbsp;")
-				.map((line, i) => `<tr><td class="line-text">${line.replace(pattern, replacement)}</td></tr>`)
+				.map((line, i) => `<tr><td class="line-text">${line.replace(/(\w{20})/g, "$1&shy;")}</td></tr>`)
 				.join("\n")
 				.replace("\n</td>", "</td>")
 				;
