@@ -6,7 +6,7 @@
 	"commands.title.openLog": "Open the log file",
 	"print.alternateBrowser.description": "Use the alternate browser",
 	"print.browserPath.description": "Path to the executable of an alternate browser",
-	"print.colourScheme.markdownDescription": "[Stylesheet preview is available online](https://highlightjs.org/static/demo/). Only 'light' versions are offered because paper is white.",
+	"print.colourScheme.markdownDescription": "[Stylesheet preview is available online](https://highlightjs.org/demo/). Only 'light' versions are offered because paper is white.",
 	"print.editorContextMenuItemPosition.markdownDescription": "The position of `Print` in the editor context menu",
 	"print.editorTitleMenuButton.description": "When this option is selected the Print icon appears on the toolbar above an active editor",
 	"print.folder.fileNames.description": "Include file names as section titles when printing content of a directory",
