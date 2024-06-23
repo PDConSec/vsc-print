@@ -13,7 +13,7 @@ resources.set("line-numbers.css", {
 	mimeType: "text/css; charset=utf-8;"
 });
 
-export function getBodyHtml(raw: string, languageId: string, options?: any): string {
+export async function getBodyHtml(raw: string, languageId: string, options?: any): string {
 	let renderedCode = "";
 	try {
 		try {
