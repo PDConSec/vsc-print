@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 
 export interface IDocumentRenderer {
 	isEnabled?: () => boolean;
-	getBodyHtml: (raw: string, languageId: string, options?: any) => string;
+	getBodyHtml: (raw: string, languageId: string, options?: any) => Promise<string>;
 	getTitle?: (uri: vscode.Uri) => string;
 	getCssUriStrings?: (uri: vscode.Uri) => Array<string>;
 	getScriptUriStrings?: (uri: vscode.Uri) => Array<string>;

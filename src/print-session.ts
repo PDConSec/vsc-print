@@ -141,7 +141,7 @@ export class PrintSession {
 				"Content-Type": "text/html; charset=utf-8",
 				"Content-Length": Buffer.byteLength(html, 'utf-8')
 			});
-			response.end(html);
+			return response.end(html);
 		} else if (urlParts.length === 3 && urlParts[2] === "completed") {
 			logger.debug(`Responding to "completed" request for session ${urlParts[1]}`)
 			this.completed = true;
@@ -149,12 +149,12 @@ export class PrintSession {
 				"Content-Type": "text/plain; charset=utf-8",
 				"Content-Length": 2
 			});
-			response.end("OK");
+			return response.end("OK");
 		} else if (urlParts.length === 4 && urlParts[2] === "workspace.resource") {
 			logger.debug(`Responding to workspace.resource request for session ${urlParts[1]}`);
 			const basePath = vscode.workspace.getWorkspaceFolder(this.source!)?.uri.fsPath!;
 			const resourcePath = path.join(basePath, ...urlParts.slice(3));
-			await relativeResource(resourcePath);
+			return await relativeResource(resourcePath);
 		} else if (urlParts.length === 4 && urlParts[2] === "bundled") {
 			logger.debug(`Responding to bundled request for ${urlParts[3]} in session ${urlParts[1]}`);
 			switch (urlParts[3]) {
@@ -168,8 +168,7 @@ export class PrintSession {
 						"Content-Length": colourSchemeCss.length,
 						'Cache-Control': 'no-cache'
 					});
-					response.end(colourSchemeCss);
-					break;
+					return response.end(colourSchemeCss);
 				case "settings.css":
 					const printConfig = vscode.workspace.getConfiguration("print");
 					const editorConfig = vscode.workspace.getConfiguration("editor");
@@ -182,8 +181,7 @@ export class PrintSession {
 						"Content-Type": "text/css; charset=utf-8",
 						"Content-Length": Buffer.byteLength(css, "utf-8")
 					});
-					response.end(css);
-					break;
+					return response.end(css);
 				default:
 					try {
 						const rootDocumentRenderer = DocumentRenderer.get(this.pageBuilder!.language);
@@ -198,21 +196,20 @@ export class PrintSession {
 							"Content-Type": resourceDescriptor.mimeType,
 							"Content-Length": contentLength
 						});
-						response.end(resourceDescriptor.content);
+						return response.end(resourceDescriptor.content);
 					} catch {
 						logger.debug(`bundled/${urlParts[3]} not found`);
 						response.writeHead(404, {
 							"Content-Type": "text/plain; charset=utf-8",
 							"Content-Length": 9
 						});
-						response.end("Not found");
+						return response.end("Not found");
 					}
-					break;
 			}
 		} else {
 			const basePath = path.dirname(this.source!.fsPath);
 			const resourcePath = path.join(basePath, ...urlParts.slice(2));
-			await relativeResource(resourcePath);
+			return await relativeResource(resourcePath);
 		}
 
 		async function relativeResource(resourcePath: string) {

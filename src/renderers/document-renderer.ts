@@ -14,7 +14,7 @@ export class DocumentRenderer {
 		this.options = options;
 	}
 
-	public getBodyHtml(raw: string, languageId: string, options?: any) {
+	public async getBodyHtml(raw: string, languageId: string, options?: any) {
 		return this.options.getBodyHtml(raw, languageId, options);
 	}
 
