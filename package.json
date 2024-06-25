@@ -22,7 +22,7 @@
 	},
 	"homepage": "https://github.com/PDConSec/vsc-print/discussions/categories/announcements",
 	"engines": {
-		"vscode": "^1.87.0"
+		"vscode": "^1.90.0"
 	},
 	"keywords": [
 		"print",
@@ -568,7 +568,7 @@
 		"@types/micromatch": "^4.0.6",
 		"@types/mocha": "^10.0.6",
 		"@types/node": "^20.11.24",
-		"@types/vscode": "^1.87.0",
+		"@types/vscode": "^1.90.0",
 		"@typescript-eslint/eslint-plugin": "^7.0.2",
 		"@typescript-eslint/parser": "^7.0.2",
 		"@vscode/test-cli": "^0.0.6",
