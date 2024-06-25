@@ -155,7 +155,7 @@ export class PrintSession {
 			const basePath = vscode.workspace.getWorkspaceFolder(this.source!)?.uri.fsPath!;
 			const resourcePath = path.join(basePath, ...urlParts.slice(3));
 			return await relativeResource(resourcePath);
-		} else if (urlParts.length === 4 && urlParts[2] === "bundled") {
+		} else if (urlParts.length > 3 && urlParts[2] === "bundled") {
 			logger.debug(`Responding to bundled request for ${urlParts[3]} in session ${urlParts[1]}`);
 			switch (urlParts[3]) {
 				case "colour-scheme.css":
@@ -185,7 +185,7 @@ export class PrintSession {
 				default:
 					try {
 						const rootDocumentRenderer = DocumentRenderer.get(this.pageBuilder!.language);
-						const resourceDescriptor = rootDocumentRenderer.getResource(urlParts[3], this.source);
+            const resourceDescriptor = rootDocumentRenderer.getResource(urlParts.slice(3).join("/"), this.source);
 						let contentLength: number;
 						if (typeof resourceDescriptor.content === "string") {
 							contentLength = Buffer.byteLength(resourceDescriptor.content, "utf-8")
