@@ -12,7 +12,7 @@ resources.set("line-numbers.css", {
 	mimeType: "text/css; charset=utf-8;"
 });
 
-export async function getBodyHtml(raw: string, languageId: string, options?: any): Promise<string> {
+export async function getBodyHtml(generatedResources: Map<string, IResourceDescriptor>, raw: string, languageId: string, options?: any): Promise<string> {
 	let renderedCode = "";
 	try {
 		try {

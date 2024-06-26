@@ -9,7 +9,7 @@ resources.set("default-markdown.css", {
 	mimeType: "text/css; charset=utf-8;"
 });
 
-export async function getBodyHtml(raw: string): Promise<string> {
+export async function getBodyHtml(generatedResources: Map<string, string | Buffer>, raw: string): Promise<string> {
 	let renderedCode = "";
 	try {
 		renderedCode = HtmlDocumentBuilder.MarkdownEngine.render(raw);
