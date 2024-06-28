@@ -24,7 +24,7 @@ export class PrintSession {
   public ready: Promise<void>;
   public sessionId = nodeCrypto.randomUUID();
   public source: any;
-  constructor(source: any, preview: boolean = true) {
+  constructor(source: any, isPreview: boolean = true) {
     logger.debug(`Creating a print session object for ${source}`);
     const printConfig = vscode.workspace.getConfiguration("print");
     const editorConfig = vscode.workspace.getConfiguration("editor");
@@ -43,6 +43,7 @@ export class PrintSession {
             if (!document) throw "This can't happen";
             this.source = document.uri;
             this.pageBuilder = new HtmlDocumentBuilder(
+              isPreview,
               this.generatedResources,
               baseUrl,
               document.uri,
@@ -65,6 +66,7 @@ export class PrintSession {
               const langId = document!.languageId;
               const startLine = selection.start.line + 1; // zero based to one based
               this.pageBuilder = new HtmlDocumentBuilder(
+                isPreview,
                 this.generatedResources,
                 baseUrl,
                 document.uri,
@@ -78,6 +80,7 @@ export class PrintSession {
               const langId = document!.languageId;
               const startLine = selection.start.line + 1; // zero based to one based
               this.pageBuilder = new HtmlDocumentBuilder(
+                isPreview,
                 this.generatedResources,
                 baseUrl,
                 document.uri,
@@ -96,6 +99,7 @@ export class PrintSession {
             logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
             logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
             this.pageBuilder = new HtmlDocumentBuilder(
+              isPreview,
               this.generatedResources,
               baseUrl,
               document.uri,
@@ -106,29 +110,31 @@ export class PrintSession {
             break;
           case "folder":
             logger.debug(`Printing the folder ${source!.fsPath}`);
-            this.pageBuilder = new HtmlDocumentBuilder(this.generatedResources, baseUrl, source, "", "folder", printLineNumbers);
+            this.pageBuilder = new HtmlDocumentBuilder(isPreview, this.generatedResources, baseUrl, source, "", "folder", printLineNumbers);
             break;
           case "multiselection":
             logger.debug(`Printing multiselection`);
             const multiselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.uri;
-            this.pageBuilder = new HtmlDocumentBuilder(this.generatedResources, baseUrl, multiselectionPath, "", "multiselection", printLineNumbers, 1, source);
+            this.pageBuilder = new HtmlDocumentBuilder(isPreview, this.generatedResources, baseUrl, multiselectionPath, "", "multiselection", printLineNumbers, 1, source);
             break;
           default:
             logger.error(rootDocumentContentSource);
             vscode.window.showErrorMessage(rootDocumentContentSource);
             break;
         }
-        if (preview) {
-          const renderer = this.pageBuilder;
-          const html = await renderer!.build();
-          PrintPreview.show(html)
-        } else {
+        // todo modify vscode to stop built-in preview registering
+        // leave this code while we decide how to handle preview
+        // if (isPreview) {
+        //   const renderer = this.pageBuilder;
+        //   const html = await renderer!.build();
+        //   PrintPreview.show(html)
+        // } else {
           if (printConfig.alternateBrowser) {
             launchAlternateBrowser(this.getUrl())
           } else {
             vscode.env.openExternal(vscode.Uri.parse(this.getUrl()));
           }
-        }
+        // }
         resolve();
       } catch (err) {
         reject(err);

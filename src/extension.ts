@@ -33,9 +33,9 @@ export async function activate(context: vscode.ExtensionContext) {
   Metadata.ExtensionContext = context;
   logger.debug("Print activated");
 
-  let ecmPrint = vscode.workspace.getConfiguration("print").editorContextMenuItemPosition,
-    etmButton = vscode.workspace.getConfiguration("print").editorTitleMenuButton,
-    disposable: vscode.Disposable;
+  let ecmPrint = vscode.workspace.getConfiguration("print").editorContextMenuItemPosition;
+  let etmButton = vscode.workspace.getConfiguration("print").editorTitleMenuButton;
+  let disposable: vscode.Disposable;
   vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
   vscode.commands.executeCommand("setContext", "etmButton", etmButton);
 
@@ -67,7 +67,7 @@ export async function activate(context: vscode.ExtensionContext) {
     getCssUriStrings: htmlRendererPlaintext.getCssUriStrings
   });
 
-  const requestListener:http.RequestListener = async (request, response) => {
+  const requestListener: http.RequestListener = async (request, response) => {
     try {
       const urlParts = decodeURI(request.url!).split('/',);
       if (urlParts[1] === "whatsnew") {
@@ -181,8 +181,11 @@ function printCommand(cmdArgs: any, multiselection: Array<vscode.Uri>): PrintSes
   return printSession;
 }
 
-function previewCommand(cmdArgs: any) {
+function previewCommand(cmdArgs: any, multiselection: Array<vscode.Uri>) {
   logger.debug("Preview command was invoked");
+  if (multiselection?.length > 1) {
+    cmdArgs = multiselection;
+  }
   const printSession = new PrintSession(cmdArgs, true);
   printSessions.set(printSession.sessionId, printSession);
   return printSession;
