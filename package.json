@@ -291,8 +291,18 @@
           "group": "navigation"
         },
         {
+          "when": "ecmPrint == Top",
+          "command": "vsc-print.preview",
+          "group": "navigation"
+        },
+        {
           "when": "ecmPrint == Bottom",
           "command": "vsc-print.print",
+          "group": "Z_commands"
+        },
+        {
+          "when": "ecmPrint == Bottom",
+          "command": "vsc-print.preview",
           "group": "Z_commands"
         }
       ],
