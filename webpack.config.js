@@ -45,9 +45,16 @@ const extensionConfig = {
 			{
 				test: /\.css$/,
 				use: [
-					'css-loader'
+          {
+            loader: 'css-loader',
+            options: { url: false }
+          }
 				]
 			},
+      {
+        test: /\.(woff|woff2|ttf|eot|otf)$/,
+        use: 'file-loader'
+      },
 			{
 				test: /\.html$/,
 				use: [

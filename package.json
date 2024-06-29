@@ -588,14 +588,18 @@
     "workspace"
   ],
   "dependencies": {
+    "@viz-js/viz": "^3.6.0",
     "braces": "^3.0.2",
     "highlight.js": "^11.9.0",
+    "lodash": "^4.17.21",
     "micromatch": "^4.0.5",
-    "winston": "^3.11.0"
+    "uuid": "^10.0.0",
+    "winston": "^3.11.0",
+    "yaml": "^2.4.5"
   },
   "scripts": {
     "vscode:prepublish": "webpack --mode production",
-    "webpack": "webpack --mode development",
+    "webpack": "node resource-loader-generator.js && webpack --mode development",
     "webpack-dev": "webpack --mode development --watch",
     "compile": "tsc -p ./",
     "lint": "eslint \"src/**/*.ts\"",
@@ -603,10 +607,13 @@
   },
   "devDependencies": {
     "@types/braces": "^3.0.4",
+    "@types/katex": "^0.16.7",
+    "@types/lodash.merge": "^4.6.9",
     "@types/markdown-it": "^13.0.7",
     "@types/micromatch": "^4.0.6",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.24",
+    "@types/uuid": "^10.0.0",
     "@types/vscode": "^1.90.0",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
@@ -616,8 +623,11 @@
     "axios": "^1.6.7",
     "css-loader": "^6.10.0",
     "eslint": "^8.56.0",
+    "file-loader": "^6.2.0",
+    "katex": "^0.16.10",
     "markdown-it": "^14.0.0",
     "marked": "^12.0.1",
+    "mermaid": "^10.9.1",
     "raw-loader": "^4.0.2",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",

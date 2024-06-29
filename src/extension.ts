@@ -58,6 +58,7 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.executeCommand("print.registerDocumentRenderer", "markdown", {
     getBodyHtml: htmlRendererMarkdown.getBodyHtml,
     getCssUriStrings: htmlRendererMarkdown.getCssUriStrings,
+    getScriptUriStrings: htmlRendererMarkdown.getScriptUriStrings,
     getResource: htmlRendererMarkdown.getResource,
     isEnabled: htmlRendererMarkdown.isEnabled
   });
