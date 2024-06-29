@@ -1,5 +1,16 @@
 # Change Log
 
+### 0.12.3
+
+- Separate print and preview buttons and menu items
+- Print and Close setting removed
+- No longer dependent on VS Code's built in Print rendering pipeline
+- Baked-in support for Mermaid ([#263](https://github.com/PDConSec/vsc-print/issues/263)) 
+- Baked-in support for LaTeX with all CSS and font resources served out of the extension
+- [#305 Use editor typeface setting](https://github.com/PDConSec/vsc-print/issues/305)
+- Installable document renderer API getBodyHtml is now async to support the use of await with libraries
+- Support for defining Mermaid and Katex rendering options in-line in Markdown
+
 ### 0.11.28
 
 - [#308](https://github.com/PDConSec/vsc-print/issues/308) editor font settings apply to plaintext
