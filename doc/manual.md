@@ -66,7 +66,6 @@ Here is a list of available setting names as they appear in the configuration fi
 * `print.formatMarkdown` : render Markdown as styled HTML when printing
 * `print.lineNumbers` : on, off or inherit (from editor)
 * `print.lineSpacing` : single, line-and-a-half or double spaced
-* `print.printAndClose` : after printing, close the browser
 * `print.folder.include`: pattern for files to include. Empty matches everything.
 * `print.folder.exclude`: patterns to exclude
 * `print.folder.maxFiles`: the maximum number of files for which content is rendered when printing a folder
@@ -78,11 +77,9 @@ Here is a list of available setting names as they appear in the configuration fi
 
 ## Customising the user interface
 
-You can control whether the print icon appears in the toolbar when you focus an editor pane. This setting is labelled `Editor Title Menu Button`.
+You can control whether the print and preview icons appear in the toolbar when you focus an editor pane. This setting is labelled `Editor Title Menu Button`.
 
 You can control whether the "Print" menu item appears at the top, bottom or nowhere on context menus using the `Editor Context Menu Item Position` setting.
-
-When the `Print and Close` setting is checked, printing something will automatically open the browser's Print dialog and then automatically close the browser after you either print or cancel. Turning this off will open the browser with the rendered document ready for inspection. If you then manually open the Print dialog, printing or cancelling it will not close the browser.
 
 ## Using a particular browser to print
 
@@ -100,6 +97,8 @@ If you need to supply command-line options, create a batch file (or a bash scrip
 
 ## Printing source code
 
+No, you can't have the same syntax colouring scheme as the editor. For starters many people use dark mode. A dark mode colour scheme won't work on white paper. Even if it did, VS Code does not make this information accessible through any API. It's impossible, and even if we could do it we still wouldn't discriminate against people who use dark mode.
+
 Using the `Colour Scheme` setting you can specify the colour scheme used for syntax colouring. Choices are limited to light themes because printers use white paper. 
 
 If you print the active document and there is a multi-line selection, only the selection is printed.
@@ -110,11 +109,14 @@ Typeface is determined by VS Code editor settings. If you see Fira Code on scree
 
 The _size_ of printed text is a Print setting because the size that works best on screen may not be the size that works best on paper. 
 
-If you're wondering why we call it a typeface and not a font, it's because a font is a particular typeface in a specific size and treatment. "12pt Times italic" is a font. "Times" is a typeface. It does not help that the Windows Font Picker (which _does_ pick a font, you have to specify typeface, size and treatment) mislabels the typeface as "Font".
-
 ## Printing Markdown
 
-You probably want Markdown print-jobs rendered and styled, and this is the default behaviour. If you wish to print Markdown as source code, you can un-check the setting `Print: Render Markdown` .
+You probably want Markdown print-jobs rendered and styled, and this is the default behaviour. If you wish to print Markdown as source code, you can un-check the setting `Print: Render Markdown`. For a variety of reasons we no longer use the VS Code Markdown rendering pipeline. This means that any Markdown extensions you may install will have no effect on print or print preview, only on the internal Markdown preview.
+
+Just use print preview. We have direct off-line support for the following, with more to come.
+
+- Mermaid
+- KaTeX
 
 ### Colour scheme
 
@@ -131,8 +133,6 @@ For source code printing, stylesheets are bundled and can be chosen by name from
 
 ```json
 "markdown.styles": [
-	"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css",
-	"path/to/document/relative/custom.css",
 	"workspace.resource/path/to/stylesheet.css"
 ]
 ```
@@ -148,7 +148,7 @@ Don't forget that you can embed HTML in Markdown, so there's nothing stopping yo
 
 ## Web Server
 
-The embedded web server binds only to the loopback address and accepts only connections that specify.
+The embedded web server binds only to the loopback address and accepts only connections that specify. A separate server is spun up for each print job and terminates when printing finishes. 
 
 ## Katex Markdown extensions
 
@@ -159,24 +159,22 @@ Katex depends on CSS and fonts from the web. To get printing to work you must ad
 	"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
 ]
 ```
-If you want to cut the cord, then import the Katex resources into your project as described in the preceding section and use a workspace-relative reference. 
 
 Here are some samples to help you check your configuration.
-```
-$$
+
+``` latex
 \begin{alignedat}{2}
    10&x+ &3&y = 2 \\
    3&x+&13&y = 4
 \end{alignedat}
-$$
-and thus
 
-$$
+\\
+
 x = \begin{cases}
    a &\text{if } b \\
    c &\text{if } d
 \end{cases}
-$$
+
 ```
 
 ## Rendered Markdown and remote workspaces

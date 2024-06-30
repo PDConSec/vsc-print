@@ -33,10 +33,6 @@ th {
 	padding: 3px;
 }
 
-p {
-  font-size: 14pt;
-}
-
 div.left pre.mermaid {
   float: left;
   margin: 0.6em 0.6em 0 0;

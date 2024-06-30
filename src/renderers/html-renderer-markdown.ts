@@ -5,33 +5,38 @@ import { Metadata } from '../metadata';
 import { IResourceDescriptor } from "./IResourceDescriptor";
 import { processFencedBlocks } from './processFencedBlocks';
 import { marked } from 'marked';
-import resources from './resources';
 
 // RESOURCES 
-//onst resources = new Map<string, IResourceDescriptor>();
+const resources = new Map<string, IResourceDescriptor>();
 
 // Resolve the content of a stylesheet.
 // Then add it to resources with the CSS mimeType
 // under the name that will be used to request it.
 resources.set("default-markdown.css", {
   content: require("../css/default-markdown.css").default.toString(),
-  mimeType: "text/css; charset=utf-8;"
+  mimeType: "text/css; charset=utf-8"
 });
 
 resources.set("katex.css", {
-  content: require("../../node_modules/katex/dist/katex.css").default.toString(),
-  mimeType: "text/css; charset=utf-8;"
+  content: fs.readFileSync(resourcePath("katex.css")),
+  mimeType: "text/css; charset=utf-8"
 });
 
-let mermaidPath = path.join(Metadata.ExtensionPath, "mermaid.min.js");
-if (!fs.existsSync(mermaidPath)) {
-  mermaidPath = path.join(Metadata.ExtensionPath, "dist", "mermaid.min.js");
-}
-const mermaidContent = fs.readFileSync(mermaidPath);
-resources.set("mermaid.min.js", {
-  content: mermaidContent,
+resources.set("mermaid.js", {
+  content: fs.readFileSync(resourcePath("mermaid.js")),
   mimeType: "text/javascript"
 });
+
+const fontPath = resourcePath("fonts");
+const fontfilenames = fs.readdirSync(fontPath);
+for (const fontfilename of fontfilenames) {
+  const filepath = path.join(fontPath, fontfilename);
+  const fontType = path.extname(fontfilename).substring(1);
+  resources.set(`fonts/${fontfilename}`, {
+    content: fs.readFileSync(filepath),
+    mimeType: `font/${fontType}`
+  });
+}
 
 // give the user the option to turn off rendered printing
 export function isEnabled(): boolean {
@@ -47,8 +52,8 @@ export async function getBodyHtml(generatedResources: Map<string, IResourceDescr
 export function getCssUriStrings(): Array<string> {
   const cssUriStrings = [
     "bundled/default-markdown.css",
+    "bundled/settings.css",
     "bundled/katex.css",
-    "bundled/settings.css"
   ];
   return cssUriStrings;
 }
@@ -59,7 +64,10 @@ export function getResource(name: string): IResourceDescriptor {
 
 export function getScriptUriStrings(uri: vscode.Uri) {
   return [
-    "bundled/mermaid.min.js"
+    "bundled/mermaid.js"
   ]
 }
 
+function resourcePath(relativePath: string) {
+  return path.join(Metadata.ExtensionPath, relativePath);
+}

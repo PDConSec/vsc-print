@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "icon": "assets/vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
@@ -590,7 +590,9 @@
   "dependencies": {
     "@viz-js/viz": "^3.6.0",
     "braces": "^3.0.2",
+    "cors": "^2.8.5",
     "highlight.js": "^11.9.0",
+    "katex": "^0.16.10",
     "lodash": "^4.17.21",
     "micromatch": "^4.0.5",
     "uuid": "^10.0.0",
@@ -598,9 +600,9 @@
     "yaml": "^2.4.5"
   },
   "scripts": {
-    "vscode:prepublish": "webpack --mode production",
-    "webpack": "node resource-loader-generator.js && webpack --mode development",
-    "webpack-dev": "webpack --mode development --watch",
+    "vscode:prepublish": "node gather.js && webpack --mode production",
+    "webpack": "node gather.js && webpack --mode development",
+    "webpack-dev": "node gather.js && webpack --mode development --watch",
     "compile": "tsc -p ./",
     "lint": "eslint \"src/**/*.ts\"",
     "localise": "npx @vscode/l10n-dev export --outDir ./l10n ./src && npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy"
@@ -624,7 +626,6 @@
     "css-loader": "^6.10.0",
     "eslint": "^8.56.0",
     "file-loader": "^6.2.0",
-    "katex": "^0.16.10",
     "markdown-it": "^14.0.0",
     "marked": "^12.0.1",
     "mermaid": "^10.9.1",

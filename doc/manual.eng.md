@@ -68,7 +68,6 @@ Here is a list of available setting names as they appear in the configuration fi
 * `print.formatMarkdown` : render Markdown as styled HTML when printing
 * `print.lineNumbers` : on, off or inherit (from editor)
 * `print.lineSpacing` : single, line-and-a-half or double spaced
-* `print.printAndClose` : after printing, close the browser
 * `print.folder.include`: pattern for files to include. Empty matches everything.
 * `print.folder.exclude`: patterns to exclude
 * `print.folder.maxFiles`: the maximum number of files for which content is rendered when printing a folder
@@ -150,18 +149,7 @@ Don't forget that you can embed HTML in Markdown, so there's nothing stopping yo
 
 ## Web Server
 
-The embedded web server binds only to the loopback address and accepts only connections that specify.
-
-## Katex Markdown extensions
-
-Katex depends on CSS and fonts from the web. To get printing to work you must add the required stylesheet to your settings. If you find one or two things work in the preview yet not in print, determine the current version from the KaTeX website, and update the URL. 
-
-```json
-"markdown.styles": [
-	"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
-]
-```
-If you want to cut the cord, then import the Katex resources into your project as described in the preceding section and use a workspace-relative reference. 
+The embedded web server binds only to the loopback address and accepts only connections that specify an active print session.
 
 Here are some samples to help you check your configuration.
 ```

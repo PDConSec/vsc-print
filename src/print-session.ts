@@ -171,7 +171,7 @@ export class PrintSession {
       const resourceDescriptor = this.generatedResources.get(urlParts[3])!;
       let contentLength: number;
       if (typeof resourceDescriptor.content === "string") {
-        contentLength = Buffer.byteLength(resourceDescriptor.content, "utf-8")
+        contentLength = Buffer.byteLength(resourceDescriptor.content, "utf-8");
       } else {
         contentLength = resourceDescriptor.content.byteLength;
       }

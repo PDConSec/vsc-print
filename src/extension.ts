@@ -70,6 +70,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const requestListener: http.RequestListener = async (request, response) => {
     try {
+      response.setHeader("Access-Control-Allow-Origin", '*');
+      response.setHeader("Access-Control-Allow-Methods", 'GET');
+      response.setHeader("Access-Control-Allow-Headers", 'Content-Type');
       const urlParts = decodeURI(request.url!).split('/',);
       if (urlParts[1] === "whatsnew") {
         response.writeHead(302, { 'Location': 'https://pdconsec.net/vscode-print/whatsnew' });
