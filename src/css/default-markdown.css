@@ -33,8 +33,25 @@ th {
 	padding: 3px;
 }
 
-img {
-	max-width: 100%;
+div.left pre.mermaid {
+  float: left;
+  margin: 0.6em 0.6em 0 0;
+}
+
+div.right pre.mermaid {
+  float: right;
+  margin: 0.6em 0 0 0.6em;
+}
+
+div.centre {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div.fill pre.mermaid svg {
+  max-width: none !important;
+  /* mermaid puts a style directly on the svg node, !important overrides it */
 }
 
 @media print {

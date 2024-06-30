@@ -14,19 +14,21 @@ So if you have a local browser that can print, and VS Code can launch it, you ca
 
 ## Markdown
 
+Use fenced blocks for LaTeX and Mermaid diagrams. You can position Mermaid diagrams by wrapping them in a div with the class `left`, `right`, `centre` or `fill`. Similar support for LaTeX will come in a later release.
+
 ![Markdown-rendered](assets/Markdown-rendered.png) 
 
 ## Classic user experience
 
-The print icon on the toolbar prints the document in the active editor.
+The print and print preview icon are on the toolbar _when there is an active editor_. VS Code shows extension contributions according to the language of the active editor. No active editor means no icons (someone thought we should "fix" this).
 
-If you have a text selection that crosses at least one line-break you can right click and choose `Print` from the context menu to send just the selection to the printer. In the absence of a multi-line selection the entire document is printed. You can control the position of `Print` in this menu, or remove it altogether.
+![toolbar](assets/print-icon.png)
+
+If you have a text selection that crosses at least one line-break you can right click and choose `Print` or `Print preview` from the context menu to send just the selection to the printer. In the absence of a multi-line selection the entire document is printed. You can control the position of `Print` and `Print preview` in this menu, or remove it altogether.
 
 ![context-menu-editor](assets/context-menu.png)
 
-Or you can right-click on a file in the file explorer pane and choose Print from the context menu.
-
-![context-menu-file-explorer](assets/tree-context-menu.png)
+Or you can right-click on a file in the file explorer pane and choose `Print` or `Print preview` from the context menu.
 
 ## Highly configurable
 
@@ -43,4 +45,3 @@ Some things you can configure:
 
 - Machine translation to support major languages.
 This has already been applied to the extension and its settings but high quality automated translation of documentation is proving more difficult.
-- Our own `marked` based Markdown rendering pipeline. We used the VS Code internal rendering pipeline in order to pick up any Markdown extensions that you might have installed for use with the internal Markdown preview. Microsoft does not support use of the internal pipeline and has no compunction about making unannounced breaking changes to it, so we will be our own renderer. Long experience shows that there are only a handful of widely used Markdown extensions so we plan to bake them in.

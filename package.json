@@ -1,595 +1,645 @@
 {
-	"name": "vscode-print",
-	"displayName": "Print",
-	"description": "Rendered Markdown, coloured code.",
-	"version": "0.12.1",
-	"icon": "assets/vscode-print-128.png",
-	"author": {
-		"name": "Peter Wone",
-		"email": "peter.wone@outlook.com"
-	},
-	"publisher": "pdconsec",
-	"galleryBanner": {
-		"color": "Azure"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/PDConSec/vsc-print"
-	},
-	"qna": "https://github.com/PDConSec/vsc-print/discussions/categories/q-a",
-	"bugs": {
-		"url": "https://github.com/PDConSec/vsc-print/issues"
-	},
-	"homepage": "https://github.com/PDConSec/vsc-print/discussions/categories/announcements",
-	"engines": {
-		"vscode": "^1.90.0"
-	},
-	"keywords": [
-		"print",
-		"PrintCode",
-		"PDF",
-		"Markdown",
-		"remote"
-	],
-	"categories": [
-		"Other"
-	],
-	"main": "./dist/extension.js",
-	"activationEvents": [
-		"onStartupFinished"
-	],
-	"contributes": {
-		"markdown.markdownItPlugins": true,
-		"commands": [
-			{
-				"category": "%commands.category%",
-				"command": "vsc-print.print",
-				"title": "%commands.title.print%",
-				"icon": {
-					"dark": "assets/printer-icon-dog-ear-inverse.svg",
-					"light": "assets/printer-icon-dog-ear.svg"
-				}
-			},
-			{
-				"category": "%commands.category%",
-				"command": "vsc-print.help",
-				"title": "%commands.title.help%"
-			},
-			{
-				"category": "%commands.category%",
-				"command": "vsc-print.openLog",
-				"title": "%commands.title.openLog%"
-			},
-			{
-				"command": "vsc-print.dumpCommands",
-				"title": "Dump commands"
-			},
-			{
-				"command": "vsc-print.dumpProperties",
-				"title": "Dump properties"
-			}
-		],
-		"configuration": [
-			{
-				"title": "%configuration.title.print%",
-				"properties": {
-					"print.filepathAsDocumentHeading": {
-						"description": "Optional heading at the start of each file",
-						"type": "string",
-						"default": "Relative",
-						"enum": [
-							"Absolute",
-							"Relative"
-						]
-					},
-					"print.filepathHeadingForIndividuallyPrintedDocuments": {
-						"description": "Show the file path as a heading when a document is printed individually",
-						"type": "boolean",
-						"default": true
-					},
-					"print.filepathInDocumentTitle": {
-						"type": "string",
-						"default": "No path",
-						"markdownDescription": "HTML page title, used by some browsers in the page header (to control the heading that can appear at the start of the document, use **Filepath as Document Heading**)",
-						"enum": [
-							"No path",
-							"Abbreviated path",
-							"Workspace relative"
-						],
-						"markdownEnumDescriptions": [
-							"`filename.ext`",
-							"`C:\\...\\folder-containing\\filename.ext` (you will have to edit the name when saving a PDF)",
-							"A path relative to the workspace folder"
-						]
-					},
-					"print.lineSpacing": {
-						"type": "number",
-						"enum": [
-							1,
-							1.5,
-							2
-						],
-						"enumDescriptions": [
-							"%print.lineSpacing.single%",
-							"%print.lineSpacing.line-and-a-half%",
-							"%print.lineSpacing.double%"
-						],
-						"description": "%print.lineSpacing.description%",
-						"default": 1
-					},
-					"print.fontSize": {
-						"type": "string",
-						"enum": [
-							"6pt",
-							"7pt",
-							"8pt",
-							"9pt",
-							"10pt",
-							"11pt",
-							"11.5pt",
-							"12pt",
-							"13pt"
-						],
-						"description": "%print.fontSize.description%",
-						"default": "10pt"
-					},
-					"print.renderMarkdown": {
-						"type": "boolean",
-						"default": true,
-						"description": "%print.renderMarkdown.description%"
-					},
-					"print.lineNumbers": {
-						"type": "string",
-						"description": "%print.lineNumbers.description%",
-						"enum": [
-							"on",
-							"off",
-							"inherit"
-						],
-						"default": "inherit"
-					},
-					"print.logLevel": {
-						"type": "string",
-						"markdownDescription": "%print.logLevel.markdownDescription%",
-						"enum": [
-							"error",
-							"warn",
-							"info",
-							"http",
-							"verbose",
-							"debug",
-							"silly"
-						],
-						"default": "error"
-					},
-					"print.alternateBrowser": {
-						"type": "boolean",
-						"description": "%print.alternateBrowser.description%",
-						"default": false
-					},
-					"print.browserPath": {
-						"type": "string",
-						"description": "%print.browserPath.description%"
-					},
-					"print.colourScheme": {
-						"type": "string",
-						"enum": [
-							"A11 Y",
-							"Arduino",
-							"Ascetic",
-							"Atom One",
-							"Atelier Cave",
-							"Atelier Dune",
-							"Atelier Estuary",
-							"Atelier Forest",
-							"Atelier Heath",
-							"Atelier Lakeside",
-							"Atelier Plateau",
-							"Atelier Savanna",
-							"Atelier Seaside",
-							"Atelier Sulphur Pool",
-							"Color Brewer",
-							"Docco",
-							"Foundation",
-							"GitHub",
-							"GitHub Gist",
-							"Google Code",
-							"Grayscale",
-							"Gruvbox",
-							"Idea",
-							"ISBL",
-							"Kimbie",
-							"Lightfair",
-							"Magula",
-							"Mono Blue",
-							"nnfx",
-							"Paraiso",
-							"PureBasic",
-							"QTcreator",
-							"RouterOS",
-							"Schoolbook",
-							"Stack Overflow",
-							"Visual Studio",
-							"XCode"
-						],
-						"default": "Atelier Dune",
-						"markdownDescription": "%print.colourScheme.markdownDescription%"
-					},
-					"print.printAndClose": {
-						"type": "boolean",
-						"default": true,
-						"description": "%print.printAndClose.description%"
-					},
-					"print.editorContextMenuItemPosition": {
-						"default": "Top",
-						"type": "string",
-						"markdownDescription": "%print.editorContextMenuItemPosition.markdownDescription%",
-						"enum": [
-							"Top",
-							"Bottom",
-							"None"
-						]
-					},
-					"print.editorTitleMenuButton": {
-						"default": true,
-						"type": "boolean",
-						"description": "%print.editorTitleMenuButton.description%"
-					},
-					"print.folder.fileNames": {
-						"default": true,
-						"type": "boolean",
-						"description": "%print.folder.fileNames.description%"
-					},
-					"print.folder.include": {
-						"default": [],
-						"type": "array",
-						"items": {
-							"type": "string"
-						},
-						"description": "%print.folder.include.description%"
-					},
-					"print.folder.exclude": {
-						"default": [
-							"{bin,obj,out}",
-							"node_modules",
-							"data",
-							"**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo,design}"
-						],
-						"type": "array",
-						"items": {
-							"type": "string"
-						},
-						"description": "%print.folder.exclude.description%"
-					},
-					"print.folder.maxLines": {
-						"default": 1200,
-						"type": "integer",
-						"description": "%print.folder.maxLines.description%"
-					},
-					"print.folder.maxFiles": {
-						"default": 30,
-						"type": "integer",
-						"description": "%print.folder.maxFiles.description%"
-					},
-					"print.folder.includeFileList": {
-						"default": false,
-						"type": "boolean",
-						"description": "%print.folder.includeFileList.description%"
-					}
-				}
-			}
-		],
-		"menus": {
-			"explorer/context": [
-				{
-					"when": "ecmPrint == Top",
-					"command": "vsc-print.print",
-					"group": "navigation"
-				},
-				{
-					"when": "ecmPrint == Bottom",
-					"command": "vsc-print.print",
-					"group": "Z_commands"
-				}
-			],
-			"editor/title": [
-				{
-					"when": "editorLangId && etmButton",
-					"command": "vsc-print.print",
-					"group": "navigation"
-				}
-			],
-			"editor/title/context": [
-				{
-					"when": "editorLangId && ecmPrint == Top",
-					"command": "vsc-print.print",
-					"group": "navigation"
-				},
-				{
-					"when": "editorLangId && ecmPrint == Bottom",
-					"command": "vsc-print.print",
-					"group": "Z_commands"
-				}
-			],
-			"editor/context": [
-				{
-					"when": "editorLangId && ecmPrint == Top",
-					"command": "vsc-print.print",
-					"group": "navigation"
-				},
-				{
-					"when": "editorLangId && ecmPrint == Bottom",
-					"command": "vsc-print.print",
-					"group": "Z_commands"
-				}
-			]
-		},
-		"languages": [
-			{
-				"id": "en",
-				"aliases": [
-					"en-us",
-					"en-gb"
-				],
-				"translations": [
-					{
-						"id": "package.nls.en",
-						"path": "./i18n/package.nls.en.json"
-					}
-				]
-			},
-			{
-				"id": "zh-cn",
-				"aliases": [
-					"zh-hans"
-				],
-				"translations": [
-					{
-						"id": "package.nls.zh-cn",
-						"path": "./i18n/package.nls.zh-cn.json"
-					}
-				]
-			},
-			{
-				"id": "ja",
-				"translations": [
-					{
-						"id": "package.nls.ja",
-						"path": "./i18n/package.nls.ja.json"
-					}
-				]
-			},
-			{
-				"id": "es",
-				"translations": [
-					{
-						"id": "package.nls.es",
-						"path": "./i18n/package.nls.es.json"
-					}
-				]
-			},
-			{
-				"id": "ru",
-				"translations": [
-					{
-						"id": "package.nls.ru",
-						"path": "./i18n/package.nls.ru.json"
-					}
-				]
-			},
-			{
-				"id": "pt",
-				"translations": [
-					{
-						"id": "package.nls.pt",
-						"path": "./i18n/package.nls.pt.json"
-					}
-				]
-			},
-			{
-				"id": "fr",
-				"translations": [
-					{
-						"id": "package.nls.fr",
-						"path": "./i18n/package.nls.fr.json"
-					}
-				]
-			},
-			{
-				"id": "ko",
-				"translations": [
-					{
-						"id": "package.nls.ko",
-						"path": "./i18n/package.nls.ko.json"
-					}
-				]
-			},
-			{
-				"id": "zh-hant",
-				"aliases": [
-					"zh-tw"
-				],
-				"translations": [
-					{
-						"id": "package.nls.zh-hant",
-						"path": "./i18n/package.nls.zh-hant.json"
-					}
-				]
-			},
-			{
-				"id": "it",
-				"translations": [
-					{
-						"id": "package.nls.it",
-						"path": "./i18n/package.nls.it.json"
-					}
-				]
-			},
-			{
-				"id": "pl",
-				"translations": [
-					{
-						"id": "package.nls.pl",
-						"path": "./i18n/package.nls.pl.json"
-					}
-				]
-			},
-			{
-				"id": "hu",
-				"translations": [
-					{
-						"id": "package.nls.hu",
-						"path": "./i18n/package.nls.hu.json"
-					}
-				]
-			},
-			{
-				"id": "cs",
-				"translations": [
-					{
-						"id": "package.nls.cs",
-						"path": "./i18n/package.nls.cs.json"
-					}
-				]
-			},
-			{
-				"id": "bg",
-				"translations": [
-					{
-						"id": "package.nls.bg",
-						"path": "./i18n/package.nls.bg.json"
-					}
-				]
-			},
-			{
-				"id": "tr",
-				"translations": [
-					{
-						"id": "package.nls.tr",
-						"path": "./i18n/package.nls.tr.json"
-					}
-				]
-			},
-			{
-				"id": "my",
-				"translations": [
-					{
-						"id": "package.nls.my",
-						"path": "./i18n/package.nls.my.json"
-					}
-				]
-			},
-			{
-				"id": "ca",
-				"translations": [
-					{
-						"id": "package.nls.ca",
-						"path": "./i18n/package.nls.ca.json"
-					}
-				]
-			},
-			{
-				"id": "lt",
-				"translations": [
-					{
-						"id": "package.nls.lt",
-						"path": "./i18n/package.nls.lt.json"
-					}
-				]
-			},
-			{
-				"id": "hy",
-				"translations": [
-					{
-						"id": "package.nls.hy",
-						"path": "./i18n/package.nls.hy.json"
-					}
-				]
-			}
-		],
-		"walkthroughs": [
-			{
-				"id": "how-to-print",
-				"title": "Get Started with Print",
-				"description": "Discover in-editor printing for source code and documentation.",
-				"steps": [
-					{
-						"id": "print-editor-active",
-						"title": "Print the entire content of the active editor",
-						"media": {
-							"markdown": "assets/print-entire-content-active-editor.md"
-						}
-					},
-					{
-						"id": "print-multiline-selection",
-						"title": "Print a selection",
-						"media": {
-							"markdown": "assets/print-a-selection.md"
-						}
-					},
-					{
-						"id": "print-markdown-rendered",
-						"title": "Print a Markdown file as a formatted PDF",
-						"media": {
-							"markdown": "assets/print-md-as-pdf.md"
-						}
-					},
-					{
-						"id": "print-remote",
-						"title": "Print a file from a remote workspace",
-						"media": {
-							"markdown": "assets/enable-remote-print.md"
-						}
-					}
-				]
-			}
-		]
-	},
-	"extensionKind": [
-		"workspace"
-	],
-	"dependencies": {
-		"braces": "^3.0.2",
-		"highlight.js": "^11.9.0",
-		"micromatch": "^4.0.5",
-		"winston": "^3.11.0"
-	},
-	"scripts": {
-		"vscode:prepublish": "webpack --mode production",
-		"webpack": "webpack --mode development",
-		"webpack-dev": "webpack --mode development --watch",
-		"compile": "tsc -p ./",
-		"lint": "eslint \"src/**/*.ts\"",
-		"localise": "echo \"You must define AZURE_TRANSLATOR_KEY and AZURE_TRANSLATOR_REGION environment variables to use this command\" && npx @vscode/l10n-dev export --outDir ./l10n ./src && npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy"
-	},
-	"devDependencies": {
-		"@types/braces": "^3.0.4",
-		"@types/markdown-it": "^13.0.7",
-		"@types/micromatch": "^4.0.6",
-		"@types/mocha": "^10.0.6",
-		"@types/node": "^20.11.24",
-		"@types/vscode": "^1.90.0",
-		"@typescript-eslint/eslint-plugin": "^7.0.2",
-		"@typescript-eslint/parser": "^7.0.2",
-		"@vscode/test-cli": "^0.0.6",
-		"@vscode/test-electron": "^2.3.9",
-		"@vscode/vsce": "^2.24.0",
-		"axios": "^1.6.7",
-		"css-loader": "^6.10.0",
-		"eslint": "^8.56.0",
-		"markdown-it": "^14.0.0",
-		"marked": "^12.0.1",
-		"raw-loader": "^4.0.2",
-		"ts-loader": "^9.5.1",
-		"typescript": "^5.3.3",
-		"webpack": "^5.90.3",
-		"webpack-cli": "^5.1.4"
-	},
-	"l10n": "./l10n",
-	"__metadata": {
-		"id": "05046d70-8146-42f5-ac9e-b97b37c8c0ef",
-		"publisherDisplayName": "PD Consulting",
-		"publisherId": "a803a703-65fb-4fa9-955a-c9259bf2560d",
-		"isPreReleaseVersion": false
-	}
+  "name": "vscode-print",
+  "displayName": "Print",
+  "description": "Rendered Markdown, coloured code.",
+  "version": "0.12.4",
+  "icon": "assets/vscode-print-128.png",
+  "author": {
+    "name": "Peter Wone",
+    "email": "peter.wone@outlook.com"
+  },
+  "publisher": "pdconsec",
+  "galleryBanner": {
+    "color": "Azure"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PDConSec/vsc-print"
+  },
+  "qna": "https://github.com/PDConSec/vsc-print/discussions/categories/q-a",
+  "bugs": {
+    "url": "https://github.com/PDConSec/vsc-print/issues"
+  },
+  "homepage": "https://github.com/PDConSec/vsc-print/discussions/categories/announcements",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "keywords": [
+    "print",
+    "PrintCode",
+    "PDF",
+    "Markdown",
+    "remote"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "markdown.markdownItPlugins": true,
+    "commands": [
+      {
+        "category": "%commands.category%",
+        "command": "vsc-print.print",
+        "title": "%commands.title.print%",
+        "icon": {
+          "dark": "assets/printer-icon-dog-ear-inverse.svg",
+          "light": "assets/printer-icon-dog-ear.svg"
+        }
+      },
+      {
+        "category": "%commands.category%",
+        "command": "vsc-print.preview",
+        "title": "%commands.title.preview%",
+        "icon": {
+          "dark": "assets/print-preview-icon-inverse.svg",
+          "light": "assets/print-preview-icon.svg"
+        }
+      },
+      {
+        "category": "%commands.category%",
+        "command": "vsc-print.help",
+        "title": "%commands.title.help%"
+      },
+      {
+        "category": "%commands.category%",
+        "command": "vsc-print.openLog",
+        "title": "%commands.title.openLog%"
+      },
+      {
+        "command": "vsc-print.dumpCommands",
+        "title": "Dump commands"
+      },
+      {
+        "command": "vsc-print.dumpProperties",
+        "title": "Dump properties"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "%configuration.title.print%",
+        "properties": {
+          "print.filepathAsDocumentHeading": {
+            "description": "Optional heading at the start of each file",
+            "type": "string",
+            "default": "Relative",
+            "enum": [
+              "Absolute",
+              "Relative"
+            ]
+          },
+          "print.filepathHeadingForIndividuallyPrintedDocuments": {
+            "description": "Show the file path as a heading when a document is printed individually",
+            "type": "boolean",
+            "default": true
+          },
+          "print.filepathInDocumentTitle": {
+            "type": "string",
+            "default": "No path",
+            "markdownDescription": "HTML page title, used by some browsers in the page header (to control the heading that can appear at the start of the document, use **Filepath as Document Heading**)",
+            "enum": [
+              "No path",
+              "Abbreviated path",
+              "Workspace relative"
+            ],
+            "markdownEnumDescriptions": [
+              "`filename.ext`",
+              "`C:\\...\\folder-containing\\filename.ext` (you will have to edit the name when saving a PDF)",
+              "A path relative to the workspace folder"
+            ]
+          },
+          "print.lineSpacing": {
+            "type": "number",
+            "enum": [
+              1,
+              1.5,
+              2
+            ],
+            "enumDescriptions": [
+              "%print.lineSpacing.single%",
+              "%print.lineSpacing.line-and-a-half%",
+              "%print.lineSpacing.double%"
+            ],
+            "description": "%print.lineSpacing.description%",
+            "default": 1
+          },
+          "print.fontSize": {
+            "type": "string",
+            "enum": [
+              "6pt",
+              "7pt",
+              "8pt",
+              "9pt",
+              "10pt",
+              "11pt",
+              "11.5pt",
+              "12pt",
+              "13pt"
+            ],
+            "description": "%print.fontSize.description%",
+            "default": "10pt"
+          },
+          "print.renderMarkdown": {
+            "type": "boolean",
+            "default": true,
+            "description": "%print.renderMarkdown.description%"
+          },
+          "print.lineNumbers": {
+            "type": "string",
+            "description": "%print.lineNumbers.description%",
+            "enum": [
+              "on",
+              "off",
+              "inherit"
+            ],
+            "default": "inherit"
+          },
+          "print.logLevel": {
+            "type": "string",
+            "markdownDescription": "%print.logLevel.markdownDescription%",
+            "enum": [
+              "error",
+              "warn",
+              "info",
+              "http",
+              "verbose",
+              "debug",
+              "silly"
+            ],
+            "default": "error"
+          },
+          "print.alternateBrowser": {
+            "type": "boolean",
+            "description": "%print.alternateBrowser.description%",
+            "default": false
+          },
+          "print.browserPath": {
+            "type": "string",
+            "description": "%print.browserPath.description%"
+          },
+          "print.colourScheme": {
+            "type": "string",
+            "enum": [
+              "A11 Y",
+              "Arduino",
+              "Ascetic",
+              "Atom One",
+              "Atelier Cave",
+              "Atelier Dune",
+              "Atelier Estuary",
+              "Atelier Forest",
+              "Atelier Heath",
+              "Atelier Lakeside",
+              "Atelier Plateau",
+              "Atelier Savanna",
+              "Atelier Seaside",
+              "Atelier Sulphur Pool",
+              "Color Brewer",
+              "Docco",
+              "Foundation",
+              "GitHub",
+              "GitHub Gist",
+              "Google Code",
+              "Grayscale",
+              "Gruvbox",
+              "Idea",
+              "ISBL",
+              "Kimbie",
+              "Lightfair",
+              "Magula",
+              "Mono Blue",
+              "nnfx",
+              "Paraiso",
+              "PureBasic",
+              "QTcreator",
+              "RouterOS",
+              "Schoolbook",
+              "Stack Overflow",
+              "Visual Studio",
+              "XCode"
+            ],
+            "default": "Atelier Dune",
+            "markdownDescription": "%print.colourScheme.markdownDescription%"
+          },
+          "print.editorContextMenuItemPosition": {
+            "default": "Top",
+            "type": "string",
+            "markdownDescription": "%print.editorContextMenuItemPosition.markdownDescription%",
+            "enum": [
+              "Top",
+              "Bottom",
+              "None"
+            ]
+          },
+          "print.editorTitleMenuButton": {
+            "default": true,
+            "type": "boolean",
+            "description": "%print.editorTitleMenuButton.description%"
+          },
+          "print.folder.fileNames": {
+            "default": true,
+            "type": "boolean",
+            "description": "%print.folder.fileNames.description%"
+          },
+          "print.folder.include": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.folder.include.description%"
+          },
+          "print.folder.exclude": {
+            "default": [
+              "{bin,obj,out}",
+              "node_modules",
+              "data",
+              "**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo,design}"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.folder.exclude.description%"
+          },
+          "print.folder.maxLines": {
+            "default": 1200,
+            "type": "integer",
+            "description": "%print.folder.maxLines.description%"
+          },
+          "print.folder.maxFiles": {
+            "default": 30,
+            "type": "integer",
+            "description": "%print.folder.maxFiles.description%"
+          },
+          "print.folder.includeFileList": {
+            "default": false,
+            "type": "boolean",
+            "description": "%print.folder.includeFileList.description%"
+          }
+        }
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "ecmPrint == Top",
+          "command": "vsc-print.print",
+          "group": "navigation"
+        },
+        {
+          "when": "ecmPrint == Top",
+          "command": "vsc-print.preview",
+          "group": "navigation"
+        },
+        {
+          "when": "ecmPrint == Bottom",
+          "command": "vsc-print.print",
+          "group": "Z_commands"
+        },
+        {
+          "when": "ecmPrint == Bottom",
+          "command": "vsc-print.preview",
+          "group": "Z_commands"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "editorLangId && etmButton",
+          "command": "vsc-print.print",
+          "group": "navigation"
+        },
+        {
+          "when": "editorLangId && etmButton",
+          "command": "vsc-print.preview",
+          "group": "navigation"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "when": "editorLangId && ecmPrint == Top",
+          "command": "vsc-print.print",
+          "group": "navigation"
+        },
+        {
+          "when": "editorLangId && ecmPrint == Top",
+          "command": "vsc-print.preview",
+          "group": "navigation"
+        },
+        {
+          "when": "editorLangId && ecmPrint == Bottom",
+          "command": "vsc-print.print",
+          "group": "Z_commands"
+        },
+        {
+          "when": "editorLangId && ecmPrint == Bottom",
+          "command": "vsc-print.preview",
+          "group": "Z_commands"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "editorLangId && ecmPrint == Top",
+          "command": "vsc-print.print",
+          "group": "navigation"
+        },
+        {
+          "when": "editorLangId && ecmPrint == Top",
+          "command": "vsc-print.preview",
+          "group": "navigation"
+        },
+        {
+          "when": "editorLangId && ecmPrint == Bottom",
+          "command": "vsc-print.print",
+          "group": "Z_commands"
+        },
+        {
+          "when": "editorLangId && ecmPrint == Bottom",
+          "command": "vsc-print.preview",
+          "group": "Z_commands"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "en",
+        "aliases": [
+          "en-us",
+          "en-gb"
+        ],
+        "translations": [
+          {
+            "id": "package.nls.en",
+            "path": "./i18n/package.nls.en.json"
+          }
+        ]
+      },
+      {
+        "id": "zh-cn",
+        "aliases": [
+          "zh-hans"
+        ],
+        "translations": [
+          {
+            "id": "package.nls.zh-cn",
+            "path": "./i18n/package.nls.zh-cn.json"
+          }
+        ]
+      },
+      {
+        "id": "ja",
+        "translations": [
+          {
+            "id": "package.nls.ja",
+            "path": "./i18n/package.nls.ja.json"
+          }
+        ]
+      },
+      {
+        "id": "es",
+        "translations": [
+          {
+            "id": "package.nls.es",
+            "path": "./i18n/package.nls.es.json"
+          }
+        ]
+      },
+      {
+        "id": "ru",
+        "translations": [
+          {
+            "id": "package.nls.ru",
+            "path": "./i18n/package.nls.ru.json"
+          }
+        ]
+      },
+      {
+        "id": "pt",
+        "translations": [
+          {
+            "id": "package.nls.pt",
+            "path": "./i18n/package.nls.pt.json"
+          }
+        ]
+      },
+      {
+        "id": "fr",
+        "translations": [
+          {
+            "id": "package.nls.fr",
+            "path": "./i18n/package.nls.fr.json"
+          }
+        ]
+      },
+      {
+        "id": "ko",
+        "translations": [
+          {
+            "id": "package.nls.ko",
+            "path": "./i18n/package.nls.ko.json"
+          }
+        ]
+      },
+      {
+        "id": "zh-hant",
+        "aliases": [
+          "zh-tw"
+        ],
+        "translations": [
+          {
+            "id": "package.nls.zh-hant",
+            "path": "./i18n/package.nls.zh-hant.json"
+          }
+        ]
+      },
+      {
+        "id": "it",
+        "translations": [
+          {
+            "id": "package.nls.it",
+            "path": "./i18n/package.nls.it.json"
+          }
+        ]
+      },
+      {
+        "id": "pl",
+        "translations": [
+          {
+            "id": "package.nls.pl",
+            "path": "./i18n/package.nls.pl.json"
+          }
+        ]
+      },
+      {
+        "id": "hu",
+        "translations": [
+          {
+            "id": "package.nls.hu",
+            "path": "./i18n/package.nls.hu.json"
+          }
+        ]
+      },
+      {
+        "id": "cs",
+        "translations": [
+          {
+            "id": "package.nls.cs",
+            "path": "./i18n/package.nls.cs.json"
+          }
+        ]
+      },
+      {
+        "id": "bg",
+        "translations": [
+          {
+            "id": "package.nls.bg",
+            "path": "./i18n/package.nls.bg.json"
+          }
+        ]
+      },
+      {
+        "id": "tr",
+        "translations": [
+          {
+            "id": "package.nls.tr",
+            "path": "./i18n/package.nls.tr.json"
+          }
+        ]
+      },
+      {
+        "id": "my",
+        "translations": [
+          {
+            "id": "package.nls.my",
+            "path": "./i18n/package.nls.my.json"
+          }
+        ]
+      },
+      {
+        "id": "ca",
+        "translations": [
+          {
+            "id": "package.nls.ca",
+            "path": "./i18n/package.nls.ca.json"
+          }
+        ]
+      },
+      {
+        "id": "lt",
+        "translations": [
+          {
+            "id": "package.nls.lt",
+            "path": "./i18n/package.nls.lt.json"
+          }
+        ]
+      },
+      {
+        "id": "hy",
+        "translations": [
+          {
+            "id": "package.nls.hy",
+            "path": "./i18n/package.nls.hy.json"
+          }
+        ]
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "how-to-print",
+        "title": "Get Started with Print",
+        "description": "Discover in-editor printing for source code and documentation.",
+        "steps": [
+          {
+            "id": "print-editor-active",
+            "title": "Print the entire content of the active editor",
+            "media": {
+              "markdown": "assets/print-entire-content-active-editor.md"
+            }
+          },
+          {
+            "id": "print-multiline-selection",
+            "title": "Print a selection",
+            "media": {
+              "markdown": "assets/print-a-selection.md"
+            }
+          },
+          {
+            "id": "print-markdown-rendered",
+            "title": "Print a Markdown file as a formatted PDF",
+            "media": {
+              "markdown": "assets/print-md-as-pdf.md"
+            }
+          },
+          {
+            "id": "print-remote",
+            "title": "Print a file from a remote workspace",
+            "media": {
+              "markdown": "assets/enable-remote-print.md"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "extensionKind": [
+    "workspace"
+  ],
+  "dependencies": {
+    "@viz-js/viz": "^3.6.0",
+    "braces": "^3.0.2",
+    "cors": "^2.8.5",
+    "highlight.js": "^11.9.0",
+    "katex": "^0.16.10",
+    "lodash": "^4.17.21",
+    "micromatch": "^4.0.5",
+    "uuid": "^10.0.0",
+    "winston": "^3.11.0",
+    "yaml": "^2.4.5"
+  },
+  "scripts": {
+    "vscode:prepublish": "node gather.js && webpack --mode production",
+    "webpack": "node gather.js && webpack --mode development",
+    "webpack-dev": "node gather.js && webpack --mode development --watch",
+    "compile": "tsc -p ./",
+    "lint": "eslint \"src/**/*.ts\"",
+    "localise": "npx @vscode/l10n-dev export --outDir ./l10n ./src && npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy"
+  },
+  "devDependencies": {
+    "@types/braces": "^3.0.4",
+    "@types/katex": "^0.16.7",
+    "@types/lodash.merge": "^4.6.9",
+    "@types/markdown-it": "^13.0.7",
+    "@types/micromatch": "^4.0.6",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.11.24",
+    "@types/uuid": "^10.0.0",
+    "@types/vscode": "^1.90.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.9",
+    "@vscode/vsce": "^2.24.0",
+    "axios": "^1.6.7",
+    "css-loader": "^6.10.0",
+    "eslint": "^8.56.0",
+    "file-loader": "^6.2.0",
+    "markdown-it": "^14.0.0",
+    "marked": "^12.0.1",
+    "mermaid": "^10.9.1",
+    "raw-loader": "^4.0.2",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
+  },
+  "l10n": "./l10n",
+  "__metadata": {
+    "id": "05046d70-8146-42f5-ac9e-b97b37c8c0ef",
+    "publisherDisplayName": "PD Consulting",
+    "publisherId": "a803a703-65fb-4fa9-955a-c9259bf2560d",
+    "isPreReleaseVersion": false
+  }
 }

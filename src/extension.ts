@@ -33,9 +33,9 @@ export async function activate(context: vscode.ExtensionContext) {
   Metadata.ExtensionContext = context;
   logger.debug("Print activated");
 
-  let ecmPrint = vscode.workspace.getConfiguration("print").editorContextMenuItemPosition,
-    etmButton = vscode.workspace.getConfiguration("print").editorTitleMenuButton,
-    disposable: vscode.Disposable;
+  let ecmPrint = vscode.workspace.getConfiguration("print").editorContextMenuItemPosition;
+  let etmButton = vscode.workspace.getConfiguration("print").editorTitleMenuButton;
+  let disposable: vscode.Disposable;
   vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
   vscode.commands.executeCommand("setContext", "etmButton", etmButton);
 
@@ -58,6 +58,7 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.executeCommand("print.registerDocumentRenderer", "markdown", {
     getBodyHtml: htmlRendererMarkdown.getBodyHtml,
     getCssUriStrings: htmlRendererMarkdown.getCssUriStrings,
+    getScriptUriStrings: htmlRendererMarkdown.getScriptUriStrings,
     getResource: htmlRendererMarkdown.getResource,
     isEnabled: htmlRendererMarkdown.isEnabled
   });
@@ -67,8 +68,11 @@ export async function activate(context: vscode.ExtensionContext) {
     getCssUriStrings: htmlRendererPlaintext.getCssUriStrings
   });
 
-  const requestListener:http.RequestListener = async (request, response) => {
+  const requestListener: http.RequestListener = async (request, response) => {
     try {
+      response.setHeader("Access-Control-Allow-Origin", '*');
+      response.setHeader("Access-Control-Allow-Methods", 'GET');
+      response.setHeader("Access-Control-Allow-Headers", 'Content-Type');
       const urlParts = decodeURI(request.url!).split('/',);
       if (urlParts[1] === "whatsnew") {
         response.writeHead(302, { 'Location': 'https://pdconsec.net/vscode-print/whatsnew' });
@@ -181,8 +185,11 @@ function printCommand(cmdArgs: any, multiselection: Array<vscode.Uri>): PrintSes
   return printSession;
 }
 
-function previewCommand(cmdArgs: any) {
+function previewCommand(cmdArgs: any, multiselection: Array<vscode.Uri>) {
   logger.debug("Preview command was invoked");
+  if (multiselection?.length > 1) {
+    cmdArgs = multiselection;
+  }
   const printSession = new PrintSession(cmdArgs, true);
   printSessions.set(printSession.sessionId, printSession);
   return printSession;

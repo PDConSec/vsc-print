@@ -5,6 +5,8 @@ import * as vscode from 'vscode';
 import { DocumentRenderer } from './document-renderer';
 import micromatch from 'micromatch';
 import tildify from '../tildify';
+import { PrintSession } from '../print-session';
+import { IResourceDescriptor } from './IResourceDescriptor';
 
 const templateFolderItem = require("../templates/folder-item.html").default.toString();
 const templateDocument: string = require("../templates/document.html").default.toString();
@@ -13,6 +15,8 @@ export class HtmlDocumentBuilder {
   static MarkdownEngine: any;
   private filepath: string;
   constructor(
+    public isPreview: boolean,
+    public generatedResources: Map<string, IResourceDescriptor>,
     public baseUrl: string,
     public uri: vscode.Uri,
     public code: string = "",
@@ -36,7 +40,7 @@ export class HtmlDocumentBuilder {
         const bodyText = doc.getText();
         const langId = doc.languageId;
         const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
-        const bodyHtml = await renderer.getBodyHtml(bodyText, langId, options);
+        const bodyHtml = await renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
         return templateFolderItem
           .replace("VSCODE_PRINT_FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
           .replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", () =>  `<table class="hljs">\n${bodyHtml}\n</table>\n`)
@@ -45,7 +49,7 @@ export class HtmlDocumentBuilder {
       return templateDocument
         .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
         .replace(/VSCODE_PRINT_DOCUMENT_(?:TITLE|HEADING)/g, "<h2>Selected files</h2>")
-        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", printConfig.printAndClose)
+        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", (!this.isPreview).toString())
         .replace("VSCODE_PRINT_CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
         .replace("VSCODE_PRINT_SCRIPT_TAGS", "")
         .replace("VSCODE_PRINT_STYLESHEET_LINKS",
@@ -71,7 +75,7 @@ export class HtmlDocumentBuilder {
             const bodyText = doc.getText();
             const langId = doc.languageId;
             const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
-            const bodyHtml = renderer.getBodyHtml(bodyText, langId, options);
+            const bodyHtml = renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
             return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
           })
       ).join('');
@@ -84,7 +88,7 @@ export class HtmlDocumentBuilder {
         .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
         .replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, this.workspacePath(this.uri))
         .replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, `<h2>Folder ${this.workspacePath(this.uri)}</h2>`)
-        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", printConfig.printAndClose)
+        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", (!this.isPreview).toString())
         .replace("VSCODE_PRINT_CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
         .replace("VSCODE_PRINT_SCRIPT_TAGS", "")
         .replace("VSCODE_PRINT_STYLESHEET_LINKS",
@@ -125,12 +129,12 @@ export class HtmlDocumentBuilder {
         lineNumbers: this.printLineNumbers,
         uri: this.uri
       };
-      const bodyHtml = await documentRenderer.getBodyHtml(this.code, this.language, options);
+      const bodyHtml = await documentRenderer.getBodyHtml(this.generatedResources, this.code, this.language, options);
       return templateDocument
         .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
         .replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
         .replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, thePath)
-        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", printConfig.printAndClose)
+        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", (!this.isPreview).toString())
         .replace("VSCODE_PRINT_CONTENT", bodyHtml)
         .replace("VSCODE_PRINT_STYLESHEET_LINKS", documentRenderer.getCssLinks(this.uri))
         .replace("VSCODE_PRINT_SCRIPT_TAGS", documentRenderer.getScriptTags(this.uri))
