@@ -6,6 +6,7 @@ import * as katex from "katex";
 import crypto from "crypto";
 import { deflate } from "pako";
 import * as vscode from 'vscode';
+import 'katex/dist/contrib/mhchem';
 
 const KROKI_SUPPORT = ["BLOCKDIAG", "BPMN", "BYTEFIELD", "SEQDIAG", "ACTDIAG", "NWDIAG", "PACKETDIAG", "RACKDIAG", "C4", "D2", "DBML", "DITAA", "ERD", "EXCALIDRAW", "GRAPHVIZ", "MERMAID", "NOMNOML", "PIKCHR", "PLANTUML", "STRUCTURIZR", "SVGBOB", "SYMBOLATOR", "TIKZ", "UMLET", "VEGA", "VEGA-LITE", "WAVEDROM", "WIREVIZ"];
 
@@ -91,7 +92,6 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
         }
       }
     } else {
-      //applyKatex(token);
       updatedTokens.push(token);
     };
   }
@@ -102,23 +102,3 @@ function getPosition(s: string, t: string, i: number) {
   return s.split(t, i).join(t).length;
 }
 
-const BLOCK_TYPES = ["tablecell", "blockquote", "list_item", "paragraph"];
-
-function applyKatex(token: Token) {
-  if (token.type == "paragraph" || token.type == "tablecell" || token.type == "blockquote" || token.type == "list_item") {
-    let text: string = token.text ?? "";
-    text = text.replace(/\$\$(.+)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: true }));
-    text = text.replace(/\$%(.+)%\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false }));
-    token.text = text;
-    for (let t of token.tokens ?? []) {
-      if (t.type == "text") {
-        applyKatex(t);
-      }
-    }
-  } else if (token.type == "text") {
-    let text: string = token.raw;
-    text = text.replace(/\$\$(.+)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: true }));
-    text = text.replace(/\$%(.+)%\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false }));
-    token.text = text;
-  }
-}

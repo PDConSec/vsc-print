@@ -34,10 +34,12 @@ export async function activate(context: vscode.ExtensionContext) {
   logger.debug("Print activated");
 
   let ecmPrint = vscode.workspace.getConfiguration("print").editorContextMenuItemPosition;
-  let etmButton = vscode.workspace.getConfiguration("print").editorTitleMenuButton;
+  let etmButtonPrint = vscode.workspace.getConfiguration("print").editorTitleMenuButtonPrint;
+  let etmButtonPreview = vscode.workspace.getConfiguration("print").editorTitleMenuButtonPreview;
   let disposable: vscode.Disposable;
   vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
-  vscode.commands.executeCommand("setContext", "etmButton", etmButton);
+  vscode.commands.executeCommand("setContext", "etmButtonPrint", etmButtonPrint);
+  vscode.commands.executeCommand("setContext", "etmButtonPreview", etmButtonPreview);
 
   context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
   context.subscriptions.push(vscode.commands.registerCommand("vsc-print.whatsnew", launchWhatsNew));
@@ -160,11 +162,17 @@ const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
     logger.info(`editorContextMenuItemPosition set to ${ecmip}`)
     vscode.commands.executeCommand("setContext", "ecmPrint", ecmip);
   }
-  else if (e.affectsConfiguration('print.editorTitleMenuButton')) {
+  else if (e.affectsConfiguration('print.editorTitleMenuButtonPrint')) {
     const etmb = vscode.workspace.getConfiguration("print", null)
-      .get<boolean>('editorTitleMenuButton');
-    logger.info(`editorTitleMenuButton set to ${etmb}`);
-    vscode.commands.executeCommand("setContext", "etmButton", etmb);
+      .get<boolean>('editorTitleMenuButtonPrint');
+    logger.info(`editorTitleMenuButtonPrint set to ${etmb}`);
+    vscode.commands.executeCommand("setContext", "etmButtonPrint", etmb);
+  }
+  else if (e.affectsConfiguration('print.editorTitleMenuButtonPreview')) {
+    const etmb = vscode.workspace.getConfiguration("print", null)
+      .get<boolean>('editorTitleMenuButtonPreview');
+    logger.info(`editorTitleMenuButtonPreview set to ${etmb}`);
+    vscode.commands.executeCommand("setContext", "etmButtonPreview", etmb);
   }
 };
 

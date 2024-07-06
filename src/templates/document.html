@@ -10,6 +10,7 @@
 	VSCODE_PRINT_SCRIPT_TAGS
 	<script type="application/javascript">
 		function printAndClose(enabled) {
+      SmiDrawer.apply();
 			if (enabled) {
 				window.addEventListener("afterprint", (event) => {
 					fetch("completed").then(window.close);

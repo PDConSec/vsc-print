@@ -1,5 +1,18 @@
 # Change Log
 
+### 0.12.5
+
+- [#326](https://github.com/PDConSec/vsc-print/issues/326) - support for Kroki
+  - this unifies the rendering of a large number of diagram notations, notably Mermaid and C4
+  - Kroki is server based. In line with our philosophy of off-line operation, there is a setting for the URL of the Kroki server and a link in the setting description to instructions for setting up a local installation of Kroki.
+- # Reworked Katex integration to support 
+  - `$$` fenced display blocks
+  - [#324](https://github.com/PDConSec/vsc-print/issues/324) `$%...%$` inline equations
+  - # MHCHEM equations
+  - [#327](https://github.com/PDConSec/vsc-print/issues/327) - separate settings for visibility of print and preview icons
+  - localised several recently added settings
+- [#287](https://github.com/PDConSec/vsc-print/issues/287) = new scheme [none] is black and white
+
 ### 0.12.3
 
 - Separate print and preview buttons and menu items

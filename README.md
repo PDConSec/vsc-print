@@ -1,22 +1,41 @@
-![source](assets/print-icon.png) 
+![source](assets/print-icon.png)
 
 Print code. Print rendered Markdown. Local or remote. Windows, Mac or Linux.
 
+## This release
+
+We stopped using VS Code's rendering pipeline for Markdown because Microsoft continues to evolve it in ways that clash with the needs of printing. Because it's not a published API, there is no announcement of breaking changes and no consideration of third party needs. So last release we switched to our own. There are lots of extensions that extend Markdown rendering for the built-in pipeline, but many of them were broken already for Print so we forged ahead - and promptly heard cries of protest from Kroki users.
+
+Kroki is server-based. Normally we won't do anything that can't work offline, but there were two compelling factors
+
+*   it unifies a huge list of diagram engines
+*   it _can_ work off-line: install Kroki server on your network or notebook
+
+So while there was a drop in functionality for 0.12.3, with this release you can use the following:
+
+|              |                  |           |            |         |        |            |
+|--------------|------------------|-----------|------------|---------|--------|------------|
+| BlockDiag    | BPMN             | Bytefield | SeqDiag    | ActDiag | NwDiag | PacketDiag |
+| RackDiag     | C4  with PlantUML| D2        | DBML       | Ditaa   | Erd    | Excalidraw |
+| GraphViz     | KaTeX            | Mermaid   | MHCHEM     | Nomnoml | Pikchr | PlantUML   |
+| SmilesDrawer | Structurizr      | Svgbob    | Symbolator | Tikz    | UMLet  | Vega       |
+| Vega-lite    | WaveDrom         | WireViz   | &nbsp;     | &nbsp;  | &nbsp; | &nbsp;     |
+
 ## Cross-platform printing
 
-Print-jobs are rendered as styled HTML and served from an embedded webserver. Your local web browser is launched to load the print-job and give you printing options like paper size, page orientation and margin size. 
+Print-jobs are rendered as styled HTML and served from an embedded webserver. Your local web browser is launched to load the print-job and give you printing options like paper size, page orientation and margin size.
 
 So if you have a local browser that can print, and VS Code can launch it, you can print.
 
 ## Source code
 
-![source](assets/source.png) 
+![source](assets/source.png)
 
 ## Markdown
 
 Use fenced blocks for LaTeX and Mermaid diagrams. You can position Mermaid diagrams by wrapping them in a div with the class `left`, `right`, `centre` or `fill`. Similar support for LaTeX will come in a later release.
 
-![Markdown-rendered](assets/Markdown-rendered.png) 
+![Markdown-rendered](assets/Markdown-rendered.png)
 
 ## Classic user experience
 
@@ -36,12 +55,16 @@ There are a number of settings. Most of them you just need to read the descripti
 
 Some things you can configure:
 
-- the colour scheme used for syntax colouring
-- whether or not you want line numbers
-- alternate browser for printing
-- line spacing (leave yourself more room for handwritten annotation of code)
+*   the colour scheme used for syntax colouring
+*   whether or not you want line numbers
+*   alternate browser for printing
+*   line spacing (leave yourself more room for handwritten annotation of code)
 
 ## Planned changes
 
-- Machine translation to support major languages.
-This has already been applied to the extension and its settings but high quality automated translation of documentation is proving more difficult.
+* The manual needs a rewrite, 
+  - how to embed diagrams
+  - how to control the flow of text around embedded diagrams
+  - summary extracts of documentation so you don't have to hunt
+* Machine translation to support major languages.  
+  This has already been applied to the extension and its settings, but high quality automated translation of documentation is proving more difficult.

@@ -61,7 +61,8 @@ Here is a list of available setting names as they appear in the configuration fi
 * `print.browserPath` : the path to a web browser
 * `print.colourScheme` : the stylesheet used for colouring syntax
 * `print.editorContextMenuItemPosition` : the position of `Print` in the editor context menu
-* `print.editorTitleMenuButton` : show print button in the editor title menu
+* `print.editorTitleMenuButtonPrint` : show print button in the editor title menu
+* `print.editorTitleMenuButtonPreview` : show preview button in the editor title menu
 * `print.fontSize` : the font size (options from 6 to 13 pt)
 * `print.formatMarkdown` : render Markdown as styled HTML when printing
 * `print.lineNumbers` : on, off or inherit (from editor)

@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "0.12.5",
+  "version": "0.12.6",
   "icon": "assets/vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
@@ -91,9 +91,9 @@
               "Relative"
             ]
           },
-          "print.krokiUrl":{
-            "description": "%print.filepathInDocumentTitle.description%",
-            "type":"string",
+          "print.krokiUrl": {
+            "markdownDescription": "%print.krokiUrl.markdownDescription%",
+            "type": "string",
             "default": "https://kroki.io"
           },
           "print.filepathHeadingForIndividuallyPrintedDocuments": {
@@ -164,7 +164,7 @@
           },
           "print.logLevel": {
             "type": "string",
-            "markdownDescription": "%print.logLevel.markdownDescription%",
+            "description": "%print.logLevel.description%",
             "enum": [
               "error",
               "warn",
@@ -233,17 +233,22 @@
           "print.editorContextMenuItemPosition": {
             "default": "Top",
             "type": "string",
-            "markdownDescription": "%print.editorContextMenuItemPosition.markdownDescription%",
+            "description": "%print.editorContextMenuItemPosition.description%",
             "enum": [
               "Top",
               "Bottom",
               "None"
             ]
           },
-          "print.editorTitleMenuButton": {
+          "print.editorTitleMenuButtonPrint": {
             "default": true,
             "type": "boolean",
-            "description": "%print.editorTitleMenuButton.description%"
+            "description": "%print.editorTitleMenuButtonPrint.description%"
+          },
+          "print.editorTitleMenuButtonPreview": {
+            "default": true,
+            "type": "boolean",
+            "description": "%print.editorTitleMenuButtonPreview.description%"
           },
           "print.folder.fileNames": {
             "default": true,
@@ -314,12 +319,12 @@
       ],
       "editor/title": [
         {
-          "when": "editorLangId && etmButton",
+          "when": "editorLangId && etmButtonPrint",
           "command": "vsc-print.print",
           "group": "navigation"
         },
         {
-          "when": "editorLangId && etmButton",
+          "when": "editorLangId && etmButtonPreview",
           "command": "vsc-print.preview",
           "group": "navigation"
         }
@@ -638,6 +643,7 @@
     "marked": "^12.0.1",
     "mermaid": "^10.9.1",
     "raw-loader": "^4.0.2",
+    "smiles-drawer": "^2.1.7",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
     "webpack": "^5.90.3",
