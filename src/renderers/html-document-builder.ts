@@ -12,7 +12,6 @@ const templateFolderItem = require("../templates/folder-item.html").default.toSt
 const templateDocument: string = require("../templates/document.html").default.toString();
 
 export class HtmlDocumentBuilder {
-  static MarkdownEngine: any;
   private filepath: string;
   constructor(
     public isPreview: boolean,

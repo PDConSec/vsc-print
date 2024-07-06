@@ -54,6 +54,13 @@ div.fill pre.mermaid svg {
   /* mermaid puts a style directly on the svg node, !important overrides it */
 }
 
+.language-diagram-error{
+  background-color: blue;
+  color: yellow;
+  display: block;
+  padding: 1em;
+}
+
 @media print {
 	.no-print {
 		visibility: hidden;

@@ -104,17 +104,23 @@ export class DocumentRenderer {
     let result: string = "";
     if (this.options.getScriptUriStrings) {
       const us = this.options.getScriptUriStrings(uri);
-      result = us.map(uriString => `\t<script src="${uriString}"></script>`).join("\n");
+      result = us.map(uriString => {
+        const parts = uriString.split(" ");
+        const url = parts[parts.length - 1];
+        const defer = parts.includes("defer") ? "defer " : "";
+        const type = parts.includes("module") ? "module" : "application/javascript";
+        return `\t<script ${defer}src="${url}" type="${type}"></script>\n`;
+      }).join("");
     }
     return result;
   }
 
   public getResource(name: string, requestingUri: any): IResourceDescriptor {
-    if (this.options.getResource) {
-      return this.options.getResource(name, requestingUri);
-    } else {
-      throw new Error(`Document renderer produced HTML that references "${name}" but does not implement getResource`);
-    }
+  if (this.options.getResource) {
+    return this.options.getResource(name, requestingUri);
+  } else {
+    throw new Error(`Document renderer produced HTML that references "${name}" but does not implement getResource`);
   }
+}
 
 }

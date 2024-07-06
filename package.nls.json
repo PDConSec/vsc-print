@@ -7,9 +7,15 @@
   "commands.title.openLog": "Open the log file",
   "print.alternateBrowser.description": "Use the alternate browser",
   "print.browserPath.description": "Path to the executable of an alternate browser",
-  "print.colourScheme.markdownDescription": "[Stylesheet preview is available online](https://highlightjs.org/demo/). Only 'light' versions are offered because paper is white.",
-  "print.editorContextMenuItemPosition.markdownDescription": "The position of `Print` in the editor context menu",
+  "print.colourScheme.description": "[Stylesheet preview is available online](https://highlightjs.org/demo/). Only 'light' versions are offered because paper is white.",
+  "print.editorContextMenuItemPosition.description": "The position of 'Print' in the editor context menu",
   "print.editorTitleMenuButton.description": "When this option is selected the Print icon appears on the toolbar above an active editor",
+  "print.filepathAsDocumentHeading.description": "Optional heading at the start of each file",
+  "print.filepathHeadingForIndividuallyPrintedDocuments.description": "Show the file path as a heading when a document is printed individually",
+  "print.filepathInDocumentTitle.description": "HTML page title, used by some browsers in the page header (to control the heading that can appear at the start of the document, use 'Filepath as Document Heading')",
+  "print.filepathInDocumentTitle.markdownEnumDescription1": "`filename.ext`",
+  "print.filepathInDocumentTitle.markdownEnumDescription2": "`C:\\...\\folder-containing\\filename.ext` (you will have to edit the name when saving a PDF)",
+  "print.filepathInDocumentTitle.markdownEnumDescription3": "A path relative to the workspace folder",
   "print.folder.fileNames.description": "Include file names as section titles when printing content of a directory",
   "print.folder.include.description": "Folder content include pattern",
   "print.folder.exclude.description": "A glob pattern for exclusions when printing the content of a directory.",
@@ -24,5 +30,5 @@
   "print.lineSpacing.double": "Double spaced",
   "print.preview.description": "Preview the rendered document in a brower",
   "print.renderMarkdown.description": "Render Markdown as HTML when printing",
-  "print.logLevel.markdownDescription": "Log level `Error` will log only errors (very few entries) whereas `info` will log errors, warnings and info. `Debug` is good for troubleshooting. `Silly` will log absolutely everything but the log file will grow fast."
+  "print.logLevel.description": "Log level 'Error' will log only errors (very few entries) whereas 'info' will log errors, warnings and info. 'Debug' is good for troubleshooting. 'Silly' will log absolutely everything but the log file will grow fast."
 }

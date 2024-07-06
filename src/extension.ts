@@ -133,14 +133,7 @@ export async function activate(context: vscode.ExtensionContext) {
     context.globalState.update("version", currentVersion);
   }
 
-  const markdownExtensionInstaller = {
-    extendMarkdownIt(mdparam: any) {
-      HtmlDocumentBuilder.MarkdownEngine = mdparam;
-      return mdparam;
-    }
-  };
   _gc = setInterval(gc, 2000);
-  return markdownExtensionInstaller;
 }
 
 function openDoc(doc: string) {

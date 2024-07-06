@@ -187,7 +187,9 @@ export class PrintSession {
           let colourScheme = vscode.workspace.getConfiguration("print").colourScheme;
           let colourSchemeName: string = filenameByCaption[colourScheme];
           logger.debug(`Loading colour scheme from ${colourSchemeName}`);
-          let colourSchemeCss: string = require(`highlight.js/styles/${colourSchemeName}.css`).default.toString();
+          let colourSchemeCss: string = colourScheme == "[none]" ?
+            "\n.hljs,.hljs-keyword,.hljs-number,.hljs-property,.hljs-title,.hljs-string,.hljs-variable {\n\tbackground: white;\n\tcolor: black;\n}\n" :
+            require(`highlight.js/styles/${colourSchemeName}.css`).default.toString();
           response.writeHead(200, {
             "Content-Type": "text/css; charset=utf-8",
             "Content-Length": colourSchemeCss.length,

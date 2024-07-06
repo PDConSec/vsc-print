@@ -3,15 +3,11 @@ import * as path from "path";
 import * as fs from "fs";
 import { Metadata } from '../metadata';
 import { IResourceDescriptor } from "./IResourceDescriptor";
-import { processFencedBlocks } from './processFencedBlocks';
+import { processFencedBlocks as processMarkdown } from './processMarkdown';
 import { marked } from 'marked';
 
-// RESOURCES 
 const resources = new Map<string, IResourceDescriptor>();
 
-// Resolve the content of a stylesheet.
-// Then add it to resources with the CSS mimeType
-// under the name that will be used to request it.
 resources.set("default-markdown.css", {
   content: require("../css/default-markdown.css").default.toString(),
   mimeType: "text/css; charset=utf-8"
@@ -20,11 +16,6 @@ resources.set("default-markdown.css", {
 resources.set("katex.css", {
   content: fs.readFileSync(resourcePath("katex.css")),
   mimeType: "text/css; charset=utf-8"
-});
-
-resources.set("mermaid.js", {
-  content: fs.readFileSync(resourcePath("mermaid.js")),
-  mimeType: "text/javascript"
 });
 
 const fontPath = resourcePath("fonts");
@@ -44,8 +35,7 @@ export function isEnabled(): boolean {
 }
 
 export async function getBodyHtml(generatedResources: Map<string, IResourceDescriptor>, raw: string, languageId: string) {
-  generatedResources.clear();
-  const updatedTokens = await processFencedBlocks({}, raw, generatedResources);
+  const updatedTokens = await processMarkdown({ LATEX: { displayMode: true } }, raw, generatedResources);
   return marked.parser(updatedTokens);
 }
 
@@ -64,8 +54,7 @@ export function getResource(name: string): IResourceDescriptor {
 
 export function getScriptUriStrings(uri: vscode.Uri) {
   return [
-    "bundled/mermaid.js"
-  ]
+  ];
 }
 
 function resourcePath(relativePath: string) {

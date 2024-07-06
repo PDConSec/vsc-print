@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "0.12.4",
+  "version": "0.12.5",
   "icon": "assets/vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
@@ -83,7 +83,7 @@
         "title": "%configuration.title.print%",
         "properties": {
           "print.filepathAsDocumentHeading": {
-            "description": "Optional heading at the start of each file",
+            "description": "%print.filepathAsDocumentHeading.description%",
             "type": "string",
             "default": "Relative",
             "enum": [
@@ -91,24 +91,29 @@
               "Relative"
             ]
           },
+          "print.krokiUrl":{
+            "description": "%print.filepathInDocumentTitle.description%",
+            "type":"string",
+            "default": "https://kroki.io"
+          },
           "print.filepathHeadingForIndividuallyPrintedDocuments": {
-            "description": "Show the file path as a heading when a document is printed individually",
+            "description": "%print.filepathHeadingForIndividuallyPrintedDocuments.description%",
             "type": "boolean",
             "default": true
           },
           "print.filepathInDocumentTitle": {
             "type": "string",
             "default": "No path",
-            "markdownDescription": "HTML page title, used by some browsers in the page header (to control the heading that can appear at the start of the document, use **Filepath as Document Heading**)",
+            "description": "HTML page title, used by some browsers in the page header (to control the heading that can appear at the start of the document, use 'Filepath as Document Heading')",
             "enum": [
               "No path",
               "Abbreviated path",
               "Workspace relative"
             ],
             "markdownEnumDescriptions": [
-              "`filename.ext`",
-              "`C:\\...\\folder-containing\\filename.ext` (you will have to edit the name when saving a PDF)",
-              "A path relative to the workspace folder"
+              "%print.filepathInDocumentTitle.markdownEnumDescription1%",
+              "%print.filepathInDocumentTitle.markdownEnumDescription2%",
+              "%print.filepathInDocumentTitle.markdownEnumDescription3%"
             ]
           },
           "print.lineSpacing": {
@@ -183,6 +188,7 @@
           "print.colourScheme": {
             "type": "string",
             "enum": [
+              "[none]",
               "A11 Y",
               "Arduino",
               "Ascetic",
@@ -595,6 +601,7 @@
     "katex": "^0.16.10",
     "lodash": "^4.17.21",
     "micromatch": "^4.0.5",
+    "pako": "^2.1.0",
     "uuid": "^10.0.0",
     "winston": "^3.11.0",
     "yaml": "^2.4.5"
@@ -615,6 +622,7 @@
     "@types/micromatch": "^4.0.6",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.24",
+    "@types/pako": "^2.0.3",
     "@types/uuid": "^10.0.0",
     "@types/vscode": "^1.90.0",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
