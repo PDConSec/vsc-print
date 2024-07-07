@@ -7,7 +7,9 @@ import crypto from "crypto";
 import { deflate } from "pako";
 import * as vscode from 'vscode';
 import 'katex/dist/contrib/mhchem';
+import hljs from 'highlight.js';
 
+const HIGHLIGHTJS_LANGS = hljs.listLanguages().map(s => s.toUpperCase());
 const KROKI_SUPPORT = ["BLOCKDIAG", "BPMN", "BYTEFIELD", "SEQDIAG", "ACTDIAG", "NWDIAG", "PACKETDIAG", "RACKDIAG", "C4", "D2", "DBML", "DITAA", "ERD", "EXCALIDRAW", "GRAPHVIZ", "MERMAID", "NOMNOML", "PIKCHR", "PLANTUML", "STRUCTURIZR", "SVGBOB", "SYMBOLATOR", "TIKZ", "UMLET", "VEGA", "VEGA-LITE", "WAVEDROM", "WIREVIZ"];
 
 // import { fixFalsePrecision, formatXml, applyDiagramStyle, stripPreamble } from './svg-tools';
@@ -86,8 +88,13 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
             updatedTokens.push({ block: true, type: "code", raw: token.raw, text: resolvedConfig });
             break;
           //#endregion
-          default: //unhandled passthrough
-            updatedTokens.push(token);
+          default: 
+            if (HIGHLIGHTJS_LANGS.includes(LANG)) {
+              const codeBlock = `<pre class="code-box">\n<code class="hljs">\n${hljs.highlight(token.lang, token.text).value}\n</code>\n</pre>\n`;
+              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: codeBlock });
+            } else { //unhandled passthrough
+              updatedTokens.push(token);
+            }
             break;
         }
       }

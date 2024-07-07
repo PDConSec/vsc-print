@@ -6,7 +6,9 @@ body {
 }
 
 .hljs {
-	background-color: unset;
+	background-color: transparent;
+	font-family: FONT_FAMILY;
+	font-size: FONT_SIZE;
 }
 
 .line-number,
@@ -26,4 +28,11 @@ pre.plaintext {
 	line-height: LINE_SPACINGem;
 	padding-bottom: 3px;
 	white-space: pre-wrap;
+}
+
+.code-box {
+  background-color: #f8f8f8;
+  border-radius: 0.5em;
+  border: thin solid silver;
+  white-space: pre-wrap;
 }

@@ -13,13 +13,14 @@ Kroki is server-based. Normally we won't do anything that can't work offline, bu
 
 So while there was a drop in functionality for 0.12.3, with this release you can use the following:
 
-|              |                  |           |            |         |        |            |
-|--------------|------------------|-----------|------------|---------|--------|------------|
-| BlockDiag    | BPMN             | Bytefield | SeqDiag    | ActDiag | NwDiag | PacketDiag |
-| RackDiag     | C4  with PlantUML| D2        | DBML       | Ditaa   | Erd    | Excalidraw |
-| GraphViz     | KaTeX            | Mermaid   | MHCHEM     | Nomnoml | Pikchr | PlantUML   |
-| SmilesDrawer | Structurizr      | Svgbob    | Symbolator | Tikz    | UMLet  | Vega       |
-| Vega-lite    | WaveDrom         | WireViz   | &nbsp;     | &nbsp;  | &nbsp; | &nbsp;     |
+|            |            |                  |              |             |          |
+|------------|------------|------------------|--------------|-------------|----------|
+| BlockDiag  | BPMN       | Bytefield        | SeqDiag      | ActDiag     | NwDiag   |
+| PacketDiag | RackDiag   | C4 with PlantUML | D2           | DBML        | Ditaa    |
+| Erd        | Excalidraw | GraphViz         | KaTeX        | Mermaid     | MHCHEM   |
+| Nomnoml    | Pikchr     | PlantUML         | SmilesDrawer | Structurizr | Svgbob   |
+| Symbolator | Tikz       | UMLet            | Vega         | Vega-lite   | WaveDrom |
+| WireViz    |            |                  |              |             |          |
 
 ## Cross-platform printing
 
