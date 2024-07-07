@@ -45,10 +45,13 @@ export async function getBodyHtml(generatedResources: Map<string, IResourceDescr
 }
 
 export function getCssUriStrings(): Array<string> {
+  const userSuppliedCssUrls: string[] = vscode.workspace.getConfiguration("print.stylesheets").markdown;
   const cssUriStrings = [
     "bundled/default-markdown.css",
-    "bundled/settings.css",
     "bundled/katex.css",
+    "bundled/colour-scheme.css",
+    ...userSuppliedCssUrls,
+    "bundled/settings.css"//ensure settings are always last so they take precedence
   ];
   return cssUriStrings;
 }

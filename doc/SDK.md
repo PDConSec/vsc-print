@@ -40,7 +40,7 @@ Here's something meatier - this is how the default renderer applies syntax-colou
 
 After that a line numbers are added, or not, depending on settings. Finally optional word breaks are inserted to improve the breaking of long spans of code that lack natural opportunities.
 
-```ts
+```typescript
 export function getBodyHtml(raw: string, languageId: string, options?:any): string {
 	let renderedCode = "";
 	try {

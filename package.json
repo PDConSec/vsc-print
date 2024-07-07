@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "0.12.5",
+  "version": "0.12.6",
   "icon": "assets/vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
@@ -262,6 +262,27 @@
               "type": "string"
             },
             "description": "%print.folder.include.description%"
+          },
+          "print.stylesheets.markdown": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.stylesheets%"
+          },
+          "print.stylesheets.plaintext": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.stylesheets%"
+          },
+          "print.stylesheets.sourcecode": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.stylesheets%"
           },
           "print.folder.exclude": {
             "default": [
