@@ -55,7 +55,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
             const svg = await response.text();
             if (svg.startsWith("<svg")) {
               generatedResources.set(resourcename, { content: svg, mimeType: "image/svg+xml" });
-              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.text}"` });
+              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.text}" />` });
             } else {
               updatedTokens.push({ block: true, type: "code", lang: "diagram-error", raw: token.raw, text: svg.substring(getPosition(svg, ":", 2) + 2, svg.indexOf("^\n") + 1) });
             }
