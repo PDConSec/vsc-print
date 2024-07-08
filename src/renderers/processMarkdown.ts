@@ -47,7 +47,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
     if (token.type === 'code') {
-      const LANG = token.lang.toUpperCase();
+      const LANG = token.lang?.toUpperCase();
       if (KROKI_SUPPORT.includes(LANG)) {
         try {
           const hash = crypto.createHash("sha256");
