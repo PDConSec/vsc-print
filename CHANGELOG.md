@@ -1,5 +1,11 @@
 # Change Log
 
+### 0.12.9
+
+- fix diagram type source escaping
+- fix lang values for DOT and VEGALITE
+- fix NRE for unspecified lang
+
 ### 0.12.8
 
 - emergency bugfix for missing end of img tag in Kroki handling
