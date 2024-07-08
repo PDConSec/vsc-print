@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.12.10
+
+- added logs for Kroki failures
+
 ### 0.12.9
 
 - fix diagram type source escaping

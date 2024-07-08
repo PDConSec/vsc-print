@@ -8,6 +8,7 @@ import { deflate } from "pako";
 import * as vscode from 'vscode';
 import 'katex/dist/contrib/mhchem';
 import hljs from 'highlight.js';
+import { logger } from '../logger';
 
 const HIGHLIGHTJS_LANGS = hljs.listLanguages().map(s => s.toUpperCase());
 const KROKI_SUPPORT = [
@@ -58,11 +59,12 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
               .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
             const response = await fetch(`${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`);
             const svg = await response.text();
-            if (svg.startsWith("<svg") || svg.startsWith("<?xml")) {
+            if (svg.includes("</svg>")) {
               generatedResources.set(resourcename, { content: svg, mimeType: "image/svg+xml" });
               updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" />` });
             } else {
-              updatedTokens.push({ block: true, type: "code", lang: "diagram-error", raw: token.raw, text: svg.substring(getPosition(svg, ":", 2) + 2, svg.indexOf("^\n") + 1) });
+              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img alt="KROKI ERROR SEE LOG" />` });
+              logger.warn(`Kroki did not return SVG:\n${svg}`)
             }
           }
         } catch (error: any) {
