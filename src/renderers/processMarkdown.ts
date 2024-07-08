@@ -10,7 +10,12 @@ import 'katex/dist/contrib/mhchem';
 import hljs from 'highlight.js';
 
 const HIGHLIGHTJS_LANGS = hljs.listLanguages().map(s => s.toUpperCase());
-const KROKI_SUPPORT = ["BLOCKDIAG", "BPMN", "BYTEFIELD", "SEQDIAG", "ACTDIAG", "NWDIAG", "PACKETDIAG", "RACKDIAG", "C4", "D2", "DBML", "DITAA", "ERD", "EXCALIDRAW", "GRAPHVIZ", "MERMAID", "NOMNOML", "PIKCHR", "PLANTUML", "STRUCTURIZR", "SVGBOB", "SYMBOLATOR", "TIKZ", "UMLET", "VEGA", "VEGA-LITE", "WAVEDROM", "WIREVIZ"];
+const KROKI_SUPPORT = [
+  "BLOCKDIAG", "BPMN", "BYTEFIELD", "SEQDIAG", "ACTDIAG", "NWDIAG", "PACKETDIAG",
+  "RACKDIAG", "C4", "D2", "DBML", "DITAA", "ERD", "EXCALIDRAW", "GRAPHVIZ", "MERMAID",
+  "NOMNOML", "PIKCHR", "PLANTUML", "STRUCTURIZR", "SVGBOB", "SYMBOLATOR", "TIKZ",
+  "UMLET", "VEGA", "VEGALITE", "WAVEDROM", "WIREVIZ", "DOT"
+];
 
 // import { fixFalsePrecision, formatXml, applyDiagramStyle, stripPreamble } from './svg-tools';
 
@@ -53,9 +58,9 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
               .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
             const response = await fetch(`${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`);
             const svg = await response.text();
-            if (svg.startsWith("<svg")) {
+            if (svg.startsWith("<svg") || svg.startsWith("<?xml")) {
               generatedResources.set(resourcename, { content: svg, mimeType: "image/svg+xml" });
-              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.text}" />` });
+              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" />` });
             } else {
               updatedTokens.push({ block: true, type: "code", lang: "diagram-error", raw: token.raw, text: svg.substring(getPosition(svg, ":", 2) + 2, svg.indexOf("^\n") + 1) });
             }
@@ -108,4 +113,5 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
 function getPosition(s: string, t: string, i: number) {
   return s.split(t, i).join(t).length;
 }
+
 
