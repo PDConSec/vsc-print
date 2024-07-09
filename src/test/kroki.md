@@ -4,7 +4,7 @@
 
 ```plantuml
 @startuml
-autoactivate on
+autoactivate on borked
 alice -> bob : hello
 bob -> bob : self call
 bill -> bob #005500 : hello from thread 2
