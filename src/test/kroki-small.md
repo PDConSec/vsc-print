@@ -4,7 +4,7 @@
 
 ```plantuml
 @startuml
-autoactivate onbork
+autoactivate on
 alice -> bob : hello
 bob -> bob : self call
 bill -> bob #005500 : hello from thread 2

@@ -54,18 +54,21 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
           const hash = crypto.createHash("sha256");
           hash.update(token.text);
           const resourcename = hash.digest("hex");
-          if (!generatedResources.has(resourcename)) {
+          let svg: string | Buffer;
+          if (generatedResources.has(resourcename)) {
+            svg = generatedResources.get(resourcename)?.content!;
+          } else {
             const payload = Buffer.from(deflate(Buffer.from(token.text, "utf-8")))
               .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
             const response = await fetch(`${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`);
-            const svg = await response.text();
-            if (svg.includes("</svg>")) {
-              generatedResources.set(resourcename, { content: svg, mimeType: "image/svg+xml" });
-              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" />` });
-            } else {
-              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img alt="KROKI ERROR SEE LOG" />` });
-              logger.warn(`Kroki did not return SVG:\n${svg}`)
-            }
+            svg = await response.text();
+          }
+          if (svg.includes("</svg>")) {
+            generatedResources.set(resourcename, { content: svg, mimeType: "image/svg+xml" });
+            updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" />` });
+          } else {
+            updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img alt="KROKI ERROR SEE LOG" />` });
+            logger.warn(`Kroki did not return SVG:\n${svg}`)
           }
         } catch (error: any) {
           updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: `${error.message ?? error}\n\n${token.text}"/>` });
@@ -95,7 +98,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
             updatedTokens.push({ block: true, type: "code", raw: token.raw, text: resolvedConfig });
             break;
           //#endregion
-          default: 
+          default:
             if (HIGHLIGHTJS_LANGS.includes(LANG)) {
               const codeBlock = `<pre class="code-box">\n<code class="hljs">\n${hljs.highlight(token.lang, token.text).value}\n</code>\n</pre>\n`;
               updatedTokens.push({ block: true, type: "html", raw: token.raw, text: codeBlock });

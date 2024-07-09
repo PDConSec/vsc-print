@@ -23,6 +23,11 @@ resources.set("smiles-drawer.min.js", {
   mimeType: "application/javascript; charset=utf-8"
 });
 
+resources.set("smiles-drawer.min.js.map", {
+  content: fs.readFileSync(resourcePath("smiles-drawer.min.js.map")),
+  mimeType: "application/json; charset=utf-8"
+});
+
 const fontPath = resourcePath("fonts");
 const fontfilenames = fs.readdirSync(fontPath);
 for (const fontfilename of fontfilenames) {
