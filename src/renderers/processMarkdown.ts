@@ -1,4 +1,4 @@
-import { IResourceDescriptor } from './IResourceDescriptor';
+import { ResourceProxy } from './resource-proxy';
 import { Token, Tokens, marked } from 'marked';
 import * as yaml from "yaml";
 import { merge } from "lodash";
@@ -20,7 +20,7 @@ const KROKI_SUPPORT = [
 
 // import { fixFalsePrecision, formatXml, applyDiagramStyle, stripPreamble } from './svg-tools';
 
-export async function processFencedBlocks(defaultConfig: any, raw: string, generatedResources: Map<string, IResourceDescriptor>) {
+export async function processFencedBlocks(defaultConfig: any, raw: string, generatedResources: Map<string, ResourceProxy>) {
   const katexed = raw
     .replace(/\$\$(.+)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: true }))
     .replace(/\$%(.+)%\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false }));
@@ -43,7 +43,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
     return lang ? result[lang] : result;
   }
 
-  let resolvedConfig, svg, filepath;
+  let resolvedConfig, filepath;
   let updatedTokens: Array<Token> = [];
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
@@ -54,22 +54,24 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
           const hash = crypto.createHash("sha256");
           hash.update(token.text);
           const resourcename = hash.digest("hex");
-          let svg: string | Buffer;
-          if (generatedResources.has(resourcename)) {
-            svg = generatedResources.get(resourcename)?.content!;
-          } else {
+          let resource = generatedResources.get(resourcename);
+          if (!resource) {
             const payload = Buffer.from(deflate(Buffer.from(token.text, "utf-8")))
               .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
-            const response = await fetch(`${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`);
-            svg = await response.text();
+            resource = new ResourceProxy(
+              "image/svg+xml",
+              `${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`,
+              async u => {
+                const response = await fetch(u);
+                const responseText = await response.text();
+                if (!responseText.includes("</svg>")) {
+                  logger.warn(`Kroki did not return SVG:\n${responseText}`);
+                }
+                return responseText;
+              });
           }
-          if (svg.includes("</svg>")) {
-            generatedResources.set(resourcename, { content: svg, mimeType: "image/svg+xml" });
-            updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" />` });
-          } else {
-            updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img alt="KROKI ERROR SEE LOG" />` });
-            logger.warn(`Kroki did not return SVG:\n${svg}`)
-          }
+          generatedResources.set(resourcename, resource);
+          updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" />` });
         } catch (error: any) {
           updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: `${error.message ?? error}\n\n${token.text}"/>` });
         }

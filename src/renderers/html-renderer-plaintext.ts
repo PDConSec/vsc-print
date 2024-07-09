@@ -1,8 +1,8 @@
 import { escapeHtml } from "markdown-it/lib/common/utils";
 import * as vscode from 'vscode';
-import { IResourceDescriptor } from "./IResourceDescriptor";
+import { ResourceProxy } from "./resource-proxy";
 
-export async function getBodyHtml(_: Map<string, IResourceDescriptor>, raw: string): Promise<string> {
+export async function getBodyHtml(_: Map<string, ResourceProxy>, raw: string): Promise<string> {
   return `<pre class="plaintext">\n${escapeHtml(raw)}\n</pre>`;
 }
 

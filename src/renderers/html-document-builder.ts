@@ -6,7 +6,7 @@ import { DocumentRenderer } from './document-renderer';
 import micromatch from 'micromatch';
 import tildify from '../tildify';
 import { PrintSession } from '../print-session';
-import { IResourceDescriptor } from './IResourceDescriptor';
+import { ResourceProxy } from './resource-proxy';
 
 const templateFolderItem = require("../templates/folder-item.html").default.toString();
 const templateDocument: string = require("../templates/document.html").default.toString();
@@ -15,7 +15,7 @@ export class HtmlDocumentBuilder {
   private filepath: string;
   constructor(
     public isPreview: boolean,
-    public generatedResources: Map<string, IResourceDescriptor>,
+    public generatedResources: Map<string, ResourceProxy>,
     public baseUrl: string,
     public uri: vscode.Uri,
     public code: string = "",

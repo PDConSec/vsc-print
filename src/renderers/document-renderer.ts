@@ -1,4 +1,4 @@
-import { IResourceDescriptor } from './IResourceDescriptor';
+import { ResourceProxy } from './resource-proxy';
 import { logger } from '../logger';
 import * as path from "path";
 import * as vscode from "vscode";
@@ -14,7 +14,7 @@ export class DocumentRenderer {
     this.options = options;
   }
 
-  public async getBodyHtml(generatedResources: Map<string, IResourceDescriptor>, raw: string, languageId: string, options?: any) {
+  public async getBodyHtml(generatedResources: Map<string, ResourceProxy>, raw: string, languageId: string, options?: any) {
     return this.options.getBodyHtml(generatedResources, raw, languageId, options);
   }
 
@@ -115,7 +115,7 @@ export class DocumentRenderer {
     return result;
   }
 
-  public getResource(name: string, requestingUri: any): IResourceDescriptor {
+  public getResource(name: string, requestingUri: any): ResourceProxy {
   if (this.options.getResource) {
     return this.options.getResource(name, requestingUri);
   } else {

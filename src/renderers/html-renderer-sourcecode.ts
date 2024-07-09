@@ -1,18 +1,22 @@
-import { IResourceDescriptor } from './IResourceDescriptor';
+import { ResourceProxy } from './resource-proxy';
 import * as vscode from 'vscode';
 import { logger } from '../logger';
 import hljs from 'highlight.js';
-const resources = new Map<string, IResourceDescriptor>();
-resources.set("default.css", {
-  content: require("highlight.js/styles/default.css").default.toString(),
-  mimeType: "text/css; charset=utf-8;"
-});
-resources.set("line-numbers.css", {
-  content: require("../css/line-numbers.css").default.toString(),
-  mimeType: "text/css; charset=utf-8;"
-});
 
-export async function getBodyHtml(generatedResources: Map<string, IResourceDescriptor>, raw: string, languageId: string, options?: any): Promise<string> {
+const resources = new Map<string, ResourceProxy>();
+
+resources.set("default.css", new ResourceProxy(
+  "text/css; charset=utf-8",
+  require("highlight.js/styles/default.css").default.toString(),
+  async f => f
+));
+resources.set("line-numbers.css", new ResourceProxy(
+  "text/css; charset=utf-8",
+  require("../css/line-numbers.css").default.toString(),
+  async f => f
+));
+
+export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>, raw: string, languageId: string, options?: any): Promise<string> {
   let renderedCode = "";
   try {
     try {
@@ -69,7 +73,7 @@ export function getCssUriStrings(uri: vscode.Uri): Array<string> {
   ];
 }
 
-export function getResource(name: string): IResourceDescriptor {
+export function getResource(name: string): ResourceProxy {
   return resources.get(name)!;
 }
 
