@@ -8,40 +8,40 @@ import { marked } from 'marked';
 
 const resources = new Map<string, ResourceProxy>();
 
-// resources.set("default-markdown.css", {
-//   content: require("../css/default-markdown.css").default.toString(),
-//   mimeType: "text/css; charset=utf-8"
-// });
+resources.set("default-markdown.css", new ResourceProxy(
+  "text/css; charset=utf-8",
+  require("../css/default-markdown.css").default.toString(),
+  async f => f
+));
 
-// resources.set("katex.css", {
-//   content: fs.readFileSync(resourcePath("katex.css")),
-//   mimeType: "text/css; charset=utf-8"
-// });
+resources.set("katex.css", new ResourceProxy(
+  "text/css; charset=utf-8",
+  "katex.css",
+  async f => fs.promises.readFile(resourcePath(f), "utf-8")
+));
 
-// resources.set("smiles-drawer.min.js", {
-//   content: fs.readFileSync(resourcePath("smiles-drawer.min.js")),
-//   mimeType: "application/javascript; charset=utf-8"
-// });
+resources.set("smiles-drawer.min.js", new ResourceProxy(
+  "application/javascript; charset=utf-8",
+  "smiles-drawer.min.js",
+  async f => fs.promises.readFile(resourcePath(f), "utf-8")
+));
 
-// resources.set("smiles-drawer.min.js.map", {
-//   content: fs.readFileSync(resourcePath("smiles-drawer.min.js.map")),
-//   mimeType: "application/json; charset=utf-8"
-// });
+resources.set("smiles-drawer.min.js.map", new ResourceProxy(
+  "application/json; charset=utf-8",
+  "smiles-drawer.min.js.map",
+  async f => fs.promises.readFile(resourcePath(f), "utf-8")
+));
 
 const fontPath = resourcePath("fonts");
 const fontfilenames = fs.readdirSync(fontPath);
 for (const fontfilename of fontfilenames) {
   const filepath = path.join(fontPath, fontfilename);
   const fontType = path.extname(fontfilename).substring(1);
-  // resources.set(`fonts/${fontfilename}`, {
-  //   content: fs.readFileSync(filepath),
-  //   mimeType: `font/${fontType}`
-  // });
   resources.set(`fonts/${fontfilename}`,
     new ResourceProxy(
       `font/${fontType}`,
       filepath,
-      f => fs.promises.readFile(f, "utf-8")
+      async f => fs.promises.readFile(f)
     )
   );
 }

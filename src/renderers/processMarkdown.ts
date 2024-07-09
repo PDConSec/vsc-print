@@ -9,6 +9,8 @@ import * as vscode from 'vscode';
 import 'katex/dist/contrib/mhchem';
 import hljs from 'highlight.js';
 import { logger } from '../logger';
+import * as https from 'https';
+import axios from 'axios';
 
 const HIGHLIGHTJS_LANGS = hljs.listLanguages().map(s => s.toUpperCase());
 const KROKI_SUPPORT = [
@@ -62,8 +64,9 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
               "image/svg+xml",
               `${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`,
               async u => {
-                const response = await fetch(u);
-                const responseText = await response.text();
+                const agent = new https.Agent({ rejectUnauthorized: vscode.workspace.getConfiguration("print").rejectUnauthorisedTls });
+                const response = await axios.get(u, { httpAgent: agent });
+                const responseText = await response.data;
                 if (!responseText.includes("</svg>")) {
                   logger.warn(`Kroki did not return SVG:\n${responseText}`);
                 }
