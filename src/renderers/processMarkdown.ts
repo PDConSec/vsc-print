@@ -11,6 +11,9 @@ import hljs from 'highlight.js';
 import { logger } from '../logger';
 import * as https from 'https';
 import axios from 'axios';
+import * as os from "os";
+import * as path from 'path';
+import * as fs from "fs";
 
 const HIGHLIGHTJS_LANGS = hljs.listLanguages().map(s => s.toUpperCase());
 const KROKI_SUPPORT = [
@@ -19,6 +22,8 @@ const KROKI_SUPPORT = [
   "NOMNOML", "PIKCHR", "PLANTUML", "STRUCTURIZR", "SVGBOB", "SYMBOLATOR", "TIKZ",
   "UMLET", "VEGA", "VEGALITE", "WAVEDROM", "WIREVIZ", "DOT"
 ];
+const CACHE_PATH = path.join(os.homedir(), ".vscode-print-resource-cache");
+if (!fs.existsSync(CACHE_PATH)) fs.mkdirSync(CACHE_PATH);
 
 // import { fixFalsePrecision, formatXml, applyDiagramStyle, stripPreamble } from './svg-tools';
 
@@ -55,23 +60,34 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
         try {
           const hash = crypto.createHash("sha256");
           hash.update(token.text);
-          const resourcename = hash.digest("hex");
+          let resourcename = hash.digest("hex");
           let resource = generatedResources.get(resourcename);
           if (!resource) {
-            const payload = Buffer.from(deflate(Buffer.from(token.text, "utf-8")))
-              .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
-            resource = new ResourceProxy(
-              "image/svg+xml",
-              `${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`,
-              async u => {
-                const agent = new https.Agent({ rejectUnauthorized: vscode.workspace.getConfiguration("print").rejectUnauthorisedTls });
-                const response = await axios.get(u, { httpAgent: agent });
-                const responseText = await response.data;
-                if (!responseText.includes("</svg>")) {
-                  logger.warn(`Kroki did not return SVG:\n${responseText}`);
+            const resourceCachePath = path.join(CACHE_PATH, resourcename);
+            if (fs.existsSync(resourceCachePath)) {
+              logger.debug(`Resource file cache hit for ${resourcename}`);
+              resource = new ResourceProxy("image/svg+xml", resourcename, f => fs.promises.readFile(f));
+            } else {
+              logger.debug(`Resource file cache miss for ${resourceCachePath}`);
+              const payload = Buffer.from(deflate(Buffer.from(token.text, "utf-8")))
+                .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
+              resource = new ResourceProxy(
+                "image/svg+xml",
+                `${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`,
+                async u => {
+                  const agent = new https.Agent({ rejectUnauthorized: vscode.workspace.getConfiguration("print").rejectUnauthorisedTls });
+                  const response = await axios.get(u, { httpAgent: agent });
+                  const responseText = await response.data;
+                  if (responseText.includes("</svg>")) {
+                    fs.writeFileSync(resourceCachePath, responseText);
+                    logger.debug(`Resource file cache write for ${resourceCachePath}`);
+                  } else {
+                    logger.warn(`Kroki did not return SVG:\n${responseText}`);
+                  }
+                  return responseText;
                 }
-                return responseText;
-              });
+              );
+            }
           }
           generatedResources.set(resourcename, resource);
           updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" />` });
