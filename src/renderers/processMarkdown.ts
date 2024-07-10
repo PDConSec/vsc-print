@@ -66,7 +66,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
             const resourceCachePath = path.join(CACHE_PATH, resourcename);
             if (fs.existsSync(resourceCachePath)) {
               logger.debug(`Resource file cache hit for ${resourcename}`);
-              resource = new ResourceProxy("image/svg+xml", resourcename, f => fs.promises.readFile(f));
+              resource = new ResourceProxy("image/svg+xml", resourcename, async f => fs.promises.readFile(path.join(CACHE_PATH,f)));
             } else {
               logger.debug(`Resource file cache miss for ${resourceCachePath}`);
               const payload = Buffer.from(deflate(Buffer.from(token.text, "utf-8")))
