@@ -60,13 +60,13 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
         try {
           const hash = crypto.createHash("sha256");
           hash.update(token.text);
-          let resourcename = hash.digest("hex");
+          let resourcename = `${hash.digest("hex")}.svg`;
           let resource = generatedResources.get(resourcename);
           if (!resource) {
             const resourceCachePath = path.join(CACHE_PATH, resourcename);
             if (fs.existsSync(resourceCachePath)) {
               logger.debug(`Resource file cache hit for ${resourcename}`);
-              resource = new ResourceProxy("image/svg+xml", resourcename, async f => fs.promises.readFile(path.join(CACHE_PATH,f)));
+              resource = new ResourceProxy("image/svg+xml", resourcename, async f => fs.promises.readFile(path.join(CACHE_PATH, f)));
             } else {
               logger.debug(`Resource file cache miss for ${resourceCachePath}`);
               const payload = Buffer.from(deflate(Buffer.from(token.text, "utf-8")))
@@ -90,7 +90,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
             }
           }
           generatedResources.set(resourcename, resource);
-          updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" />` });
+          updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" class="${LANG}" title="${token.lang}" />` });
         } catch (error: any) {
           updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: `${error.message ?? error}\n\n${token.text}"/>` });
         }
