@@ -3,6 +3,7 @@
 Print code. Print rendered Markdown. Local or remote. Windows, Mac or Linux.
 
 ## This release
+Print now has a persistent cache for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. 
 
 We stopped using VS Code's rendering pipeline for Markdown because Microsoft continues to evolve it in ways that clash with the needs of printing. Because it's not a published API, there is no announcement of breaking changes and no consideration of third party needs. So last release we switched to our own. There are lots of extensions that extend Markdown rendering for the built-in pipeline, but many of them were broken already for Print so we forged ahead - and promptly heard cries of protest from Kroki users.
 
@@ -63,6 +64,7 @@ Some things you can configure:
 
 ## Planned changes
 
+* External resources for Markdown documents - a fenced block with a language of `external` containing a URL and metadata, allowing a wide range of external resources to be linked into a Markdown document
 * The manual needs a rewrite, 
   - how to embed diagrams
   - how to control the flow of text around embedded diagrams

@@ -1,5 +1,14 @@
 # Change Log
 
+### 0.12.13
+
+- persistent cache for rendered diagrams
+
+### 0.12.12
+
+- async resolver caching proxy for generated resources so diagram rendering does not stall page delivery
+- add option reject unauthorised TLS defaulting to true 
+
 ### 0.12.10
 
 - added logs for Kroki failures
