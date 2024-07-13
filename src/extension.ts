@@ -5,11 +5,11 @@ import * as vscode from 'vscode';
 import * as http from "http";
 import { AddressInfo } from 'net';
 import * as path from "path";
-import { HtmlDocumentBuilder } from './renderers/html-document-builder';
 import { DocumentRenderer } from './renderers/document-renderer';
 import * as htmlRendererMarkdown from "./renderers/html-renderer-markdown";
 import * as htmlRendererPlaintext from "./renderers/html-renderer-plaintext";
 import { captionByFilename } from './imports';
+import * as fs from "fs";
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
@@ -79,6 +79,14 @@ export async function activate(context: vscode.ExtensionContext) {
       if (urlParts[1] === "whatsnew") {
         response.writeHead(302, { 'Location': 'https://pdconsec.net/vscode-print/whatsnew' });
         return response.end();
+      } else if (urlParts[1] === "favicon.ico") {
+        const p = path.join(Metadata.ExtensionPath, "favicon.ico");
+        const content = await fs.promises.readFile(p);
+        response.writeHead(200, {
+          "Content-Type": "image/vnd.microsoft.icon",
+          "Content-Length": content.length
+        });
+        return response.end(content);
       } else {
         const printSession = printSessions.get(urlParts[1]);
         if (printSession) {
