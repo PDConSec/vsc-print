@@ -34,17 +34,17 @@ export class HtmlDocumentBuilder {
       const docs = await this.docsInMultiselection();
       const summary =
         `<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
-      const composite = docs.map(async doc => {
+      let composite = "";
+      for(let doc of docs) {
         const renderer = DocumentRenderer.get(doc.languageId);
         const bodyText = doc.getText();
         const langId = doc.languageId;
         const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
         const bodyHtml = await renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
-        return templateFolderItem
+        composite += templateFolderItem
           .replace("VSCODE_PRINT_FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
-          .replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", () =>  `<table class="hljs">\n${bodyHtml}\n</table>\n`)
-      }).join('');
-
+          .replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", () => `<table class="hljs">\n${bodyHtml}\n</table>\n`)
+      }
       return templateDocument
         .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
         .replace(/VSCODE_PRINT_DOCUMENT_(?:TITLE|HEADING)/g, "<h2>Selected files</h2>")
@@ -64,107 +64,108 @@ export class HtmlDocumentBuilder {
       const summary = printConfig.folder.includeFileList ?
         `<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
         `<h3>${docs.length} printable files</h3><p>(file list disabled)</p>`;
-      const msgTooManyFiles = vscode.l10n.t("The selected directory contains too many files to print them all. Only the summary will be printed.");
-      const flagTooManyFiles = docs.length > printConfig.folder.maxFiles;
-      const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc =>
-        templateFolderItem
-          .replace("VSCODE_PRINT_FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
-          .replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", () => {
-            const renderer = DocumentRenderer.get(doc.languageId);
-            const bodyText = doc.getText();
-            const langId = doc.languageId;
-            const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
-            const bodyHtml = renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
-            return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
-          })
-      ).join('');
 
-      if (flagTooManyFiles) {
+      let composite: string;
+      if (docs.length > printConfig.folder.maxFiles) {
+        const msgTooManyFiles = composite =
+          vscode.l10n.t("The selected directory contains too many files to print them all. Only the summary will be printed.");
         vscode.window.showWarningMessage(msgTooManyFiles);
       }
-
-      return templateDocument
-        .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
-        .replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, this.workspacePath(this.uri))
-        .replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, `<h2>Folder ${this.workspacePath(this.uri)}</h2>`)
-        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", (!this.isPreview).toString())
-        .replace("VSCODE_PRINT_CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
-        .replace("VSCODE_PRINT_SCRIPT_TAGS", "")
-        .replace("VSCODE_PRINT_STYLESHEET_LINKS",
-          '<link href="bundled/default.css" rel="stylesheet" />\n' +
-          '\t<link href="bundled/line-numbers.css" rel="stylesheet" />\n' +
-          '\t<link href="bundled/colour-scheme.css" rel="stylesheet" />\n' +
-          '\t<link href="bundled/settings.css" rel = "stylesheet" /> ')
-        ;
-    } else {
-      logger.debug(`Printing ${this.filepath}`);
-      let docHeading = "";
-      if (printConfig.filepathHeadingForIndividuallyPrintedDocuments) {
-        switch (printConfig.filepathAsDocumentHeading) {
-          case "Absolute":
-            docHeading = `<h3>${tildify(this.filepath).replace(/([\\/])/g, "$1<wbr />")}</h3>`;
-            break;
-          case "Relative":
-            const wf = vscode.workspace.getWorkspaceFolder(this.uri);
-            // if no workspace then absolute path
-            const relativePath = wf ? path.relative(wf!.uri.fsPath, this.filepath) : this.filepath;
-            docHeading = `<h3>${relativePath.replace(/([\\/])/g, "$1<wbr />")}</h3>`;
-            break;
+      else {
+        composite = "";
+        for (let doc of docs) {
+          const renderer = DocumentRenderer.get(doc.languageId);
+          const bodyText = doc.getText();
+          const langId = doc.languageId;
+          const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
+          const bodyHtml = await renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
+          composite += templateFolderItem
+            .replace("VSCODE_PRINT_FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
+            .replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", `<table class="hljs">\n${bodyHtml}\n</table>\n`);
         }
       }
-
-      let thePath = "";
-      if (printConfig.filepathHeadingForIndividuallyPrintedDocuments)
-        switch (printConfig.filepathAsDocumentHeading) {
-          case "Absolute":
-            thePath = `<h3>${tildify(this.uri.fsPath)}</h3>`;
-            break;
-          case "Relative":
-            thePath = `<h3>${this.workspacePath(this.uri)}</h3>`;
-            break;
+        return templateDocument
+          .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
+          .replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, this.workspacePath(this.uri))
+          .replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, `<h2>Folder ${this.workspacePath(this.uri)}</h2>`)
+          .replace("VSCODE_PRINT_PRINT_AND_CLOSE", (!this.isPreview).toString())
+          .replace("VSCODE_PRINT_CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
+          .replace("VSCODE_PRINT_SCRIPT_TAGS", "")
+          .replace("VSCODE_PRINT_STYLESHEET_LINKS",
+            '<link href="bundled/default.css" rel="stylesheet" />\n' +
+            '\t<link href="bundled/line-numbers.css" rel="stylesheet" />\n' +
+            '\t<link href="bundled/colour-scheme.css" rel="stylesheet" />\n' +
+            '\t<link href="bundled/settings.css" rel = "stylesheet" /> ')
+          ;
+      } else {
+        logger.debug(`Printing ${this.filepath}`);
+        let docHeading = "";
+        if (printConfig.filepathHeadingForIndividuallyPrintedDocuments) {
+          switch (printConfig.filepathAsDocumentHeading) {
+            case "Absolute":
+              docHeading = `<h3>${tildify(this.filepath).replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+              break;
+            case "Relative":
+              const wf = vscode.workspace.getWorkspaceFolder(this.uri);
+              // if no workspace then absolute path
+              const relativePath = wf ? path.relative(wf!.uri.fsPath, this.filepath) : this.filepath;
+              docHeading = `<h3>${relativePath.replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+              break;
+          }
         }
-      let options = {
-        startLine: this.startLine,
-        lineNumbers: this.printLineNumbers,
-        uri: this.uri
-      };
-      const bodyHtml = await documentRenderer.getBodyHtml(this.generatedResources, this.code, this.language, options);
-      return templateDocument
-        .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
-        .replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
-        .replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, thePath)
-        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", (!this.isPreview).toString())
-        .replace("VSCODE_PRINT_CONTENT", bodyHtml)
-        .replace("VSCODE_PRINT_STYLESHEET_LINKS", documentRenderer.getCssLinks(this.uri))
-        .replace("VSCODE_PRINT_SCRIPT_TAGS", documentRenderer.getScriptTags(this.uri))
-        ;
+
+        let thePath = "";
+        if (printConfig.filepathHeadingForIndividuallyPrintedDocuments)
+          switch (printConfig.filepathAsDocumentHeading) {
+            case "Absolute":
+              thePath = `<h3>${tildify(this.uri.fsPath)}</h3>`;
+              break;
+            case "Relative":
+              thePath = `<h3>${this.workspacePath(this.uri)}</h3>`;
+              break;
+          }
+        let options = {
+          startLine: this.startLine,
+          lineNumbers: this.printLineNumbers,
+          uri: this.uri
+        };
+        const bodyHtml = await documentRenderer.getBodyHtml(this.generatedResources, this.code, this.language, options);
+        return templateDocument
+          .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
+          .replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
+          .replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, thePath)
+          .replace("VSCODE_PRINT_PRINT_AND_CLOSE", (!this.isPreview).toString())
+          .replace("VSCODE_PRINT_CONTENT", bodyHtml)
+          .replace("VSCODE_PRINT_STYLESHEET_LINKS", documentRenderer.getCssLinks(this.uri))
+          .replace("VSCODE_PRINT_SCRIPT_TAGS", documentRenderer.getScriptTags(this.uri))
+          ;
+      }
     }
-  }
   async docsInMultiselection() {
-    const printConfig = vscode.workspace.getConfiguration("print");
-    // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
-    let excludePatterns: string[] = printConfig.folder.exclude || [];
-    if (excludePatterns.length == 0) {
-      excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp,design}");
+      const printConfig = vscode.workspace.getConfiguration("print");
+      // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
+      let excludePatterns: string[] = printConfig.folder.exclude || [];
+      if (excludePatterns.length == 0) {
+        excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp,design}");
+      }
+      // one item should not be surrounded with braces, they would be treated as literals
+      // but flatten them anyway in case the single pattern contains nested braces
+      let excludeString: string;
+      excludePatterns = this.flatten(excludePatterns); //prevent nested alternations
+      excludeString = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
+      const fileUris = this.multiselection.filter(uri => !micromatch.isMatch(uri.path, excludeString));
+      const docOpenSettlements = await Promise.allSettled(fileUris.map(uri => vscode.workspace.openTextDocument(uri)));
+      const docs = await docOpenSettlements
+        .filter(dos => dos.status === "fulfilled")
+        .map(dos => (dos as PromiseFulfilledResult<vscode.TextDocument>).value);
+      return docs;
     }
-    // one item should not be surrounded with braces, they would be treated as literals
-    // but flatten them anyway in case the single pattern contains nested braces
-    let excludeString: string;
-    excludePatterns = this.flatten(excludePatterns); //prevent nested alternations
-    excludeString = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
-    const fileUris = this.multiselection.filter(uri => !micromatch.isMatch(uri.path, excludeString));
-    const docOpenSettlements = await Promise.allSettled(fileUris.map(uri => vscode.workspace.openTextDocument(uri)));
-    const docs = await docOpenSettlements
-      .filter(dos => dos.status === "fulfilled")
-      .map(dos => (dos as PromiseFulfilledResult<vscode.TextDocument>).value);
-    return docs;
-  }
-  async docsInFolder(): Promise<vscode.TextDocument[]> {
-    logger.debug(`Enumerating the files in ${this.filepath}`);
-    const printConfig = vscode.workspace.getConfiguration("print", null);
-    // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
-    let excludePatterns: string[] = printConfig.folder.exclude || [];
-    if (excludePatterns.length == 0) {
+  async docsInFolder(): Promise < vscode.TextDocument[] > {
+      logger.debug(`Enumerating the files in ${this.filepath}`);
+      const printConfig = vscode.workspace.getConfiguration("print", null);
+      // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
+      let excludePatterns: string[] = printConfig.folder.exclude || [];
+      if(excludePatterns.length == 0) {
       excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp,design}");
     }
     let includePatterns: string[] = printConfig.folder.include || [];

@@ -15,7 +15,8 @@ export class DocumentRenderer {
   }
 
   public async getBodyHtml(generatedResources: Map<string, ResourceProxy>, raw: string, languageId: string, options?: any) {
-    return this.options.getBodyHtml(generatedResources, raw, languageId, options);
+    const result = this.options.getBodyHtml(generatedResources, raw, languageId, options);
+    return result;
   }
 
   public getTitle(uri: vscode.Uri) {
