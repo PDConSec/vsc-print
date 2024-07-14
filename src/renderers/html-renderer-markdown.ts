@@ -52,7 +52,7 @@ export function isEnabled(): boolean {
 }
 
 export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>, raw: string, languageId: string) {
-  const updatedTokens = await processMarkdown({ LATEX: { displayMode: true } }, raw, generatedResources);
+  const updatedTokens = await processMarkdown({ LATEX: { displayMode: true } }, raw, generatedResources, );
   return marked.parser(updatedTokens);
 }
 

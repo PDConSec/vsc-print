@@ -5,39 +5,58 @@ import * as fs from 'fs';
 import { logger } from '../logger';
 
 const INCLUDE_DIRECTIVE = /^\s*!(include(?:sub)?)\s+(.+?)(?:!(\w+))?$/i;
-const STARTSUB_TEST_REG = /^\s*!startsub\s+(\w+)/i;
-const ENDSUB_TEST_REG = /^\s*!endsub\b/i;
 
-const START_DIAGRAM_REG = /(^|\r?\n)\s*@start.*\r?\n/i;
-const END_DIAGRAM_REG = /\r?\n\s*@end.*(\r?\n|$)(?!.*\r?\n\s*@end.*(\r?\n|$))/i;
-
-export async function resolveIncludes(raw: string) {
+export async function resolveRootDoc(raw: string, rootDocFolder: string) {
   let result = "";
   const processedFiles = new Set<string>();
+  const chain = new Array<string>();
   for await (const line of readLines(raw)) {
-    let directiveFilename = getDirectiveFilename(line);
-    if (directiveFilename) {
-      resolveContent(directiveFilename as string, result, processedFiles);
+    let includeFilepath = await getIncludeFilepath(line, rootDocFolder);
+    if (includeFilepath) {
+      resolveInclude(includeFilepath, result, processedFiles, chain, rootDocFolder);
+    } else {
+      result += line;
     }
-    result += line;
   }
   return result;
 }
 
-async function resolveContent(name: string, result: string, processedFiles: Set<string>) {
-  for await (const line of readFileLines(name, processedFiles)) {
-    let directiveFilename = getDirectiveFilename(line);
-    if (directiveFilename) {
-      resolveContent(directiveFilename as string, result, processedFiles);
+async function resolveInclude(filepath: string, result: string, processedFiles: Set<string>, chain: string[], rootDocFolder: string) {
+  if (chain.includes(filepath)) {
+    logger.warn("Include cycle for {filepath}. Chain is {chain}", filepath, chain);
+  } else if (processedFiles.has(filepath)) {
+    logger.warn("Already included {filepath}", filepath);
+  } else {
+    processedFiles.add(filepath);
+    chain.push(filepath);
+    for await (const line of readFileLines(filepath, rootDocFolder)) {
+      let includeFilename = await getIncludeFilepath(line, rootDocFolder);
+      if (includeFilename) {
+        await resolveInclude(includeFilename, result, processedFiles, chain, rootDocFolder);
+      } else if (line.includes("@startuml")) {
+        //skip
+      } else if (line.includes("@enduml")) {
+        break;
+      } else {
+        result += line;
+      }
     }
-    result += line;
+    chain.pop();
   }
-  return result;
 }
 
-function getDirectiveFilename(line: string): string | undefined {
+async function getIncludeFilepath(line: string, rootDocFolder: string) {
   const match = INCLUDE_DIRECTIVE.exec(line);
-  return match && match[1] ? match[1] : undefined;
+  const filename = match && match[1] ? match[1] : undefined;
+  if (filename) {
+    const filepath = await resolveFilepath(filename, rootDocFolder);
+    if (!filename) {
+      logger.warn("File \"{filename}\"not found on searchpath", filename);
+    }
+    return filepath;
+  } else {
+    return "";
+  }
 }
 
 async function* readLines(input: string): AsyncGenerator<string> {
@@ -47,36 +66,33 @@ async function* readLines(input: string): AsyncGenerator<string> {
   }
 }
 
-async function* readFileLines(name: string, processedFiles: Set<string>, chain: string[]): AsyncGenerator<string> {
-  chain.push(name);
+async function* readFileLines(filename: string, rootDocFolder: string): AsyncGenerator<string> {
+  const filePath = await resolveFilepath(filename, rootDocFolder);
+  if (filePath === "NOT FOUND") {
+    logger.error("Include file not found", filename);
+  } else if (filePath === "REDUNDANT") {
+    logger.error("Already referenced", filePath);
+  } else {
+    const fileStream = fs.createReadStream(filePath);
+    const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
+    for await (const line of rl) {
+      yield line;
+    }
+  }
+}
+
+async function resolveFilepath(name: string, rootDocFolder: string) {
   const config = vscode.workspace.getConfiguration('plantuml');
   const diagramsRoot = config.get<string>('diagramsRoot');
   const jebbPaths = config.get<string[]>('includepaths') ?? [];
   const printPaths = vscode.workspace.getConfiguration('print').get<string[]>("includePaths") ?? [];
-
-  const directories = [diagramsRoot, ...jebbPaths, ...printPaths].filter(Boolean) as string[];
-
-  for (const dir of directories) {
-    const filePath = path.join(dir, name);
-    if (processedFiles.has(filePath)) {
-      logger.warn("Circular reference", chain);
-      chain.pop();
-      return;
-    } else {
-      try {
-        await fs.promises.access(filePath);
-        const fileStream = fs.createReadStream(filePath);
-        const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
-
-        for await (const line of rl) {
-          yield line;
-        }
-        chain.pop();
-        return;
-      } catch {
-        // Continue to the next directory if the file is not found
-      }
-    }
+  const directories = [rootDocFolder, diagramsRoot, ...jebbPaths, ...printPaths].filter(Boolean) as string[];
+  for (let i = 0; i < directories.length; i++) {
+    const filePath = path.resolve(path.join(directories[i], name));
+    try {
+      await fs.promises.access(filePath);
+      return filePath;
+    } catch { }
   }
-  chain.pop();
+  return "";
 }
