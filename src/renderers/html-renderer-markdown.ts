@@ -51,8 +51,10 @@ export function isEnabled(): boolean {
   return vscode.workspace.getConfiguration("print").renderMarkdown;
 }
 
-export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>, raw: string, languageId: string) {
-  const updatedTokens = await processMarkdown({ LATEX: { displayMode: true } }, raw, generatedResources, );
+export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>, raw: string, languageId: string, options: any) {
+  const uri: vscode.Uri = options.uri;
+  const rootDocumentFolder = path.dirname(uri.fsPath);
+  const updatedTokens = await processMarkdown({ LATEX: { displayMode: true } }, raw, generatedResources, rootDocumentFolder);
   return marked.parser(updatedTokens);
 }
 

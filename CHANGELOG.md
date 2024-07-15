@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.12.15
+
+- support for recursive `!include` directives in Kroki diagrams (subject to GET limits)
+
 ### 0.12.14
 
 - [#335](https://github.com/PDConSec/vsc-print/issues/335) map doesn't play  well with async functions

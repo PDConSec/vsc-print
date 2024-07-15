@@ -13,41 +13,43 @@ export async function resolveRootDoc(raw: string, rootDocFolder: string) {
   for await (const line of readLines(raw)) {
     let includeFilepath = await getIncludeFilepath(line, rootDocFolder);
     if (includeFilepath) {
-      resolveInclude(includeFilepath, result, processedFiles, chain, rootDocFolder);
+      result += await resolveInclude(includeFilepath, processedFiles, chain, rootDocFolder);
     } else {
-      result += line;
+      result += `${line}\n`;
     }
   }
   return result;
 }
 
-async function resolveInclude(filepath: string, result: string, processedFiles: Set<string>, chain: string[], rootDocFolder: string) {
+async function resolveInclude(filepath: string, processedFiles: Set<string>, chain: string[], rootDocFolder: string) {
+  let result = "";
   if (chain.includes(filepath)) {
-    logger.warn("Include cycle for {filepath}. Chain is {chain}", filepath, chain);
+    logger.warn("Include cycle for {filepath}, chain is {chain}", filepath, chain);
   } else if (processedFiles.has(filepath)) {
     logger.warn("Already included {filepath}", filepath);
   } else {
     processedFiles.add(filepath);
     chain.push(filepath);
-    for await (const line of readFileLines(filepath, rootDocFolder)) {
+    for await (const line of readFileLines(filepath)) {
       let includeFilename = await getIncludeFilepath(line, rootDocFolder);
       if (includeFilename) {
-        await resolveInclude(includeFilename, result, processedFiles, chain, rootDocFolder);
+        result += await resolveInclude(includeFilename, processedFiles, chain, rootDocFolder);
       } else if (line.includes("@startuml")) {
-        //skip
+        continue;
       } else if (line.includes("@enduml")) {
         break;
       } else {
-        result += line;
+        result += `${line}\n`;
       }
     }
     chain.pop();
   }
+  return result;
 }
 
 async function getIncludeFilepath(line: string, rootDocFolder: string) {
   const match = INCLUDE_DIRECTIVE.exec(line);
-  const filename = match && match[1] ? match[1] : undefined;
+  const filename = match && match[2] ? match[2] : undefined;
   if (filename) {
     const filepath = await resolveFilepath(filename, rootDocFolder);
     if (!filename) {
@@ -66,18 +68,11 @@ async function* readLines(input: string): AsyncGenerator<string> {
   }
 }
 
-async function* readFileLines(filename: string, rootDocFolder: string): AsyncGenerator<string> {
-  const filePath = await resolveFilepath(filename, rootDocFolder);
-  if (filePath === "NOT FOUND") {
-    logger.error("Include file not found", filename);
-  } else if (filePath === "REDUNDANT") {
-    logger.error("Already referenced", filePath);
-  } else {
-    const fileStream = fs.createReadStream(filePath);
-    const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
-    for await (const line of rl) {
-      yield line;
-    }
+async function* readFileLines(filePath: string): AsyncGenerator<string> {
+  const fileStream = fs.createReadStream(filePath);
+  const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
+  for await (const line of rl) {
+    yield line;
   }
 }
 

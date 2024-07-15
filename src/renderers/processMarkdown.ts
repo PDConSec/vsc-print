@@ -60,7 +60,8 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
       if (KROKI_SUPPORT.includes(LANG)) {
         try {
           const hash = crypto.createHash("sha256");
-          hash.update(await resolveRootDoc(token.text, rootDocFolder));
+          let resolvedDoc = await resolveRootDoc(token.text, rootDocFolder);
+          hash.update(resolvedDoc);
           let resourcename = `${hash.digest("hex")}.svg`;
           let resource = generatedResources.get(resourcename);
           if (!resource) {
@@ -70,7 +71,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
               resource = new ResourceProxy("image/svg+xml", resourcename, async f => fs.promises.readFile(path.join(CACHE_PATH, f)));
             } else {
               logger.debug(`Resource file cache miss for ${resourceCachePath}`);
-              const payload = Buffer.from(deflate(Buffer.from(token.text, "utf-8")))
+              const payload = Buffer.from(deflate(Buffer.from(resolvedDoc, "utf-8")))
                 .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
               resource = new ResourceProxy(
                 "image/svg+xml",

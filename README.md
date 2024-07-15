@@ -3,11 +3,8 @@
 Print code. Print rendered Markdown. Local or remote. Windows, Mac or Linux.
 
 ## This release
-Print now has a persistent cache for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. 
 
-We stopped using VS Code's rendering pipeline for Markdown because Microsoft continues to evolve it in ways that clash with the needs of printing. Because it's not a published API, there is no announcement of breaking changes and no consideration of third party needs. So last release we switched to our own. There are lots of extensions that extend Markdown rendering for the built-in pipeline, but many of them were broken already for Print so we forged ahead - and promptly heard cries of protest from Kroki users.
-
-Kroki is server-based. Normally we won't do anything that can't work offline, but there were two compelling factors
+Diagrams are now handled using Kroki. Kroki is server-based. Normally we won't do anything that can't work offline, but there were two compelling factors
 
 *   it unifies a huge list of diagram engines
 *   it _can_ work off-line: install Kroki server on your network or notebook
@@ -22,6 +19,8 @@ So while there was a drop in functionality for 0.12.3, with this release you can
 | Nomnoml    | Pikchr     | PlantUML         | SmilesDrawer | Structurizr | Svgbob   |
 | Symbolator | Tikz       | UMLet            | Vega         | Vega-lite   | WaveDrom |
 | WireViz    |            |                  |              |             |          |
+
+Print has a persistent cache (similar to a browser) for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. Extending Kroki in the spirit of `jebb.plantUml` there is also support for recursive `!include filename.ext`.
 
 ## Cross-platform printing
 
