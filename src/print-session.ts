@@ -10,6 +10,7 @@ import { DocumentRenderer } from './renderers/document-renderer';
 import { filenameByCaption } from './imports';
 import { ResourceProxy } from './renderers/resource-proxy';
 import { Metadata } from './metadata';
+import tildify from './tildify';
 
 let settingsCss: string = require("./css/settings.css").default.toString();
 
@@ -282,14 +283,22 @@ export class PrintSession {
         const uristat = await vscode.workspace.fs.stat(source);
         if (uristat.type === vscode.FileType.Directory) return "folder";
         const editor = vscode.window.activeTextEditor;
-        if (editor && source.toString() === editor.document.uri.toString()) {
-          return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
+        if (editor && tildify(source.toString()) === tildify(editor.document.uri.toString())) {
+          if (editor.selection) {
+            if (editor.selection.isEmpty || editor.selection.isSingleLine) {
+              return "editor";
+            } else {
+              return "selection"
+            }
+          } else {
+            return "editor";
+          }
         } else {
           return "file";
         }
       } catch (ex) {
         if (vscode.window.activeTextEditor) {
-          return vscode.window.activeTextEditor.selection ? "selection" : "editor";
+          return vscode.window.activeTextEditor.selection?.isEmpty ? "editor" : "selection";
         } else {
           return `Content source could not be determined. "${source}" does not resolve to a file and there is no active editor.`;
         }
