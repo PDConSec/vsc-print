@@ -27,6 +27,7 @@ export class HtmlDocumentBuilder {
     this.filepath = uri.fsPath;
   }
   public async build(): Promise<string> {
+    const printAndClose = (!this.isPreview).toString();
     const documentRenderer = DocumentRenderer.get(this.language);
     const printConfig = vscode.workspace.getConfiguration("print");
     if (this.multiselection!.length) {
@@ -48,7 +49,7 @@ export class HtmlDocumentBuilder {
       return templateDocument
         .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
         .replace(/VSCODE_PRINT_DOCUMENT_(?:TITLE|HEADING)/g, "<h2>Selected files</h2>")
-        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", (!this.isPreview).toString())
+        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", printAndClose)
         .replace("VSCODE_PRINT_CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
         .replace("VSCODE_PRINT_SCRIPT_TAGS", "")
         .replace("VSCODE_PRINT_STYLESHEET_LINKS",
@@ -88,7 +89,7 @@ export class HtmlDocumentBuilder {
         .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
         .replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, this.workspacePath(this.uri))
         .replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, `<h2>Folder ${this.workspacePath(this.uri)}</h2>`)
-        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", (!this.isPreview).toString())
+        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", printAndClose)
         .replace("VSCODE_PRINT_CONTENT", () => `${summary}\n${composite}`) // replacer fn suppresses interpretation of $
         .replace("VSCODE_PRINT_SCRIPT_TAGS", "")
         .replace("VSCODE_PRINT_STYLESHEET_LINKS",
@@ -130,14 +131,16 @@ export class HtmlDocumentBuilder {
         uri: this.uri
       };
       const bodyHtml = await documentRenderer.getBodyHtml(this.generatedResources, this.code, this.language, options);
+      const cssLinks = documentRenderer.getCssLinks(this.uri);
+      const scriptTags = documentRenderer.getScriptTags(this.uri);
       return templateDocument
         .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
         .replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
         .replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, thePath)
-        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", (!this.isPreview).toString())
+        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", printAndClose)
         .replace("VSCODE_PRINT_CONTENT", bodyHtml)
-        .replace("VSCODE_PRINT_STYLESHEET_LINKS", documentRenderer.getCssLinks(this.uri))
-        .replace("VSCODE_PRINT_SCRIPT_TAGS", documentRenderer.getScriptTags(this.uri))
+        .replace("VSCODE_PRINT_STYLESHEET_LINKS", cssLinks)
+        .replace("VSCODE_PRINT_SCRIPT_TAGS", scriptTags)
         ;
     }
   }

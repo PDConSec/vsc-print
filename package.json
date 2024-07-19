@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "0.12.15",
+  "version": "0.12.16",
   "icon": "assets/vscode-print-128.png",
   "author": {
     "name": "Peter Wone",

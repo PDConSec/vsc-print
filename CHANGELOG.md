@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.12.16
+
+- fix print button for non-Markdown (don't apply SmilesDrawer unless it was delivered to the page)
+
 ### 0.12.15
 
 - support for recursive `!include` directives in Kroki diagrams (subject to GET limits)
