@@ -34,17 +34,17 @@ export class HtmlDocumentBuilder {
       const docs = await this.docsInMultiselection();
       const summary =
         `<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
-      const composite = docs.map(async doc => {
+      let composite = "";
+      for (let doc of docs) {
         const renderer = DocumentRenderer.get(doc.languageId);
         const bodyText = doc.getText();
         const langId = doc.languageId;
         const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
         const bodyHtml = await renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
-        return templateFolderItem
+        composite += templateFolderItem
           .replace("VSCODE_PRINT_FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
-          .replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", () =>  `<table class="hljs">\n${bodyHtml}\n</table>\n`)
-      }).join('');
-
+          .replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", () => `<table class="hljs">\n${bodyHtml}\n</table>\n`)
+      }
       return templateDocument
         .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
         .replace(/VSCODE_PRINT_DOCUMENT_(?:TITLE|HEADING)/g, "<h2>Selected files</h2>")
@@ -64,25 +64,26 @@ export class HtmlDocumentBuilder {
       const summary = printConfig.folder.includeFileList ?
         `<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
         `<h3>${docs.length} printable files</h3><p>(file list disabled)</p>`;
-      const msgTooManyFiles = vscode.l10n.t("The selected directory contains too many files to print them all. Only the summary will be printed.");
-      const flagTooManyFiles = docs.length > printConfig.folder.maxFiles;
-      const composite = flagTooManyFiles ? msgTooManyFiles : docs.map(doc =>
-        templateFolderItem
-          .replace("VSCODE_PRINT_FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
-          .replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", () => {
-            const renderer = DocumentRenderer.get(doc.languageId);
-            const bodyText = doc.getText();
-            const langId = doc.languageId;
-            const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
-            const bodyHtml = renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
-            return `<table class="hljs">\n${bodyHtml}\n</table>\n`;
-          })
-      ).join('');
 
-      if (flagTooManyFiles) {
+      let composite: string;
+      if (docs.length > printConfig.folder.maxFiles) {
+        const msgTooManyFiles = composite =
+          vscode.l10n.t("The selected directory contains too many files to print them all. Only the summary will be printed.");
         vscode.window.showWarningMessage(msgTooManyFiles);
       }
-
+      else {
+        composite = "";
+        for (let doc of docs) {
+          const renderer = DocumentRenderer.get(doc.languageId);
+          const bodyText = doc.getText();
+          const langId = doc.languageId;
+          const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
+          const bodyHtml = await renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
+          composite += templateFolderItem
+            .replace("VSCODE_PRINT_FOLDER_ITEM_TITLE", printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName))
+            .replace("VSCODE_PRINT_FOLDER_ITEM_CONTENT", `<table class="hljs">\n${bodyHtml}\n</table>\n`);
+        }
+      }
       return templateDocument
         .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
         .replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, this.workspacePath(this.uri))

@@ -14,6 +14,7 @@ import axios from 'axios';
 import * as os from "os";
 import * as path from 'path';
 import * as fs from "fs";
+import { resolveRootDoc } from './includes';
 
 const HIGHLIGHTJS_LANGS = hljs.listLanguages().map(s => s.toUpperCase());
 const KROKI_SUPPORT = [
@@ -27,7 +28,7 @@ if (!fs.existsSync(CACHE_PATH)) fs.mkdirSync(CACHE_PATH);
 
 // import { fixFalsePrecision, formatXml, applyDiagramStyle, stripPreamble } from './svg-tools';
 
-export async function processFencedBlocks(defaultConfig: any, raw: string, generatedResources: Map<string, ResourceProxy>) {
+export async function processFencedBlocks(defaultConfig: any, raw: string, generatedResources: Map<string, ResourceProxy>, rootDocFolder: string) {
   const katexed = raw
     .replace(/\$\$(.+)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: true }))
     .replace(/\$%(.+)%\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false }));
@@ -59,7 +60,8 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
       if (KROKI_SUPPORT.includes(LANG)) {
         try {
           const hash = crypto.createHash("sha256");
-          hash.update(token.text);
+          let resolvedDoc = await resolveRootDoc(token.text, rootDocFolder);
+          hash.update(resolvedDoc);
           let resourcename = `${hash.digest("hex")}.svg`;
           let resource = generatedResources.get(resourcename);
           if (!resource) {
@@ -69,7 +71,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
               resource = new ResourceProxy("image/svg+xml", resourcename, async f => fs.promises.readFile(path.join(CACHE_PATH, f)));
             } else {
               logger.debug(`Resource file cache miss for ${resourceCachePath}`);
-              const payload = Buffer.from(deflate(Buffer.from(token.text, "utf-8")))
+              const payload = Buffer.from(deflate(Buffer.from(resolvedDoc, "utf-8")))
                 .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
               resource = new ResourceProxy(
                 "image/svg+xml",

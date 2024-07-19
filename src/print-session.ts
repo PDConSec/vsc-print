@@ -9,6 +9,7 @@ import * as nodeCrypto from "crypto";
 import { DocumentRenderer } from './renderers/document-renderer';
 import { filenameByCaption } from './imports';
 import { ResourceProxy } from './renderers/resource-proxy';
+import { Metadata } from './metadata';
 
 let settingsCss: string = require("./css/settings.css").default.toString();
 
@@ -144,7 +145,6 @@ export class PrintSession {
 
   public async respond(urlParts: string[], response: http.ServerResponse) {
     await this.ready;
-
     if (urlParts.length === 3 && urlParts[2] === "") {
       logger.debug(`Responding to base document request for session ${urlParts[1]}`)
       const html = await this.pageBuilder!.build();
@@ -213,87 +213,87 @@ export class PrintSession {
             const content = await resourceDescriptor.contentAsync()
             const contentLength = (typeof content === "string") ? Buffer.byteLength(content, "utf-8") : content.byteLength;
             response.writeHead(200, {
-            "Content-Type": resourceDescriptor.mimeType,
-            "Content-Length": contentLength
+              "Content-Type": resourceDescriptor.mimeType,
+              "Content-Length": contentLength
+            });
+            return response.end(content);
+          } catch {
+            logger.debug(`bundled/${urlParts[3]} not found`);
+            response.writeHead(404, {
+              "Content-Type": "text/plain; charset=utf-8",
+              "Content-Length": 9
+            });
+            return response.end("Not found");
+          }
+      }
+    } else {
+      const basePath = path.dirname(this.source!.fsPath);
+      const resourcePath = path.join(basePath, ...urlParts.slice(2));
+      return await relativeResource(resourcePath);
+    }
+
+    async function relativeResource(resourcePath: string) {
+      const fileUri: vscode.Uri = vscode.Uri.file(resourcePath);
+      const fileExt = path.extname(resourcePath);
+      switch (fileExt.toLowerCase()) {
+        case ".jpg":
+        case ".gif":
+        case ".png":
+        case ".webp":
+          response.writeHead(200, {
+            "Content-Type": `image/${fileExt.substring(1).toLowerCase()}`,
+            "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
           });
-          return response.end(content);
-      } catch {
-        logger.debug(`bundled/${urlParts[3]} not found`);
-        response.writeHead(404, {
-          "Content-Type": "text/plain; charset=utf-8",
-          "Content-Length": 9
-        });
-        return response.end("Not found");
+          response.end(await vscode.workspace.fs.readFile(fileUri));
+          break;
+        case ".svg":
+          response.writeHead(200, {
+            "Content-Type": `image/svg+xml`,
+            "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
+          });
+          response.end(await vscode.workspace.fs.readFile(fileUri));
+          break;
+        case ".css":
+          response.writeHead(200, {
+            "Content-Type": "text/css",
+            "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
+          });
+          response.end(await vscode.workspace.fs.readFile(fileUri));
+          break;
+        default:
+          response.writeHead(403, {
+            "Content-Type": "text/plain",
+            "Content-Length": 9
+          });
+          response.end("Forbidden");
+          break;
       }
     }
-  } else {
-  const basePath = path.dirname(this.source!.fsPath);
-  const resourcePath = path.join(basePath, ...urlParts.slice(2));
-  return await relativeResource(resourcePath);
-}
-
-async function relativeResource(resourcePath: string) {
-  const fileUri: vscode.Uri = vscode.Uri.file(resourcePath);
-  const fileExt = path.extname(resourcePath);
-  switch (fileExt.toLowerCase()) {
-    case ".jpg":
-    case ".gif":
-    case ".png":
-    case ".webp":
-      response.writeHead(200, {
-        "Content-Type": `image/${fileExt.substring(1).toLowerCase()}`,
-        "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
-      });
-      response.end(await vscode.workspace.fs.readFile(fileUri));
-      break;
-    case ".svg":
-      response.writeHead(200, {
-        "Content-Type": `image/svg+xml`,
-        "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
-      });
-      response.end(await vscode.workspace.fs.readFile(fileUri));
-      break;
-    case ".css":
-      response.writeHead(200, {
-        "Content-Type": "text/css",
-        "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
-      });
-      response.end(await vscode.workspace.fs.readFile(fileUri));
-      break;
-    default:
-      response.writeHead(403, {
-        "Content-Type": "text/plain",
-        "Content-Length": 9
-      });
-      response.end("Forbidden");
-      break;
-  }
-}
   }
 
   public getUrl(): string { return `http://localhost:${PrintSession.port}/${this.sessionId}/`; }
 
-  async rootDocumentContentSource(source: vscode.Uri | Array<vscode.Uri>): Promise < string > {
-  if(Array.isArray(source))
-  return "multiselection";
-  else {
-    try {
-      await vscode.workspace.fs.stat(source); // barfs when file does not exist (unsaved)
-      const uristat = await vscode.workspace.fs.stat(source);
-      if(uristat.type === vscode.FileType.Directory) return "folder";
-      const editor = vscode.window.activeTextEditor;
-      if(editor && source.toString() === editor.document.uri.toString()) {
-  return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
-} else {
-  return "file";
-}
+  async rootDocumentContentSource(source: vscode.Uri | Array<vscode.Uri>): Promise<string> {
+    if (Array.isArray(source))
+      return "multiselection";
+    else {
+      try {
+        await vscode.workspace.fs.stat(source); // barfs when file does not exist (unsaved)
+        const uristat = await vscode.workspace.fs.stat(source);
+        if (uristat.type === vscode.FileType.Directory) return "folder";
+        const editor = vscode.window.activeTextEditor;
+        if (editor && source.toString() === editor.document.uri.toString()) {
+          return !editor.selection || editor.selection.isEmpty || editor.selection.isSingleLine ? "editor" : "selection";
+        } else {
+          return "file";
+        }
       } catch (ex) {
-  if (vscode.window.activeTextEditor) {
-    return vscode.window.activeTextEditor.selection ? "selection" : "editor";
-  } else {
-    return `Content source could not be determined. "${source}" does not resolve to a file and there is no active editor.`;
-  }
-}
+        if (vscode.window.activeTextEditor) {
+          return vscode.window.activeTextEditor.selection ? "selection" : "editor";
+        } else {
+          return `Content source could not be determined. "${source}" does not resolve to a file and there is no active editor.`;
+        }
+      }
     }
   }
 }

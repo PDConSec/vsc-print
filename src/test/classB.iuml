@@ -1,0 +1,10 @@
+@startuml
+
+class Class_B {
+ -field3
+ #field4
+ ~method3()
+ +method4()
+}
+
+@enduml
