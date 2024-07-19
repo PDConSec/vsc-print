@@ -3,6 +3,7 @@
 ### 0.12.16
 
 - fix print button for non-Markdown (don't apply SmilesDrawer unless it was delivered to the page)
+- [#302](https://github.com/PDConSec/vsc-print/issues/302) Line numbers starting from cursor position
 
 ### 0.12.15
 
