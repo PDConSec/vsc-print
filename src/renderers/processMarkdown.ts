@@ -15,6 +15,8 @@ import * as os from "os";
 import * as path from 'path';
 import * as fs from "fs";
 import { resolveRootDoc } from './includes';
+import {databaseFencedLanguageService} from "./database-fenced-language/databaseFencedLanguageService";
+import {DatabaseDiagramRequest} from "./database-fenced-language/models/request/databaseDiagramRequest";
 
 const HIGHLIGHTJS_LANGS = hljs.listLanguages().map(s => s.toUpperCase());
 const KROKI_SUPPORT = [
@@ -30,8 +32,8 @@ if (!fs.existsSync(CACHE_PATH)) fs.mkdirSync(CACHE_PATH);
 
 export async function processFencedBlocks(defaultConfig: any, raw: string, generatedResources: Map<string, ResourceProxy>, rootDocFolder: string) {
   const katexed = raw
-    .replace(/\$\$(.+)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: true }))
-    .replace(/\$%(.+)%\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false }));
+      .replace(/\$\$(.+)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: true }))
+      .replace(/\$%(.+)%\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false }));
 
   const tokens = marked.lexer(katexed);
   const krokiUrl = vscode.workspace.getConfiguration("print").krokiUrl;
@@ -59,49 +61,28 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
       const LANG = token.lang?.toUpperCase();
       if (KROKI_SUPPORT.includes(LANG)) {
         try {
-          const hash = crypto.createHash("sha256");
           let resolvedDoc = await resolveRootDoc(token.text, rootDocFolder);
-          hash.update(resolvedDoc);
-          let resourcename = `${hash.digest("hex")}.svg`;
-          let resource = generatedResources.get(resourcename);
-          if (!resource) {
-            const resourceCachePath = path.join(CACHE_PATH, resourcename);
-            if (fs.existsSync(resourceCachePath)) {
-              logger.debug(`Resource file cache hit for ${resourcename}`);
-              resource = new ResourceProxy("image/svg+xml", resourcename, async f => fs.promises.readFile(path.join(CACHE_PATH, f)));
-            } else {
-              logger.debug(`Resource file cache miss for ${resourceCachePath}`);
-              const payload = Buffer.from(deflate(Buffer.from(resolvedDoc, "utf-8")))
-                .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
-              resource = new ResourceProxy(
-                "image/svg+xml",
-                `${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`,
-                async u => {
-                  const agent = new https.Agent({ rejectUnauthorized: vscode.workspace.getConfiguration("print").rejectUnauthorisedTls });
-                  const response = await axios.get(u, { httpAgent: agent });
-                  const responseText = await response.data;
-                  if (responseText.includes("</svg>")) {
-                    fs.writeFileSync(resourceCachePath, responseText);
-                    logger.debug(`Resource file cache write for ${resourceCachePath}`);
-                  } else {
-                    logger.warn(`Kroki did not return SVG:\n${responseText}`);
-                  }
-                  return responseText;
-                }
-              );
-            }
-          }
-          generatedResources.set(resourcename, resource);
-          updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" class="${LANG}" title="${token.lang}" />` });
+          cachedKrokiRender(resolvedDoc, generatedResources, krokiUrl, LANG, updatedTokens, token);
         } catch (error: any) {
           updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: `${error.message ?? error}\n\n${token.text}"/>` });
         }
       } else {
         switch (LANG) {
+          case "DATABASE":
+            const languageService = new databaseFencedLanguageService();
+            const parsedRequest: DatabaseDiagramRequest = yaml.parse(token.text) as DatabaseDiagramRequest;
+            try {
+              const database = await languageService.getDatabaseInformation(parsedRequest);
+              const markup = languageService.createKrokiMarkup(database, parsedRequest.Detail);
+              cachedKrokiRender(markup.value, generatedResources, krokiUrl, markup.markupLanguage, updatedTokens, token);
+            } catch (error: any) {
+              updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: `${error.message ?? error}\n\n${token.text}` });
+            }
+            break;
           case "LATEX":
             updatedTokens.push({ block: true, type: "html", raw: token.raw, text: katex.renderToString(token.text, getConfig(LANG)) });
             break;
-          //#region config management
+            //#region config management
           case "USE":
             if (namedConfigs[token.text]) {
               activeConfigName = token.text;
@@ -120,11 +101,12 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
             resolvedConfig = yaml.stringify(getConfig());
             updatedTokens.push({ block: true, type: "code", raw: token.raw, text: resolvedConfig });
             break;
-          //#endregion
+            //#endregion
           default:
             if (HIGHLIGHTJS_LANGS.includes(LANG)) {
-              const codeBlock = `<pre class="code-box">\n<code class="hljs">\n${hljs.highlight(token.lang, token.text).value}\n</code>\n</pre>\n`;
-              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: codeBlock });
+              const codeHtml = hljs.highlight(token.lang, token.text).value;
+              const codeBlockHtml = `<pre class="code-box">\n<code class="hljs">\n${codeHtml}\n</code>\n</pre>\n`;
+              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: codeBlockHtml });
             } else { //unhandled passthrough
               updatedTokens.push(token);
             }
@@ -136,6 +118,42 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
     };
   }
   return updatedTokens;
+}
+
+function cachedKrokiRender(resolvedDoc: string, generatedResources: Map<string, ResourceProxy>, krokiUrl: any, LANG: any, updatedTokens: Token[], token: Tokens.Code | Tokens.Generic) {
+  const hash = crypto.createHash("sha256");
+  hash.update(resolvedDoc);
+  let resourcename = `${hash.digest("hex")}.svg`;
+  let resource = generatedResources.get(resourcename);
+  if (!resource) {
+    const resourceCachePath = path.join(CACHE_PATH, resourcename);
+    if (fs.existsSync(resourceCachePath)) {
+      logger.debug(`Resource file cache hit for ${resourcename}`);
+      resource = new ResourceProxy("image/svg+xml", resourcename, async (f) => fs.promises.readFile(path.join(CACHE_PATH, f)));
+    } else {
+      logger.debug(`Resource file cache miss for ${resourceCachePath}`);
+      const payload = Buffer.from(deflate(Buffer.from(resolvedDoc, "utf-8")))
+          .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
+      resource = new ResourceProxy(
+          "image/svg+xml",
+          `${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`,
+          async (u) => {
+            const agent = new https.Agent({ rejectUnauthorized: vscode.workspace.getConfiguration("print").rejectUnauthorisedTls });
+            const response = await axios.get(u, { httpAgent: agent });
+            const responseText = await response.data;
+            if (responseText.includes("</svg>")) {
+              fs.writeFileSync(resourceCachePath, responseText);
+              logger.debug(`Resource file cache write for ${resourceCachePath}`);
+            } else {
+              logger.warn(`Kroki did not return SVG:\n${responseText}`);
+            }
+            return responseText;
+          }
+      );
+    }
+  }
+  generatedResources.set(resourcename, resource);
+  updatedTokens.push({ block: true, type: "html", raw: token.raw, text: `<img src="generated/${resourcename}" alt="${token.lang}" class="${LANG}" title="${token.lang}" />` });
 }
 
 function getPosition(s: string, t: string, i: number) {
