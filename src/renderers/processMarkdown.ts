@@ -123,8 +123,9 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
           //#endregion
           default:
             if (HIGHLIGHTJS_LANGS.includes(LANG)) {
-              const codeBlock = `<pre class="code-box">\n<code class="hljs">\n${hljs.highlight(token.lang, token.text).value}\n</code>\n</pre>\n`;
-              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: codeBlock });
+              const codeHtml = hljs.highlight(token.lang, token.text).value;
+              const codeBlockHtml = `<pre class="code-box">\n<code class="hljs">\n${codeHtml}\n</code>\n</pre>\n`;
+              updatedTokens.push({ block: true, type: "html", raw: token.raw, text: codeBlockHtml });
             } else { //unhandled passthrough
               updatedTokens.push(token);
             }
