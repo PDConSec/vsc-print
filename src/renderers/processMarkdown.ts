@@ -76,7 +76,8 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
               const markup = languageService.createKrokiMarkup(database, parsedRequest.Detail);
               cachedKrokiRender(markup.value, generatedResources, krokiUrl, markup.markupLanguage, updatedTokens, token);
             } catch (error: any) {
-              updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: `${error.message ?? error}\n\n${token.text}` });
+              updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: `Unable to communicate with database. Check that you can connect to the database with the supplied credentials. 
+                ${error.message ?? error}\n\n${token.text}` });
             }
             break;
           case "LATEX":
