@@ -84,15 +84,22 @@ export class MySqlRepository implements Repository {
             ${this.tables ? 'AND table_name IN (?)' : ''}
     `;
 
-        const [columnsResult] = await connection.execute(columnsQuery, [this.schemaName, this.tables]);
-        const [relationshipsResult] = await connection.execute(relationshipsQuery, [this.schemaName, this.tables]);
-        const [constraintsResult] = await connection.execute(constraintsQuery, [this.schemaName, this.tables]);
-        const [indexesResult] = await connection.execute(indexesQuery, [this.schemaName, this.tables]);
+        let queryParameters = [];
+        if (this.tables){
+            queryParameters = [this.schemaName, this.tables];
+        } else{
+            queryParameters = [this.schemaName];
+        }
+
+        const [columnsResult] = await connection.execute(columnsQuery, queryParameters);
+        const [relationshipsResult] = await connection.execute(relationshipsQuery, queryParameters);
+        const [constraintsResult] = await connection.execute(constraintsQuery, queryParameters);
+        const [indexesResult] = await connection.execute(indexesQuery, queryParameters);
 
         const tables: TableColumn[] = (columnsResult as any[]).map((row: any) => ({
-            tableName: row.table_name,
-            columnName: row.column_name,
-            columnType: row.data_type,
+            tableName: row.tableName,
+            columnName: row.columnName,
+            columnType: row.columnType,
             keyType: row.keyType
         }));
 
@@ -104,16 +111,16 @@ export class MySqlRepository implements Repository {
         }));
 
         const constraints: TableConstraint[] = (constraintsResult as any[]).map((row: any) => ({
-            tableName: row.table_name,
-            constraintName: row.constraint_name,
-            constraintType: row.constraint_type,
-            columnName: row.column_name
+            tableName: row.tableName,
+            constraintName: row.constraintName,
+            constraintType: row.constraintType,
+            columnName: row.columnName
         }));
 
         const indexes: TableIndex[] = (indexesResult as any[]).map((row: any) => ({
-            tableName: row.table_name,
-            indexName: row.index_name,
-            columnName: row.column_name
+            tableName: row.tableName,
+            indexName: row.indexName,
+            columnName: row.columnName
         }));
 
         await connection.end();

@@ -24,3 +24,12 @@ Tables:
   - StockItems
 Detail: keys
 ```
+
+## Database diagram (mysql)
+
+```database
+DatabaseType: mysql
+ConnectionString: mysql://root:admin@localhost:3306
+Schema: hospital_db
+Detail: keys
+```

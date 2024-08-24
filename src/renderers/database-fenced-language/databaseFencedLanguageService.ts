@@ -5,6 +5,7 @@ import {Repository} from "./repositories/repository";
 import {DatabaseType} from "./models/request/databaseType";
 import {DatabaseDiagramResponse} from "./models/response/databaseDiagramResponse";
 import {DatabaseModel} from "./models/domain/databaseModel";
+import {MySqlRepository} from "./repositories/mySqlRepository";
 
 export class databaseFencedLanguageService {
     // https://mermaid.js.org/syntax/entityRelationshipDiagram.html
@@ -57,6 +58,9 @@ export class databaseFencedLanguageService {
                 break;
             case DatabaseType.postgresql:
                 repository = new PostgresRepository(request.ConnectionString, request.Schema, request.Tables);
+                break;
+            case DatabaseType.mysql:
+                repository = new MySqlRepository(request.ConnectionString, request.Schema, request.Tables);
                 break;
             default:
                 throw new Error("Database type not supported");
