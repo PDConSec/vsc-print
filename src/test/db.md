@@ -2,12 +2,8 @@
 
 ```database
 DatabaseType: postgresql
-ConnectionString: Host=localhost;Port=5432;Database=mydatabase;Username=user;Password=secret
+ConnectionString: postgres://postgres:admin@localhost:5432/postgres 
 Schema: public
-Tables: 
-  - Offers
-  - Orders
-  - Passes
 Detail: keys
 ```
 
