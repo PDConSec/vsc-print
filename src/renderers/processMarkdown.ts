@@ -75,9 +75,18 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
               const database = await languageService.getDatabaseInformation(parsedRequest);
               const markup = languageService.createKrokiMarkup(database, parsedRequest.Detail);
               cachedKrokiRender(markup.value, generatedResources, krokiUrl, markup.markupLanguage, updatedTokens, token);
-            } catch (error: any) {
-              updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: `Unable to communicate with database. Check that you can connect to the database with the supplied credentials. 
-                ${error.message ?? error}\n\n${token.text}` });
+            }
+            catch (error: any) {
+              let errorText = "";
+
+              if (error instanceof AggregateError) {
+                // If the error contains(aggregates) multiple errors, construct errorText with all errors
+                errorText = `Unable to communicate with database. ${error.errors ?? error}\n\n${token.text}`;
+              } else {
+                errorText = `Unable to communicate with database. ${error.message ?? error}\n\n${token.text}`;
+              }
+
+              updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: errorText });
             }
             break;
           case "LATEX":
@@ -160,5 +169,3 @@ function cachedKrokiRender(resolvedDoc: string, generatedResources: Map<string, 
 function getPosition(s: string, t: string, i: number) {
   return s.split(t, i).join(t).length;
 }
-
-

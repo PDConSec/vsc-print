@@ -85,9 +85,9 @@ export class MySqlRepository implements Repository {
     `;
 
         let queryParameters = [];
-        if (this.tables){
+        if (this.tables) {
             queryParameters = [this.schemaName, this.tables];
-        } else{
+        } else {
             queryParameters = [this.schemaName];
         }
 
