@@ -640,7 +640,7 @@
     "highlight.js": "^11.9.0",
     "katex": "^0.16.10",
     "lodash": "^4.17.21",
-    "micromatch": "^4.0.5",
+    "micromatch": "^4.0.8",
     "pako": "^2.1.0",
     "uuid": "^10.0.0",
     "winston": "^3.11.0",
