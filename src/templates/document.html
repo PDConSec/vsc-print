@@ -2,12 +2,12 @@
 <html>
 
 <head>
-  <base href="VSCODE_PRINT_BASE_URL" />
-  <title>VSCODE_PRINT_DOCUMENT_TITLE</title>
+  <base href="{{baseUrl}}" />
+  <title>{{documentTitle}}</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  VSCODE_PRINT_STYLESHEET_LINKS
-  VSCODE_PRINT_SCRIPT_TAGS
+  {{{stylesheetLinks}}}
+  {{{scriptTags}}}
   <script type="application/javascript">
     function printAndClose(enabled) {
       if (typeof SmiDrawer === "object") {
@@ -23,10 +23,10 @@
   </script>
 </head>
 
-<body onload="printAndClose(VSCODE_PRINT_PRINT_AND_CLOSE)">
-  VSCODE_PRINT_DOCUMENT_HEADING
+<body onload="printAndClose({{printAndClose}})">
+  {{{documentHeading}}}
   <div>
-    VSCODE_PRINT_CONTENT
+    {{{content}}}
   </div>
 </body>
 

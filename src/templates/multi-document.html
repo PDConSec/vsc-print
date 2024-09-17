@@ -24,9 +24,12 @@
 </head>
 
 <body onload="printAndClose({{printAndClose}})">
-  {{{documentHeading}}}
+  <h2>{{documentHeading}}</h2>
   <div>
-    {{{content}}}
+    {{{summary}}}
+    {{#each items}}
+      {{{this}}}
+    {{/each}}
   </div>
 </body>
 
