@@ -636,7 +636,7 @@
   ],
   "dependencies": {
     "@viz-js/viz": "^3.6.0",
-    "axios": "^1.7.2",
+    "axios": "^1.7.7",
     "braces": "^3.0.3",
     "cors": "^2.8.5",
     "handlebars": "^4.7.8",
