@@ -7,9 +7,13 @@ import micromatch from 'micromatch';
 import tildify from '../tildify';
 import { PrintSession } from '../print-session';
 import { ResourceProxy } from './resource-proxy';
+import Handlebars from "handlebars";
 
 const templateFolderItem = require("../templates/folder-item.html").default.toString();
 const templateDocument: string = require("../templates/document.html").default.toString();
+
+const hbFolderItem = Handlebars.compile(require("../handlebars/folder-item.html").default.toString());
+const hbDocument = Handlebars.compile(require("../handlebars/document.html").default.toString());
 
 export class HtmlDocumentBuilder {
   private filepath: string;
@@ -98,7 +102,7 @@ export class HtmlDocumentBuilder {
           '\t<link href="bundled/colour-scheme.css" rel="stylesheet" />\n' +
           '\t<link href="bundled/settings.css" rel = "stylesheet" /> ')
         ;
-    } else {
+    } else { // one file
       logger.debug(`Printing ${this.filepath}`);
       let docHeading = "";
       if (printConfig.filepathHeadingForIndividuallyPrintedDocuments) {
@@ -133,15 +137,17 @@ export class HtmlDocumentBuilder {
       const bodyHtml = await documentRenderer.getBodyHtml(this.generatedResources, this.code, this.language, options);
       const cssLinks = documentRenderer.getCssLinks(this.uri);
       const scriptTags = documentRenderer.getScriptTags(this.uri);
-      return templateDocument
-        .replace("VSCODE_PRINT_BASE_URL", this.baseUrl)
-        .replace(/VSCODE_PRINT_DOCUMENT_TITLE/g, documentRenderer.getTitle(this.uri))
-        .replace(/VSCODE_PRINT_DOCUMENT_HEADING/g, thePath)
-        .replace("VSCODE_PRINT_PRINT_AND_CLOSE", printAndClose)
-        .replace("VSCODE_PRINT_CONTENT", bodyHtml)
-        .replace("VSCODE_PRINT_STYLESHEET_LINKS", cssLinks)
-        .replace("VSCODE_PRINT_SCRIPT_TAGS", scriptTags)
-        ;
+      const documentTitle = documentRenderer.getTitle(this.uri);
+      let doc = hbDocument({
+        baseUrl: this.baseUrl,
+        documentTitle: documentTitle,
+        documentHeading: thePath,
+        printAndClose: printAndClose,
+        content: bodyHtml,
+        stylesheetLinks: cssLinks,
+        scriptTags: scriptTags
+      });
+      return doc;
     }
   }
   async docsInMultiselection() {
