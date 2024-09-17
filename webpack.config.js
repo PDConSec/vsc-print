@@ -27,6 +27,7 @@ const extensionConfig = {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: ['.ts', '.js', ".mjs"],
     alias: {
+      'handlebars': 'handlebars/dist/handlebars.js',
       // Assuming 'styles' is the directory you want to resolve to
       'highlight.js/styles': path.resolve(__dirname, 'node_modules/highlight.js/styles')
     }
@@ -56,8 +57,11 @@ const extensionConfig = {
         use: [
           'raw-loader'
         ]
-      }
-    ]
+      },
+      {
+        test: /\.hbs$/,
+        loader: 'handlebars-loader'
+      }    ]
   },
   devtool: 'nosources-source-map',
   infrastructureLogging: {

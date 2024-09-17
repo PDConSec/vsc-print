@@ -269,7 +269,9 @@
             "description": "%print.folder.include.description%"
           },
           "print.includePaths": {
-            "default": ["."],
+            "default": [
+              "."
+            ],
             "type": "array",
             "items": {
               "type": "string"
@@ -637,6 +639,7 @@
     "axios": "^1.7.2",
     "braces": "^3.0.3",
     "cors": "^2.8.5",
+    "handlebars": "^4.7.8",
     "highlight.js": "^11.9.0",
     "katex": "^0.16.10",
     "lodash": "^4.17.21",
@@ -674,6 +677,7 @@
     "css-loader": "^6.10.0",
     "eslint": "^8.56.0",
     "file-loader": "^6.2.0",
+    "handlebars-loader": "^1.7.3",
     "markdown-it": "^14.0.0",
     "marked": "^12.0.1",
     "mermaid": "^10.9.1",
