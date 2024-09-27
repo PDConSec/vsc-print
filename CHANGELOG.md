@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.13.0
+
+- fix [#343](https://github.com/PDConSec/vsc-print/issues/343) [#342](https://github.com/PDConSec/vsc-print/issues/342) via adoption of handlebars for templating
+- feat: [#340](https://github.com/PDConSec/vsc-print/issues/340) database diagram support contributed by Ashton Abdiukov
+
 ### 0.12.16
 
 - fix print button for non-Markdown (don't apply SmilesDrawer unless it was delivered to the page)

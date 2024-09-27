@@ -18,7 +18,9 @@ So while there was a drop in functionality for 0.12.3, with this release you can
 | Erd        | Excalidraw | GraphViz         | KaTeX        | Mermaid     | MHCHEM   |
 | Nomnoml    | Pikchr     | PlantUML         | SmilesDrawer | Structurizr | Svgbob   |
 | Symbolator | Tikz       | UMLet            | Vega         | Vega-lite   | WaveDrom |
-| WireViz    |            |                  |              |             |          |
+| WireViz    | Database   |                  |              |             |          |
+
+The `Database` diagram uses a connection string and some settings that you supply in a fenced block. It connects to your database and extracts the metadata to construct a Mermaid Entity Relationship.
 
 Print has a persistent cache (similar to a browser) for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. Extending Kroki in the spirit of `jebb.plantUml` there is also support for recursive `!include filename.ext`.
 
