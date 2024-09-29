@@ -34,12 +34,6 @@ So if you have a local browser that can print, and VS Code can launch it, you ca
 
 ![source](assets/source.png)
 
-## Markdown
-
-Use fenced blocks for LaTeX and Mermaid diagrams. You can position Mermaid diagrams by wrapping them in a div with the class `left`, `right`, `centre` or `fill`. Similar support for LaTeX will come in a later release.
-
-![Markdown-rendered](assets/Markdown-rendered.png)
-
 ## Classic user experience
 
 The print and print preview icon are on the toolbar _when there is an active editor_. VS Code shows extension contributions according to the language of the active editor. No active editor means no icons (someone thought we should "fix" this).
