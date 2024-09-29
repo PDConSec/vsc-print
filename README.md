@@ -2,9 +2,9 @@
 
 Print code. Print rendered Markdown. Local or remote. Windows, Mac or Linux.
 
-## This release
+## Recent features
 
-Diagrams are now handled using Kroki. Kroki is server-based. Normally we won't do anything that can't work offline, but there were two compelling factors
+Markdown embedded diagrams are handled using Kroki. Kroki is server-based. Normally we won't do anything that can't work offline, but there were two compelling factors
 
  - it unifies a huge list of diagram engines
  - it _can_ work off-line: install Kroki server on your network or notebook
