@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.13.1
+
+- fix [#342](https://github.com/PDConSec/vsc-print/issues/342) KaTeX expressions were combined due to incorrect greedy-match in regex
+- updates to the manual
+
 ### 0.13.0
 
 - fix [#343](https://github.com/PDConSec/vsc-print/issues/343) [#342](https://github.com/PDConSec/vsc-print/issues/342) via adoption of handlebars for templating
