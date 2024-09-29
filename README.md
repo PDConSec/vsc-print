@@ -6,8 +6,8 @@ Print code. Print rendered Markdown. Local or remote. Windows, Mac or Linux.
 
 Diagrams are now handled using Kroki. Kroki is server-based. Normally we won't do anything that can't work offline, but there were two compelling factors
 
-*   it unifies a huge list of diagram engines
-*   it _can_ work off-line: install Kroki server on your network or notebook
+ - it unifies a huge list of diagram engines
+ - it _can_ work off-line: install Kroki server on your network or notebook
 
 So while there was a drop in functionality for 0.12.3, with this release you can use the following:
 
@@ -20,7 +20,7 @@ So while there was a drop in functionality for 0.12.3, with this release you can
 | Symbolator | Tikz       | UMLet            | Vega         | Vega-lite   | WaveDrom |
 | WireViz    | Database   |                  |              |             |          |
 
-The `Database` diagram uses a connection string and some settings that you supply in a fenced block. It connects to your database and extracts the metadata to construct a Mermaid Entity Relationship.
+The `Database` diagram uses a connection string and some settings that you supply in a fenced block. It connects to your database and extracts the metadata to construct a Mermaid Entity Relationship diagram.
 
 Print has a persistent cache (similar to a browser) for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. Extending Kroki in the spirit of `jebb.plantUml` there is also support for recursive `!include filename.ext`.
 
@@ -58,10 +58,10 @@ There are a number of settings. Most of them you just need to read the descripti
 
 Some things you can configure:
 
-*   the colour scheme used for syntax colouring
-*   whether or not you want line numbers
-*   alternate browser for printing
-*   line spacing (leave yourself more room for handwritten annotation of code)
+ - the colour scheme used for syntax colouring
+ - whether or not you want line numbers
+ - alternate browser for printing
+ - line spacing (leave yourself more room for handwritten annotation of code)
 
 ## Planned changes
 

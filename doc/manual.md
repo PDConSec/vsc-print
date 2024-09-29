@@ -5,18 +5,17 @@
 1. [General use](#1)
 2. [Customising your setup](#2)
 3. [Markdown](#3)
-5. [Printing other formats rendered](#4)
-6. [Troubleshooting](#5)
+4. [Troubleshooting](#4)
 
 <a name="1"></a>
 
 # General use
 
-There are a couple of ways you can print.
+There are a couple of ways you can print or preview.
 
-* You can print the active document, by icon or context menu.
-* You can print a selection from the active document, by icon or context menu.
-* You can print one or more filse directly from the file explorer panel, by context menu on a folder, file or multi-selection of files.
+* You can print or preview the active document, by icon or context menu.
+* You can print or preview a selection from the active document, by icon or context menu.
+* You can print one or preview or more filse directly from the file explorer panel, by context menu on a folder, file or multi-selection of files.
 * Files can be titled with their filepath. The title does not appear in the document but may be used in headers by some browsers.
 	- You can choose from the following formats. 
 		- No path
@@ -114,23 +113,44 @@ The _size_ of printed text is a Print setting because the size that works best o
 
 You probably want Markdown print-jobs rendered and styled, and this is the default behaviour. If you wish to print Markdown as source code, you can un-check the setting `Print: Render Markdown`. For a variety of reasons we no longer use the VS Code Markdown rendering pipeline. This means that any Markdown extensions you may install will have no effect on print or print preview, only on the internal Markdown preview.
 
-Just use print preview. We have direct off-line support for the following, with more to come.
-
-- Mermaid
-- KaTeX
-
+Just use print preview. We have off-line support for about thirty diagram types (see the Markdown section for details).
 ### Colour scheme
 
-For source code printing, stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because printer paper is white and printer inks and toners are designed for white paper. 
+For source code printing, stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because printer paper is white and printer inks and toners are designed for white paper.
+
+<a name="3"></a>
 
 # Markdown
+
+## KaTeX
+
+Mark both the start and end of KaTeX notation using `$$`. The presence of a line break between the boundary markers will induce display mode. KaTeX blocks that do not contain a line break are rendered inline.
+
+## Embedded diagrams
+
+The following diagram types are supported. 
+
+|            |            |                  |              |             |          |
+|------------|------------|------------------|--------------|-------------|----------|
+| BlockDiag  | BPMN       | Bytefield        | SeqDiag      | ActDiag     | NwDiag   |
+| PacketDiag | RackDiag   | C4 with PlantUML | D2           | DBML        | Ditaa    |
+| Erd        | Excalidraw | GraphViz         | KaTeX        | Mermaid     | MHCHEM   |
+| Nomnoml    | Pikchr     | PlantUML         | SmilesDrawer | Structurizr | Svgbob   |
+| Symbolator | Tikz       | UMLet            | Vega         | Vega-lite   | WaveDrom |
+| WireViz    | Database   |                  |              |             |          |
+
+In all cases you use a fenced block annotated with the diagram name. Details the the syntax for the various diagram types can be found on the web by searching for the diagram names, with the exception of `Database`.
+
+In the fenced block for `Database` you supply a connection string and some settings. Print uses this to connect to your database and extract the metadata to construct a Mermaid Entity Relationship diagram.
+
+Print has a persistent cache (similar to a browser) for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. Extending Kroki in the spirit of `jebb.plantUml` there is also support for recursive `!include filename.ext`.
 
 ## Styling your markdown
 
 ### Apply CSS files to a Markdown document 
 
-* You can embed a stylesheet link tag directly into the Markdown. This is specific to the document.  
-* There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLS, or document  relative URLs, as shown in the following example.
+ - You can embed a stylesheet link tag directly into the Markdown. This is specific to the document.  
+ - There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLS, or document  relative URLs, as shown in the following example.
 
 ```json
 "markdown.styles": [
@@ -151,65 +171,7 @@ Don't forget that you can embed HTML in Markdown, so there's nothing stopping yo
 
 The embedded web server binds only to the loopback address and accepts only connections that specify. A separate server is spun up for each print job and terminates when printing finishes. 
 
-## Katex Markdown extensions
-
-Katex depends on CSS and fonts from the web. To get printing to work you must add the required stylesheet to your settings. If you find one or two things work in the preview yet not in print, determine the current version from the KaTeX website, and update the URL. 
-
-```json
-"markdown.styles": [
-	"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css"
-]
-```
-
-Here are some samples to help you check your configuration.
-
-``` latex
-\begin{alignedat}{2}
-   10&x+ &3&y = 2 \\
-   3&x+&13&y = 4
-\end{alignedat}
-
-\\
-
-x = \begin{cases}
-   a &\text{if } b \\
-   c &\text{if } d
-\end{cases}
-
-```
-
-## Rendered Markdown and remote workspaces
-
-To work with remote workspaces a Markdown extension must run on the remote host because that's where the Markdown rendering pipeline runs. Extensions like Print that are designed for use with remote workspaces can be deployed to the remote host with a single click. Most Markdown extensions are capable of working like this but they are not set up for it.
-
-Unfortunately, Markdown extensions are not normally configured for remote use; the designers expected them to run locally. 
-
-### DIY patching of Markdown extensions
-
-If your need is urgent, you can patch extensions yourself. 
-
-1. Find the extensions where they are installed on your workstation in `~/.vscode/extensions` (on Windows substitute `%userprofile%` for `~`)
-2. Edit the `package.json` files for the Markdown extensions you want to use on remote hosts. Add the `extensionKind` as a root level attribute. 
-3. When you've edited all the Markdown extensions restart VS Code.
-4. Install the extension on the remote host and patch the extension on the remote host in the same way.
-
-```json
-...
-"extensionKind": [
-  "workspace"
-],
-...
-```
-
-Patches like this will be lost at the next update for an extension, so if your patch was successful you may want to submit a PR to the publisher.
-
-# Printing other formats rendered
-
-Issues have been logged requesting rendered printing of formats other than Markdown. Examples include sheet music from the ABC music markup, and Jupyter Notebooks. To support this without taking on the unmanageable burden of keeping up with every text based document format used with VS Code, we have exposed an API and published an SDK allowing the maintainers to incorporate printing into their preview capability.
-
-As a result, if you would like rendered printing for a particular format for which you already have an extension providing preview, raise an issue with the publisher of that extension. Explain your desire to print and refer them for printing and referring them to 
-
-<a name=""></a>
+<a name="4"></a>
 
 # Troubleshooting
 
@@ -231,7 +193,7 @@ The browser used will affect your experience.
 
 ### Recommended for printing
 
-For best printing results, install a Chromium based browser or Firefox. If you don't want to make this your default browser, take advantage of the alternate-browser settings. **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
+For best printing results, install Firefox or a Chromium based browser. If you don't want to make this your default browser, take advantage of the alternate-browser settings. **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
 
 The following are known to work well.
 * Brave
@@ -245,13 +207,12 @@ The following are known to work well.
 * Edge Classic is no longer supported.
 * Internet Explorer is not supported.
 
-## Markdown extensions and remoting
+## Markdown extensions are not supported
 
-To use Print with a remote host, you must install it **on the remote host**. 
-
-To get the benefit of a Markdown extension when printing a document from a remote host, the Markdown extension must be built with an `extensionKind` of `workspace` _and_ it must be installed to the remote host. 
-
-Most such extensions are not built for `workspace`. They can be trivially fixed by modifying their `package.json`. Unfortunately this manual patch is likely to be lost whenever the extension is updated, so you should raise an issue with the author of extensions you patch.
+Print uses its own pipeline because Microsoft keeps changing VS Code's Markdown rendering pipeline without notice. As a result it cannot use Markdown extensions. However, you will find that for Print, 
+ - most of the worthwhile Markdown extensions are baked-in
+ - we are receptive to special requests
+ - this allows us to resolve conflicts between extensions.
 
 ## Alternate browser
 

@@ -32,8 +32,8 @@ if (!fs.existsSync(CACHE_PATH)) fs.mkdirSync(CACHE_PATH);
 
 export async function processFencedBlocks(defaultConfig: any, raw: string, generatedResources: Map<string, ResourceProxy>, rootDocFolder: string) {
   const katexed = raw
-      .replace(/\$\$(.+)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: true }))
-      .replace(/\$%(.+)%\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false }));
+      .replace(/\$\$(.+?)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false }))
+      .replace(/\$\$(.+?)\$\$/gs, (_, capture) => katex.renderToString(capture, { displayMode: true }));
 
   const tokens = marked.lexer(katexed);
   const krokiUrl = vscode.workspace.getConfiguration("print").krokiUrl;
