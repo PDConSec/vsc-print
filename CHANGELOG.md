@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.13.2
+
+- fix [#352](https://github.com/PDConSec/vsc-print/issues/352) Improved Katex handling of broken syntax - instead of aborting the page render and displaying an error message in the browser, the Katex block is partially rendered and the invalid syntax is shown in red.
+- Improved default styling of tables. People, that was _awful_, why didn't anyone comment?
+
 ### 0.13.1
 
 - fix [#342](https://github.com/PDConSec/vsc-print/issues/342) KaTeX expressions were combined due to incorrect greedy-match in regex
@@ -30,7 +35,7 @@
 ### 0.12.12
 
 - async resolver caching proxy for generated resources so diagram rendering does not stall page delivery
-- add option reject unauthorised TLS defaulting to true 
+- add option reject unauthorised TLS defaulting to true
 
 ### 0.12.10
 
@@ -56,7 +61,7 @@
 - [#326](https://github.com/PDConSec/vsc-print/issues/326) - support for Kroki
   - this unifies the rendering of a large number of diagram notations, notably Mermaid and C4
   - Kroki is server based. In line with our philosophy of off-line operation, there is a setting for the URL of the Kroki server and a link in the setting description to instructions for setting up a local installation of Kroki.
-- [#324](https://github.com/PDConSec/vsc-print/issues/324) - Reworked Katex integration to support 
+- [#324](https://github.com/PDConSec/vsc-print/issues/324) - Reworked Katex integration to support
   - `$$` fenced display blocks
   - `$%...%$` inline equations
   - # MHCHEM equations
@@ -69,7 +74,7 @@
 - Separate print and preview buttons and menu items
 - Print and Close setting removed
 - No longer dependent on VS Code's built in Print rendering pipeline
-- Baked-in support for Mermaid ([#263](https://github.com/PDConSec/vsc-print/issues/263)) 
+- Baked-in support for Mermaid ([#263](https://github.com/PDConSec/vsc-print/issues/263))
 - Baked-in support for LaTeX with all CSS and font resources served out of the extension
 - [#305 Use editor typeface setting](https://github.com/PDConSec/vsc-print/issues/305)
 - Installable document renderer API getBodyHtml is now async to support the use of await with libraries
@@ -156,7 +161,7 @@ Please note that localisation has not been done for these UI changes due to dela
 
 - support for walkthrough
 - fix #181 use editor font when printing source code (broken by refactoring)
-- fix #182 file explorer context-menu print now supports multiselection 
+- fix #182 file explorer context-menu print now supports multiselection
 - fix #183 unexpected commas
 
 ### 0.10.20
@@ -170,7 +175,7 @@ Please note that localisation has not been done for these UI changes due to dela
 
 - Urdu localisation
 - Enhanced debug logging of printing files from remote filesystems
-- Fix typo in internal identifier for Atelier Sulphur 
+- Fix typo in internal identifier for Atelier Sulphur
 Pool colour scheme
 
 ### 0.10.4
@@ -185,7 +190,7 @@ Pool colour scheme
 ### 0.10.0
 
 - Webserver binds only to loopback interface, request origin no longer checked
-- More updates to documentation and localisation 
+- More updates to documentation and localisation
   - ancillary documents moved to /doc
   - images etc moved to /assets
 - `Print: Open the manual` is now localised, falling back to English
@@ -258,7 +263,7 @@ Pool colour scheme
 - Total rewrite of file management in support of remote file systems
 - Glob brace expressions can be nested
 - Exclusion is forced for
-  - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}` 
+  - `**/*.{exe,dll,pdb,pdf,hex,bin,png,jpg,jpeg,gif,bmp}`
   - `{bin,obj}`
 - Change to licence terms refusing licence to persons who give a bad review without first reading the manual or seeking assistance by raising an issue on the GitHub repository
 
@@ -330,7 +335,7 @@ Pool colour scheme
 
 ### 0.8.0
 
-- Various issues describing high CPU use at extension startup are resolved by use of Webpack. 
+- Various issues describing high CPU use at extension startup are resolved by use of Webpack.
 - Port selection for the embedded webserver is now fully delegated to the host operating system. As a result the port range settings are no longer necessary and have been removed.
 - No longer dependent on the portfinder package.
 
