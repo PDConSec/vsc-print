@@ -26,11 +26,14 @@ table {
 	border-collapse: collapse;
 }
 
-th {
-	font-family: Castellar;
-	font-weight: 400;
-	border: thin solid silver;
+td, th {
+	border-bottom: thin solid silver;
 	padding: 3px;
+    text-align: left;
+}
+
+code {
+    text-wrap: wrap;
 }
 
 div.left pre.mermaid {
