@@ -145,6 +145,68 @@ In the fenced block for `Database` you supply a connection string and some setti
 
 Print has a persistent cache (similar to a browser) for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. Extending Kroki in the spirit of `jebb.plantUml` there is also support for recursive `!include filename.ext`.
 
+### Database diagrams
+
+Like most diagrams you use a fenced block annotated with the diagram type. The content of this block must be valid YAML and the minimum you can specify is the `DatabaseType` and the `ConnectionString`.
+
+#### Supported database types
+
+ - Postgres
+ - Microsoft SQL Server
+ - MySql
+
+Why don't we support Oracle? We the contributors don't use it. If you
+
+The syntax of the connection string depends on the database type. The samples below illustrate connection strings for each supported database engine.
+
+You can specify the level of detail.
+
+ - tables (a true ER diagram)
+ - keys (just the PK and FKs)
+ - columns (all the columns with their types)
+
+Finally, you can specify which tables you want in the diagram. You can specify the schema, the syntax for which depends on the database engine (whatever you'd use in SQL). You can also list the tables you want included. If you don't specify this you'll get all the tables in the schema. If you don't specify a schema you'll get the default schema. If you don't specify either you'll get all the tables in the default schema.
+
+What about credentials? This depends on the database server. For Microsoft SQL Server you can put them in the connection string or use a trusted connection. For Postgres you can put the username in the URL. See the database documentation for supported ways of supplying a password or avoiding the need to supply one.
+
+#### Postgres
+
+````
+```database
+DatabaseType: postgresql
+ConnectionString: postgres://postgres:admin@localhost:5432/postgres 
+Schema: public
+Detail: keys
+```
+````
+
+#### Microsoft SQL Server
+
+````
+```database
+DatabaseType: mssql
+ConnectionString: Server=localhost,1433; Database=OrderManagementDb; User Id=sa; Password=yourStrong(!)Password;
+Schema: dbo
+Tables: 
+  - OrderStates
+  - OrderHeaders
+  - OrderItems
+  - StockItems
+Detail: keys
+```
+````
+
+#### MySql
+
+````
+```database
+DatabaseType: mysql
+ConnectionString: mysql://root:admin@localhost:3306
+Schema: hospital_db
+Detail: keys
+```
+````
+
 ## Styling your markdown
 
 ### Apply CSS files to a Markdown document 
