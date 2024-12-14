@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.13.3
+
+- fix [#357](https://github.com/PDConSec/vsc-print/issues/357) filepath heading style should not affect all h3
+
 ### 0.13.2
 
 - fix [#352](https://github.com/PDConSec/vsc-print/issues/352) Improved Katex handling of broken syntax - instead of aborting the page render and displaying an error message in the browser, the Katex block is partially rendered and the invalid syntax is shown in red.

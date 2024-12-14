@@ -13,7 +13,7 @@ body {
 
 .line-number,
 .line-text,
-h3 {
+h3.filepath {
 	font-family: FONT_FAMILY;
 	font-size: FONT_SIZE;
 	hyphens: auto;
