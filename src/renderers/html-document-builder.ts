@@ -5,7 +5,6 @@ import * as vscode from 'vscode';
 import { DocumentRenderer } from './document-renderer';
 import micromatch from 'micromatch';
 import tildify from '../tildify';
-import { PrintSession } from '../print-session';
 import { ResourceProxy } from './resource-proxy';
 import Handlebars from "handlebars";
 
@@ -42,7 +41,7 @@ export class HtmlDocumentBuilder {
       logger.debug(`Selected files`);
       const docs = await this.docsInMultiselection();
       const summary =
-        `<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
+        `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
       const folderItems = await Promise.all(docs.map(async (doc) => {
         const renderer = DocumentRenderer.get(doc.languageId);
         const bodyText = doc.getText();
@@ -70,8 +69,8 @@ export class HtmlDocumentBuilder {
       this.filepath = this.uri.fsPath;
       const docs = await this.docsInFolder();
       const summary = printConfig.folder.includeFileList ?
-        `<h3>${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
-        `<h3>${docs.length} printable files</h3><p>(file list disabled)</p>`;
+        `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
+        `<h3 class="filepath">${docs.length} printable files</h3><p>(file list disabled)</p>`;
 
       if (docs.length > printConfig.folder.maxFiles) {
         const msgTooManyFiles = 
@@ -115,13 +114,13 @@ export class HtmlDocumentBuilder {
       if (printConfig.filepathHeadingForIndividuallyPrintedDocuments) {
         switch (printConfig.filepathAsDocumentHeading) {
           case "Absolute":
-            docHeading = `<h3>${tildify(this.filepath).replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+            docHeading = `<h3 class="filepath">${tildify(this.filepath).replace(/([\\/])/g, "$1<wbr />")}</h3>`;
             break;
           case "Relative":
             const wf = vscode.workspace.getWorkspaceFolder(this.uri);
             // if no workspace then absolute path
             const relativePath = wf ? path.relative(wf!.uri.fsPath, this.filepath) : this.filepath;
-            docHeading = `<h3>${relativePath.replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+            docHeading = `<h3 class="filepath">${relativePath.replace(/([\\/])/g, "$1<wbr />")}</h3>`;
             break;
         }
       }
@@ -130,10 +129,10 @@ export class HtmlDocumentBuilder {
       if (printConfig.filepathHeadingForIndividuallyPrintedDocuments)
         switch (printConfig.filepathAsDocumentHeading) {
           case "Absolute":
-            thePath = `<h3>${tildify(this.uri.fsPath)}</h3>`;
+            thePath = `<h3 class="filepath">${tildify(this.uri.fsPath)}</h3>`;
             break;
           case "Relative":
-            thePath = `<h3>${this.workspacePath(this.uri)}</h3>`;
+            thePath = `<h3 class="filepath">${this.workspacePath(this.uri)}</h3>`;
             break;
         }
       let options = {
