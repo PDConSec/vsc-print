@@ -15,4 +15,5 @@ export class Metadata {
   })();
 
   static ExtensionContext: vscode.ExtensionContext;
+  static PreviewWebsocketPort: number = 0;
 }

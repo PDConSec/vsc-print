@@ -7,11 +7,12 @@ import micromatch from 'micromatch';
 import tildify from '../tildify';
 import { ResourceProxy } from './resource-proxy';
 import Handlebars from "handlebars";
+import { Metadata } from '../metadata';
 
 const hbMultiDocument = Handlebars.compile(require("../templates/multi-document.html").default.toString());
 const hbFolderItem = Handlebars.compile(require("../templates/multi-document-item.html").default.toString());
 const hbDocument = Handlebars.compile(require("../templates/document.html").default.toString());
-const multifileCssRefs = 
+const multifileCssRefs =
 `
 <link href="bundled/default.css" rel="stylesheet" />
 <link href="bundled/line-numbers.css" rel="stylesheet" />
@@ -37,6 +38,8 @@ export class HtmlDocumentBuilder {
     const printAndClose = (!this.isPreview).toString();
     const documentRenderer = DocumentRenderer.get(this.language);
     const printConfig = vscode.workspace.getConfiguration("print");
+    const previewWebsocketPort = Metadata.PreviewWebsocketPort;
+
     if (this.multiselection!.length) {
       logger.debug(`Selected files`);
       const docs = await this.docsInMultiselection();
@@ -62,7 +65,8 @@ export class HtmlDocumentBuilder {
         summary: summary,
         items: folderItems,
         stylesheetLinks: multifileCssRefs,
-        scriptTags: ""
+        scriptTags: "",
+        PreviewWebsocketPort: previewWebsocketPort
       });
     } else if (this.language === "folder") {
       logger.debug(`Folder ${this.workspacePath(this.uri)}`);
@@ -73,7 +77,7 @@ export class HtmlDocumentBuilder {
         `<h3 class="filepath">${docs.length} printable files</h3><p>(file list disabled)</p>`;
 
       if (docs.length > printConfig.folder.maxFiles) {
-        const msgTooManyFiles = 
+        const msgTooManyFiles =
           vscode.l10n.t("The selected directory contains too many files to print them all. Only the summary will be printed.");
         vscode.window.showWarningMessage(msgTooManyFiles);
         return hbMultiDocument({
@@ -84,7 +88,8 @@ export class HtmlDocumentBuilder {
           summary: summary,
           items: [],
           stylesheetLinks: multifileCssRefs,
-          scriptTags: ""
+          scriptTags: "",
+          PreviewWebsocketPort: previewWebsocketPort
         });
       }
       const multiDocumentItems = await Promise.all(docs.map(async (doc) => {
@@ -106,7 +111,8 @@ export class HtmlDocumentBuilder {
         summary: summary,
         items: multiDocumentItems,
         stylesheetLinks: multifileCssRefs,
-        scriptTags: ""
+        scriptTags: "",
+        PreviewWebsocketPort: previewWebsocketPort
       });
     } else { // one file
       logger.debug(`Printing ${this.filepath}`);
@@ -151,7 +157,8 @@ export class HtmlDocumentBuilder {
         printAndClose: printAndClose,
         content: bodyHtml,
         stylesheetLinks: cssLinks,
-        scriptTags: scriptTags
+        scriptTags: scriptTags,
+        PreviewWebsocketPort: previewWebsocketPort
       });
       return doc;
     }
