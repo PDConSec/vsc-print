@@ -24,22 +24,22 @@ export class PrintSession {
   public ready: Promise<void>;
   public sessionId = nodeCrypto.randomUUID();
   public source: any;
+    private printConfig = vscode.workspace.getConfiguration("print");
+    private editorConfig = vscode.workspace.getConfiguration("editor");
   constructor(source: any, isPreview: boolean = true) {
     logger.debug(`Creating a print session object for ${source}`);
-    const printConfig = vscode.workspace.getConfiguration("print");
-    const editorConfig = vscode.workspace.getConfiguration("editor");
     this.ready = new Promise(async (resolve, reject) => {
       try {
         const baseUrl = `http://localhost:${PrintSession.port}/${this.sessionId}/`;
         const editor = vscode.window.activeTextEditor;
         let document = editor?.document;
-        let printLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && editorConfig.lineNumbers === "on");
+        let printLineNumbers = this.printConfig.lineNumbers === "on" || (this.printConfig.lineNumbers === "inherit" && this.editorConfig.lineNumbers === "on");
         const rootDocumentContentSource = await this.rootDocumentContentSource(source!);
         switch (rootDocumentContentSource) {
           case "editor": {
             logger.debug("Using the buffer of the active editor");
             logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
-            logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
+            logger.debug(`Source code colour scheme is "${this.printConfig.colourScheme}"`);
             if (!document) throw "This can't happen";
             this.source = document.uri;
             this.pageBuilder = new HtmlDocumentBuilder(
@@ -56,7 +56,7 @@ export class PrintSession {
           case "selection": {
             logger.debug("Printing the selection in the active editor");
             logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
-            logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
+            logger.debug(`Source code colour scheme is "${this.printConfig.colourScheme}"`);
             if (!document) throw "This can't happen";
             const selection = editor?.selection;
             if (!selection) throw "This can't happen";
@@ -97,7 +97,7 @@ export class PrintSession {
             logger.debug(`Printing the file ${document.uri.fsPath}`);
             this.source = document.uri;
             logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
-            logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
+            logger.debug(`Source code colour scheme is "${this.printConfig.colourScheme}"`);
             this.pageBuilder = new HtmlDocumentBuilder(
               isPreview,
               this.generatedResources,
@@ -122,7 +122,7 @@ export class PrintSession {
             vscode.window.showErrorMessage(rootDocumentContentSource);
             break;
         }
-        if (printConfig.alternateBrowser) {
+        if (this.printConfig.alternateBrowser) {
           launchAlternateBrowser(this.getUrl())
         } else {
           vscode.env.openExternal(vscode.Uri.parse(this.getUrl()));

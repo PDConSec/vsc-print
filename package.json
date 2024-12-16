@@ -638,6 +638,7 @@
     "@viz-js/viz": "^3.6.0",
     "axios": "^1.7.7",
     "braces": "^3.0.3",
+    "bufferutil": "^4.0.8",
     "cors": "^2.8.5",
     "handlebars": "^4.7.8",
     "highlight.js": "^11.9.0",
@@ -648,8 +649,10 @@
     "mysql2": "^3.11.0",
     "pako": "^2.1.0",
     "pg": "^8.12.0",
+    "utf-8-validate": "^6.0.5",
     "uuid": "^10.0.0",
     "winston": "^3.11.0",
+    "ws": "^8.18.0",
     "yaml": "^2.4.5"
   },
   "scripts": {
@@ -674,6 +677,7 @@
     "@types/pg": "^8.11.6",
     "@types/uuid": "^10.0.0",
     "@types/vscode": "^1.90.0",
+    "@types/ws": "^8.5.13",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "@vscode/test-cli": "^0.0.6",
