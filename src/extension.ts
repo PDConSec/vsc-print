@@ -10,6 +10,7 @@ import * as htmlRendererMarkdown from "./renderers/html-renderer-markdown";
 import * as htmlRendererPlaintext from "./renderers/html-renderer-plaintext";
 import { captionByFilename } from './imports';
 import * as fs from "fs";
+import * as WebSocket from "ws";
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
@@ -55,7 +56,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand("vsc-print.dumpProperties", dumpProperties));
 
   // Could call DocumentRenderer.register directly,
-  // but this shows how a third party HTML renderer 
+  // but this shows how a third party HTML renderer
   // would do it.
   vscode.commands.executeCommand("print.registerDocumentRenderer", "markdown", {
     getBodyHtml: htmlRendererMarkdown.getBodyHtml,
@@ -122,6 +123,22 @@ export async function activate(context: vscode.ExtensionContext) {
     logger.info(`Began listening on ${addr.address}:${addr.port}`);
   });
   server.listen(0, "localhost");
+
+  // Initialize WebSocket server
+  const wss = new WebSocket.Server({ port: 0 }, () => {
+    Metadata.PreviewWebsocketPort = (wss.address() as AddressInfo).port;
+    console.log(`WebSocket server started on port ${Metadata.PreviewWebsocketPort}`);
+  });
+
+  wss.on('connection', (ws) => {
+    console.log('New client connected');
+    ws.on('message', (message) => {
+      console.log(`Received message: ${message}`);
+    });
+    ws.on('close', () => {
+      console.log('Client disconnected');
+    });
+  });
 
   const currentVersion = context.extension.packageJSON.version as string;
   const lastVersion = context.globalState.get("version") as string ?? "0.0.0"
