@@ -4,25 +4,9 @@ Print code. Print rendered Markdown. Local or remote. Windows, Mac or Linux.
 
 ## Recent features
 
-Markdown embedded diagrams are handled using Kroki. Kroki is server-based. Normally we won't do anything that can't work offline, but there were two compelling factors
+Hot preview! When you launch a preview of a document from the active editor, when you edit that file and stop making changes for three seconds, the proview will update in the browser. This works for source code but it's most useful for Markdown documents.
 
- - it unifies a huge list of diagram engines
- - it _can_ work off-line: install Kroki server on your network or notebook
-
-So while there was a drop in functionality for 0.12.3, with this release you can use the following:
-
-|            |            |                  |              |             |          |
-|------------|------------|------------------|--------------|-------------|----------|
-| BlockDiag  | BPMN       | Bytefield        | SeqDiag      | ActDiag     | NwDiag   |
-| PacketDiag | RackDiag   | C4 with PlantUML | D2           | DBML        | Ditaa    |
-| Erd        | Excalidraw | GraphViz         | KaTeX        | Mermaid     | MHCHEM   |
-| Nomnoml    | Pikchr     | PlantUML         | SmilesDrawer | Structurizr | Svgbob   |
-| Symbolator | Tikz       | UMLet            | Vega         | Vega-lite   | WaveDrom |
-| WireViz    | Database   |                  |              |             |          |
-
-The `Database` diagram uses a connection string and some settings that you supply in a fenced block. It connects to your database and extracts the metadata to construct a Mermaid Entity Relationship diagram.
-
-Print has a persistent cache (similar to a browser) for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. Extending Kroki in the spirit of `jebb.plantUml` there is also support for recursive `!include filename.ext`.
+Hot preview also supports find-in-source. If you're proof-reading the rendered document and you find an error, double-clicking the paragraph will find and highlight the first line in the editor. This matching is not yet perfect; if there are multiple matches it will currently only find the first.
 
 ## Cross-platform printing
 

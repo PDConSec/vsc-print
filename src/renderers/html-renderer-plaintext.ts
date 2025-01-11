@@ -1,4 +1,3 @@
-import { escapeHtml } from "markdown-it/lib/common/utils";
 import * as vscode from 'vscode';
 import { ResourceProxy } from "./resource-proxy";
 
@@ -14,3 +13,5 @@ export function getCssUriStrings(uri: vscode.Uri): Array<string> {
     "bundled/settings.css",
   ];
 }
+
+const escapeHtml = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

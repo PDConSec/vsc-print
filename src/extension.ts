@@ -10,6 +10,8 @@ import * as htmlRendererMarkdown from "./renderers/html-renderer-markdown";
 import * as htmlRendererPlaintext from "./renderers/html-renderer-plaintext";
 import { captionByFilename } from './imports';
 import * as fs from "fs";
+import { WebSocketServer } from "ws";
+import WebSocket from 'ws';
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
@@ -25,6 +27,8 @@ function gc() {
   const allKvps = Array.from(printSessions);
   const completed = allKvps.filter(kvp => kvp[1].completed);
   for (const sessionId of completed.map(c => c[0])) {
+    const printSession = printSessions.get(sessionId);
+    printSession!.dispose();
     printSessions.delete(sessionId);
   }
 }
@@ -55,7 +59,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand("vsc-print.dumpProperties", dumpProperties));
 
   // Could call DocumentRenderer.register directly,
-  // but this shows how a third party HTML renderer 
+  // but this shows how a third party HTML renderer
   // would do it.
   vscode.commands.executeCommand("print.registerDocumentRenderer", "markdown", {
     getBodyHtml: htmlRendererMarkdown.getBodyHtml,
@@ -123,6 +127,49 @@ export async function activate(context: vscode.ExtensionContext) {
   });
   server.listen(0, "localhost");
 
+  // WebSocket server is attached to webserver and uses the same port
+  const websocketServer = new WebSocketServer({ server });
+  interface SessionData { sessionid: string;[key: string]: any; }
+  websocketServer.on('connection', (ws) => {
+    console.log('New client connected');
+    ws.on('message', (message: string) => {
+      const data: SessionData = JSON.parse(message);
+      if (data.sessionId) {
+        const printSession = printSessions.get(data.sessionId);
+        printSession?.configureWebsocket(ws);
+      }
+      if (data.type === 'findInEditor') {
+        const text = data.value;
+        findAndHighlightText(text);
+      }
+    });
+    ws.on('close', () => {
+      console.log('Client disconnected');
+    });
+  });
+
+  function findAndHighlightText(text: string) {
+    const normaliseText = (s: string) => s
+      .replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ').toLowerCase().trim()
+      .split(' ').slice(0, 7).join(' ');
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+      const document = editor.document;
+      const normalizedText = normaliseText(text);
+      for (let i = 0; i < document.lineCount; i++) {
+        const lineText = normaliseText(document.lineAt(i).text);
+        if (lineText.includes(normalizedText)) {
+          const startPos = new vscode.Position(i, 0);
+          const endPos = new vscode.Position(i, document.lineAt(i).text.length);
+          const range = new vscode.Range(startPos, endPos);
+          editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+          editor.selection = new vscode.Selection(startPos, endPos);
+          return; // Stop after the first match
+        }
+      }
+    }
+  }
+
   const currentVersion = context.extension.packageJSON.version as string;
   const lastVersion = context.globalState.get("version") as string ?? "0.0.0"
   if (lastVersion !== currentVersion) {
@@ -144,6 +191,7 @@ export async function activate(context: vscode.ExtensionContext) {
   }
 
   _gc = setInterval(gc, 2000);
+
 }
 
 function openDoc(doc: string) {

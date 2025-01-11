@@ -1,20 +1,26 @@
-import { PrintPreview } from './print-preview';
 import { logger } from './logger';
-import { HtmlDocumentBuilder } from './renderers/html-document-builder';
+import { AbstractDocumentBuilder } from './renderers/abstract-document-builder';
+import { EditorDocumentBuilder } from './renderers/editor-document-builder';
+import { TextSelectionDocumentBuilder } from './renderers/text-selection-document-builder';
+import { FolderDocumentBuilder } from './renderers/folder-document-builder';
+import { FileselectionDocumentBuilder } from './renderers/fileselection-document-builder';
 import * as vscode from 'vscode';
 import * as http from "http";
+import WebSocket from 'ws';
 import * as path from "path";
 import * as child_process from "child_process";
 import * as nodeCrypto from "crypto";
 import { DocumentRenderer } from './renderers/document-renderer';
 import { filenameByCaption } from './imports';
 import { ResourceProxy } from './renderers/resource-proxy';
-import { Metadata } from './metadata';
 import tildify from './tildify';
 
 let settingsCss: string = require("./css/settings.css").default.toString();
 
 export class PrintSession {
+  dispose() {
+    this.pageBuilder?.dispose();
+  }
   static port: number;
   private created = new Date().valueOf();
   public completed = false;
@@ -22,126 +28,102 @@ export class PrintSession {
     return new Date().valueOf() - this.created;
   }
   public readonly generatedResources = new Map<string, ResourceProxy>();
-  pageBuilder: HtmlDocumentBuilder | undefined;
+  pageBuilder?: AbstractDocumentBuilder;
   public ready: Promise<void>;
   public sessionId = nodeCrypto.randomUUID();
   public source: any;
+  private printConfig = vscode.workspace.getConfiguration("print");
+  private editorConfig = vscode.workspace.getConfiguration("editor");
   constructor(source: any, isPreview: boolean = true) {
     logger.debug(`Creating a print session object for ${source}`);
-    const printConfig = vscode.workspace.getConfiguration("print");
-    const editorConfig = vscode.workspace.getConfiguration("editor");
     this.ready = new Promise(async (resolve, reject) => {
       try {
         const baseUrl = `http://localhost:${PrintSession.port}/${this.sessionId}/`;
         const editor = vscode.window.activeTextEditor;
         let document = editor?.document;
-        let printLineNumbers = printConfig.lineNumbers === "on" || (printConfig.lineNumbers === "inherit" && editorConfig.lineNumbers === "on");
-        const rootDocumentContentSource = await this.rootDocumentContentSource(source!);
+        let printLineNumbers = this.printConfig.lineNumbers === "on" || (this.printConfig.lineNumbers === "inherit" && this.editorConfig.lineNumbers === "on");
+        let rootDocumentContentSource = await this.rootDocumentContentSource(source!);
+        if (rootDocumentContentSource === "file") {
+          source = [source];
+          rootDocumentContentSource = "fileselection";
+        }
         switch (rootDocumentContentSource) {
-          case "editor": {
+          case "editor": // active editor
             logger.debug("Using the buffer of the active editor");
             logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
-            logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
+            logger.debug(`Source code colour scheme is "${this.printConfig.colourScheme}"`);
             if (!document) throw "This can't happen";
             this.source = document.uri;
-            this.pageBuilder = new HtmlDocumentBuilder(
+            this.pageBuilder = new EditorDocumentBuilder(
               isPreview,
               this.generatedResources,
               baseUrl,
-              document.uri,
-              document.getText(),
-              document.languageId,
-              printLineNumbers
+              printLineNumbers,
+              document
             );
-          }
             break;
-          case "selection": {
+          case "selection": // active editor selection
             logger.debug("Printing the selection in the active editor");
             logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
-            logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
+            logger.debug(`Source code colour scheme is "${this.printConfig.colourScheme}"`);
             if (!document) throw "This can't happen";
             const selection = editor?.selection;
             if (!selection) throw "This can't happen";
             this.source = document.uri;
-            if (selection.isEmpty) { // use entire doc
-              const selectedText = document!.getText().replace(/\s*$/, "");
-              const langId = document!.languageId;
-              const startLine = selection.start.line + 1; // zero based to one based
-              this.pageBuilder = new HtmlDocumentBuilder(
-                isPreview,
-                this.generatedResources,
-                baseUrl,
-                document.uri,
-                selectedText,
-                langId,
-                printLineNumbers,
-                startLine
-              );
-            } else {
-              const selectedText = document!.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
-              const langId = document!.languageId;
-              const startLine = selection.start.line + 1; // zero based to one based
-              this.pageBuilder = new HtmlDocumentBuilder(
-                isPreview,
-                this.generatedResources,
-                baseUrl,
-                document.uri,
-                selectedText,
-                langId,
-                printLineNumbers,
-                startLine
-              );
-            }
-          }
-            break;
-          case "file":
-            document = await vscode.workspace.openTextDocument(source!);
-            logger.debug(`Printing the file ${document.uri.fsPath}`);
-            this.source = document.uri;
-            logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
-            logger.debug(`Source code colour scheme is "${printConfig.colourScheme}"`);
-            this.pageBuilder = new HtmlDocumentBuilder(
+            this.pageBuilder = new TextSelectionDocumentBuilder(
               isPreview,
               this.generatedResources,
               baseUrl,
-              document.uri,
-              document.getText(),
-              document.languageId,
+              printLineNumbers,
+              document
+            );
+            break;
+          case "folder": // all the printable files in this folder and its subfolders
+            logger.debug(`Printing the folder ${source!.fsPath}`);
+            this.pageBuilder = new FolderDocumentBuilder(
+              isPreview,
+              this.generatedResources,
+              baseUrl,
+              source,
+              "",
+              "folder",
               printLineNumbers
             );
             break;
-          case "folder":
-            logger.debug(`Printing the folder ${source!.fsPath}`);
-            this.pageBuilder = new HtmlDocumentBuilder(isPreview, this.generatedResources, baseUrl, source, "", "folder", printLineNumbers);
-            break;
-          case "multiselection":
-            logger.debug(`Printing multiselection`);
-            const multiselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.uri;
-            this.pageBuilder = new HtmlDocumentBuilder(isPreview, this.generatedResources, baseUrl, multiselectionPath, "", "multiselection", printLineNumbers, 1, source);
+          case "fileselection": // all the printable files in the selection
+            logger.debug(`Printing fileselection`);
+            const fileselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.uri;
+            this.pageBuilder = new FileselectionDocumentBuilder(
+              isPreview,
+              this.generatedResources,
+              baseUrl,
+              fileselectionPath,
+              "",
+              "fileselection",
+              printLineNumbers,
+              1,
+              source
+            );
             break;
           default:
             logger.error(rootDocumentContentSource);
             vscode.window.showErrorMessage(rootDocumentContentSource);
             break;
         }
-        // todo modify vscode to stop built-in preview registering
-        // leave this code while we decide how to handle preview
-        // if (isPreview) {
-        //   const renderer = this.pageBuilder;
-        //   const html = await renderer!.build();
-        //   PrintPreview.show(html)
-        // } else {
-        if (printConfig.alternateBrowser) {
+        if (this.printConfig.alternateBrowser) {
           launchAlternateBrowser(this.getUrl())
         } else {
           vscode.env.openExternal(vscode.Uri.parse(this.getUrl()));
         }
-        // }
         resolve();
       } catch (err) {
         reject(err);
       }
     });
+  }
+
+  public configureWebsocket(ws: WebSocket) {
+    this.pageBuilder?.configureWebsocket(ws);    
   }
 
   public async respond(urlParts: string[], response: http.ServerResponse) {
@@ -276,7 +258,7 @@ export class PrintSession {
 
   async rootDocumentContentSource(source: vscode.Uri | Array<vscode.Uri>): Promise<string> {
     if (Array.isArray(source))
-      return "multiselection";
+      return "fileselection";
     else {
       try {
         await vscode.workspace.fs.stat(source); // barfs when file does not exist (unsaved)
