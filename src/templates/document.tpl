@@ -21,10 +21,18 @@
             }
         }
         function listenForUpdates() {
+          debugger;
             const ws = new WebSocket(`ws://localhost:${window.location.port}`);
             ws.onopen = function () {
                 const sessionId = window.location.pathname.split("/")[1];
                 ws.send(JSON.stringify({ sessionId: sessionId }));
+            };
+            ws.onmessage = function (event) {
+                const message = JSON.parse(event.data);
+                debugger;
+                if (message.type === 'refreshPreview') {
+                    location.reload();
+                }
             };
         };
     </script>

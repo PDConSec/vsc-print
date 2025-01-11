@@ -133,8 +133,8 @@ export async function activate(context: vscode.ExtensionContext) {
     console.log('New client connected');
     ws.on('message', (message: string) => {
       const data: SessionData = JSON.parse(message);
-      if (data.sessionid) {
-        const printSession = printSessions.get(data.sessionid);
+      if (data.sessionId) {
+        const printSession = printSessions.get(data.sessionId);
         printSession?.configureWebsocket(ws);
       }
     });

@@ -26,7 +26,7 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
       generatedResources,
       baseUrl,
       document.uri,
-      document.getText(),
+      "",
       document.languageId,
       printLineNumbers
     );
@@ -41,6 +41,16 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
   }
 
   public configureWebsocket(ws: WebSocket): void {
+    const rebindHandlersEveryPageLoad = true;
+    if (this.changeHandler) {
+      if (rebindHandlersEveryPageLoad) {
+        this.changeHandler.dispose();
+        this.changeHandler = undefined;
+      } else {
+        return;
+      }
+    }
+
     const printConfig = vscode.workspace.getConfiguration("print");
     const rateLimit = printConfig.documentChangeSettleMilliseconds || 3000;
 
@@ -51,15 +61,19 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
         clearTimeout(timeout);
       }
       timeout = setTimeout(() => {
+        logger.info("Document change detected, sending refreshPreview message");
         ws.send(JSON.stringify({ type: 'refreshPreview' }));
       }, rateLimit);
     };
 
     this.changeHandler = vscode.workspace.onDidChangeTextDocument(event => {
       if (event.document === this.document) {
+        logger.info("onDidChangeTextDocument event fired");
         onDocumentChange();
       }
     });
+
+    logger.info("WebSocket configured for document changes");
   }
 
   public async build(): Promise<string> {
@@ -97,7 +111,7 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
       lineNumbers: this.printLineNumbers,
       uri: this.uri
     };
-    const bodyHtml = await documentRenderer.getBodyHtml(this.generatedResources, this.code, this.language, options);
+    const bodyHtml = await documentRenderer.getBodyHtml(this.generatedResources, this.document.getText(), this.language, options);
     const cssLinks = documentRenderer.getCssLinks(this.uri);
     const scriptTags = documentRenderer.getScriptTags(this.uri);
     const documentTitle = documentRenderer.getTitle(this.uri);
