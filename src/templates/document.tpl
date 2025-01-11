@@ -58,7 +58,7 @@
                 }
             };
 
-            const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, table');
+            const elements = document.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, table');
             elements.forEach(element => {
                 element.addEventListener('dblclick', () => {
                     const text = element.innerText || element.textContent;

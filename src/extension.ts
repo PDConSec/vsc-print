@@ -150,7 +150,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   function findAndHighlightText(text: string) {
     const normaliseText = (s: string) => s
-      .replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ').toLowerCase()
+      .replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ').toLowerCase().trim()
       .split(' ').slice(0, 7).join(' ');
     const editor = vscode.window.activeTextEditor;
     if (editor) {
