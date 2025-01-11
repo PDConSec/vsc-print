@@ -192,25 +192,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
   _gc = setInterval(gc, 2000);
 
-  let timeout: NodeJS.Timeout | undefined = undefined;
-
-  const onDocumentChange = (event: vscode.TextDocumentChangeEvent) => {
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    timeout = setTimeout(() => {
-      handleDocumentChange(event);
-    }, 3000); // 1 second settling period
-  };
-
-  const handleDocumentChange = (event: vscode.TextDocumentChangeEvent) => {
-    // todo document change handling
-    console.log(`Document changed: ${event.document.uri}`);
-  };
-
-  context.subscriptions.push(
-    vscode.workspace.onDidChangeTextDocument(onDocumentChange)
-  );
 }
 
 function openDoc(doc: string) {
