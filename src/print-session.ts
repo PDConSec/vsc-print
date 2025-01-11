@@ -17,6 +17,9 @@ import tildify from './tildify';
 let settingsCss: string = require("./css/settings.css").default.toString();
 
 export class PrintSession {
+  dispose() {
+    if (this.pageBuilder) this.pageBuilder.dispose();
+  }
   static port: number;
   private created = new Date().valueOf();
   public completed = false;

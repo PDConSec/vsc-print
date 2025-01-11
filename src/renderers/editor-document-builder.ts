@@ -32,11 +32,18 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
     this.document = document;
   }
 
+  public dispose(): void {
+    // todo unhook document change handler
+  }
+
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
     const documentRenderer = DocumentRenderer.get(this.language);
     const printConfig = vscode.workspace.getConfiguration("print");
     const previewWebsocketPort = Metadata.PreviewWebsocketPort;
+
+    // todo hook document change handler in a rate limited way with the rate expressed by printConfig.documentChangeSettleMilliseconds
+    // the change handler should announce the need for a preview refresh using the previewWebsocketPort
 
     logger.debug(`Printing ${this.filepath}`);
     let docHeading = "";

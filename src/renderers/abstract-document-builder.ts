@@ -5,6 +5,7 @@ import tildify from '../tildify';
 import { ResourceProxy } from './resource-proxy';
 
 export abstract class AbstractDocumentBuilder {
+  public dispose() { }
   protected filepath: string;
   public isPreview: boolean;
   public generatedResources: Map<string, ResourceProxy>;

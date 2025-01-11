@@ -26,6 +26,8 @@ function gc() {
   const allKvps = Array.from(printSessions);
   const completed = allKvps.filter(kvp => kvp[1].completed);
   for (const sessionId of completed.map(c => c[0])) {
+    const printSession = printSessions.get(sessionId);
+    printSession!.dispose();
     printSessions.delete(sessionId);
   }
 }
