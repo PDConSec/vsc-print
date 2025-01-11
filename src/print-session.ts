@@ -105,16 +105,16 @@ export class PrintSession {
                             printLineNumbers
                         );
                         break;
-                    case "multiselection":
-                        logger.debug(`Printing multiselection`);
-                        const multiselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.uri;
+                    case "fileselection":
+                        logger.debug(`Printing fileselection`);
+                        const fileselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.uri;
                         this.pageBuilder = new HtmlDocumentBuilder(
                             isPreview,
                             this.generatedResources,
                             baseUrl,
-                            multiselectionPath,
+                            fileselectionPath,
                             "",
-                            "multiselection",
+                            "fileselection",
                             printLineNumbers,
                             1,
                             source
@@ -269,7 +269,7 @@ export class PrintSession {
 
     async rootDocumentContentSource(source: vscode.Uri | Array<vscode.Uri>): Promise<string> {
         if (Array.isArray(source))
-            return "multiselection";
+            return "fileselection";
         else {
             try {
                 await vscode.workspace.fs.stat(source); // barfs when file does not exist (unsaved)

@@ -29,7 +29,7 @@ export class HtmlDocumentBuilder {
   public language: string;
   public printLineNumbers: boolean;
   public startLine: number;
-  public multiselection: Array<vscode.Uri>;
+  public fileselection: Array<vscode.Uri>;
 
   constructor(
     isPreview: boolean,
@@ -40,7 +40,7 @@ export class HtmlDocumentBuilder {
     language: string = "",
     printLineNumbers: boolean,
     startLine: number = 1,
-    multiselection: Array<vscode.Uri> = [],
+    fileselection: Array<vscode.Uri> = [],
   ) {
     this.filepath = uri.fsPath;
     this.isPreview = isPreview;
@@ -51,7 +51,7 @@ export class HtmlDocumentBuilder {
     this.language = language;
     this.printLineNumbers = printLineNumbers;
     this.startLine = startLine;
-    this.multiselection = multiselection;
+    this.fileselection = fileselection;
   }
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
@@ -59,9 +59,9 @@ export class HtmlDocumentBuilder {
     const printConfig = vscode.workspace.getConfiguration("print");
     const previewWebsocketPort = Metadata.PreviewWebsocketPort;
 
-    if (this.multiselection!.length) {
+    if (this.fileselection!.length) {
       logger.debug(`Selected files`);
-      const docs = await this.docsInMultiselection();
+      const docs = await this.docsInFileselection();
       const summary =
         `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
       const folderItems = await Promise.all(docs.map(async (doc) => {
@@ -182,7 +182,7 @@ export class HtmlDocumentBuilder {
       return doc;
     }
   }
-  async docsInMultiselection() {
+  async docsInFileselection() {
     const printConfig = vscode.workspace.getConfiguration("print");
     // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
     let excludePatterns: string[] = printConfig.folder.exclude || [];
@@ -194,7 +194,7 @@ export class HtmlDocumentBuilder {
     let excludeString: string;
     excludePatterns = this.flatten(excludePatterns); //prevent nested alternations
     excludeString = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
-    const fileUris = this.multiselection.filter(uri => !micromatch.isMatch(uri.path, excludeString));
+    const fileUris = this.fileselection.filter(uri => !micromatch.isMatch(uri.path, excludeString));
     const docOpenSettlements = await Promise.allSettled(fileUris.map(uri => vscode.workspace.openTextDocument(uri)));
     const docs = await docOpenSettlements
       .filter(dos => dos.status === "fulfilled")
