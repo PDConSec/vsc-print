@@ -21,18 +21,51 @@ const multifileCssRefs =
 `;
 export class HtmlDocumentBuilder {
   private filepath: string;
-  constructor(
-    public isPreview: boolean,
-    public generatedResources: Map<string, ResourceProxy>,
-    public baseUrl: string,
-    public uri: vscode.Uri,
-    public code: string = "",
-    public language: string = "",
-    public printLineNumbers: boolean,
-    public startLine: number = 1,
-    public multiselection: Array<vscode.Uri> = []
-  ) {
+  public isPreview: boolean;
+  public generatedResources: Map<string, ResourceProxy>;
+  public baseUrl: string;
+  public uri: vscode.Uri;
+  public code: string;
+  public language: string;
+  public printLineNumbers: boolean;
+  public startLine: number;
+  public multiselection: Array<vscode.Uri>;
+  private document?: vscode.TextDocument;
+
+  constructor({
+    isPreview,
+    generatedResources,
+    baseUrl,
+    uri,
+    code = "",
+    language = "",
+    printLineNumbers,
+    startLine = 1,
+    multiselection = [],
+    document
+  }: {
+    isPreview: boolean,
+    generatedResources: Map<string, ResourceProxy>,
+    baseUrl: string,
+    uri: vscode.Uri,
+    code?: string,
+    language?: string,
+    printLineNumbers: boolean,
+    startLine?: number,
+    multiselection?: Array<vscode.Uri>,
+    document?: vscode.TextDocument
+  }) {
     this.filepath = uri.fsPath;
+    this.isPreview = isPreview;
+    this.generatedResources = generatedResources;
+    this.baseUrl = baseUrl;
+    this.uri = uri;
+    this.code = code;
+    this.language = language;
+    this.printLineNumbers = printLineNumbers;
+    this.startLine = startLine;
+    this.multiselection = multiselection;
+    this.document = document;
   }
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
