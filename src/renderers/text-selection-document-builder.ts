@@ -10,7 +10,7 @@ import path from 'path';
 
 const hbDocument = Handlebars.compile(require("../templates/document.html").default.toString());
 
-export class SelectionDocumentBuilder extends AbstractDocumentBuilder {
+export class TextSelectionDocumentBuilder extends AbstractDocumentBuilder {
 
   constructor(
     isPreview: boolean,

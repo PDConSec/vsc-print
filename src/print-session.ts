@@ -1,7 +1,7 @@
 import { logger } from './logger';
 import { AbstractDocumentBuilder } from './renderers/abstract-document-builder';
 import { EditorDocumentBuilder } from './renderers/editor-document-builder';
-import { SelectionDocumentBuilder } from './renderers/selection-document-builder';
+import { TextSelectionDocumentBuilder } from './renderers/text-selection-document-builder';
 import { FolderDocumentBuilder } from './renderers/folder-document-builder';
 import { FileselectionDocumentBuilder } from './renderers/fileselection-document-builder';
 import * as vscode from 'vscode';
@@ -66,7 +66,7 @@ export class PrintSession {
             const selection = editor?.selection;
             if (!selection) throw "This can't happen";
             this.source = document.uri;
-            this.pageBuilder = new SelectionDocumentBuilder(
+            this.pageBuilder = new TextSelectionDocumentBuilder(
               isPreview,
               this.generatedResources,
               baseUrl,
