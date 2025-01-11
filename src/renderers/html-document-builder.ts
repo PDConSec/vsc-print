@@ -20,7 +20,7 @@ const multifileCssRefs =
 <link href="bundled/settings.css" rel="stylesheet" />
 `;
 export class HtmlDocumentBuilder {
-  private filepath: string;
+  protected filepath: string;
   public isPreview: boolean;
   public generatedResources: Map<string, ResourceProxy>;
   public baseUrl: string;
@@ -30,31 +30,18 @@ export class HtmlDocumentBuilder {
   public printLineNumbers: boolean;
   public startLine: number;
   public multiselection: Array<vscode.Uri>;
-  private document?: vscode.TextDocument;
 
-  constructor({
-    isPreview,
-    generatedResources,
-    baseUrl,
-    uri,
-    code = "",
-    language = "",
-    printLineNumbers,
-    startLine = 1,
-    multiselection = [],
-    document
-  }: {
+  constructor(
     isPreview: boolean,
     generatedResources: Map<string, ResourceProxy>,
     baseUrl: string,
     uri: vscode.Uri,
-    code?: string,
-    language?: string,
+    code: string = "",
+    language: string = "",
     printLineNumbers: boolean,
-    startLine?: number,
-    multiselection?: Array<vscode.Uri>,
-    document?: vscode.TextDocument
-  }) {
+    startLine: number = 1,
+    multiselection: Array<vscode.Uri> = [],
+  ) {
     this.filepath = uri.fsPath;
     this.isPreview = isPreview;
     this.generatedResources = generatedResources;
@@ -65,7 +52,6 @@ export class HtmlDocumentBuilder {
     this.printLineNumbers = printLineNumbers;
     this.startLine = startLine;
     this.multiselection = multiselection;
-    this.document = document;
   }
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();

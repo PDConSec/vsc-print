@@ -1,5 +1,8 @@
 import { logger } from './logger';
 import { HtmlDocumentBuilder } from './renderers/html-document-builder';
+import { EditorDocumentBuilder } from './renderers/editor-document-builder';
+import { SelectionDocumentBuilder } from './renderers/selection-document-builder';
+import { FolderDocumentBuilder } from './renderers/folder-document-builder';
 import * as vscode from 'vscode';
 import * as http from "http";
 import * as path from "path";
@@ -20,7 +23,7 @@ export class PrintSession {
         return new Date().valueOf() - this.created;
     }
     public readonly generatedResources = new Map<string, ResourceProxy>();
-    pageBuilder: HtmlDocumentBuilder | undefined;
+    pageBuilder: HtmlDocumentBuilder | EditorDocumentBuilder | SelectionDocumentBuilder | FolderDocumentBuilder | undefined;
     public ready: Promise<void>;
     public sessionId = nodeCrypto.randomUUID();
     public source: any;
@@ -42,17 +45,12 @@ export class PrintSession {
                         logger.debug(`Source code colour scheme is "${this.printConfig.colourScheme}"`);
                         if (!document) throw "This can't happen";
                         this.source = document.uri;
-                        this.pageBuilder = new HtmlDocumentBuilder(
-                            {
-                                isPreview,
-                                generatedResources: this.generatedResources,
-                                baseUrl,
-                                uri: document.uri,
-                                code: document.getText(),
-                                language: document.languageId,
-                                printLineNumbers,
-                                document
-                            }
+                        this.pageBuilder = new EditorDocumentBuilder(
+                            isPreview,
+                            this.generatedResources,
+                            baseUrl,
+                            printLineNumbers,
+                            document
                         );
                     }
                         break;
@@ -64,39 +62,19 @@ export class PrintSession {
                         const selection = editor?.selection;
                         if (!selection) throw "This can't happen";
                         this.source = document.uri;
-                        if (selection.isEmpty) { // use entire doc
-                            const selectedText = document!.getText().replace(/\s*$/, "");
-                            const langId = document!.languageId;
-                            const startLine = selection.start.line + 1; // zero based to one based
-                            this.pageBuilder = new HtmlDocumentBuilder(
-                                {
-                                    isPreview,
-                                    generatedResources: this.generatedResources,
-                                    baseUrl,
-                                    uri: document.uri,
-                                    code: selectedText,
-                                    language: langId,
-                                    printLineNumbers,
-                                    startLine
-                                }
-                            );
-                        } else {
-                            const selectedText = document!.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
-                            const langId = document!.languageId;
-                            const startLine = selection.start.line + 1; // zero based to one based
-                            this.pageBuilder = new HtmlDocumentBuilder(
-                                {
-                                    isPreview,
-                                    generatedResources: this.generatedResources,
-                                    baseUrl,
-                                    uri: document.uri,
-                                    code: selectedText,
-                                    language: langId,
-                                    printLineNumbers,
-                                    startLine
-                                }
-                            );
-                        }
+                        const selectedText = selection.isEmpty
+                            ? document.getText().replace(/\s*$/, "")
+                            : document.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
+                        const startLine = selection.start.line + 1; // zero based to one based
+                        this.pageBuilder = new SelectionDocumentBuilder(
+                            isPreview,
+                            this.generatedResources,
+                            baseUrl,
+                            printLineNumbers,
+                            startLine,
+                            document,
+                            selectedText
+                        );
                     }
                         break;
                     case "file":
@@ -106,44 +84,41 @@ export class PrintSession {
                         logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
                         logger.debug(`Source code colour scheme is "${this.printConfig.colourScheme}"`);
                         this.pageBuilder = new HtmlDocumentBuilder(
-                            {
-                                isPreview,
-                                generatedResources: this.generatedResources,
-                                baseUrl,
-                                uri: document.uri,
-                                code: document.getText(),
-                                language: document.languageId,
-                                printLineNumbers
-                            }
+                            isPreview,
+                            this.generatedResources,
+                            baseUrl,
+                            document.uri,
+                            document.getText(),
+                            document.languageId,
+                            printLineNumbers
                         );
                         break;
                     case "folder":
                         logger.debug(`Printing the folder ${source!.fsPath}`);
-                        this.pageBuilder = new HtmlDocumentBuilder({
+                        this.pageBuilder = new FolderDocumentBuilder(
                             isPreview,
-                            generatedResources: this.generatedResources,
+                            this.generatedResources,
                             baseUrl,
-                            uri: source,
-                            code: "",
-                            language: "folder",
+                            source,
+                            "",
+                            "folder",
                             printLineNumbers
-                        });
+                        );
                         break;
                     case "multiselection":
                         logger.debug(`Printing multiselection`);
                         const multiselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.uri;
                         this.pageBuilder = new HtmlDocumentBuilder(
-                            {
-                                isPreview,
-                                generatedResources: this.generatedResources,
-                                baseUrl,
-                                uri: multiselectionPath,
-                                code: "",
-                                language: "multiselection",
-                                printLineNumbers,
-                                startLine: 1,
-                                multiselection: source
-                            });
+                            isPreview,
+                            this.generatedResources,
+                            baseUrl,
+                            multiselectionPath,
+                            "",
+                            "multiselection",
+                            printLineNumbers,
+                            1,
+                            source
+                        );
                         break;
                     default:
                         logger.error(rootDocumentContentSource);
