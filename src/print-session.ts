@@ -6,6 +6,7 @@ import { FolderDocumentBuilder } from './renderers/folder-document-builder';
 import { FileselectionDocumentBuilder } from './renderers/fileselection-document-builder';
 import * as vscode from 'vscode';
 import * as http from "http";
+import WebSocket from 'ws';
 import * as path from "path";
 import * as child_process from "child_process";
 import * as nodeCrypto from "crypto";
@@ -18,7 +19,7 @@ let settingsCss: string = require("./css/settings.css").default.toString();
 
 export class PrintSession {
   dispose() {
-    if (this.pageBuilder) this.pageBuilder.dispose();
+    this.pageBuilder?.dispose();
   }
   static port: number;
   private created = new Date().valueOf();
@@ -119,6 +120,10 @@ export class PrintSession {
         reject(err);
       }
     });
+  }
+
+  public configureWebsocket(ws: WebSocket) {
+    this.pageBuilder?.configureWebsocket(ws);    
   }
 
   public async respond(urlParts: string[], response: http.ServerResponse) {

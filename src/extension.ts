@@ -10,7 +10,7 @@ import * as htmlRendererMarkdown from "./renderers/html-renderer-markdown";
 import * as htmlRendererPlaintext from "./renderers/html-renderer-plaintext";
 import { captionByFilename } from './imports';
 import * as fs from "fs";
-import * as WebSocket from "ws";
+import { WebSocketServer } from "ws";
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
@@ -126,16 +126,17 @@ export async function activate(context: vscode.ExtensionContext) {
   });
   server.listen(0, "localhost");
 
-  // Initialize WebSocket server
-  const wss = new WebSocket.Server({ port: 0 }, () => {
-    Metadata.PreviewWebsocketPort = (wss.address() as AddressInfo).port;
-    console.log(`WebSocket server started on port ${Metadata.PreviewWebsocketPort}`);
-  });
-
-  wss.on('connection', (ws) => {
+  // WebSocket server is attached to webserver and uses the same port
+  const websocketServer = new WebSocketServer({ server });
+  interface SessionData { sessionid: string;[key: string]: any; }
+  websocketServer.on('connection', (ws) => {
     console.log('New client connected');
-    ws.on('message', (message) => {
-      console.log(`Received message: ${message}`);
+    ws.on('message', (message: string) => {
+      const data: SessionData = JSON.parse(message);
+      if (data.sessionid) {
+        const printSession = printSessions.get(data.sessionid);
+        printSession?.configureWebsocket(ws);
+      }
     });
     ws.on('close', () => {
       console.log('Client disconnected');

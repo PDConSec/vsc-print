@@ -8,8 +8,8 @@ import tildify from '../tildify';
 import { ResourceProxy } from './resource-proxy';
 import braces from 'braces';
 
-const hbMultiDocument = Handlebars.compile(require("../templates/multi-document.html").default.toString());
-const hbFolderItem = Handlebars.compile(require("../templates/multi-document-item.html").default.toString());
+const hbMultiDocument = Handlebars.compile(require("../templates/multi-document.tpl").default.toString());
+const hbFolderItem = Handlebars.compile(require("../templates/multi-document-item.tpl").default.toString());
 const multifileCssRefs =
 `
 <link href="bundled/default.css" rel="stylesheet" />
@@ -34,7 +34,6 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
     const printConfig = vscode.workspace.getConfiguration("print");
-    const previewWebsocketPort = Metadata.PreviewWebsocketPort;
 
     logger.debug(`Folder ${this.workspacePath(this.uri)}`);
     this.filepath = this.uri.fsPath;
@@ -56,7 +55,6 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
         items: [],
         stylesheetLinks: multifileCssRefs,
         scriptTags: "",
-        PreviewWebsocketPort: previewWebsocketPort
       });
     }
     const multiDocumentItems = await Promise.all(docs.map(async (doc) => {
@@ -79,7 +77,6 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
       items: multiDocumentItems,
       stylesheetLinks: multifileCssRefs,
       scriptTags: "",
-      PreviewWebsocketPort: previewWebsocketPort
     });
   }
 

@@ -3,15 +3,16 @@ import * as vscode from 'vscode';
 import { AbstractDocumentBuilder } from './abstract-document-builder';
 import { DocumentRenderer } from './document-renderer';
 import Handlebars from "handlebars";
-import { Metadata } from '../metadata';
+import WebSocket from "ws";
 import { ResourceProxy } from './resource-proxy';
 import tildify from '../tildify';
 import path from 'path';
 
-const hbDocument = Handlebars.compile(require("../templates/document.html").default.toString());
+const hbDocument = Handlebars.compile(require("../templates/document.tpl").default.toString());
 
 export class EditorDocumentBuilder extends AbstractDocumentBuilder {
   private document: vscode.TextDocument;
+  private changeHandler: vscode.Disposable | undefined;
 
   constructor(
     isPreview: boolean,
@@ -33,17 +34,38 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
   }
 
   public dispose(): void {
-    // todo unhook document change handler
+    if (this.changeHandler) {
+      this.changeHandler.dispose();
+      this.changeHandler = undefined;
+    }
+  }
+
+  public configureWebsocket(ws: WebSocket): void {
+    const printConfig = vscode.workspace.getConfiguration("print");
+    const rateLimit = printConfig.documentChangeSettleMilliseconds || 3000;
+
+    let timeout: NodeJS.Timeout | undefined;
+
+    const onDocumentChange = () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => {
+        ws.send(JSON.stringify({ type: 'refreshPreview' }));
+      }, rateLimit);
+    };
+
+    this.changeHandler = vscode.workspace.onDidChangeTextDocument(event => {
+      if (event.document === this.document) {
+        onDocumentChange();
+      }
+    });
   }
 
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
     const documentRenderer = DocumentRenderer.get(this.language);
     const printConfig = vscode.workspace.getConfiguration("print");
-    const previewWebsocketPort = Metadata.PreviewWebsocketPort;
-
-    // todo hook document change handler in a rate limited way with the rate expressed by printConfig.documentChangeSettleMilliseconds
-    // the change handler should announce the need for a preview refresh using the previewWebsocketPort
 
     logger.debug(`Printing ${this.filepath}`);
     let docHeading = "";
@@ -87,7 +109,6 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
       content: bodyHtml,
       stylesheetLinks: cssLinks,
       scriptTags: scriptTags,
-      PreviewWebsocketPort: previewWebsocketPort
     });
     return doc;
   }

@@ -3,9 +3,9 @@ import path from 'path';
 import * as vscode from 'vscode';
 import tildify from '../tildify';
 import { ResourceProxy } from './resource-proxy';
+import WebSocket from "ws";
 
 export abstract class AbstractDocumentBuilder {
-  public dispose() { }
   protected filepath: string;
   public isPreview: boolean;
   public generatedResources: Map<string, ResourceProxy>;
@@ -39,6 +39,11 @@ export abstract class AbstractDocumentBuilder {
     this.startLine = startLine;
     this.fileselection = fileselection;
   }
+
+  public dispose() { }
+
+  public configureWebsocket(ws: WebSocket) { }
+
   public abstract build(): Promise<string>;
   protected flatten(patterns: Array<string>): Array<string> {
     const result = new Array<string>();

@@ -8,7 +8,7 @@ import { ResourceProxy } from './resource-proxy';
 import tildify from '../tildify';
 import path from 'path';
 
-const hbDocument = Handlebars.compile(require("../templates/document.html").default.toString());
+const hbDocument = Handlebars.compile(require("../templates/document.tpl").default.toString());
 
 export class TextSelectionDocumentBuilder extends AbstractDocumentBuilder {
 
@@ -40,7 +40,6 @@ export class TextSelectionDocumentBuilder extends AbstractDocumentBuilder {
     const printAndClose = (!this.isPreview).toString();
     const documentRenderer = DocumentRenderer.get(this.language);
     const printConfig = vscode.workspace.getConfiguration("print");
-    const previewWebsocketPort = Metadata.PreviewWebsocketPort;
 
     logger.debug(`Printing ${this.filepath}`);
     let docHeading = "";
@@ -84,7 +83,6 @@ export class TextSelectionDocumentBuilder extends AbstractDocumentBuilder {
       content: bodyHtml,
       stylesheetLinks: cssLinks,
       scriptTags: scriptTags,
-      PreviewWebsocketPort: previewWebsocketPort
     });
     return doc;
   }

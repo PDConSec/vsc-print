@@ -9,8 +9,8 @@ import { ResourceProxy } from './resource-proxy';
 import micromatch from 'micromatch';
 import braces from 'braces';
 
-const hbMultiDocument = Handlebars.compile(require("../templates/multi-document.html").default.toString());
-const hbFolderItem = Handlebars.compile(require("../templates/multi-document-item.html").default.toString());
+const hbMultiDocument = Handlebars.compile(require("../templates/multi-document.tpl").default.toString());
+const hbFolderItem = Handlebars.compile(require("../templates/multi-document-item.tpl").default.toString());
 const multifileCssRefs =
 `
 <link href="bundled/default.css" rel="stylesheet" />
@@ -37,7 +37,6 @@ export class FileselectionDocumentBuilder extends AbstractDocumentBuilder {
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
     const printConfig = vscode.workspace.getConfiguration("print");
-    const previewWebsocketPort = Metadata.PreviewWebsocketPort;
 
     logger.debug(`Selected files`);
     const docs = await this.docsInFileselection();
@@ -64,7 +63,6 @@ export class FileselectionDocumentBuilder extends AbstractDocumentBuilder {
       items: folderItems,
       stylesheetLinks: multifileCssRefs,
       scriptTags: "",
-      PreviewWebsocketPort: previewWebsocketPort
     });
   }
 

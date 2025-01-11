@@ -59,9 +59,16 @@ const extensionConfig = {
         ]
       },
       {
+        test: /\.tpl$/,
+        use: [
+          'raw-loader'
+        ]
+      },
+      {
         test: /\.hbs$/,
         loader: 'handlebars-loader'
-      }    ]
+      }
+    ]
   },
   devtool: 'nosources-source-map',
   infrastructureLogging: {

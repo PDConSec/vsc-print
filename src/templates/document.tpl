@@ -21,7 +21,7 @@
             }
         }
         function listenForUpdates() {
-            const ws = new WebSocket("ws://localhost:{{PreviewWebsocketPort}}");
+            const ws = new WebSocket(`ws://localhost:${window.location.port}`);
             ws.onopen = function () {
                 const sessionId = window.location.pathname.split("/")[1];
                 ws.send(JSON.stringify({ sessionId: sessionId }));
@@ -30,13 +30,10 @@
     </script>
 </head>
 
-<body onload="listenForUpdates();printAndClose({{printAndClose}})">
-    <h2>{{documentHeading}}</h2>
+<body onload="listenForUpdates();printAndClose({{printAndClose}});">
+    {{{documentHeading}}}
     <div>
-        {{{summary}}}
-        {{#each items}}
-        {{{this}}}
-        {{/each}}
+        {{{content}}}
     </div>
 </body>
 
