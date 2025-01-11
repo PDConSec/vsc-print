@@ -11,6 +11,7 @@ import * as htmlRendererPlaintext from "./renderers/html-renderer-plaintext";
 import { captionByFilename } from './imports';
 import * as fs from "fs";
 import { WebSocketServer } from "ws";
+import WebSocket from 'ws';
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
@@ -137,11 +138,37 @@ export async function activate(context: vscode.ExtensionContext) {
         const printSession = printSessions.get(data.sessionId);
         printSession?.configureWebsocket(ws);
       }
+      if (data.type === 'findInEditor') {
+        const text = data.value;
+        findAndHighlightText(text);
+      }
     });
     ws.on('close', () => {
       console.log('Client disconnected');
     });
   });
+
+  function findAndHighlightText(text: string) {
+    const normaliseText = (s: string) => s
+      .replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ').toLowerCase()
+      .split(' ').slice(0, 7).join(' ');
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+      const document = editor.document;
+      const normalizedText = normaliseText(text);
+      for (let i = 0; i < document.lineCount; i++) {
+        const lineText = normaliseText(document.lineAt(i).text);
+        if (lineText.includes(normalizedText)) {
+          const startPos = new vscode.Position(i, 0);
+          const endPos = new vscode.Position(i, document.lineAt(i).text.length);
+          const range = new vscode.Range(startPos, endPos);
+          editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+          editor.selection = new vscode.Selection(startPos, endPos);
+          return; // Stop after the first match
+        }
+      }
+    }
+  }
 
   const currentVersion = context.extension.packageJSON.version as string;
   const lastVersion = context.globalState.get("version") as string ?? "0.0.0"

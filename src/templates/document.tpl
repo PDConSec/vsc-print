@@ -21,7 +21,6 @@
             }
         }
         function listenForUpdates() {
-          debugger;
             const ws = new WebSocket(`ws://localhost:${window.location.port}`);
             ws.onopen = function () {
                 const sessionId = window.location.pathname.split("/")[1];
@@ -29,11 +28,43 @@
             };
             ws.onmessage = function (event) {
                 const message = JSON.parse(event.data);
-                debugger;
                 if (message.type === 'refreshPreview') {
+                    const scrollOffset = window.scrollY;
+                    ws.send(JSON.stringify({ type: 'scrollOffset', value: scrollOffset }));
                     location.reload();
+                } else if (message.type === 'restoreScroll') {
+                    const setScrollPosition = () => {
+                        window.scrollTo(0, message.scrollOffset);
+                    };
+                    if (document.readyState === 'complete') {
+                        setScrollPosition();
+                    } else {
+                        window.addEventListener('load', setScrollPosition);
+                        const images = document.querySelectorAll('img');
+                        let loadedImages = 0;
+                        images.forEach(img => {
+                            if (img.complete) {
+                                loadedImages++;
+                            } else {
+                                img.addEventListener('load', () => {
+                                    loadedImages++;
+                                    if (loadedImages === images.length) {
+                                        setScrollPosition();
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
             };
+
+            const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, table');
+            elements.forEach(element => {
+                element.addEventListener('dblclick', () => {
+                    const text = element.innerText || element.textContent;
+                    ws.send(JSON.stringify({ type: 'findInEditor', value: text }));
+                });
+            });
         };
     </script>
 </head>

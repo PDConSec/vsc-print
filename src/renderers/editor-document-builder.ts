@@ -73,6 +73,15 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
       }
     });
 
+    ws.onmessage = (event) => {
+      var raw = event.data.toString();
+      const message = JSON.parse(raw);
+      if (message.type === 'scrollOffset') {
+        const scrollOffset = message.value;
+        ws.send(JSON.stringify({ type: 'restoreScroll', scrollOffset: scrollOffset }));
+      }
+    };
+
     logger.info("WebSocket configured for document changes");
   }
 
