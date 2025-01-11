@@ -37,7 +37,11 @@ export class PrintSession {
                 const editor = vscode.window.activeTextEditor;
                 let document = editor?.document;
                 let printLineNumbers = this.printConfig.lineNumbers === "on" || (this.printConfig.lineNumbers === "inherit" && this.editorConfig.lineNumbers === "on");
-                const rootDocumentContentSource = await this.rootDocumentContentSource(source!);
+                let rootDocumentContentSource = await this.rootDocumentContentSource(source!);
+                if (rootDocumentContentSource === "file") {
+                    source = [source];
+                    rootDocumentContentSource = "fileselection";
+                }
                 switch (rootDocumentContentSource) {
                     case "editor": {
                         logger.debug("Using the buffer of the active editor");
@@ -62,36 +66,14 @@ export class PrintSession {
                         const selection = editor?.selection;
                         if (!selection) throw "This can't happen";
                         this.source = document.uri;
-                        const selectedText = selection.isEmpty
-                            ? document.getText().replace(/\s*$/, "")
-                            : document.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
-                        const startLine = selection.start.line + 1; // zero based to one based
                         this.pageBuilder = new SelectionDocumentBuilder(
                             isPreview,
                             this.generatedResources,
                             baseUrl,
                             printLineNumbers,
-                            startLine,
-                            document,
-                            selectedText
+                            document
                         );
                     }
-                        break;
-                    case "file":
-                        document = await vscode.workspace.openTextDocument(source!);
-                        logger.debug(`Printing the file ${document.uri.fsPath}`);
-                        this.source = document.uri;
-                        logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
-                        logger.debug(`Source code colour scheme is "${this.printConfig.colourScheme}"`);
-                        this.pageBuilder = new HtmlDocumentBuilder(
-                            isPreview,
-                            this.generatedResources,
-                            baseUrl,
-                            document.uri,
-                            document.getText(),
-                            document.languageId,
-                            printLineNumbers
-                        );
                         break;
                     case "folder":
                         logger.debug(`Printing the folder ${source!.fsPath}`);

@@ -11,21 +11,25 @@ import path from 'path';
 const hbDocument = Handlebars.compile(require("../templates/document.html").default.toString());
 
 export class SelectionDocumentBuilder extends HtmlDocumentBuilder {
+
   constructor(
     isPreview: boolean,
     generatedResources: Map<string, ResourceProxy>,
     baseUrl: string,
     printLineNumbers: boolean,
-    startLine: number,
-    document: vscode.TextDocument,
-    code: string
+    document: vscode.TextDocument
   ) {
+    const selection = vscode.window.activeTextEditor!.selection;
+    const selectedText = selection.isEmpty
+      ? document.getText().replace(/\s*$/, "")
+      : document.getText(new vscode.Range(selection.start, selection.end)).replace(/\s*$/, "");
+    const startLine = selection.start.line + 1; // zero based to one based
     super(
       isPreview,
       generatedResources,
       baseUrl,
       document.uri,
-      code,
+      selectedText,
       document.languageId,
       printLineNumbers,
       startLine
