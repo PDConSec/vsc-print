@@ -1,4 +1,3 @@
-import { PrintPreview } from './print-preview';
 import { logger } from './logger';
 import { HtmlDocumentBuilder } from './renderers/html-document-builder';
 import * as vscode from 'vscode';
@@ -9,7 +8,6 @@ import * as nodeCrypto from "crypto";
 import { DocumentRenderer } from './renderers/document-renderer';
 import { filenameByCaption } from './imports';
 import { ResourceProxy } from './renderers/resource-proxy';
-import { Metadata } from './metadata';
 import tildify from './tildify';
 
 let settingsCss: string = require("./css/settings.css").default.toString();
@@ -124,19 +122,11 @@ export class PrintSession {
             vscode.window.showErrorMessage(rootDocumentContentSource);
             break;
         }
-        // todo modify vscode to stop built-in preview registering
-        // leave this code while we decide how to handle preview
-        // if (isPreview) {
-        //   const renderer = this.pageBuilder;
-        //   const html = await renderer!.build();
-        //   PrintPreview.show(html)
-        // } else {
         if (printConfig.alternateBrowser) {
           launchAlternateBrowser(this.getUrl())
         } else {
           vscode.env.openExternal(vscode.Uri.parse(this.getUrl()));
         }
-        // }
         resolve();
       } catch (err) {
         reject(err);
