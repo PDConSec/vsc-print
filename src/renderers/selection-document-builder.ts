@@ -1,6 +1,6 @@
 import { logger } from '../logger';
 import * as vscode from 'vscode';
-import { HtmlDocumentBuilder } from './html-document-builder';
+import { AbstractDocumentBuilder } from './abstract-document-builder';
 import { DocumentRenderer } from './document-renderer';
 import Handlebars from "handlebars";
 import { Metadata } from '../metadata';
@@ -10,7 +10,7 @@ import path from 'path';
 
 const hbDocument = Handlebars.compile(require("../templates/document.html").default.toString());
 
-export class SelectionDocumentBuilder extends HtmlDocumentBuilder {
+export class SelectionDocumentBuilder extends AbstractDocumentBuilder {
 
   constructor(
     isPreview: boolean,

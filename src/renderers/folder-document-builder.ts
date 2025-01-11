@@ -1,11 +1,12 @@
 import { logger } from '../logger';
 import * as vscode from 'vscode';
-import { HtmlDocumentBuilder } from './html-document-builder';
+import { AbstractDocumentBuilder } from './abstract-document-builder';
 import { DocumentRenderer } from './document-renderer';
 import Handlebars from "handlebars";
 import { Metadata } from '../metadata';
 import tildify from '../tildify';
 import { ResourceProxy } from './resource-proxy';
+import braces from 'braces';
 
 const hbMultiDocument = Handlebars.compile(require("../templates/multi-document.html").default.toString());
 const hbFolderItem = Handlebars.compile(require("../templates/multi-document-item.html").default.toString());
@@ -17,7 +18,7 @@ const multifileCssRefs =
 <link href="bundled/settings.css" rel="stylesheet" />
 `;
 
-export class FolderDocumentBuilder extends HtmlDocumentBuilder {
+export class FolderDocumentBuilder extends AbstractDocumentBuilder {
   constructor(
     isPreview: boolean,
     generatedResources: Map<string, ResourceProxy>,
@@ -79,6 +80,46 @@ export class FolderDocumentBuilder extends HtmlDocumentBuilder {
       stylesheetLinks: multifileCssRefs,
       scriptTags: "",
       PreviewWebsocketPort: previewWebsocketPort
+    });
+  }
+
+  async docsInFolder(): Promise<vscode.TextDocument[]> {
+    logger.debug(`Enumerating the files in ${this.filepath}`);
+    const printConfig = vscode.workspace.getConfiguration("print", null);
+    // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
+    let excludePatterns: string[] = printConfig.folder.exclude || [];
+    if (excludePatterns.length == 0) {
+      excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp,design}");
+    }
+    let includePatterns: string[] = printConfig.folder.include || [];
+    if (includePatterns.length == 0) {
+      includePatterns.push("**/*");
+    }
+    // one item should not be surrounded with braces, they would be treated as literals
+    // but flatten them anyway in case the single pattern contains nested braces
+    let excludes: string = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
+    excludePatterns = this.flatten(excludePatterns); //prevent nested alternations
+    excludes = excludePatterns.length == 1 ? excludePatterns[0] : `{${excludePatterns.join(",")}}`;
+    let includes: string = includePatterns.length == 1 ? includePatterns[0] : `{${includePatterns.join(",")}}`;
+    includePatterns = braces.expand(includes);
+    includes = includePatterns.length == 1 ? includePatterns[0] : `{${includePatterns.join(",")}}`;
+
+    let rel = new vscode.RelativePattern(this.filepath, includes);
+    const maxLineCount = printConfig.folder.maxLines;
+    const matcher = (document: vscode.TextDocument): boolean => document.lineCount < maxLineCount;
+    let fileUris = await vscode.workspace.findFiles(rel, excludes);
+    logger.debug(`Includes: ${includes}`);
+    logger.debug(`Excludes: ${excludes}`);
+    const docOpenSettlements = await Promise.allSettled(fileUris.map(uri => vscode.workspace.openTextDocument(uri)));
+    const docs = await docOpenSettlements
+      .filter(dos => dos.status === "fulfilled")
+      .map(dos => (dos as PromiseFulfilledResult<vscode.TextDocument>).value);
+    logger.debug(`Eligible: ${fileUris.length} files\n${docs.map(doc => doc.uri.fsPath).join("\n")}`);
+
+    return docs.filter(doc => matcher(doc)).sort((a, b) => {
+      const A = a.fileName;
+      const B = b.fileName;
+      return A < B ? -1 : A > B ? 1 : 0;
     });
   }
 }
