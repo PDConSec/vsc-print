@@ -326,6 +326,11 @@
             "default": false,
             "type": "boolean",
             "description": "%print.folder.includeFileList.description%"
+          },
+          "print.documentSettleMilliseconds": {
+            "type": "number",
+            "default": 3000,
+            "description": "%print.documentSettleMilliseconds%"
           }
         }
       }
