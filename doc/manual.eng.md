@@ -18,7 +18,7 @@ There are a couple of ways you can print.
 
 * You can print the active document, by icon or context menu.
 * You can print a selection from the active document, by icon or context menu.
-* You can print one or more filse directly from the file explorer panel, by context menu on a folder, file or multi-selection of files.
+* You can print one or more files directly from the file explorer panel, by context menu on a folder, file or multi-selection of files.
 * Files can be titled with their filepath. The title does not appear in the document but may be used in headers by some browsers.
 	- You can choose from the following formats. 
 		- No path
