@@ -8,6 +8,10 @@ Hot preview! When you launch a preview of a document from the active editor, whe
 
 Hot preview also supports find-in-source. If you're proof-reading the rendered document and you find an error, double-clicking the paragraph will find and highlight the first line in the editor. This matching is not yet perfect; if there are multiple matches it will currently only find the first.
 
+#### IMPORTANT for hot preview with diagrams 
+
+If you intend to use hot preview while editing diagrams in Markdown, set up a local Kroki server and configure Print to use it. If you fail to do this you will very quickly find yourself rate-limited.
+
 ## Cross-platform printing
 
 Print-jobs are rendered as styled HTML and served from an embedded webserver. Your local web browser is launched to load the print-job and give you printing options like paper size, page orientation and margin size.
