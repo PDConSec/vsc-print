@@ -1,4 +1,5 @@
 # Change Log
+
 ### 0.14.0
 
 - fix [#359](https://github.com/PDConSec/vsc-print/issues/359)
