@@ -13,43 +13,53 @@ import * as fs from "fs";
 import { WebSocketServer } from "ws";
 import WebSocket from 'ws';
 import { marked, Tokens } from 'marked';
+import { at } from 'lodash';
 
 const blockTypes = ["heading", "paragraph", "blockquote", "list"];
 
+function escapeHtml(text: string) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 marked.use({
   renderer: {
+    code(token: Tokens.Code) {
+      const result = `<pre data-raw="${btoa(token.raw)}"><code>${escapeHtml(token.text)}</code></pre>\n`;
+      return result;
+    },
     heading(token: Tokens.Heading) {
       const text = token.tokens.map(t => marked.parseInline(t.raw)).join('');
-      return `<h${token.depth} data-raw="${token.raw}">${text}</h${token.depth}>`;
+      const b64 = btoa(token.raw);
+      return `<h${token.depth} data-raw="${b64}">${text}</h${token.depth}>\n`;
     },
     paragraph(token: Tokens.Paragraph) {
       const text = token.tokens.map(t => marked.parseInline(t.raw)).join('');
-      return `<p data-raw="${token.raw}">${text}</p>`;
+      return `<p data-raw="${btoa(token.raw)}">${text}</p>\n`;
     },
     blockquote(token: Tokens.Blockquote) {
       const text = token.tokens.map(t => marked.parseInline(t.raw)).join('');
-      return `<blockquote data-raw="${token.raw}">${text}</blockquote>`;
+      return `<blockquote data-raw="${btoa(token.raw)}">${text}</blockquote>\n`;
     },
     list(token: Tokens.List) {
       const type = token.ordered ? 'ol' : 'ul';
       const items = token.items.map(item => {
         const text = marked.parseInline(item.text);
-        return `<li data-raw="${item.raw}">${text}</li>`;
+        return `<li data-raw="${btoa(item.raw)}">${text}</li>\n`;
       }).join('');
-      return `<${type} data-raw="${token.raw}">${items}</${type}>`;
+      return `<${type} data-raw="${btoa(token.raw)}">${items}</${type}>\n`;
     },
     table(token: Tokens.Table) {
       const header = token.header.map(cell => {
         const text = cell.tokens.map(t => marked.parseInline(t.raw)).join('');
-        return `<th>${text}</th>`;
+        return `<th>${text}</th>\n`;
       }).join('');
       const body = token.rows.map(row => {
         return `<tr>${row.map(cell => {
           const text = cell.tokens.map(t => marked.parseInline(t.raw)).join('');
-          return `<td>${text}</td>`;
-        }).join('')}</tr>`;
+          return `<td>${text}</td>\n`;
+        }).join('')}</tr>\n`;
       }).join('');
-      return `<table data-raw="${token.raw}"><thead><tr>${header}</tr></thead><tbody>${body}</tbody></table>`;
+      return `<table data-raw="${btoa(token.raw)}">\n<thead>\n<tr>${header}</tr>\n</thead>\n<tbody>\n${body}</tbody>\n</table>\n`;
     }
   }
 });
@@ -190,23 +200,18 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   function findAndHighlightText(text: string) {
-    const normaliseText = (s: string) => s
-      .replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ').toLowerCase().trim()
-      .split(' ').slice(0, 7).join(' ');
+    text = atob(text);
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       const document = editor.document;
-      const normalizedText = normaliseText(text);
-      for (let i = 0; i < document.lineCount; i++) {
-        const lineText = normaliseText(document.lineAt(i).text);
-        if (lineText.includes(normalizedText)) {
-          const startPos = new vscode.Position(i, 0);
-          const endPos = new vscode.Position(i, document.lineAt(i).text.length);
-          const range = new vscode.Range(startPos, endPos);
-          editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
-          editor.selection = new vscode.Selection(startPos, endPos);
-          return; // Stop after the first match
-        }
+      const fullText = document.getText();
+      const startIndex = fullText.indexOf(text);
+      if (startIndex !== -1) {
+        const startPos = document.positionAt(startIndex);
+        const endPos = document.positionAt(startIndex + text.length);
+        const range = new vscode.Range(startPos, endPos);
+        editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+        editor.selection = new vscode.Selection(startPos, endPos);
       }
     }
   }
