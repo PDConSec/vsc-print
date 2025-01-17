@@ -642,7 +642,7 @@
     "cors": "^2.8.5",
     "handlebars": "^4.7.8",
     "highlight.js": "^11.9.0",
-    "katex": "^0.16.10",
+    "katex": "^0.16.21",
     "lodash": "^4.17.21",
     "micromatch": "^4.0.8",
     "mssql": "^11.0.1",
