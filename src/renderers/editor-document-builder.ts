@@ -52,7 +52,7 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
     }
 
     const printConfig = vscode.workspace.getConfiguration("print");
-    const rateLimit = printConfig.documentChangeSettleMilliseconds || 3000;
+    const rateLimit = printConfig.documentSettleMilliseconds || 3000;
 
     let timeout: NodeJS.Timeout | undefined;
 

@@ -1,33 +1,30 @@
 # Using the Print extension
 
-Please note that we are currently experiencing problems with our release pipeline. This is delaying fixes.
-
 # Contents
 
 1. [General use](#1)
 2. [Customising your setup](#2)
 3. [Markdown](#3)
-5. [Printing other formats rendered](#4)
-6. [Troubleshooting](#5)
+4. [Troubleshooting](#4)
 
 <a name="1"></a>
 
 # General use
 
-There are a couple of ways you can print.
+There are a couple of ways you can print or preview.
 
 * You can print the active document, by icon or context menu.
 * You can print a selection from the active document, by icon or context menu.
 * You can print one or more files directly from the file explorer panel, by context menu on a folder, file or multi-selection of files.
 * Files can be titled with their filepath. The title does not appear in the document but may be used in headers by some browsers.
-	- You can choose from the following formats. 
-		- No path
-		- Abbreviated (like `D:\...\containing-folder\file.ext`)
-		- Workspace relative 
+  - You can choose from the following formats.
+    - No path
+    - Abbreviated (like `D:\...\containing-folder\file.ext`)
+    - Workspace relative
 * Files can have their filepath appear as a heading at the start of the document.
-	- A setting determines whether to use relative or absolute file paths.
-	- Non-workspace files always use absolute.
-	- Absolute paths are converted to tilde paths when they are inside the user's home directory.
+  - A setting determines whether to use relative or absolute file paths.
+  - Non-workspace files always use absolute.
+  - Absolute paths are converted to tilde paths when they are inside the user's home directory.
 * A setting determines whether a file path heading appears at the start of individually printed files.
 * Exclusion lists apply to both folder and file selections. The purpose of these is to ignore unprintable binary files.
 
@@ -80,17 +77,15 @@ Here is a list of available setting names as they appear in the configuration fi
 
 ## Customising the user interface
 
-You can control whether the print icon appears in the toolbar when you focus an editor pane. This setting is labelled `Editor Title Menu Button`.
+You can control whether the print and preview icons appear in the toolbar when you focus an editor pane. This setting is labelled `Editor Title Menu Button`.
 
 You can control whether the "Print" menu item appears at the top, bottom or nowhere on context menus using the `Editor Context Menu Item Position` setting.
-
-When the `Print and Close` setting is checked, printing something will automatically open the browser's Print dialog and then automatically close the browser after you either print or cancel. Turning this off will open the browser with the rendered document ready for inspection. If you then manually open the Print dialog, printing or cancelling it will not close the browser.
 
 ## Using a particular browser to print
 
 **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
 
-By default, printing will use your default browser. However, printing works best with a Chromium derived browser, and it may not be possible or desirable to change your default browser. 
+By default, printing will use your default browser. However, printing works best with a Chromium derived browser, and it may not be possible or desirable to change your default browser.
 
 To allow you to print using a browser that isn't your default browser, you can specify a path to an alternate browser, and there is also a checkbox to allow you to switch this on and off without losing the path.
 
@@ -102,40 +97,132 @@ If you need to supply command-line options, create a batch file (or a bash scrip
 
 ## Printing source code
 
-Using the `Colour Scheme` setting you can specify the colour scheme used for syntax colouring. Choices are limited to light themes because printers use white paper. 
+No, you can't have the same syntax colouring scheme as the editor. For starters many people use dark mode. A dark mode colour scheme won't work on white paper. Even if it did, VS Code does not make this information accessible through any API. It's impossible, and even if we could do it we still wouldn't discriminate against people who use dark mode.
+
+Using the `Colour Scheme` setting you can specify the colour scheme used for syntax colouring. Choices are limited to light themes because printers use white paper.
 
 If you print the active document and there is a multi-line selection, only the selection is printed.
 
 ### Type face and size
 
-Typeface is determined by VS Code editor settings. If you see Fira Code on screen, that's what will be printed. 
+Typeface is determined by VS Code editor settings. If you see Fira Code on screen, that's what will be printed.
 
-The _size_ of printed text is a Print setting because the size that works best on screen may not be the size that works best on paper. 
-
-If you're wondering why we call it a typeface and not a font, it's because a font is a particular typeface in a specific size and treatment. "12pt Times italic" is a font. "Times" is a typeface. It does not help that the Windows Font Picker (which _does_ pick a font, you have to specify typeface, size and treatment) mislabels the typeface as "Font".
+The _size_ of printed text is a Print setting because the size that works best on screen may not be the size that works best on paper.
 
 ## Printing Markdown
 
-You probably want Markdown print-jobs rendered and styled, and this is the default behaviour. If you wish to print Markdown as source code, you can un-check the setting `Print: Render Markdown` .
+You probably want Markdown print-jobs rendered and styled, and this is the default behaviour. If you wish to print Markdown as source code, you can un-check the setting `Print: Render Markdown`. For a variety of reasons we no longer use the VS Code Markdown rendering pipeline. This means that any Markdown extensions you may install will have no effect on print or print preview, only on the internal Markdown preview.
 
+Just use print preview. We have off-line support for about thirty diagram types (see the Markdown section for details).
 ### Colour scheme
 
-For source code printing, stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because printer paper is white and printer inks and toners are designed for white paper. 
+For source code printing, stylesheets are bundled and can be chosen by name from a list. Choices are limited to light stylesheets because printer paper is white and printer inks and toners are designed for white paper.
+
+<a name="3"></a>
 
 # Markdown
 
+## KaTeX
+
+Mark both the start and end of KaTeX notation using `$$`. The presence of a line break between the boundary markers will induce display mode. KaTeX blocks that do not contain a line break are rendered inline.
+
+## Embedded diagrams
+
+**[Set up a private Kroki server first.](https://docs.kroki.io/kroki/setup/install/)**
+
+* There's no charge
+* The public server is rate limited
+* No rate limit = hot preview for diagrams
+
+The following diagram types are supported.
+
+|            |            |                  |              |             |          |
+|------------|------------|------------------|--------------|-------------|----------|
+| BlockDiag  | BPMN       | Bytefield        | SeqDiag      | ActDiag     | NwDiag   |
+| PacketDiag | RackDiag   | C4 with PlantUML | D2           | DBML        | Ditaa    |
+| Erd        | Excalidraw | GraphViz         | KaTeX        | Mermaid     | MHCHEM   |
+| Nomnoml    | Pikchr     | PlantUML         | SmilesDrawer | Structurizr | Svgbob   |
+| Symbolator | Tikz       | UMLet            | Vega         | Vega-lite   | WaveDrom |
+| WireViz    | Database   |                  |              |             |          |
+
+In all cases you use a fenced block annotated with the diagram name. Details the the syntax for the various diagram types can be found on the web by searching for the diagram names, with the exception of `Database`.
+
+In the fenced block for `Database` you supply a connection string and some settings. Print uses this to connect to your database and extract the metadata to construct a Mermaid Entity Relationship diagram.
+
+Print has a persistent cache (similar to a browser) for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. Extending Kroki in the spirit of `jebb.plantUml` there is also support for recursive `!include filename.ext`.
+
+### Database diagrams
+
+Like most diagrams you use a fenced block annotated with the diagram type. The content of this block must be valid YAML and the minimum you can specify is the `DatabaseType` and the `ConnectionString`.
+
+#### Supported database types
+
+ - Postgres
+ - Microsoft SQL Server
+ - MySql
+
+Why don't we support Oracle? We the contributors don't use it. If you want it, become a contributor.
+
+The syntax of the connection string depends on the database type. The samples below illustrate connection strings for each supported database engine.
+
+You can specify the level of detail.
+
+ - tables (a true ER diagram)
+ - keys (just the PK and FKs)
+ - columns (all the columns with their types)
+
+Finally, you can specify which tables you want in the diagram. You can specify the schema, the syntax for which depends on the database engine (whatever you'd use in SQL). You can also list the tables you want included. If you don't specify this you'll get all the tables in the schema. If you don't specify a schema you'll get the default schema. If you don't specify either you'll get all the tables in the default schema.
+
+What about credentials? This depends on the database server. For Microsoft SQL Server you can put them in the connection string or use a trusted connection. For Postgres you can put the username in the URL. See the database documentation for supported ways of supplying a password or avoiding the need to supply one.
+
+#### Postgres
+
+````
+```database
+DatabaseType: postgresql
+ConnectionString: postgres://postgres:admin@localhost:5432/postgres
+Schema: public
+Detail: keys
+```
+````
+
+#### Microsoft SQL Server
+
+````
+```database
+DatabaseType: mssql
+ConnectionString: Server=localhost,1433; Database=OrderManagementDb; User Id=sa; Password=yourStrong(!)Password;
+Schema: dbo
+Tables:
+  - OrderStates
+  - OrderHeaders
+  - OrderItems
+  - StockItems
+Detail: keys
+```
+````
+
+#### MySql
+
+````
+```database
+DatabaseType: mysql
+ConnectionString: mysql://root:admin@localhost:3306
+Schema: hospital_db
+Detail: keys
+```
+````
+
 ## Styling your markdown
 
-### Apply CSS files to a Markdown document 
+### Apply CSS files to a Markdown document
 
-* You can embed a stylesheet link tag directly into the Markdown. This is specific to the document.  
-* There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLS, or document  relative URLs, as shown in the following example.
+ - You can embed a stylesheet link tag directly into the Markdown. This is specific to the document.
+ - There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLS, or document  relative URLs, as shown in the following example.
 
 ```json
 "markdown.styles": [
-	"https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css",
-	"path/to/document/relative/custom.css",
-	"workspace.resource/path/to/stylesheet.css"
+  "workspace.resource/path/to/stylesheet.css"
 ]
 ```
 
@@ -143,65 +230,16 @@ Workspace relative URLs are the best way to share resources between documents. T
 
 ### Associating a style with Markdown
 
-Mapping from Markdown to generated HTML is obvious. Tables become `table`, `th` and `td` elements. Headings are `H1` to `H9`. Paragraphs are `P` elements, bullets and numbers are `ul` and `ol` elements. 
+Mapping from Markdown to generated HTML is obvious. Tables become `table`, `th` and `td` elements. Headings are `H1` to `H9`. Paragraphs are `P` elements, bullets and numbers are `ul` and `ol` elements.
 
 
 Don't forget that you can embed HTML in Markdown, so there's nothing stopping you from using `div` or `span` to apply a CSS class to a block or run of Markdown.
 
 ## Web Server
 
-The embedded web server binds only to the loopback address and accepts only connections that specify an active print session.
+The embedded web server binds only to the loopback address and accepts only connections that specify a current session identifier. A separate session is spun up for each print job and terminates when printing finishes.
 
-Here are some samples to help you check your configuration.
-```
-$$
-\begin{alignedat}{2}
-   10&x+ &3&y = 2 \\
-   3&x+&13&y = 4
-\end{alignedat}
-$$
-and thus
-
-$$
-x = \begin{cases}
-   a &\text{if } b \\
-   c &\text{if } d
-\end{cases}
-$$
-```
-
-## Rendered Markdown and remote workspaces
-
-To work with remote workspaces a Markdown extension must run on the remote host because that's where the Markdown rendering pipeline runs. Extensions like Print that are designed for use with remote workspaces can be deployed to the remote host with a single click. Most Markdown extensions are capable of working like this but they are not set up for it.
-
-Unfortunately, Markdown extensions are not normally configured for remote use; the designers expected them to run locally. 
-
-### DIY patching of Markdown extensions
-
-If your need is urgent, you can patch extensions yourself. 
-
-1. Find the extensions where they are installed on your workstation in `~/.vscode/extensions` (on Windows substitute `%userprofile%` for `~`)
-2. Edit the `package.json` files for the Markdown extensions you want to use on remote hosts. Add the `extensionKind` as a root level attribute. 
-3. When you've edited all the Markdown extensions restart VS Code.
-4. Install the extension on the remote host and patch the extension on the remote host in the same way.
-
-```json
-...
-"extensionKind": [
-  "workspace"
-],
-...
-```
-
-Patches like this will be lost at the next update for an extension, so if your patch was successful you may want to submit a PR to the publisher.
-
-# Printing other formats rendered
-
-Issues have been logged requesting rendered printing of formats other than Markdown. Examples include sheet music from the ABC music markup, and Jupyter Notebooks. To support this without taking on the unmanageable burden of keeping up with every text based document format used with VS Code, we have exposed an API and published an SDK allowing the maintainers to incorporate printing into their preview capability.
-
-As a result, if you would like rendered printing for a particular format for which you already have an extension providing preview, raise an issue with the publisher of that extension. Explain your desire to print and refer them for printing and referring them to 
-
-<a name=""></a>
+<a name="4"></a>
 
 # Troubleshooting
 
@@ -211,6 +249,7 @@ As a result, if you would like rendered printing for a particular format for whi
 * The user as which VS Code runs must be able to establish a listening socket.
 
 ## First launch hassles
+
 * Nothing seems to happen &mdash; restart VS Code.
 * Browser launches but no page loads &mdash; check networking permissions.
 * Browser shows an error message about not finding a CSS file &mdash; you installed from a VSIX that wasn't prepared by us. Get the [official package](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print) and try again.
@@ -219,11 +258,11 @@ If something else is wrong, or you have an improvement idea, we invite you to lo
 
 ## Choice of browser
 
-The browser used will affect your experience.  
+The browser used will affect your experience.
 
 ### Recommended for printing
 
-For best printing results, install a Chromium based browser or Firefox. If you don't want to make this your default browser, take advantage of the alternate-browser settings. **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
+For best printing results, install Firefox or a Chromium based browser. If you don't want to make this your default browser, take advantage of the alternate-browser settings. **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
 
 The following are known to work well.
 * Brave
@@ -237,13 +276,12 @@ The following are known to work well.
 * Edge Classic is no longer supported.
 * Internet Explorer is not supported.
 
-## Markdown extensions and remoting
+## Markdown extensions are not supported
 
-To use Print with a remote host, you must install it **on the remote host**. 
-
-To get the benefit of a Markdown extension when printing a document from a remote host, the Markdown extension must be built with an `extensionKind` of `workspace` _and_ it must be installed to the remote host. 
-
-Most such extensions are not built for `workspace`. They can be trivially fixed by modifying their `package.json`. Unfortunately this manual patch is likely to be lost whenever the extension is updated, so you should raise an issue with the author of extensions you patch.
+Print uses its own pipeline because Microsoft keeps changing VS Code's Markdown rendering pipeline without notice. As a result it cannot use Markdown extensions. However, you will find that for Print,
+ - most of the worthwhile Markdown extensions are baked-in
+ - we are receptive to special requests
+ - this allows us to resolve conflicts between extensions.
 
 ## Alternate browser
 
@@ -255,7 +293,7 @@ Both auto-quoting and escaping of spaces are incompatible with the use of comman
 
 ### Chrome and plugins
 
-Chrome may retain your printer, paper size and margin selections between print jobs. Some Chrome command line options cause errors to be reported, even though printing succeeds. 
+Chrome may retain your printer, paper size and margin selections between print jobs. Some Chrome command line options cause errors to be reported, even though printing succeeds.
 
 Some Chrome plugins interfere with print job styling. While it is possible to suppress plugins with `--disable-plugins` this doesn't work when there is already a running instance of Chrome. The `--incognito` switch suppresses plugins when there is a running instance, but has its own problems.
 
