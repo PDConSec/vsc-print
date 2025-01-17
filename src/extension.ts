@@ -205,10 +205,12 @@ export async function activate(context: vscode.ExtensionContext) {
     if (editor) {
       const document = editor.document;
       const fullText = document.getText();
-      const startIndex = fullText.indexOf(text);
+      const lineEnding = fullText.includes('\r\n') ? '\r\n' : '\n';
+      const normalizedText = text.replace(/\r\n|\n/g, lineEnding);
+      const startIndex = fullText.indexOf(normalizedText);
       if (startIndex !== -1) {
         const startPos = document.positionAt(startIndex);
-        const endPos = document.positionAt(startIndex + text.length);
+        const endPos = document.positionAt(startIndex + normalizedText.length);
         const range = new vscode.Range(startPos, endPos);
         editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
         editor.selection = new vscode.Selection(startPos, endPos);

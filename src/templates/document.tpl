@@ -58,7 +58,7 @@
                 }
             };
 
-            document.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, table, pre')
+            document.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, table, pre, img')
             .forEach(element => {
                 element.addEventListener('dblclick', () => {
                     const text = element.getAttribute('data-raw');
