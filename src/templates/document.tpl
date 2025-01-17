@@ -58,10 +58,18 @@
                 }
             };
 
-            const elements = document.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, table');
-            elements.forEach(element => {
+            document.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, table, pre')
+            .forEach(element => {
                 element.addEventListener('dblclick', () => {
-                    const text = element.innerText || element.textContent;
+                    const text = element.getAttribute('data-raw');
+                    ws.send(JSON.stringify({ type: 'findInEditor', value: text }));
+                });
+            });
+            document.querySelectorAll('code, td, th')
+            .forEach(element => {
+                element.addEventListener('dblclick', () => {
+                    const p = element.closest('[data-raw]');
+                    const text = p.getAttribute('data-raw');
                     ws.send(JSON.stringify({ type: 'findInEditor', value: text }));
                 });
             });
