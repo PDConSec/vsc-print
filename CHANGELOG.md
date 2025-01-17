@@ -1,5 +1,10 @@
 # Change Log
 
+### 0.14.1
+
+- fix [#365](https://github.com/PDConSec/vsc-print/issues/365) preview mapping to source
+- fix [#364](https://github.com/PDConSec/vsc-print/issues/364) doc refresh and missing rate limit setting
+
 ### 0.14.0
 
 - fix [#359](https://github.com/PDConSec/vsc-print/issues/359)
