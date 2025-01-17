@@ -12,6 +12,47 @@ import { captionByFilename } from './imports';
 import * as fs from "fs";
 import { WebSocketServer } from "ws";
 import WebSocket from 'ws';
+import { marked, Tokens } from 'marked';
+
+const blockTypes = ["heading", "paragraph", "blockquote", "list"];
+
+marked.use({
+  renderer: {
+    heading(token: Tokens.Heading) {
+      const text = token.tokens.map(t => marked.parseInline(t.raw)).join('');
+      return `<h${token.depth} data-raw="${token.raw}">${text}</h${token.depth}>`;
+    },
+    paragraph(token: Tokens.Paragraph) {
+      const text = token.tokens.map(t => marked.parseInline(t.raw)).join('');
+      return `<p data-raw="${token.raw}">${text}</p>`;
+    },
+    blockquote(token: Tokens.Blockquote) {
+      const text = token.tokens.map(t => marked.parseInline(t.raw)).join('');
+      return `<blockquote data-raw="${token.raw}">${text}</blockquote>`;
+    },
+    list(token: Tokens.List) {
+      const type = token.ordered ? 'ol' : 'ul';
+      const items = token.items.map(item => {
+        const text = marked.parseInline(item.text);
+        return `<li data-raw="${item.raw}">${text}</li>`;
+      }).join('');
+      return `<${type} data-raw="${token.raw}">${items}</${type}>`;
+    },
+    table(token: Tokens.Table) {
+      const header = token.header.map(cell => {
+        const text = cell.tokens.map(t => marked.parseInline(t.raw)).join('');
+        return `<th>${text}</th>`;
+      }).join('');
+      const body = token.rows.map(row => {
+        return `<tr>${row.map(cell => {
+          const text = cell.tokens.map(t => marked.parseInline(t.raw)).join('');
+          return `<td>${text}</td>`;
+        }).join('')}</tr>`;
+      }).join('');
+      return `<table data-raw="${token.raw}"><thead><tr>${header}</tr></thead><tbody>${body}</tbody></table>`;
+    }
+  }
+});
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
