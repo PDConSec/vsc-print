@@ -15,8 +15,8 @@ import * as os from "os";
 import * as path from 'path';
 import * as fs from "fs";
 import { resolveRootDoc } from './includes';
-import {databaseFencedLanguageService} from "./database-fenced-language/databaseFencedLanguageService";
-import {DatabaseDiagramRequest} from "./database-fenced-language/models/request/databaseDiagramRequest";
+import { databaseFencedLanguageService } from "./database-fenced-language/databaseFencedLanguageService";
+import { DatabaseDiagramRequest } from "./database-fenced-language/models/request/databaseDiagramRequest";
 
 const HIGHLIGHTJS_LANGS = hljs.listLanguages().map(s => s.toUpperCase());
 const KROKI_SUPPORT = [
@@ -32,8 +32,8 @@ if (!fs.existsSync(CACHE_PATH)) fs.mkdirSync(CACHE_PATH);
 
 export async function processFencedBlocks(defaultConfig: any, raw: string, generatedResources: Map<string, ResourceProxy>, rootDocFolder: string) {
   const katexed = raw
-      .replace(/\$\$(.+?)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false, throwOnError: false }))
-      .replace(/\$\$(.+?)\$\$/gs, (_, capture) => katex.renderToString(capture, { displayMode: true, throwOnError: false }));
+    .replace(/\$\$(.+?)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false, throwOnError: false }))
+    .replace(/\$\$(.+?)\$\$/gs, (_, capture) => katex.renderToString(capture, { displayMode: true, throwOnError: false }));
 
   const tokens = marked.lexer(katexed);
   const krokiUrl = vscode.workspace.getConfiguration("print").krokiUrl;
@@ -92,7 +92,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
           case "LATEX":
             updatedTokens.push({ block: true, type: "html", raw: token.raw, text: katex.renderToString(token.text, getConfig(LANG)) });
             break;
-            //#region config management
+          //#region config management
           case "USE":
             if (namedConfigs[token.text]) {
               activeConfigName = token.text;
@@ -111,7 +111,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
             resolvedConfig = yaml.stringify(getConfig());
             updatedTokens.push({ block: true, type: "code", raw: token.raw, text: resolvedConfig });
             break;
-            //#endregion
+          //#endregion
           default:
             if (HIGHLIGHTJS_LANGS.includes(LANG)) {
               const codeHtml = hljs.highlight(token.lang, token.text).value;
@@ -123,6 +123,10 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
             break;
         }
       }
+    } else if (token.type === "html" && token.block) {
+      const newToken = token as Tokens.HTML;
+      newToken.text = `<div data-raw="innerHTML">${token.text}</div>`;
+      updatedTokens.push(token);
     } else {
       updatedTokens.push(token);
     };
@@ -143,22 +147,22 @@ function cachedKrokiRender(resolvedDoc: string, generatedResources: Map<string, 
     } else {
       logger.debug(`Resource file cache miss for ${resourceCachePath}`);
       const payload = Buffer.from(deflate(Buffer.from(resolvedDoc, "utf-8")))
-          .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
+        .toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
       resource = new ResourceProxy(
-          "image/svg+xml",
-          `${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`,
-          async (u) => {
-            const agent = new https.Agent({ rejectUnauthorized: vscode.workspace.getConfiguration("print").rejectUnauthorisedTls });
-            const response = await axios.get(u, { httpAgent: agent });
-            const responseText = await response.data;
-            if (responseText.includes("</svg>")) {
-              fs.writeFileSync(resourceCachePath, responseText);
-              logger.debug(`Resource file cache write for ${resourceCachePath}`);
-            } else {
-              logger.warn(`Kroki did not return SVG:\n${responseText}`);
-            }
-            return responseText;
+        "image/svg+xml",
+        `${krokiUrl}/${LANG.toLowerCase()}/svg/${payload}`,
+        async (u) => {
+          const agent = new https.Agent({ rejectUnauthorized: vscode.workspace.getConfiguration("print").rejectUnauthorisedTls });
+          const response = await axios.get(u, { httpAgent: agent });
+          const responseText = await response.data;
+          if (responseText.includes("</svg>")) {
+            fs.writeFileSync(resourceCachePath, responseText);
+            logger.debug(`Resource file cache write for ${resourceCachePath}`);
+          } else {
+            logger.warn(`Kroki did not return SVG:\n${responseText}`);
           }
+          return responseText;
+        }
       );
     }
   }
