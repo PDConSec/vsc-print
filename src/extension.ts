@@ -12,10 +12,11 @@ import { captionByFilename } from './imports';
 import * as fs from "fs";
 import { WebSocketServer } from "ws";
 import WebSocket from 'ws';
-import { marked, Tokens } from 'marked';
+import { marked, Parser, Renderer, Tokens } from 'marked';
 import { at } from 'lodash';
 
-const blockTypes = ["heading", "paragraph", "blockquote", "list"];
+const markedRenderer = new Renderer();
+markedRenderer.parser = new Parser();
 
 function escapeHtml(text: string) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -28,45 +29,33 @@ marked.use({
       return result;
     },
     heading(token: Tokens.Heading) {
-      const text = token.tokens.map(t => marked.parseInline(t.raw)).join('');
-      const b64 = btoa(token.raw);
-      return `<h${token.depth} data-raw="${b64}">${text}</h${token.depth}>\n`;
+      const html = markedRenderer.heading(token);
+      return html.replace(/^<h\d/, `$& data-raw="${btoa(token.raw)}"`);
     },
     paragraph(token: Tokens.Paragraph) {
-      const text = token.tokens.map(t => marked.parseInline(t.raw)).join('');
-      return `<p data-raw="${btoa(token.raw)}">${text}</p>\n`;
+      const html = markedRenderer.paragraph(token);
+      return html.replace(/^<p/, `$& data-raw="${btoa(token.raw)}"`);
     },
     blockquote(token: Tokens.Blockquote) {
-      const text = token.tokens.map(t => marked.parseInline(t.raw)).join('');
-      return `<blockquote data-raw="${btoa(token.raw)}">${text}</blockquote>\n`;
+      const html = markedRenderer.blockquote(token);
+      return html.replace(/^<blockquote/, `$& data-raw="${btoa(token.raw)}"`);
     },
-    list(token: Tokens.List) {
-      const type = token.ordered ? 'ol' : 'ul';
-      const items = token.items.map(item => {
-        const text = marked.parseInline(item.text);
-        return `<li data-raw="${btoa(item.raw)}">${text}</li>\n`;
-      }).join('');
-      return `<${type} data-raw="${btoa(token.raw)}">${items}</${type}>\n`;
+    listitem(token: Tokens.ListItem) {
+      const html = markedRenderer.listitem(token);
+      return html.replace(/^<li/, `$& data-raw="${btoa(token.raw)}"`);
     },
     table(token: Tokens.Table) {
-      const lineEnding = '\n';// token.raw.includes('\r\n') ? '\r\n' : '\n';
+      const lineEnding = '\n';
       const headerRaw = token.raw.split(lineEnding)[0];
-      const bodyRaw = token.raw.split(lineEnding).slice(2).join(lineEnding);
-
-      const header = token.header.map(cell => {
-        const text = cell.tokens.map(t => marked.parseInline(t.raw)).join('');
-        return `<th>${text}</th>${lineEnding}`;
-      }).join('');
-
-      const body = token.rows.map((row, rowIndex) => {
-        const rowRaw = bodyRaw.split(lineEnding).slice(rowIndex, rowIndex + 1).join(lineEnding);
-        return `<tr data-raw="${btoa(rowRaw)}">${row.map(cell => {
-          const text = cell.tokens.map(t => marked.parseInline(t.raw)).join('');
-          return `<td>${text}</td>${lineEnding}`;
-        }).join('')}</tr>${lineEnding}`;
-      }).join('');
-
-      return `<table>${lineEnding}<thead data-raw="${btoa(headerRaw)}">${lineEnding}<tr>${header}</tr>${lineEnding}</thead>${lineEnding}<tbody>${lineEnding}${body}</tbody>${lineEnding}</table>${lineEnding}`;
+      const bodyRaw = token.raw.trim().split(lineEnding).slice(2).join(lineEnding);
+      const rowsRaw = bodyRaw.split(lineEnding);
+      const parts = markedRenderer.table(token).split("/thead");
+      parts[0] = parts[0].replace(/<tr/, `$& data-raw="${btoa(headerRaw)}"`);
+      for (const rowRaw of rowsRaw) {
+        parts[1] = parts[1].replace(/<tr>/, `<tr data-raw="${btoa(rowRaw)}">`);
+      }
+      const html = parts.join("/thead");
+      return html;
     }
   }
 });
