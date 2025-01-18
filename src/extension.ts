@@ -49,17 +49,24 @@ marked.use({
       return `<${type} data-raw="${btoa(token.raw)}">${items}</${type}>\n`;
     },
     table(token: Tokens.Table) {
+      const lineEnding = '\n';// token.raw.includes('\r\n') ? '\r\n' : '\n';
+      const headerRaw = token.raw.split(lineEnding)[0];
+      const bodyRaw = token.raw.split(lineEnding).slice(2).join(lineEnding);
+
       const header = token.header.map(cell => {
         const text = cell.tokens.map(t => marked.parseInline(t.raw)).join('');
-        return `<th>${text}</th>\n`;
+        return `<th>${text}</th>${lineEnding}`;
       }).join('');
-      const body = token.rows.map(row => {
-        return `<tr>${row.map(cell => {
+
+      const body = token.rows.map((row, rowIndex) => {
+        const rowRaw = bodyRaw.split(lineEnding).slice(rowIndex, rowIndex + 1).join(lineEnding);
+        return `<tr data-raw="${btoa(rowRaw)}">${row.map(cell => {
           const text = cell.tokens.map(t => marked.parseInline(t.raw)).join('');
-          return `<td>${text}</td>\n`;
-        }).join('')}</tr>\n`;
+          return `<td>${text}</td>${lineEnding}`;
+        }).join('')}</tr>${lineEnding}`;
       }).join('');
-      return `<table data-raw="${btoa(token.raw)}">\n<thead>\n<tr>${header}</tr>\n</thead>\n<tbody>\n${body}</tbody>\n</table>\n`;
+
+      return `<table>${lineEnding}<thead data-raw="${btoa(headerRaw)}">${lineEnding}<tr>${header}</tr>${lineEnding}</thead>${lineEnding}<tbody>${lineEnding}${body}</tbody>${lineEnding}</table>${lineEnding}`;
     }
   }
 });
@@ -205,12 +212,13 @@ export async function activate(context: vscode.ExtensionContext) {
     if (editor) {
       const document = editor.document;
       const fullText = document.getText();
-      const lineEnding = fullText.includes('\r\n') ? '\r\n' : '\n';
-      const normalizedText = text.replace(/\r\n|\n/g, lineEnding);
-      const startIndex = fullText.indexOf(normalizedText);
+      if (fullText.includes('\r\n')) {
+        text = text.replace(/\n/g, '\r\n');
+      }
+      const startIndex = fullText.indexOf(text);
       if (startIndex !== -1) {
         const startPos = document.positionAt(startIndex);
-        const endPos = document.positionAt(startIndex + normalizedText.length);
+        const endPos = document.positionAt(startIndex + text.length);
         const range = new vscode.Range(startPos, endPos);
         editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
         editor.selection = new vscode.Selection(startPos, endPos);
