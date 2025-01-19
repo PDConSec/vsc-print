@@ -197,8 +197,37 @@ export async function activate(context: vscode.ExtensionContext) {
 function openDoc(doc: string) {
   switch (doc) {
     case "manual":
-      // todo localise the command that opens the manual
-      let pathToManual = path.join(Metadata.ExtensionPath, "doc/manual.md");
+      // localise the version of the manual that is opened
+      const localeMap: { [key: string]: string } = {
+        "en": "eng",
+        "zh-cn": "zho",
+        "ja": "jpn",
+        "es": "spa",
+        "ru": "rus",
+        "pt": "por",
+        "fr": "fra",
+        "ko": "kor",
+        "zh-hant": "zho",
+        "it": "ita",
+        "pl": "pol",
+        "hu": "hun",
+        "cs": "ces",
+        "bg": "bul",
+        "tr": "tur",
+        "my": "mya",
+        "ca": "cat",
+        "lt": "lit",
+        "hy": "hye"
+      };
+      let locale = localeMap[vscode.env.language] || "eng";
+      let pathToManual = path.join(Metadata.ExtensionPath, `doc/manual.${locale}.md`);
+      if (!fs.existsSync(pathToManual)) {
+        locale = "eng";
+        pathToManual = path.join(Metadata.ExtensionPath, `doc/manual.${locale}.md`);
+      }
+      if (!fs.existsSync(pathToManual)) {
+        pathToManual = path.join(Metadata.ExtensionPath, "doc/manual.md");
+      }
       let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
       vscode.commands.executeCommand('markdown.showPreview', uriManual);
       break;

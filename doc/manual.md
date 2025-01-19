@@ -128,6 +128,13 @@ Mark both the start and end of KaTeX notation using `$$`. The presence of a line
 
 ## Embedded diagrams
 
+
+**[Set up a private Kroki server first.](https://docs.kroki.io/kroki/setup/install/)** 
+
+* There's no charge
+* The public server is rate limited
+* No rate limit = hot preview for diagrams
+
 The following diagram types are supported. 
 
 |            |            |                  |              |             |          |
@@ -155,7 +162,7 @@ Like most diagrams you use a fenced block annotated with the diagram type. The c
  - Microsoft SQL Server
  - MySql
 
-Why don't we support Oracle? We the contributors don't use it. If you
+Why don't we support Oracle? We the contributors don't use it. If you want it, become a contributor.
 
 The syntax of the connection string depends on the database type. The samples below illustrate connection strings for each supported database engine.
 
@@ -231,7 +238,7 @@ Don't forget that you can embed HTML in Markdown, so there's nothing stopping yo
 
 ## Web Server
 
-The embedded web server binds only to the loopback address and accepts only connections that specify. A separate server is spun up for each print job and terminates when printing finishes. 
+The embedded web server binds only to the loopback address and accepts only connections that specify a current session identifier. A separate server is spun up for each print job and terminates when printing finishes. 
 
 <a name="4"></a>
 
