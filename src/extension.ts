@@ -265,16 +265,17 @@ function openDoc(doc: string) {
         "hy": "hye"
       };
       let locale = localeMap[vscode.env.language] || "eng";
-      let pathToManual = path.join(Metadata.ExtensionPath, `doc/manual.${locale}.md`);
+      let pathToManual = path.join(Metadata.ExtensionPath, `../doc/manual.${locale}.md`);
       if (!fs.existsSync(pathToManual)) {
         locale = "eng";
-        pathToManual = path.join(Metadata.ExtensionPath, `doc/manual.${locale}.md`);
+        pathToManual = path.join(Metadata.ExtensionPath, `../doc/manual.${locale}.md`);
       }
       if (!fs.existsSync(pathToManual)) {
-        pathToManual = path.join(Metadata.ExtensionPath, "doc/manual.md");
+        pathToManual = path.join(Metadata.ExtensionPath, "../doc/manual.md");
       }
       let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
-      vscode.commands.executeCommand('markdown.showPreview', uriManual);
+      // preview the uri as though the preview command had been invoked
+      previewCommand(uriManual, []);
       break;
 
     case "log":
