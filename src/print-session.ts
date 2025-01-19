@@ -14,6 +14,7 @@ import { DocumentRenderer } from './renderers/document-renderer';
 import { filenameByCaption } from './imports';
 import { ResourceProxy } from './renderers/resource-proxy';
 import tildify from './tildify';
+import { Metadata } from './metadata';
 
 let settingsCss: string = require("./css/settings.css").default.toString();
 
@@ -92,7 +93,16 @@ export class PrintSession {
             break;
           case "fileselection": // all the printable files in the selection
             logger.debug(`Printing fileselection`);
-            const fileselectionPath = vscode.workspace.getWorkspaceFolder(source[0])!.uri;
+            let fileselectionPath = vscode.workspace.getWorkspaceFolder(source[0])?.uri;
+            if (!fileselectionPath) {
+              const dname = path.dirname(source[0].fsPath);
+              const extRoot = path.resolve(Metadata.ExtensionPath, "..");
+              if (dname.startsWith(extRoot)) {
+                fileselectionPath = vscode.Uri.file(dname);
+              } else {
+                throw `The file selection ${source[0]} is not in the workspace`;
+              }
+            }
             this.pageBuilder = new FileselectionDocumentBuilder(
               isPreview,
               this.generatedResources,

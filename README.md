@@ -6,7 +6,11 @@ Print code. Print rendered Markdown. Local or remote. Windows, Mac or Linux.
 
 Hot preview! When you launch a preview of a document from the active editor, when you edit that file and stop making changes for three seconds, the proview will update in the browser. This works for source code but it's most useful for Markdown documents.
 
-Hot preview also supports find-in-source. If you're proof-reading the rendered document and you find an error, double-clicking the paragraph will find and highlight the first line in the editor. This matching is not yet perfect; if there are multiple matches it will currently only find the first.
+Hot preview also supports find-in-source. If you're proof-reading the rendered document and you find an error, double-clicking the paragraph will find and highlight the first line in the editor. Mapping back to the source document is greatly improved from last release.
+
+#### IMPORTANT for hot preview with diagrams 
+
+If you intend to use hot preview while editing diagrams in Markdown, set up a local Kroki server and configure Print to use it. If you fail to do this you will very quickly find yourself rate-limited.
 
 ## Cross-platform printing
 
@@ -44,9 +48,9 @@ Some things you can configure:
 ## Planned changes
 
 * External resources for Markdown documents - a fenced block with a language of `external` containing a URL and metadata, allowing a wide range of external resources to be linked into a Markdown document
-* The manual needs a rewrite, 
+* The manual needs a rewrite,
   - how to embed diagrams
   - how to control the flow of text around embedded diagrams
   - summary extracts of documentation so you don't have to hunt
-* Machine translation to support major languages.  
+* Machine translation to support major languages.
   This has already been applied to the extension and its settings, but high quality automated translation of documentation is proving more difficult.

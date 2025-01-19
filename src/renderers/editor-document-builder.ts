@@ -51,9 +51,6 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
       }
     }
 
-    const printConfig = vscode.workspace.getConfiguration("print");
-    const rateLimit = printConfig.documentChangeSettleMilliseconds || 3000;
-
     let timeout: NodeJS.Timeout | undefined;
 
     const onDocumentChange = () => {
@@ -63,7 +60,7 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
       timeout = setTimeout(() => {
         logger.info("Document change detected, sending refreshPreview message");
         ws.send(JSON.stringify({ type: 'refreshPreview' }));
-      }, rateLimit);
+      }, vscode.workspace.getConfiguration("print").documentSettleMilliseconds);
     };
 
     this.changeHandler = vscode.workspace.onDidChangeTextDocument(event => {

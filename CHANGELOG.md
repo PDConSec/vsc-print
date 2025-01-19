@@ -1,4 +1,14 @@
 # Change Log
+
+### 0.14.1
+
+- fix [#365](https://github.com/PDConSec/vsc-print/issues/365) 
+  - preview mapping to source
+  - broken path to manual, now uses browser preview instead of VS Code's embedded Markdown preview
+  - manual command is localised falling back to English; translation of manual to follow
+  - line-numbers.css no longer incorrectly sets body font-family
+- fix [#364](https://github.com/PDConSec/vsc-print/issues/364) doc refresh and missing rate limit setting
+
 ### 0.14.0
 
 - fix [#359](https://github.com/PDConSec/vsc-print/issues/359)

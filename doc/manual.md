@@ -17,14 +17,14 @@ There are a couple of ways you can print or preview.
 * You can print or preview a selection from the active document, by icon or context menu.
 * You can print one or preview or more filse directly from the file explorer panel, by context menu on a folder, file or multi-selection of files.
 * Files can be titled with their filepath. The title does not appear in the document but may be used in headers by some browsers.
-	- You can choose from the following formats. 
-		- No path
-		- Abbreviated (like `D:\...\containing-folder\file.ext`)
-		- Workspace relative 
+  - You can choose from the following formats. 
+    - No path
+    - Abbreviated (like `D:\...\containing-folder\file.ext`)
+    - Workspace relative 
 * Files can have their filepath appear as a heading at the start of the document.
-	- A setting determines whether to use relative or absolute file paths.
-	- Non-workspace files always use absolute.
-	- Absolute paths are converted to tilde paths when they are inside the user's home directory.
+  - A setting determines whether to use relative or absolute file paths.
+  - Non-workspace files always use absolute.
+  - Absolute paths are converted to tilde paths when they are inside the user's home directory.
 * A setting determines whether a file path heading appears at the start of individually printed files.
 * Exclusion lists apply to both folder and file selections. The purpose of these is to ignore unprintable binary files.
 
@@ -128,7 +128,6 @@ Mark both the start and end of KaTeX notation using `$$`. The presence of a line
 
 ## Embedded diagrams
 
-
 **[Set up a private Kroki server first.](https://docs.kroki.io/kroki/setup/install/)** 
 
 * There's no charge
@@ -223,7 +222,7 @@ Detail: keys
 
 ```json
 "markdown.styles": [
-	"workspace.resource/path/to/stylesheet.css"
+  "workspace.resource/path/to/stylesheet.css"
 ]
 ```
 
@@ -238,7 +237,7 @@ Don't forget that you can embed HTML in Markdown, so there's nothing stopping yo
 
 ## Web Server
 
-The embedded web server binds only to the loopback address and accepts only connections that specify a current session identifier. A separate server is spun up for each print job and terminates when printing finishes. 
+The embedded web server binds only to the loopback address and accepts only connections that specify a current session identifier. A separate session is spun up for each print job and terminates when printing finishes. 
 
 <a name="4"></a>
 
@@ -250,6 +249,7 @@ The embedded web server binds only to the loopback address and accepts only conn
 * The user as which VS Code runs must be able to establish a listening socket.
 
 ## First launch hassles
+
 * Nothing seems to happen &mdash; restart VS Code.
 * Browser launches but no page loads &mdash; check networking permissions.
 * Browser shows an error message about not finding a CSS file &mdash; you installed from a VSIX that wasn't prepared by us. Get the [official package](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print) and try again.
@@ -258,7 +258,7 @@ If something else is wrong, or you have an improvement idea, we invite you to lo
 
 ## Choice of browser
 
-The browser used will affect your experience.  
+The browser used will affect your experience.
 
 ### Recommended for printing
 

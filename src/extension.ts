@@ -12,6 +12,53 @@ import { captionByFilename } from './imports';
 import * as fs from "fs";
 import { WebSocketServer } from "ws";
 import WebSocket from 'ws';
+import { marked, Parser, Renderer, Tokens } from 'marked';
+import { at } from 'lodash';
+
+const markedRenderer = new Renderer();
+markedRenderer.parser = new Parser();
+
+function escapeHtml(text: string) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+marked.use({
+  renderer: {
+    code(token: Tokens.Code) {
+      const result = `<pre data-raw="${btoa(token.raw)}"><code>${escapeHtml(token.text)}</code></pre>\n`;
+      return result;
+    },
+    heading(token: Tokens.Heading) {
+      const html = markedRenderer.heading(token);
+      return html.replace(/^<h\d/, `$& data-raw="${btoa(token.raw)}"`);
+    },
+    paragraph(token: Tokens.Paragraph) {
+      const html = markedRenderer.paragraph(token);
+      return html.replace(/^<p/, `$& data-raw="${btoa(token.raw)}"`);
+    },
+    blockquote(token: Tokens.Blockquote) {
+      const html = markedRenderer.blockquote(token);
+      return html.replace(/^<blockquote/, `$& data-raw="${btoa(token.raw)}"`);
+    },
+    listitem(token: Tokens.ListItem) {
+      const html = markedRenderer.listitem(token);
+      return html.replace(/^<li/, `$& data-raw="${btoa(token.raw)}"`);
+    },
+    table(token: Tokens.Table) {
+      const lineEnding = '\n';
+      const headerRaw = token.raw.split(lineEnding)[0];
+      const bodyRaw = token.raw.trim().split(lineEnding).slice(2).join(lineEnding);
+      const rowsRaw = bodyRaw.split(lineEnding);
+      const parts = markedRenderer.table(token).split("/thead");
+      parts[0] = parts[0].replace(/<tr/, `$& data-raw="${btoa(headerRaw)}"`);
+      for (const rowRaw of rowsRaw) {
+        parts[1] = parts[1].replace(/<tr>/, `<tr data-raw="${btoa(rowRaw)}">`);
+      }
+      const html = parts.join("/thead");
+      return html;
+    }
+  }
+});
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
@@ -149,23 +196,21 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   function findAndHighlightText(text: string) {
-    const normaliseText = (s: string) => s
-      .replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, ' ').toLowerCase().trim()
-      .split(' ').slice(0, 7).join(' ');
+    text = atob(text);
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       const document = editor.document;
-      const normalizedText = normaliseText(text);
-      for (let i = 0; i < document.lineCount; i++) {
-        const lineText = normaliseText(document.lineAt(i).text);
-        if (lineText.includes(normalizedText)) {
-          const startPos = new vscode.Position(i, 0);
-          const endPos = new vscode.Position(i, document.lineAt(i).text.length);
-          const range = new vscode.Range(startPos, endPos);
-          editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
-          editor.selection = new vscode.Selection(startPos, endPos);
-          return; // Stop after the first match
-        }
+      const fullText = document.getText();
+      if (fullText.includes('\r\n')) {
+        text = text.replace(/\n/g, '\r\n');
+      }
+      const startIndex = fullText.indexOf(text);
+      if (startIndex !== -1) {
+        const startPos = document.positionAt(startIndex);
+        const endPos = document.positionAt(startIndex + text.length);
+        const range = new vscode.Range(startPos, endPos);
+        editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+        editor.selection = new vscode.Selection(startPos, endPos);
       }
     }
   }
@@ -220,16 +265,17 @@ function openDoc(doc: string) {
         "hy": "hye"
       };
       let locale = localeMap[vscode.env.language] || "eng";
-      let pathToManual = path.join(Metadata.ExtensionPath, `doc/manual.${locale}.md`);
+      let pathToManual = path.join(Metadata.ExtensionPath, `../doc/manual.${locale}.md`);
       if (!fs.existsSync(pathToManual)) {
         locale = "eng";
-        pathToManual = path.join(Metadata.ExtensionPath, `doc/manual.${locale}.md`);
+        pathToManual = path.join(Metadata.ExtensionPath, `../doc/manual.${locale}.md`);
       }
       if (!fs.existsSync(pathToManual)) {
-        pathToManual = path.join(Metadata.ExtensionPath, "doc/manual.md");
+        pathToManual = path.join(Metadata.ExtensionPath, "../doc/manual.md");
       }
       let uriManual: vscode.Uri = vscode.Uri.file(pathToManual);
-      vscode.commands.executeCommand('markdown.showPreview', uriManual);
+      // preview the uri as though the preview command had been invoked
+      previewCommand(uriManual, []);
       break;
 
     case "log":

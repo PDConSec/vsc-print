@@ -17,10 +17,10 @@ There are a couple of ways you can print or preview.
 * You can print or preview a selection from the active document, by icon or context menu.
 * You can print one or preview or more filse directly from the file explorer panel, by context menu on a folder, file or multi-selection of files.
 * Files can be titled with their filepath. The title does not appear in the document but may be used in headers by some browsers.
-  - You can choose from the following formats. 
+  - You can choose from the following formats.
     - No path
     - Abbreviated (like `D:\...\containing-folder\file.ext`)
-    - Workspace relative 
+    - Workspace relative
 * Files can have their filepath appear as a heading at the start of the document.
   - A setting determines whether to use relative or absolute file paths.
   - Non-workspace files always use absolute.
@@ -85,7 +85,7 @@ You can control whether the "Print" menu item appears at the top, bottom or nowh
 
 **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
 
-By default, printing will use your default browser. However, printing works best with a Chromium derived browser, and it may not be possible or desirable to change your default browser. 
+By default, printing will use your default browser. However, printing works best with a Chromium derived browser, and it may not be possible or desirable to change your default browser.
 
 To allow you to print using a browser that isn't your default browser, you can specify a path to an alternate browser, and there is also a checkbox to allow you to switch this on and off without losing the path.
 
@@ -99,15 +99,15 @@ If you need to supply command-line options, create a batch file (or a bash scrip
 
 No, you can't have the same syntax colouring scheme as the editor. For starters many people use dark mode. A dark mode colour scheme won't work on white paper. Even if it did, VS Code does not make this information accessible through any API. It's impossible, and even if we could do it we still wouldn't discriminate against people who use dark mode.
 
-Using the `Colour Scheme` setting you can specify the colour scheme used for syntax colouring. Choices are limited to light themes because printers use white paper. 
+Using the `Colour Scheme` setting you can specify the colour scheme used for syntax colouring. Choices are limited to light themes because printers use white paper.
 
 If you print the active document and there is a multi-line selection, only the selection is printed.
 
 ### Type face and size
 
-Typeface is determined by VS Code editor settings. If you see Fira Code on screen, that's what will be printed. 
+Typeface is determined by VS Code editor settings. If you see Fira Code on screen, that's what will be printed.
 
-The _size_ of printed text is a Print setting because the size that works best on screen may not be the size that works best on paper. 
+The _size_ of printed text is a Print setting because the size that works best on screen may not be the size that works best on paper.
 
 ## Printing Markdown
 
@@ -128,14 +128,13 @@ Mark both the start and end of KaTeX notation using `$$`. The presence of a line
 
 ## Embedded diagrams
 
-
-**[Set up a private Kroki server first.](https://docs.kroki.io/kroki/setup/install/)** 
+**[Set up a private Kroki server first.](https://docs.kroki.io/kroki/setup/install/)**
 
 * There's no charge
 * The public server is rate limited
 * No rate limit = hot preview for diagrams
 
-The following diagram types are supported. 
+The following diagram types are supported.
 
 |            |            |                  |              |             |          |
 |------------|------------|------------------|--------------|-------------|----------|
@@ -181,7 +180,7 @@ What about credentials? This depends on the database server. For Microsoft SQL S
 ````
 ```database
 DatabaseType: postgresql
-ConnectionString: postgres://postgres:admin@localhost:5432/postgres 
+ConnectionString: postgres://postgres:admin@localhost:5432/postgres
 Schema: public
 Detail: keys
 ```
@@ -194,7 +193,7 @@ Detail: keys
 DatabaseType: mssql
 ConnectionString: Server=localhost,1433; Database=OrderManagementDb; User Id=sa; Password=yourStrong(!)Password;
 Schema: dbo
-Tables: 
+Tables:
   - OrderStates
   - OrderHeaders
   - OrderItems
@@ -219,6 +218,9 @@ Detail: keys
 ### Apply CSS files to a Markdown document 
 
  - You can embed a stylesheet link tag directly into the Markdown. This is specific to the document.  
+### Apply CSS files to a Markdown document
+
+ - You can embed a stylesheet link tag directly into the Markdown. This is specific to the document.
  - There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLS, or document  relative URLs, as shown in the following example.
 
 ```json
@@ -250,6 +252,7 @@ The embedded web server binds only to the loopback address and accepts only conn
 * The user as which VS Code runs must be able to establish a listening socket.
 
 ## First launch hassles
+
 * Nothing seems to happen &mdash; restart VS Code.
 * Browser launches but no page loads &mdash; check networking permissions.
 * Browser shows an error message about not finding a CSS file &mdash; you installed from a VSIX that wasn't prepared by us. Get the [official package](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print) and try again.
@@ -258,7 +261,7 @@ If something else is wrong, or you have an improvement idea, we invite you to lo
 
 ## Choice of browser
 
-The browser used will affect your experience.  
+The browser used will affect your experience.
 
 ### Recommended for printing
 
@@ -278,7 +281,7 @@ The following are known to work well.
 
 ## Markdown extensions are not supported
 
-Print uses its own pipeline because Microsoft keeps changing VS Code's Markdown rendering pipeline without notice. As a result it cannot use Markdown extensions. However, you will find that for Print, 
+Print uses its own pipeline because Microsoft keeps changing VS Code's Markdown rendering pipeline without notice. As a result it cannot use Markdown extensions. However, you will find that for Print,
  - most of the worthwhile Markdown extensions are baked-in
  - we are receptive to special requests
  - this allows us to resolve conflicts between extensions.
@@ -293,7 +296,7 @@ Both auto-quoting and escaping of spaces are incompatible with the use of comman
 
 ### Chrome and plugins
 
-Chrome may retain your printer, paper size and margin selections between print jobs. Some Chrome command line options cause errors to be reported, even though printing succeeds. 
+Chrome may retain your printer, paper size and margin selections between print jobs. Some Chrome command line options cause errors to be reported, even though printing succeeds.
 
 Some Chrome plugins interfere with print job styling. While it is possible to suppress plugins with `--disable-plugins` this doesn't work when there is already a running instance of Chrome. The `--incognito` switch suppresses plugins when there is a running instance, but has its own problems.
 
