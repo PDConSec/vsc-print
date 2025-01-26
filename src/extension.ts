@@ -22,27 +22,35 @@ function escapeHtml(text: string) {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+function base64Encode(text: string) {
+  return Buffer.from(text, 'utf-8').toString('base64');
+}
+
+function base64Decode(text: string) {
+  return Buffer.from(text, 'base64').toString('utf-8');
+}
+
 marked.use({
   renderer: {
     code(token: Tokens.Code) {
-      const result = `<pre data-raw="${btoa(token.raw)}"><code>${escapeHtml(token.text)}</code></pre>\n`;
+      const result = `<pre data-raw="${base64Encode(token.raw)}"><code>${escapeHtml(token.text)}</code></pre>\n`;
       return result;
     },
     heading(token: Tokens.Heading) {
       const html = markedRenderer.heading(token);
-      return html.replace(/^<h\d/, `$& data-raw="${btoa(token.raw)}"`);
+      return html.replace(/^<h\d/, `$& data-raw="${base64Encode(token.raw)}"`);
     },
     paragraph(token: Tokens.Paragraph) {
       const html = markedRenderer.paragraph(token);
-      return html.replace(/^<p/, `$& data-raw="${btoa(token.raw)}"`);
+      return html.replace(/^<p/, `$& data-raw="${base64Encode(token.raw)}"`);
     },
     blockquote(token: Tokens.Blockquote) {
       const html = markedRenderer.blockquote(token);
-      return html.replace(/^<blockquote/, `$& data-raw="${btoa(token.raw)}"`);
+      return html.replace(/^<blockquote/, `$& data-raw="${base64Encode(token.raw)}"`);
     },
     listitem(token: Tokens.ListItem) {
       const html = markedRenderer.listitem(token);
-      return html.replace(/^<li/, `$& data-raw="${btoa(token.raw)}"`);
+      return html.replace(/^<li/, `$& data-raw="${base64Encode(token.raw)}"`);
     },
     table(token: Tokens.Table) {
       const lineEnding = '\n';
@@ -50,9 +58,9 @@ marked.use({
       const bodyRaw = token.raw.trim().split(lineEnding).slice(2).join(lineEnding);
       const rowsRaw = bodyRaw.split(lineEnding);
       const parts = markedRenderer.table(token).split("/thead");
-      parts[0] = parts[0].replace(/<tr/, `$& data-raw="${btoa(headerRaw)}"`);
+      parts[0] = parts[0].replace(/<tr/, `$& data-raw="${base64Encode(headerRaw)}"`);
       for (const rowRaw of rowsRaw) {
-        parts[1] = parts[1].replace(/<tr>/, `<tr data-raw="${btoa(rowRaw)}">`);
+        parts[1] = parts[1].replace(/<tr>/, `<tr data-raw="${base64Encode(rowRaw)}">`);
       }
       const html = parts.join("/thead");
       return html;
@@ -196,7 +204,7 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   function findAndHighlightText(text: string) {
-    text = atob(text);
+    text = base64Decode(text);
     const editor = vscode.window.activeTextEditor;
     if (editor) {
       const document = editor.document;

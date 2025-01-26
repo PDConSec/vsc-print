@@ -1,5 +1,9 @@
 # Change Log
 
+### 0.14.2
+
+- replace atob and btoa with more robust alternatives
+
 ### 0.14.1
 
 - fix [#365](https://github.com/PDConSec/vsc-print/issues/365) 
