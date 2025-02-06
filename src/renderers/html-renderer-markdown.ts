@@ -32,6 +32,18 @@ resources.set("smiles-drawer.min.js.map", new ResourceProxy(
   async f => fs.promises.readFile(resourcePath(f), "utf-8")
 ));
 
+resources.set("smartquotes.js", new ResourceProxy(
+  "application/javascript; charset=utf-8",
+  "smartquotes.js",
+  async f => fs.promises.readFile(resourcePath(f), "utf-8")
+));
+
+resources.set("smartquotes.js.map", new ResourceProxy(
+  "application/javascript; charset=utf-8",
+  "smartquotes.js.map",
+  async f => fs.promises.readFile(resourcePath(f), "utf-8")
+));
+
 const fontPath = resourcePath("fonts");
 const fontfilenames = fs.readdirSync(fontPath);
 for (const fontfilename of fontfilenames) {
@@ -77,6 +89,7 @@ export function getResource(name: string): ResourceProxy {
 export function getScriptUriStrings(uri: vscode.Uri) {
   return [
     "bundled/smiles-drawer.min.js",
+    "bundled/smartquotes.js",
   ];
 }
 

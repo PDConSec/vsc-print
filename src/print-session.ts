@@ -15,6 +15,7 @@ import { filenameByCaption } from './imports';
 import { ResourceProxy } from './renderers/resource-proxy';
 import tildify from './tildify';
 import { Metadata } from './metadata';
+import * as plist from "plist";
 
 let settingsCss: string = require("./css/settings.css").default.toString();
 
@@ -333,7 +334,17 @@ async function launchAlternateBrowser(url: string) {
     }
   } else {
     if (isBrowserPathDefined) {
-      const cmd = escapePath(printConfig.browserPath);
+      let cmd = escapePath(printConfig.browserPath);
+      if (process.platform === "darwin") {
+        const fs = require("fs");
+        if (fs.existsSync(cmd) && fs.lstatSync(cmd).isDirectory()) {
+          const manifestPath = path.join(cmd, "Contents", "Info.plist");
+          if (fs.existsSync(manifestPath)) {
+            const manifest = plist.parse(fs.readFileSync(manifestPath, "utf8")) as { CFBundleExecutable: string };
+            cmd = path.join(cmd, "Contents", "MacOS", manifest.CFBundleExecutable);
+          }
+        }
+      }
       child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
         if (error || stderr) {
           vscode.window.showErrorMessage(error ? error.message : stderr);

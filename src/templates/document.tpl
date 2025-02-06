@@ -61,7 +61,7 @@
             document.querySelectorAll('p:not(div[data-raw] p), li:not(div[data-raw] li), h1:not(div[data-raw] h1), h2:not(div[data-raw] h2), h3:not(div[data-raw] h3), h4:not(div[data-raw] h4), h5:not(div[data-raw] h5), h6:not(div[data-raw] h6), table:not(div[data-raw] table), pre:not(div[data-raw] pre), img:not(div[data-raw] img)')
             .forEach(element => {
                 element.addEventListener('dblclick', () => {
-                    const text = element.getAttribute('data-raw');
+                    const text = element.getAttribute('data-raw') ?? element.closest("[data-raw]").getAttribute('data-raw');
                     ws.send(JSON.stringify({ type: 'findInEditor', value: text }));
                 });
             });
@@ -80,10 +80,15 @@
                 });
             });
         };
+        window.onload = function() {
+            listenForUpdates();
+            smartquotes();
+            printAndClose({{printAndClose}});
+        };
     </script>
 </head>
 
-<body onload="listenForUpdates();printAndClose({{printAndClose}});">
+<body>
     {{{documentHeading}}}
     <div>
         {{{content}}}
