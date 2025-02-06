@@ -16,6 +16,7 @@ import { ResourceProxy } from './renderers/resource-proxy';
 import tildify from './tildify';
 import { Metadata } from './metadata';
 import * as plist from "plist";
+import * as fs from "fs";
 
 let settingsCss: string = require("./css/settings.css").default.toString();
 
@@ -336,7 +337,6 @@ async function launchAlternateBrowser(url: string) {
     if (isBrowserPathDefined) {
       let cmd = escapePath(printConfig.browserPath);
       if (process.platform === "darwin") {
-        const fs = require("fs");
         if (fs.existsSync(cmd) && fs.lstatSync(cmd).isDirectory()) {
           const manifestPath = path.join(cmd, "Contents", "Info.plist");
           if (fs.existsSync(manifestPath)) {
