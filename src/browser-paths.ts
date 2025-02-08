@@ -57,6 +57,11 @@ export default class Browsers {
         downloadUrl: "https://www.opera.com/"
       },
       {
+        name: "Opera via Microsoft Store",
+        path: "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Opera\\opera.exe",
+        downloadUrl: "https://www.opera.com/"
+      },
+      {
         name: "Opera GX",
         path: "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Opera GX\\launcher.exe",
         downloadUrl: "https://www.opera.com/gx"
@@ -70,62 +75,57 @@ export default class Browsers {
     darwin: [
       {
         name: "Google Chrome",
-        path: "/Applications/Google Chrome.app",
+        path: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
         downloadUrl: "https://www.google.com/chrome/"
       },
       {
         name: "Google Chrome Canary",
-        path: "/Applications/Google Chrome Canary.app",
+        path: "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
         downloadUrl: "https://www.google.com/chrome/canary/"
       },
       {
         name: "Mozilla Firefox",
-        path: "/Applications/Firefox.app",
+        path: "/Applications/Firefox.app/Contents/MacOS/firefox",
         downloadUrl: "https://www.mozilla.org/firefox/"
       },
       {
         name: "Firefox Developer Edition",
-        path: "/Applications/Firefox Developer Edition.app",
+        path: "/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox",
         downloadUrl: "https://www.mozilla.org/firefox/developer/"
       },
       {
         name: "Firefox Nightly",
-        path: "/Applications/Firefox Nightly.app",
+        path: "/Applications/Firefox Nightly.app/Contents/MacOS/firefox",
         downloadUrl: "https://www.mozilla.org/firefox/nightly/"
       },
       {
-        name: "Safari",
-        path: "/Applications/Safari.app",
-        downloadUrl: "https://www.apple.com/safari/"
-      },
-      {
         name: "Microsoft Edge",
-        path: "/Applications/Microsoft Edge.app",
+        path: "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
         downloadUrl: "https://www.microsoft.com/edge"
       },
       {
         name: "Brave",
-        path: "/Applications/Brave Browser.app",
+        path: "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
         downloadUrl: "https://brave.com/"
       },
       {
         name: "Chromium",
-        path: "/Applications/Chromium.app",
+        path: "/Applications/Chromium.app/Contents/MacOS/Chromium",
         downloadUrl: "https://www.chromium.org/getting-involved/download-chromium/"
       },
       {
         name: "Opera",
-        path: "/Applications/Opera.app",
+        path: "/Applications/Opera.app/Contents/MacOS/Opera",
         downloadUrl: "https://www.opera.com/"
       },
       {
         name: "Opera GX",
-        path: "/Applications/Opera GX.app",
+        path: "/Applications/Opera GX.app/Contents/MacOS/Opera GX",
         downloadUrl: "https://www.opera.com/gx"
       },
       {
         name: "Vivaldi",
-        path: "/Applications/Vivaldi.app",
+        path: "/Applications/Vivaldi.app/Contents/MacOS/Vivaldi",
         downloadUrl: "https://vivaldi.com/"
       }
     ],
@@ -171,7 +171,11 @@ export default class Browsers {
   static possible = Browsers.platformPaths[process.platform] ?? [];
 
   static available(): BrowserEntry[] {
-    return Browsers.possible.filter(browser => existsSync(browser.path));
+    const possibleBrowsers = Browsers.possible.map(browser => {
+      browser.path = browser.path.replace('%USERNAME%', process.env.USERNAME ?? '');
+      return browser;
+    });
+    return possibleBrowsers.filter(browser => existsSync(browser.path));
   }
 
   static async promptUserChoice(): Promise<BrowserEntry | null> {
@@ -181,7 +185,7 @@ export default class Browsers {
       return null;
     }
 
-    const browserNames = availableBrowsers.map(browser => browser.name);
+    const browserNames = availableBrowsers.map(browser => browser.name).sort();
     const selectedBrowserName = await vscode.window.showQuickPick(browserNames, {
       placeHolder: 'Select a browser'
     });
