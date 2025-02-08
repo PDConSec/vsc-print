@@ -1,5 +1,5 @@
 import { logger } from './logger';
-import { existsSync, accessSync, constants } from 'fs';
+import { existsSync, accessSync, constants, statSync } from 'fs';
 import * as vscode from 'vscode';
 
 export type BrowserEntry = {
@@ -196,6 +196,11 @@ export default class Browsers {
     } else {
       // check whether the string is a path to a file that is executable
       if (existsSync(browser)) {
+        const stats = statSync(browser);
+        if (stats.isDirectory()) {
+          logger.error(`The path "${browser}" is a directory, not an executable file.`);
+          return undefined;
+        }
         if (process.platform === 'win32') {
           if (browser.endsWith('.exe')) {
             return browser;
