@@ -14,6 +14,7 @@ import { WebSocketServer } from "ws";
 import WebSocket from 'ws';
 import { marked, Parser, Renderer, Tokens } from 'marked';
 import { at } from 'lodash';
+import Browsers from './browser-paths';
 
 const markedRenderer = new Renderer();
 markedRenderer.parser = new Parser();
@@ -112,6 +113,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand("print.registerDocumentRenderer", DocumentRenderer.register));
   context.subscriptions.push(vscode.commands.registerCommand("vsc-print.dumpCommands", dumpCommands));
   context.subscriptions.push(vscode.commands.registerCommand("vsc-print.dumpProperties", dumpProperties));
+  context.subscriptions.push(vscode.commands.registerCommand("vsc-print.setAlternateBrowser", setAlternateBrowser));
 
   // Could call DocumentRenderer.register directly,
   // but this shows how a third party HTML renderer
@@ -390,4 +392,12 @@ function dumpProperties(): any {
     }
     console.log(`${matchCount} properties start with ${prefix}`);
   });
+}
+
+async function setAlternateBrowser() {
+  const browser = await Browsers.promptUserChoice();
+  if (browser) {
+    await vscode.workspace.getConfiguration("print").update("browserPath", browser.path, vscode.ConfigurationTarget.Global);
+    vscode.window.showInformationMessage(`Alternate browser set to ${browser.name}`);
+  }
 }

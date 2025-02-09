@@ -1,5 +1,13 @@
 # Change Log
 
+### 1.0.0
+
+- Switch to semver numbering
+- When the alternate browser option is enabled and your alternate browser path is invalid you 
+  will be prompted to choose a browser. This works using a database of the default locations 
+  for all the major browsers for all three platforms and then probing to see what you actually
+  have. If you have a browser and it doesn't show up then it's not on the standard path. 
+
 ### 0.14.2
 
 - replace atob and btoa with more robust alternatives

@@ -5,6 +5,7 @@
   "commands.title.preview": "Print preview",
   "commands.title.help": "Open the manual",
   "commands.title.openLog": "Open the log file",
+  "commands.title.setAlternateBrowser": "Set Alternate Browser",
   "print.alternateBrowser.description": "Use the alternate browser",
   "print.browserPath.description": "Path to the executable of an alternate browser",
   "print.colourScheme.markdownDescription": "[Stylesheet preview is available online](https://highlightjs.org/demo/). Only 'light' versions are offered because paper is white.",
