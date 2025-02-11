@@ -15,6 +15,8 @@ import { filenameByCaption } from './imports';
 import { ResourceProxy } from './renderers/resource-proxy';
 import tildify from './tildify';
 import { Metadata } from './metadata';
+import './browser-paths';
+import Browsers from './browser-paths';
 
 let settingsCss: string = require("./css/settings.css").default.toString();
 
@@ -35,6 +37,7 @@ export class PrintSession {
   public source: any;
   private printConfig = vscode.workspace.getConfiguration("print");
   private editorConfig = vscode.workspace.getConfiguration("editor");
+
   constructor(source: any, isPreview: boolean = true) {
     logger.debug(`Creating a print session object for ${source}`);
     this.ready = new Promise(async (resolve, reject) => {
@@ -304,10 +307,8 @@ async function launchAlternateBrowser(url: string) {
   const printConfig = vscode.workspace.getConfiguration("print");
   const isRemoteWorkspace = !!vscode.env.remoteName;
   logger.debug(`Workspace is ${isRemoteWorkspace ? "remote" : "local"}`);
-  const isBrowserPathDefined = !!printConfig.browserPath;
-  logger.debug(`Browser path ${isBrowserPathDefined ? "IS" : "is NOT"} defined`);
 
-  if (!isBrowserPathDefined) {
+  if (typeof printConfig.browserPath === "undefined") {
     const msg = "Alternate browser path not set. Default browser will be used.";
     logger.warn(msg);
     vscode.window.showWarningMessage(msg);
@@ -320,7 +321,7 @@ async function launchAlternateBrowser(url: string) {
       if (!cmds.includes("print.launchBrowser")) {
         throw new Error("The remote printing agent is not accessible");
       }
-      if (isBrowserPathDefined) {
+      if (!!printConfig.browserPath) {
         vscode.commands.executeCommand("print.launchBrowser", url);
       } else {
         vscode.env.openExternal(vscode.Uri.parse(url));
@@ -332,8 +333,16 @@ async function launchAlternateBrowser(url: string) {
       vscode.env.openExternal(vscode.Uri.parse(url));
     }
   } else {
-    if (isBrowserPathDefined) {
-      const cmd = escapePath(printConfig.browserPath);
+    let resolvedBrowserPath = Browsers.resolveBrowserPath(printConfig.browserPath);
+    if (!resolvedBrowserPath) {
+      const browserEntry = await Browsers.promptUserChoice();
+      if (browserEntry) {
+        await printConfig.update('browserPath', browserEntry.path, vscode.ConfigurationTarget.Global);
+      }
+      resolvedBrowserPath = browserEntry?.path;
+    }
+    if (resolvedBrowserPath) {
+      let cmd = escapePath(resolvedBrowserPath ?? "");
       child_process.exec(`${cmd} ${url}`, (error: child_process.ExecException | null, stdout: string, stderr: string) => {
         if (error || stderr) {
           vscode.window.showErrorMessage(error ? error.message : stderr);

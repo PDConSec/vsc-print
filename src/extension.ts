@@ -14,6 +14,7 @@ import { WebSocketServer } from "ws";
 import WebSocket from 'ws';
 import { marked, Parser, Renderer, Tokens } from 'marked';
 import { at } from 'lodash';
+import Browsers from './browser-paths';
 
 const markedRenderer = new Renderer();
 markedRenderer.parser = new Parser();
@@ -33,24 +34,24 @@ function base64Decode(text: string) {
 marked.use({
   renderer: {
     code(token: Tokens.Code) {
-      const result = `<pre data-raw="${base64Encode(token.raw)}"><code>${escapeHtml(token.text)}</code></pre>\n`;
+      const result = `<pre data-source-map="${base64Encode(token.raw)}"><code>${escapeHtml(token.text)}</code></pre>\n`;
       return result;
     },
     heading(token: Tokens.Heading) {
       const html = markedRenderer.heading(token);
-      return html.replace(/^<h\d/, `$& data-raw="${base64Encode(token.raw)}"`);
+      return html.replace(/^<h\d/, `$& data-source-map="${base64Encode(token.raw)}"`);
     },
     paragraph(token: Tokens.Paragraph) {
       const html = markedRenderer.paragraph(token);
-      return html.replace(/^<p/, `$& data-raw="${base64Encode(token.raw)}"`);
+      return html.replace(/^<p/, `$& data-source-map="${base64Encode(token.raw)}"`);
     },
     blockquote(token: Tokens.Blockquote) {
       const html = markedRenderer.blockquote(token);
-      return html.replace(/^<blockquote/, `$& data-raw="${base64Encode(token.raw)}"`);
+      return html.replace(/^<blockquote/, `$& data-source-map="${base64Encode(token.raw)}"`);
     },
     listitem(token: Tokens.ListItem) {
       const html = markedRenderer.listitem(token);
-      return html.replace(/^<li/, `$& data-raw="${base64Encode(token.raw)}"`);
+      return html.replace(/^<li/, `$& data-source-map="${base64Encode(token.raw)}"`);
     },
     table(token: Tokens.Table) {
       const lineEnding = '\n';
@@ -58,9 +59,9 @@ marked.use({
       const bodyRaw = token.raw.trim().split(lineEnding).slice(2).join(lineEnding);
       const rowsRaw = bodyRaw.split(lineEnding);
       const parts = markedRenderer.table(token).split("/thead");
-      parts[0] = parts[0].replace(/<tr/, `$& data-raw="${base64Encode(headerRaw)}"`);
+      parts[0] = parts[0].replace(/<tr/, `$& data-source-map="${base64Encode(headerRaw)}"`);
       for (const rowRaw of rowsRaw) {
-        parts[1] = parts[1].replace(/<tr>/, `<tr data-raw="${base64Encode(rowRaw)}">`);
+        parts[1] = parts[1].replace(/<tr>/, `<tr data-source-map="${base64Encode(rowRaw)}">`);
       }
       const html = parts.join("/thead");
       return html;
@@ -112,6 +113,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand("print.registerDocumentRenderer", DocumentRenderer.register));
   context.subscriptions.push(vscode.commands.registerCommand("vsc-print.dumpCommands", dumpCommands));
   context.subscriptions.push(vscode.commands.registerCommand("vsc-print.dumpProperties", dumpProperties));
+  context.subscriptions.push(vscode.commands.registerCommand("vsc-print.setAlternateBrowser", setAlternateBrowser));
 
   // Could call DocumentRenderer.register directly,
   // but this shows how a third party HTML renderer
@@ -390,4 +392,12 @@ function dumpProperties(): any {
     }
     console.log(`${matchCount} properties start with ${prefix}`);
   });
+}
+
+async function setAlternateBrowser() {
+  const browser = await Browsers.promptUserChoice();
+  if (browser) {
+    await vscode.workspace.getConfiguration("print").update("browserPath", browser.path, vscode.ConfigurationTarget.Global);
+    vscode.window.showInformationMessage(`Alternate browser set to ${browser.name}`);
+  }
 }

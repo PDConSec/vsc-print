@@ -125,7 +125,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
       }
     } else if (token.type === "html" && token.block) {
       const newToken = token as Tokens.HTML;
-      newToken.text = `<div data-raw="innerHTML">${token.text}</div>`;
+      newToken.text = `<div data-source-map="innerHTML">${token.text}</div>`;
       updatedTokens.push(token);
     } else {
       updatedTokens.push(token);

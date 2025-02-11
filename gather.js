@@ -9,5 +9,7 @@ const path = require('path');
   await fs.copyFile("node_modules/katex/dist/katex.css", "dist/katex.css");
   await fs.copyFile("node_modules/smiles-drawer/dist/smiles-drawer.min.js", "dist/smiles-drawer.min.js");
   await fs.copyFile("node_modules/smiles-drawer/dist/smiles-drawer.min.js.map", "dist/smiles-drawer.min.js.map");
+  await fs.copyFile("node_modules/smartquotes/dist/smartquotes.js", "dist/smartquotes.js");
+  await fs.copyFile("node_modules/smartquotes/dist/smartquotes.js.map", "dist/smartquotes.js.map");
 })();
 

@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "0.14.2",
+  "version": "1.1.0",
   "icon": "assets/vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
@@ -76,6 +76,11 @@
       {
         "command": "vsc-print.dumpProperties",
         "title": "Dump properties"
+      },
+      {
+        "category": "%commands.category%",
+        "command": "vsc-print.setAlternateBrowser",
+        "title": "%commands.title.setAlternateBrowser%"
       }
     ],
     "configuration": [
@@ -331,6 +336,11 @@
             "type": "number",
             "default": 3000,
             "description": "%print.documentSettleMilliseconds%"
+          },
+          "print.useSmartQuotes": {
+            "type": "boolean",
+            "default": true,
+            "description": "%print.useSmartQuotes.description%"
           }
         }
       }
@@ -640,7 +650,7 @@
     "workspace"
   ],
   "dependencies": {
-    "@viz-js/viz": "^3.6.0",
+    "@viz-js/viz": "^3.11.0",
     "axios": "^1.7.7",
     "braces": "^3.0.3",
     "bufferutil": "^4.0.8",

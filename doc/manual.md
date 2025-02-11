@@ -275,6 +275,17 @@ The following are known to work well.
 
 * Edge Classic is no longer supported.
 * Internet Explorer is not supported.
+* Safari does not work 
+  - launched as an alternate browser it borks URLs
+  - it won't use local fonts other than system fonts
+
+If you enable `Use alternate browser` but you don't set the path, Print will scan all the default paths for common browsers and offer a list of the browsers it finds. Except for Safari - don't use Safari.
+
+If you know you have a browser installed but it doesn't show up, most likely you didn't install it in the default location, or maybe the default location has changed. In that case, please 
+
+1. Determine the actual location and name of the executable file. Apple users, pay attention: **not the app folder, the executable _file_ inside it.**
+2. Manually set the alternate browser path to get your system working.
+3. Raise an issue telling us the browser, the version you have and the full path so we can add it to the list of paths to check.
 
 ## Markdown extensions are not supported
 
@@ -286,6 +297,17 @@ Print uses its own pipeline because Microsoft keeps changing VS Code's Markdown 
 ## Alternate browser
 
 **At the time of this release, problems with command routing were causing printing from remote workspaces to fall back to using the default printer. Full service will be restored as soon as possible.**
+
+### Set the alternate browser by choosing from installed browsers
+
+Press `F1` (or `Cmd+Shift+P` on a Mac) and type `Set Alternate Browser` then press `Enter` to run the command. Print will check the default locations for common browsers and offer a list of the browsers it found installed.
+
+If you know you have a browser installed but it doesn't show up, most likely you didn't install it in the default location, or maybe the default location has changed. In that case, please 
+
+1. Determine the actual location and name of the executable file. Apple users, pay attention: **not the app folder, the executable _file_ inside it.**
+2. Manually set the alternate browser path to get your system working.
+3. Raise an issue telling us the browser, the version you have and the full path so we can add it to the list of paths to check.
+
 
 You cannot supply command-line options on the alternate browser path. On Windows, we automatically put quotes around your path in case of spaces in file or folder names. On other platforms, spaces are automatically escaped.
 

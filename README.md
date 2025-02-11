@@ -2,15 +2,15 @@
 
 Print code. Print rendered Markdown. Local or remote. Windows, Mac or Linux.
 
-## Recent features
+Print is more or less feature complete and has been fairly stable for a long time, so we've bumped the version to 1.0.0 and henceforth will use semantic versioning.
 
-Hot preview! When you launch a preview of a document from the active editor, when you edit that file and stop making changes for three seconds, the proview will update in the browser. This works for source code but it's most useful for Markdown documents.
+This release adds a convenience for those using alternate browser path - if you enable `Use alternate browser` and you don't set the path, Print will probe a list of the standard installation paths for common browsers and offer you a pick list for the browsers it finds installed. If it doesn't work for your browser on your platform, gather up the details (platform and actual path on your system) and log an issue so we can expand the list. It should work for current versions of Chrome, Chromium, Brave, Firefox, Opera, Vivaldi and Microsoft Edge on all three platforms.
 
-Hot preview also supports find-in-source. If you're proof-reading the rendered document and you find an error, double-clicking the paragraph will find and highlight the first line in the editor. Mapping back to the source document is greatly improved from last release.
+## Hot preview 
 
-#### IMPORTANT for hot preview with diagrams 
+When you launch a preview of a Markdown document from the active editor, if you edit that file and stop making changes for three seconds, the proview will update in the browser. Hot preview also supports find-in-source. If you're proof-reading the rendered document and you find an error, double-clicking the paragraph will find and highlight the first line in the editor. You can adjust the settling delay in settings.
 
-If you intend to use hot preview while editing diagrams in Markdown, set up a local Kroki server and configure Print to use it. If you fail to do this you will very quickly find yourself rate-limited.
+**Important** - if you intend to use hot preview while editing diagrams in Markdown, set up a local Kroki server and configure Print to use it. If you fail to do this you will very quickly find yourself rate-limited by the public server.
 
 ## Cross-platform printing
 

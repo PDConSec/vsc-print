@@ -5,6 +5,7 @@
   "commands.title.preview": "Print preview",
   "commands.title.help": "Open the manual",
   "commands.title.openLog": "Open the log file",
+  "commands.title.setAlternateBrowser": "Set Alternate Browser",
   "print.alternateBrowser.description": "Use the alternate browser",
   "print.browserPath.description": "Path to the executable of an alternate browser",
   "print.colourScheme.markdownDescription": "[Stylesheet preview is available online](https://highlightjs.org/demo/). Only 'light' versions are offered because paper is white.",
@@ -35,5 +36,6 @@
   "print.stylesheets": "URLs or paths for extra CSS stylesheets. For workspace relative paths, use 'workspace.resource/path/to/your.css'. Otherwise, paths should be relative to the base document ('./my.css' would be in the same folder as the document), or absolute (https://...)",
   "print.logLevel.description": "Log level 'Error' will log only errors (very few entries) whereas 'info' will log errors, warnings and info. 'Debug' is good for troubleshooting. 'Silly' will log absolutely everything but the log file will grow fast.",
   "print.krokiUrl.markdownDescription": "URL for Kroki diagram rendering service. To get you going this defaults to the internet service but you should [install your own](https://kroki.io/#install) as soon as possible.",
-  "print.documentSettleMilliseconds": "The number of milliseconds to wait after a document change before refreshing the preview. Diagrams in particular may need a long settle time. To use hot preview while editing diagrams, you will need to set up a private Kroki server and configure Print to use it. The public server is rate limited."
+  "print.documentSettleMilliseconds": "The number of milliseconds to wait after a document change before refreshing the preview. Diagrams in particular may need a long settle time. To use hot preview while editing diagrams, you will need to set up a private Kroki server and configure Print to use it. The public server is rate limited.",
+  "print.useSmartQuotes.description": "Enable the use of smart quotes in rendered Markdown."
 }

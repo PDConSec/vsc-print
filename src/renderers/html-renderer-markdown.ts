@@ -32,6 +32,18 @@ resources.set("smiles-drawer.min.js.map", new ResourceProxy(
   async f => fs.promises.readFile(resourcePath(f), "utf-8")
 ));
 
+resources.set("smartquotes.js", new ResourceProxy(
+  "application/json; charset=utf-8",
+  "smartquotes.js",
+  async f => fs.promises.readFile(resourcePath(f), "utf-8")
+));
+
+resources.set("smartquotes.js.map", new ResourceProxy(
+  "application/json; charset=utf-8",
+  "smartquotes.js.map",
+  async f => fs.promises.readFile(resourcePath(f), "utf-8")
+));
+
 const fontPath = resourcePath("fonts");
 const fontfilenames = fs.readdirSync(fontPath);
 for (const fontfilename of fontfilenames) {
@@ -55,7 +67,11 @@ export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>
   const uri: vscode.Uri = options.uri;
   const rootDocumentFolder = path.dirname(uri.fsPath);
   const updatedTokens = await processMarkdown({ LATEX: { displayMode: true } }, raw, generatedResources, rootDocumentFolder);
-  return marked.parser(updatedTokens);
+  let html = marked.parser(updatedTokens);
+  if (vscode.workspace.getConfiguration("print").useSmartQuotes) {
+    html += "<script src='bundled/smartquotes.js'></script><script>smartquotes();</script>";
+  }
+  return html;
 }
 
 export function getCssUriStrings(): Array<string> {
@@ -75,9 +91,10 @@ export function getResource(name: string): ResourceProxy {
 }
 
 export function getScriptUriStrings(uri: vscode.Uri) {
-  return [
+  const scriptUris = [
     "bundled/smiles-drawer.min.js",
   ];
+  return scriptUris;
 }
 
 function resourcePath(relativePath: string) {
