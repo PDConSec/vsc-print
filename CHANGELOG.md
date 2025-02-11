@@ -1,5 +1,11 @@
 # Change Log
 
+### 1.1.0
+
+- SmartQuote support in rendered Markdown, setting on by default
+- Fixed event binding in preview
+- When you double-click a element in hot preview, in addition to selecting the source Markdown in the editor the rendered element is highlighted
+
 ### 1.0.0
 
 - Switch to semver numbering

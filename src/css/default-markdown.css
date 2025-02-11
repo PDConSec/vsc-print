@@ -63,3 +63,9 @@ div.fill pre.mermaid svg {
 		visibility: hidden;
 	}
 }
+
+@media screen {
+  .xref-highlight {
+    background-color: yellow;
+  }
+}
