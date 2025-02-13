@@ -13,6 +13,8 @@ const hbDocument = Handlebars.compile(require("../templates/document.tpl").defau
 export class EditorDocumentBuilder extends AbstractDocumentBuilder {
   private document: vscode.TextDocument;
   private changeHandler: vscode.Disposable | undefined;
+  private configurationChangeHandler: vscode.Disposable | undefined;
+  private cssChangeHandlers: vscode.Disposable[] = [];
 
   constructor(
     isPreview: boolean,
@@ -38,6 +40,35 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
       this.changeHandler.dispose();
       this.changeHandler = undefined;
     }
+    if (this.configurationChangeHandler) {
+      this.configurationChangeHandler.dispose();
+      this.configurationChangeHandler = undefined;
+    }
+    this.cssChangeHandlers.forEach(handler => handler.dispose());
+    this.cssChangeHandlers = [];
+  }
+
+  private handleCssFileChange(cssFilePath: string, ws: WebSocket) {
+    const cssUri = vscode.Uri.file(cssFilePath);
+    let timeout: NodeJS.Timeout | undefined;
+
+    const onCssFileChange = () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => {
+        logger.info("CSS file change detected, sending refreshPreview message");
+        ws.send(JSON.stringify({ type: 'refreshPreview' }));
+      }, vscode.workspace.getConfiguration("print").documentSettleMilliseconds);
+    };
+
+    const handler = vscode.workspace.onDidChangeTextDocument(event => {
+      if (event.document.uri.toString() === cssUri.toString()) {
+        onCssFileChange();
+      }
+    });
+
+    this.cssChangeHandlers.push(handler);
   }
 
   public configureWebsocket(ws: WebSocket): void {
@@ -69,6 +100,32 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
         onDocumentChange();
       }
     });
+
+    this.configurationChangeHandler = vscode.workspace.onDidChangeConfiguration(event => {
+      if (event.affectsConfiguration("print.stylesheets.markdown")) {
+        logger.info("Configuration change detected, updating CSS file listeners and sending refreshPreview message");
+        this.cssChangeHandlers.forEach(handler => handler.dispose());
+        this.cssChangeHandlers = [];
+        const printConfig = vscode.workspace.getConfiguration("print");
+        const markdownStylesheets = printConfig.get<string[]>("stylesheets.markdown") || [];
+        const documentDir = path.dirname(this.document.uri.fsPath);
+
+        for (const stylesheet of markdownStylesheets) {
+          const cssFilePath = path.isAbsolute(stylesheet) ? stylesheet : path.resolve(documentDir, stylesheet);
+          this.handleCssFileChange(cssFilePath, ws);
+        }
+        ws.send(JSON.stringify({ type: 'refreshPreview' }));
+      }
+    });
+
+    const printConfig = vscode.workspace.getConfiguration("print");
+    const markdownStylesheets = printConfig.get<string[]>("stylesheets.markdown") || [];
+    const documentDir = path.dirname(this.document.uri.fsPath);
+
+    for (const stylesheet of markdownStylesheets) {
+      const cssFilePath = path.isAbsolute(stylesheet) ? stylesheet : path.resolve(documentDir, stylesheet);
+      this.handleCssFileChange(cssFilePath, ws);
+    }
 
     ws.onmessage = (event) => {
       var raw = event.data.toString();

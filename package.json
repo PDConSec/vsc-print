@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "icon": "assets/vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
@@ -425,189 +425,6 @@
         }
       ]
     },
-    "languages": [
-      {
-        "id": "en",
-        "aliases": [
-          "en-us",
-          "en-gb"
-        ],
-        "translations": [
-          {
-            "id": "package.nls.en",
-            "path": "./i18n/package.nls.en.json"
-          }
-        ]
-      },
-      {
-        "id": "zh-cn",
-        "aliases": [
-          "zh-hans"
-        ],
-        "translations": [
-          {
-            "id": "package.nls.zh-cn",
-            "path": "./i18n/package.nls.zh-cn.json"
-          }
-        ]
-      },
-      {
-        "id": "ja",
-        "translations": [
-          {
-            "id": "package.nls.ja",
-            "path": "./i18n/package.nls.ja.json"
-          }
-        ]
-      },
-      {
-        "id": "es",
-        "translations": [
-          {
-            "id": "package.nls.es",
-            "path": "./i18n/package.nls.es.json"
-          }
-        ]
-      },
-      {
-        "id": "ru",
-        "translations": [
-          {
-            "id": "package.nls.ru",
-            "path": "./i18n/package.nls.ru.json"
-          }
-        ]
-      },
-      {
-        "id": "pt",
-        "translations": [
-          {
-            "id": "package.nls.pt",
-            "path": "./i18n/package.nls.pt.json"
-          }
-        ]
-      },
-      {
-        "id": "fr",
-        "translations": [
-          {
-            "id": "package.nls.fr",
-            "path": "./i18n/package.nls.fr.json"
-          }
-        ]
-      },
-      {
-        "id": "ko",
-        "translations": [
-          {
-            "id": "package.nls.ko",
-            "path": "./i18n/package.nls.ko.json"
-          }
-        ]
-      },
-      {
-        "id": "zh-hant",
-        "aliases": [
-          "zh-tw"
-        ],
-        "translations": [
-          {
-            "id": "package.nls.zh-hant",
-            "path": "./i18n/package.nls.zh-hant.json"
-          }
-        ]
-      },
-      {
-        "id": "it",
-        "translations": [
-          {
-            "id": "package.nls.it",
-            "path": "./i18n/package.nls.it.json"
-          }
-        ]
-      },
-      {
-        "id": "pl",
-        "translations": [
-          {
-            "id": "package.nls.pl",
-            "path": "./i18n/package.nls.pl.json"
-          }
-        ]
-      },
-      {
-        "id": "hu",
-        "translations": [
-          {
-            "id": "package.nls.hu",
-            "path": "./i18n/package.nls.hu.json"
-          }
-        ]
-      },
-      {
-        "id": "cs",
-        "translations": [
-          {
-            "id": "package.nls.cs",
-            "path": "./i18n/package.nls.cs.json"
-          }
-        ]
-      },
-      {
-        "id": "bg",
-        "translations": [
-          {
-            "id": "package.nls.bg",
-            "path": "./i18n/package.nls.bg.json"
-          }
-        ]
-      },
-      {
-        "id": "tr",
-        "translations": [
-          {
-            "id": "package.nls.tr",
-            "path": "./i18n/package.nls.tr.json"
-          }
-        ]
-      },
-      {
-        "id": "my",
-        "translations": [
-          {
-            "id": "package.nls.my",
-            "path": "./i18n/package.nls.my.json"
-          }
-        ]
-      },
-      {
-        "id": "ca",
-        "translations": [
-          {
-            "id": "package.nls.ca",
-            "path": "./i18n/package.nls.ca.json"
-          }
-        ]
-      },
-      {
-        "id": "lt",
-        "translations": [
-          {
-            "id": "package.nls.lt",
-            "path": "./i18n/package.nls.lt.json"
-          }
-        ]
-      },
-      {
-        "id": "hy",
-        "translations": [
-          {
-            "id": "package.nls.hy",
-            "path": "./i18n/package.nls.hy.json"
-          }
-        ]
-      }
-    ],
     "walkthroughs": [
       {
         "id": "how-to-print",
@@ -655,6 +472,8 @@
     "braces": "^3.0.3",
     "bufferutil": "^4.0.8",
     "cors": "^2.8.5",
+    "gulp": "^5.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
     "handlebars": "^4.7.8",
     "highlight.js": "^11.9.0",
     "katex": "^0.16.21",
@@ -703,6 +522,7 @@
     "file-loader": "^6.2.0",
     "handlebars-loader": "^1.7.3",
     "raw-loader": "^4.0.2",
+    "smartquotes": "^2.3.2",
     "smiles-drawer": "^2.1.7",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",

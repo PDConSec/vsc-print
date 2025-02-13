@@ -23,6 +23,13 @@
       "problemMatcher": [],
       "label": "npm: compile",
       "detail": "tsc -p ./"
+    },
+    {
+      "type": "npm",
+      "script": "webpack",
+      "problemMatcher": [],
+      "label": "npm: webpack",
+      "detail": "node gather.js && webpack --mode development"
     }
   ]
 }

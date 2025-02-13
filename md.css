@@ -1,0 +1,8 @@
+p, li, div, td, th {
+  font-family: Georgia, 'Libre Baskerville', 'Times New Roman', Times, serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: navy;
+  font-family: 'Franklin Gothic Medium', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}

@@ -231,6 +231,8 @@ export class PrintSession {
     async function relativeResource(resourcePath: string) {
       const fileUri: vscode.Uri = vscode.Uri.file(resourcePath);
       const fileExt = path.extname(resourcePath);
+      const editor = vscode.window.visibleTextEditors.find(editor => editor.document.uri.toString() === fileUri.toString());
+
       switch (fileExt.toLowerCase()) {
         case ".jpg":
         case ".gif":
@@ -240,29 +242,34 @@ export class PrintSession {
             "Content-Type": `image/${fileExt.substring(1).toLowerCase()}`,
             "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
           });
-          response.end(await vscode.workspace.fs.readFile(fileUri));
-          break;
+          return response.end(await vscode.workspace.fs.readFile(fileUri));
         case ".svg":
           response.writeHead(200, {
             "Content-Type": `image/svg+xml`,
             "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
           });
-          response.end(await vscode.workspace.fs.readFile(fileUri));
-          break;
+          return response.end(await vscode.workspace.fs.readFile(fileUri));
         case ".css":
-          response.writeHead(200, {
-            "Content-Type": "text/css",
-            "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
-          });
-          response.end(await vscode.workspace.fs.readFile(fileUri));
-          break;
+          if (editor) {
+            const content = editor.document.getText();
+            response.writeHead(200, {
+              "Content-Type": "text/css",
+              "Content-Length": Buffer.byteLength(content, "utf-8")
+            });
+            return response.end(content);
+          } else {
+            response.writeHead(200, {
+              "Content-Type": "text/css",
+              "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
+            });
+            return response.end(await vscode.workspace.fs.readFile(fileUri));
+          }
         default:
           response.writeHead(403, {
             "Content-Type": "text/plain",
             "Content-Length": 9
           });
-          response.end("Forbidden");
-          break;
+          return response.end("Forbidden");
       }
     }
   }
@@ -338,6 +345,8 @@ async function launchAlternateBrowser(url: string) {
       const browserEntry = await Browsers.promptUserChoice();
       if (browserEntry) {
         await printConfig.update('browserPath', browserEntry.path, vscode.ConfigurationTarget.Global);
+        var msg = vscode.l10n.t("has been set as the alternate browser for printing.");
+        vscode.window.showInformationMessage(`"${browserEntry.name}" {msg}`);
       }
       resolvedBrowserPath = browserEntry?.path;
     }

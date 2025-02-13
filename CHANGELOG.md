@@ -1,5 +1,10 @@
 # Change Log
 
+### 1.2.0
+
+- Fixed [#376](https://github.com/PDConSec/vsc-print/issues/376)
+- Hot preview now extends to Print's Markdown Stylesheets list and the stylesheets themselves
+
 ### 1.1.0
 
 - SmartQuote support in rendered Markdown, setting on by default
