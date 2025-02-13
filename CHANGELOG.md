@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.2.1 
+
+- Remove gulp, gulp-typescript from package.json and bundle
+
 ### 1.2.0
 
 - Fixed [#376](https://github.com/PDConSec/vsc-print/issues/376)
