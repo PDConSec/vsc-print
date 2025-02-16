@@ -1,12 +1,9 @@
 html,
 body {
-	margin: 0;
-	padding: 0;
 	tab-size: TAB_SIZE;
 }
 
 .hljs {
-	background-color: transparent;
 	font-family: FONT_FAMILY;
 	font-size: FONT_SIZE;
 }
@@ -16,23 +13,11 @@ body {
 h3.filepath {
 	font-family: FONT_FAMILY;
 	font-size: FONT_SIZE;
-	hyphens: auto;
-	hyphenate-character: "↩";
 	line-height: LINE_SPACINGem;
 }
 
 pre.plaintext {
 	font-family: FONT_FAMILY;
 	font-size: FONT_SIZE;
-	hyphens: auto;
 	line-height: LINE_SPACINGem;
-	padding-bottom: 3px;
-	white-space: pre-wrap;
-}
-
-.code-box {
-  background-color: #f8f8f8;
-  border-radius: 0.5em;
-  border: thin solid silver;
-  white-space: pre-wrap;
 }

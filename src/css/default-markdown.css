@@ -1,8 +1,10 @@
 html,
 body {
-	background-color: white;
-	font-family: serif;
-	font-size: 14pt;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  font-family: serif;
+  font-size: 14pt;
 }
 
 h1,
@@ -11,23 +13,24 @@ h3,
 h4,
 h5,
 h6 {
-	page-break-after: avoid;
-	page-break-inside: avoid;
+  page-break-after: avoid;
+  page-break-inside: avoid;
 }
 
 table {
-	width: 100%;
-	border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-td, th {
-	border-bottom: thin solid silver;
-	padding: 3px;
-    text-align: left;
+td,
+th {
+  border-bottom: thin solid silver;
+  padding: 3px;
+  text-align: left;
 }
 
 code {
-    text-wrap: wrap;
+  text-wrap: wrap;
 }
 
 div.left pre.mermaid {
@@ -51,7 +54,7 @@ div.fill pre.mermaid svg {
   /* mermaid puts a style directly on the svg node, !important overrides it */
 }
 
-.language-diagram-error{
+.language-diagram-error {
   background-color: blue;
   color: yellow;
   display: block;
@@ -59,13 +62,40 @@ div.fill pre.mermaid svg {
 }
 
 @media print {
-	.no-print {
-		visibility: hidden;
-	}
+  .no-print {
+    visibility: hidden;
+  }
 }
 
 @media screen {
+  body{
+    padding: 0.2em;
+  }
   .xref-highlight {
     background-color: yellow;
   }
+}
+
+.hljs {
+  background-color: transparent;
+}
+
+.line-number,
+.line-text,
+h3.filepath {
+  hyphens: auto;
+  hyphenate-character: "↩";
+}
+
+pre.plaintext {
+  hyphens: auto;
+  padding-bottom: 3px;
+  white-space: pre-wrap;
+}
+
+.code-box {
+  background-color: #f8f8f8;
+  border-radius: 0.5em;
+  border: thin solid silver;
+  white-space: pre-wrap;
 }
