@@ -31,14 +31,18 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
 
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
-    const printConfig = vscode.workspace.getConfiguration("print");
+    const generalConfig = vscode.workspace.getConfiguration("print.general");
     const folderConfig = vscode.workspace.getConfiguration("print.folder");
 
     logger.debug(`Folder ${this.workspacePath(this.uri)}`);
     this.filepath = this.uri.fsPath;
     const docs = await this.docsInFolder();
     const summary = folderConfig.includeFileList ?
-      `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
+      `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d => 
+        generalConfig.get<string>("filepathStyleInHeadings") === "Relative"
+          ? this.workspacePath(d.uri)
+          : tildify(d.fileName)
+      ).join("\n")}</pre>` :
       `<h3 class="filepath">${docs.length} printable files</h3><p>(file list disabled)</p>`;
 
     if (docs.length > folderConfig.maxFiles) {
@@ -63,7 +67,7 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
       const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
       const bodyHtml = await renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
       return hbFolderItem({
-        multiDocumentItemTitle: printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName),
+        multiDocumentItemTitle: generalConfig.get<string>("filepathStyleInHeadings") === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName),
         multiDocumentItemContent: `<table class="hljs">\n${bodyHtml}\n</table>\n`
       });
     }));

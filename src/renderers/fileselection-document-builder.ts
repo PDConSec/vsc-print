@@ -34,12 +34,16 @@ export class FileselectionDocumentBuilder extends AbstractDocumentBuilder {
 
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
-    const printConfig = vscode.workspace.getConfiguration("print");
+    const generalConfig = vscode.workspace.getConfiguration("print.general");
 
     logger.debug(`Selected files`);
     const docs = await this.docsInFileselection();
     const summary =
-      `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
+      `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d =>
+        generalConfig.get<string>("filepathStyleInHeadings") === "Relative"
+          ? this.workspacePath(d.uri)
+          : tildify(d.fileName)
+      ).join("\n")}</pre>\r`;
     const folderItems = await Promise.all(docs.map(async (doc) => {
       const renderer = DocumentRenderer.get(doc.languageId);
       const bodyText = doc.getText();
@@ -47,7 +51,7 @@ export class FileselectionDocumentBuilder extends AbstractDocumentBuilder {
       const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
       const bodyHtml = await renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
       const docHtml = hbFolderItem({
-        multiDocumentItemTitle: printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName),
+        multiDocumentItemTitle: generalConfig.get<string>("filepathStyleInHeadings") === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName),
         multiDocumentItemContent: `<table class="hljs">\n${bodyHtml}\n</table>\n`
       });
       return docHtml;
