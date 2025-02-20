@@ -23,10 +23,10 @@ export class DocumentRenderer {
     if (this.options.getTitle) {
       return this.options.getTitle(uri);
     } else {
-      const printConfig = vscode.workspace.getConfiguration("print");
+      const generalConfig = vscode.workspace.getConfiguration("print.general");
       let filename = uri.fsPath;
       const parts = filename.split(path.sep);
-      switch (printConfig.filepathInDocumentTitle) {
+      switch (generalConfig.useFilepathInDocumentTitle) {
         case "No path":
           return parts[parts.length - 1];
         case "Abbreviated path":

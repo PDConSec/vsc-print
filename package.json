@@ -87,94 +87,84 @@
       {
         "title": "%configuration.title.print%",
         "properties": {
-          "print.filepathAsDocumentHeading": {
-            "description": "%print.filepathAsDocumentHeading.description%",
+          "print.browser.alternateBrowserPath": {
             "type": "string",
-            "default": "Relative",
-            "enum": [
-              "Absolute",
-              "Relative"
-            ]
+            "description": "%print.browser.alternateBrowserPath%"
           },
-          "print.krokiUrl": {
-            "markdownDescription": "%print.krokiUrl.markdownDescription%",
-            "type": "string",
-            "default": "https://kroki.io"
-          },
-          "print.rejectUnauthorisedTls": {
-            "description": "%print.rejectUnauthorisedTls.description%",
+          "print.browser.useAlternate": {
             "type": "boolean",
-            "default": true
+            "description": "%print.browser.useAlternate%",
+            "default": false
           },
-          "print.filepathHeadingForIndividuallyPrintedDocuments": {
-            "description": "%print.filepathHeadingForIndividuallyPrintedDocuments.description%",
-            "type": "boolean",
-            "default": true
-          },
-          "print.filepathInDocumentTitle": {
-            "type": "string",
-            "default": "No path",
-            "description": "%print.filepathInDocumentTitle.description%",
-            "enum": [
-              "No path",
-              "Abbreviated path",
-              "Workspace relative"
+          "print.folder.exclude": {
+            "default": [
+              "{bin,obj,out}",
+              "node_modules",
+              "data",
+              "**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo,design}"
             ],
-            "markdownEnumDescriptions": [
-              "%print.filepathInDocumentTitle.markdownEnumDescription1%",
-              "%print.filepathInDocumentTitle.markdownEnumDescription2%",
-              "%print.filepathInDocumentTitle.markdownEnumDescription3%"
-            ]
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.folder.exclude%"
           },
-          "print.lineSpacing": {
-            "type": "number",
-            "enum": [
-              1,
-              1.5,
-              2
-            ],
-            "enumDescriptions": [
-              "%print.lineSpacing.single%",
-              "%print.lineSpacing.line-and-a-half%",
-              "%print.lineSpacing.double%"
-            ],
-            "description": "%print.lineSpacing.description%",
-            "default": 1
-          },
-          "print.fontSize": {
-            "type": "string",
-            "enum": [
-              "6pt",
-              "7pt",
-              "8pt",
-              "9pt",
-              "10pt",
-              "11pt",
-              "11.5pt",
-              "12pt",
-              "13pt"
-            ],
-            "description": "%print.fontSize.description%",
-            "default": "10pt"
-          },
-          "print.renderMarkdown": {
-            "type": "boolean",
+          "print.folder.fileNames": {
             "default": true,
-            "description": "%print.renderMarkdown.description%"
+            "type": "boolean",
+            "description": "%print.folder.fileNames%"
           },
-          "print.lineNumbers": {
+          "print.folder.include": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.folder.include%"
+          },
+          "print.folder.includeFileList": {
+            "default": false,
+            "type": "boolean",
+            "description": "%print.folder.includeFileList%"
+          },
+          "print.folder.maxFiles": {
+            "default": 30,
+            "type": "integer",
+            "description": "%print.folder.maxFiles%"
+          },
+          "print.folder.maxLines": {
+            "default": 1200,
+            "type": "integer",
+            "description": "%print.folder.maxLines%"
+          },
+          "print.general.editorContextMenu.itemPosition": {
+            "default": "Top",
             "type": "string",
-            "description": "%print.lineNumbers.description%",
+            "description": "%print.general.editorContextMenu.itemPosition%",
             "enum": [
-              "on",
-              "off",
-              "inherit"
-            ],
-            "default": "inherit"
+              "Top",
+              "Bottom",
+              "None"
+            ]
           },
-          "print.logLevel": {
+          "print.general.editorTitleMenu.showPreviewIcon": {
+            "default": true,
+            "type": "boolean",
+            "description": "%print.general.editorTitleMenu.showPreviewIcon%"
+          },
+          "print.general.editorTitleMenu.showPrintIcon": {
+            "default": true,
+            "type": "boolean",
+            "description": "%print.general.editorTitleMenu.showPrintIcon%"
+          },
+          "print.general.filepathHeadingForIndividuallyPrintedDocuments": {
+            "description": "%print.general.filepathHeadingForIndividuallyPrintedDocuments%",
+            "type": "boolean",
+            "default": true
+          },
+          "print.general.logLevel": {
+            "description": "%print.general.logLevel%",
             "type": "string",
-            "description": "%print.logLevel.description%",
             "enum": [
               "error",
               "warn",
@@ -186,16 +176,65 @@
             ],
             "default": "error"
           },
-          "print.alternateBrowser": {
+          "print.markdown.SettleMs": {
+            "type": "number",
+            "default": 3000,
+            "description": "%print.markdown.SettleMs%"
+          },
+          "print.markdown.enableRender": {
             "type": "boolean",
-            "description": "%print.alternateBrowser.description%",
-            "default": false
+            "default": true,
+            "description": "%print.markdown.enableRender%"
           },
-          "print.browserPath": {
+          "print.markdown.kroki.includePaths": {
+            "default": [
+              "."
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.folder.include%"
+          },
+          "print.markdown.kroki.rejectUnauthorisedTls": {
+            "description": "%print.markdown.kroki.rejectUnauthorisedTls%",
+            "type": "boolean",
+            "default": true
+          },
+          "print.markdown.kroki.url": {
+            "markdownDescription": "%print.markdown.kroki.url%",
             "type": "string",
-            "description": "%print.browserPath.description%"
+            "default": "https://kroki.io"
           },
-          "print.colourScheme": {
+          "print.markdown.stylesheets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.markdown.stylesheets%"
+          },
+          "print.markdown.useSmartQuotes": {
+            "type": "boolean",
+            "default": true,
+            "description": "%print.markdown.useSmartQuotes%"
+          },
+          "print.general.filepathStyleInHeadings": {
+            "description": "%print.general.filepathStyleInHeadings%",
+            "type": "string",
+            "default": "Relative",
+            "enum": [
+              "Absolute",
+              "Relative"
+            ]
+          },
+          "print.plaintext.stylesheets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.sourcecode.stylesheets%"
+          },
+          "print.sourcecode.colourScheme": {
             "type": "string",
             "enum": [
               "[none]",
@@ -238,109 +277,70 @@
               "XCode"
             ],
             "default": "Atelier Dune",
-            "markdownDescription": "%print.colourScheme.markdownDescription%"
+            "markdownDescription": "%print.sourcecode.colourScheme.markdownDescription%"
           },
-          "print.editorContextMenuItemPosition": {
-            "default": "Top",
+          "print.sourcecode.fontSize": {
             "type": "string",
-            "description": "%print.editorContextMenuItemPosition.description%",
             "enum": [
-              "Top",
-              "Bottom",
-              "None"
-            ]
-          },
-          "print.editorTitleMenuButtonPrint": {
-            "default": true,
-            "type": "boolean",
-            "description": "%print.editorTitleMenuButtonPrint.description%"
-          },
-          "print.editorTitleMenuButtonPreview": {
-            "default": true,
-            "type": "boolean",
-            "description": "%print.editorTitleMenuButtonPreview.description%"
-          },
-          "print.folder.fileNames": {
-            "default": true,
-            "type": "boolean",
-            "description": "%print.folder.fileNames.description%"
-          },
-          "print.folder.include": {
-            "default": [],
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "%print.folder.include.description%"
-          },
-          "print.includePaths": {
-            "default": [
-              "."
+              "6pt",
+              "7pt",
+              "8pt",
+              "9pt",
+              "10pt",
+              "11pt",
+              "11.5pt",
+              "12pt",
+              "13pt"
             ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "%print.folder.include.description%"
+            "description": "%print.sourcecode.fontSize%",
+            "default": "10pt"
           },
-          "print.stylesheets.markdown": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "%print.stylesheets%"
-          },
-          "print.stylesheets.plaintext": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "%print.stylesheets%"
-          },
-          "print.stylesheets.sourcecode": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "%print.stylesheets%"
-          },
-          "print.folder.exclude": {
-            "default": [
-              "{bin,obj,out}",
-              "node_modules",
-              "data",
-              "**/*.{bin,exe,dll,hex,pdb,pdf,pfx,png,jpg,gif,bmp,suo,design}"
+          "print.sourcecode.lineNumbers": {
+            "type": "string",
+            "description": "%print.sourcecode.lineNumbers%",
+            "enum": [
+              "on",
+              "off",
+              "inherit"
             ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "%print.folder.exclude.description%"
+            "default": "inherit"
           },
-          "print.folder.maxLines": {
-            "default": 1200,
-            "type": "integer",
-            "description": "%print.folder.maxLines.description%"
-          },
-          "print.folder.maxFiles": {
-            "default": 30,
-            "type": "integer",
-            "description": "%print.folder.maxFiles.description%"
-          },
-          "print.folder.includeFileList": {
-            "default": false,
-            "type": "boolean",
-            "description": "%print.folder.includeFileList.description%"
-          },
-          "print.documentSettleMilliseconds": {
+          "print.sourcecode.lineSpacing": {
             "type": "number",
-            "default": 3000,
-            "description": "%print.documentSettleMilliseconds%"
+            "enum": [
+              1,
+              1.5,
+              2
+            ],
+            "enumDescriptions": [
+              "%print.sourcecode.lineSpacing.single%",
+              "%print.sourcecode.lineSpacing.line-and-a-half%",
+              "%print.sourcecode.lineSpacing.double%"
+            ],
+            "description": "%print.sourcecode.lineSpacing%",
+            "default": 1
           },
-          "print.useSmartQuotes": {
-            "type": "boolean",
-            "default": true,
-            "description": "%print.useSmartQuotes.description%"
+          "print.sourcecode.stylesheets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "%print.sourcecode.stylesheets%"
+          },
+          "print.general.useFilepathInDocumentTitle": {
+            "type": "string",
+            "default": "No path",
+            "description": "%print.useFilepathInDocumentTitle%",
+            "enum": [
+              "No path",
+              "Abbreviated path",
+              "Workspace relative"
+            ],
+            "markdownEnumDescriptions": [
+              "%print.useFilepathInDocumentTitle.markdownEnumDescription1%",
+              "%print.useFilepathInDocumentTitle.markdownEnumDescription2%",
+              "%print.useFilepathInDocumentTitle.markdownEnumDescription3%"
+            ]
           }
         }
       }

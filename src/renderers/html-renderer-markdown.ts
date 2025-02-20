@@ -60,7 +60,7 @@ for (const fontfilename of fontfilenames) {
 
 // give the user the option to turn off rendered printing
 export function isEnabled(): boolean {
-  return vscode.workspace.getConfiguration("print").renderMarkdown;
+  return vscode.workspace.getConfiguration("print.markdown").get<boolean>("enableRender")!;
 }
 
 export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>, raw: string, languageId: string, options: any) {
@@ -68,14 +68,16 @@ export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>
   const rootDocumentFolder = path.dirname(uri.fsPath);
   const updatedTokens = await processMarkdown({ LATEX: { displayMode: true } }, raw, generatedResources, rootDocumentFolder);
   let html = marked.parser(updatedTokens);
-  if (vscode.workspace.getConfiguration("print").useSmartQuotes) {
+  const markdownConfig = vscode.workspace.getConfiguration("print.markdown");
+  if (markdownConfig.get("useSmartQuotes")) {
     html += "<script src='bundled/smartquotes.js'></script><script>smartquotes();</script>";
   }
   return html;
 }
 
 export function getCssUriStrings(): Array<string> {
-  const userSuppliedCssUrls: string[] = vscode.workspace.getConfiguration("print.stylesheets").markdown;
+  const markdownConfig = vscode.workspace.getConfiguration("print.markdown");
+  const userSuppliedCssUrls: string[] = markdownConfig.get("stylesheets") ?? [];
   const cssUriStrings = [
     "bundled/default-markdown.css",
     "bundled/katex.css",

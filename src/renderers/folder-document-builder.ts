@@ -34,15 +34,16 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
     const printConfig = vscode.workspace.getConfiguration("print");
+    const folderConfig = vscode.workspace.getConfiguration("print.folder");
 
     logger.debug(`Folder ${this.workspacePath(this.uri)}`);
     this.filepath = this.uri.fsPath;
     const docs = await this.docsInFolder();
-    const summary = printConfig.folder.includeFileList ?
+    const summary = folderConfig.includeFileList ?
       `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
       `<h3 class="filepath">${docs.length} printable files</h3><p>(file list disabled)</p>`;
 
-    if (docs.length > printConfig.folder.maxFiles) {
+    if (docs.length > folderConfig.maxFiles) {
       const msgTooManyFiles =
         vscode.l10n.t("The selected directory contains too many files to print them all. Only the summary will be printed.");
       vscode.window.showWarningMessage(msgTooManyFiles);
@@ -82,13 +83,13 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
 
   async docsInFolder(): Promise<vscode.TextDocument[]> {
     logger.debug(`Enumerating the files in ${this.filepath}`);
-    const printConfig = vscode.workspace.getConfiguration("print", null);
+    const folderConfig = vscode.workspace.getConfiguration("print.folder", null);
     // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
-    let excludePatterns: string[] = printConfig.folder.exclude || [];
+    let excludePatterns: string[] = folderConfig.exclude || [];
     if (excludePatterns.length == 0) {
       excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp,design}");
     }
-    let includePatterns: string[] = printConfig.folder.include || [];
+    let includePatterns: string[] = folderConfig.include || [];
     if (includePatterns.length == 0) {
       includePatterns.push("**/*");
     }
@@ -102,7 +103,7 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
     includes = includePatterns.length == 1 ? includePatterns[0] : `{${includePatterns.join(",")}}`;
 
     let rel = new vscode.RelativePattern(this.filepath, includes);
-    const maxLineCount = printConfig.folder.maxLines;
+    const maxLineCount = folderConfig.maxLines;
     const matcher = (document: vscode.TextDocument): boolean => document.lineCount < maxLineCount;
     let fileUris = await vscode.workspace.findFiles(rel, excludes);
     logger.debug(`Includes: ${includes}`);

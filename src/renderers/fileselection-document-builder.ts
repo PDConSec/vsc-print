@@ -67,9 +67,9 @@ export class FileselectionDocumentBuilder extends AbstractDocumentBuilder {
   }
 
   async docsInFileselection() {
-    const printConfig = vscode.workspace.getConfiguration("print");
+    const folderConfig = vscode.workspace.getConfiguration("print.folder", null);
     // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
-    let excludePatterns: string[] = printConfig.folder.exclude || [];
+    let excludePatterns: string[] = folderConfig.exclude || [];
     if (excludePatterns.length == 0) {
       excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp,design}");
     }

@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
+import { logger } from './logger';
 
 const settingsMigration = {
   "logLevel": "general.logLevel",
   "filepathHeadingForIndividuallyPrintedDocuments": "general.filepathHeadingForIndividuallyPrintedDocuments",
-  "filepathAsDocumentHeading": "multifile.useFilepathAsDocumentHeading",
-  "filepathInDocumentTitle": "useFilepathInDocumentTitle",
+  "filepathInDocumentTitle": "general.useFilepathInDocumentTitle",
+  "filepathAsDocumentHeading": "general.filepathStyleInHeadings",
   "editorContextMenuItemPosition": "general.editorContextMenu.itemPosition",
   "editorTitleMenuButtonPrint": "general.editorTitleMenu.showPrintIcon",
   "editorTitleMenuButtonPreview": "general.editorTitleMenu.showPreviewIcon",
@@ -34,10 +35,16 @@ const settingsMigration = {
 export default async function migrateSettings() {
   const config = vscode.workspace.getConfiguration();
   for (const [oldKey, newKey] of Object.entries(settingsMigration)) {
-    const oldValue = config.get(oldKey);
-    if (oldValue !== undefined) {
-      await config.update(newKey, oldValue, vscode.ConfigurationTarget.Global);
-      await config.update(oldKey, undefined, vscode.ConfigurationTarget.Global);
+    const prefixedOldKey = `print.${oldKey}`;
+    const prefixedNewKey = `print.${newKey}`;
+    const oldValue = config.get(prefixedOldKey);
+    if (typeof oldValue === "undefined") {
+      logger.debug(`Settings migration: ${prefixedOldKey} was not set`);
+    } else {
+      logger.debug(`Settings migration: copied ${prefixedOldKey} = ${oldValue} to ${prefixedNewKey}`);
+      await config.update(prefixedNewKey, oldValue, vscode.ConfigurationTarget.Global);
+      // don't remove the old values in case the user wants to revert
+      // await config.update(prefixedOldKey, undefined, vscode.ConfigurationTarget.Global);
     }
   }
 }
