@@ -21,3 +21,7 @@ pre.plaintext {
 	font-size: FONT_SIZE;
 	line-height: LINE_SPACINGem;
 }
+
+.page-break-control {
+  break-after: PAGE_BREAK;
+}

@@ -11,12 +11,10 @@ import braces from 'braces';
 const hbMultiDocument = Handlebars.compile(require("../templates/multi-document.tpl").default.toString());
 const hbFolderItem = Handlebars.compile(require("../templates/multi-document-item.tpl").default.toString());
 const multifileCssRefs =
-`
-<link href="bundled/default.css" rel="stylesheet" />
+`<link href="bundled/default.css" rel="stylesheet" />
 <link href="bundled/line-numbers.css" rel="stylesheet" />
 <link href="bundled/colour-scheme.css" rel="stylesheet" />
-<link href="bundled/settings.css" rel="stylesheet" />
-`;
+<link href="bundled/settings.css" rel="stylesheet" />`;
 
 export class FolderDocumentBuilder extends AbstractDocumentBuilder {
   constructor(

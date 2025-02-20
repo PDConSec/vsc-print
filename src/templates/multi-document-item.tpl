@@ -1,5 +1,5 @@
 <div>
-  <h3>{{multiDocumentItemTitle}}</h3>
+  <h3 class="filepath">{{multiDocumentItemTitle}}</h3>
   <div>
     {{{multiDocumentItemContent}}}
   </div>

@@ -137,7 +137,7 @@ export class PrintSession {
   }
 
   public configureWebsocket(ws: WebSocket) {
-    this.pageBuilder?.configureWebsocket(ws);    
+    this.pageBuilder?.configureWebsocket(ws);
   }
 
   public async respond(urlParts: string[], response: http.ServerResponse) {
@@ -191,11 +191,13 @@ export class PrintSession {
           return response.end(colourSchemeCss);
         case "settings.css":
           const editorConfig = vscode.workspace.getConfiguration("editor");
+          const generalConfig = vscode.workspace.getConfiguration("print.general");
           const css = settingsCss
-            .replace(/FONT_FAMILY/g, this.sourcecodeConfig.fontFamily)
+            .replace(/FONT_FAMILY/g, editorConfig.fontFamily)
             .replace(/FONT_SIZE/g, this.sourcecodeConfig.fontSize)
             .replace(/LINE_SPACING/g, (1.3 * this.sourcecodeConfig.lineSpacing).toString())
             .replace(/TAB_SIZE/g, editorConfig.tabSize)
+            .replace(/PAGE_BREAK/g, generalConfig.get<boolean>("pageBreakBetweenFiles") ? "page" : "auto");
           response.writeHead(200, {
             "Content-Type": "text/css; charset=utf-8",
             "Content-Length": Buffer.byteLength(css, "utf-8")

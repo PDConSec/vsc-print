@@ -341,6 +341,11 @@
               "%print.useFilepathInDocumentTitle.markdownEnumDescription2%",
               "%print.useFilepathInDocumentTitle.markdownEnumDescription3%"
             ]
+          },
+          "print.general.pageBreakBetweenFiles": {
+            "type": "boolean",
+            "description": "%print.general.pageBreakBetweenFiles%",
+            "default": false
           }
         }
       }

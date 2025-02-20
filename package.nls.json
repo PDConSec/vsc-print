@@ -37,5 +37,6 @@
   "print.sourcecode.stylesheets": "URLs or paths for extra CSS stylesheets to be used with source code. For workspace relative paths, use 'workspace.resource/path/to/your.css'. Otherwise, paths should be relative to the base document ('./my.css' would be in the same folder as the document), or absolute (https://...)",
   "print.markdown.kroki.url": "URL for Kroki diagram rendering service. To get you going this defaults to the internet service but you should [install your own](https://kroki.io/#install) as soon as possible.",
   "print.markdown.SettleMs": "The number of milliseconds to wait after a document change before refreshing the preview. Diagrams in particular may need a long settle time. To use hot preview while editing diagrams, you will need to set up a private Kroki server and configure Print to use it. The public server is rate limited.",
-  "print.markdown.useSmartQuotes": "Enable the use of smart quotes in rendered Markdown."
+  "print.markdown.useSmartQuotes": "Enable the use of smart quotes in rendered Markdown.",
+  "print.general.pageBreakBetweenFiles": "Enable a page break between files when printing multiple files."
 }
