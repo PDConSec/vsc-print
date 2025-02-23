@@ -89,7 +89,7 @@ export class PrintSession {
               isPreview,
               this.generatedResources,
               baseUrl,
-              source,
+              this.source = source,
               "",
               "folder",
               printLineNumbers
@@ -97,6 +97,7 @@ export class PrintSession {
             break;
           case "fileselection": // all the printable files in the selection
             logger.debug(`Printing fileselection`);
+            this.source = vscode.Uri.file(path.dirname(source[0].fsPath));
             let fileselectionPath = vscode.workspace.getWorkspaceFolder(source[0])?.uri;
             if (!fileselectionPath) {
               const dname = path.dirname(source[0].fsPath);

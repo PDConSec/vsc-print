@@ -3,15 +3,13 @@ import * as vscode from 'vscode';
 import { AbstractDocumentBuilder } from './abstract-document-builder';
 import { DocumentRenderer } from './document-renderer';
 import Handlebars from "handlebars";
-import { Metadata } from '../metadata';
 import tildify from '../tildify';
 import { ResourceProxy } from './resource-proxy';
 import braces from 'braces';
 
 const hbMultiDocument = Handlebars.compile(require("../templates/multi-document.tpl").default.toString());
 const hbFolderItem = Handlebars.compile(require("../templates/multi-document-item.tpl").default.toString());
-const multifileCssRefs =
-`<link href="bundled/default.css" rel="stylesheet" />
+const multifileCssRefs = `<link href="bundled/default.css" rel="stylesheet" />
 <link href="bundled/line-numbers.css" rel="stylesheet" />
 <link href="bundled/colour-scheme.css" rel="stylesheet" />
 <link href="bundled/settings.css" rel="stylesheet" />`;
@@ -60,17 +58,24 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
         scriptTags: "",
       });
     }
+
+    const cssSet = new Set<string>();
+
     const multiDocumentItems = await Promise.all(docs.map(async (doc) => {
       const renderer = DocumentRenderer.get(doc.languageId);
       const bodyText = doc.getText();
       const langId = doc.languageId;
       const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
+      cssSet.add(renderer.getCssLinks(doc.uri));
       const bodyHtml = await renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
       return hbFolderItem({
         multiDocumentItemTitle: generalConfig.get<string>("filepathStyleInHeadings") === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName),
         multiDocumentItemContent: `<table class="hljs">\n${bodyHtml}\n</table>\n`
       });
     }));
+
+    const multifileCssRefsExtended = `${multifileCssRefs}\n${Array.from(cssSet).join("\n")}\n`;
+ 
     return hbMultiDocument({
       baseUrl: this.baseUrl,
       documentTitle: this.workspacePath(this.uri),
@@ -78,7 +83,7 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
       printAndClose: printAndClose,
       summary: summary,
       items: multiDocumentItems,
-      stylesheetLinks: multifileCssRefs,
+      stylesheetLinks: multifileCssRefsExtended,
       scriptTags: "",
     });
   }

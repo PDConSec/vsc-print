@@ -85,7 +85,7 @@
     ],
     "configuration": [
       {
-        "title": "%configuration.title.print%",
+        "title": "%configuration.title%",
         "properties": {
           "print.browser.alternateBrowserPath": {
             "type": "string",
@@ -162,6 +162,19 @@
             "type": "boolean",
             "default": true
           },
+          "print.general.filepathStyleInHeadings": {
+            "description": "%print.general.filepathStyleInHeadings%",
+            "type": "string",
+            "default": "Relative",
+            "enum": [
+              "Absolute",
+              "Relative"
+            ],
+            "enumDescriptions": [
+              "%print.general.filepathStyleInHeadings.absolute%",
+              "%print.general.filepathStyleInHeadings.relative%"
+            ]
+          },
           "print.general.logLevel": {
             "description": "%print.general.logLevel%",
             "type": "string",
@@ -175,6 +188,26 @@
               "silly"
             ],
             "default": "error"
+          },
+          "print.general.pageBreakBetweenFiles": {
+            "type": "boolean",
+            "description": "%print.general.pageBreakBetweenFiles%",
+            "default": false
+          },
+          "print.general.useFilepathInDocumentTitle": {
+            "type": "string",
+            "default": "No path",
+            "description": "%print.useFilepathInDocumentTitle%",
+            "enum": [
+              "No path",
+              "Abbreviated path",
+              "Workspace relative"
+            ],
+            "markdownEnumDescriptions": [
+              "%print.general.useFilepathInDocumentTitle.markdownEnumDescription1%",
+              "%print.general.useFilepathInDocumentTitle.markdownEnumDescription2%",
+              "%print.general.useFilepathInDocumentTitle.markdownEnumDescription3%"
+            ]
           },
           "print.markdown.SettleMs": {
             "type": "number",
@@ -218,21 +251,12 @@
             "default": true,
             "description": "%print.markdown.useSmartQuotes%"
           },
-          "print.general.filepathStyleInHeadings": {
-            "description": "%print.general.filepathStyleInHeadings%",
-            "type": "string",
-            "default": "Relative",
-            "enum": [
-              "Absolute",
-              "Relative"
-            ]
-          },
           "print.plaintext.stylesheets": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "%print.sourcecode.stylesheets%"
+            "description": "%print.plaintext.stylesheets%"
           },
           "print.sourcecode.colourScheme": {
             "type": "string",
@@ -326,26 +350,6 @@
               "type": "string"
             },
             "description": "%print.sourcecode.stylesheets%"
-          },
-          "print.general.useFilepathInDocumentTitle": {
-            "type": "string",
-            "default": "No path",
-            "description": "%print.useFilepathInDocumentTitle%",
-            "enum": [
-              "No path",
-              "Abbreviated path",
-              "Workspace relative"
-            ],
-            "markdownEnumDescriptions": [
-              "%print.useFilepathInDocumentTitle.markdownEnumDescription1%",
-              "%print.useFilepathInDocumentTitle.markdownEnumDescription2%",
-              "%print.useFilepathInDocumentTitle.markdownEnumDescription3%"
-            ]
-          },
-          "print.general.pageBreakBetweenFiles": {
-            "type": "boolean",
-            "description": "%print.general.pageBreakBetweenFiles%",
-            "default": false
           }
         }
       }
@@ -433,36 +437,40 @@
     "walkthroughs": [
       {
         "id": "how-to-print",
-        "title": "Get Started with Print",
-        "description": "Discover in-editor printing for source code and documentation.",
+        "title": "%walkthroughs.howToPrint.title%",
+        "description": "%walkthroughs.howToPrint.description%",
         "steps": [
           {
             "id": "print-editor-active",
-            "title": "Print the entire content of the active editor",
+            "title": "%walkthroughs.steps.printEditorActive.title%",
             "media": {
-              "markdown": "assets/print-entire-content-active-editor.md"
-            }
+              "markdown": "%walkthroughs.steps.printEditorActive.media%"
+            },
+            "description": "%walkthroughs.steps.printEditorActive.description%"
           },
           {
             "id": "print-multiline-selection",
-            "title": "Print a selection",
+            "title": "%walkthroughs.steps.printMultilineSelection.title%",
             "media": {
               "markdown": "assets/print-a-selection.md"
-            }
+            },
+            "description": "%walkthroughs.steps.printMultilineSelection.description%"
           },
           {
             "id": "print-markdown-rendered",
-            "title": "Print a Markdown file as a formatted PDF",
+            "title": "%walkthroughs.steps.printMarkdownRendered.title%",
             "media": {
               "markdown": "assets/print-md-as-pdf.md"
-            }
+            },
+            "description": "%walkthroughs.steps.printMarkdownRendered.description%"
           },
           {
             "id": "print-remote",
-            "title": "Print a file from a remote workspace",
+            "title": "%walkthroughs.steps.printRemote.title%",
             "media": {
               "markdown": "assets/enable-remote-print.md"
-            }
+            },
+            "description": "%walkthroughs.steps.printRemote.description%"
           }
         ]
       }
@@ -499,7 +507,7 @@
     "webpack-dev": "node gather.js && webpack --mode development --watch",
     "compile": "tsc -p ./",
     "lint": "eslint \"src/**/*.ts\"",
-    "localise": "npx @vscode/l10n-dev export --outDir ./l10n ./src && npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy"
+    "localise": "npx @vscode/l10n-dev export --outDir ./l10n ./src && npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy && node scripts/localise-walkthrough-media.js"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
