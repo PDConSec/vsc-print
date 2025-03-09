@@ -1,5 +1,12 @@
 # Change Log
 
+### 1.3.0
+
+- [#378](https://github.com/PDConSec/vsc-print/issues/378)
+  - optional pagebreak between files
+  - update localisation and support localisation of walkthroughs
+  - rename settings to group them in the settings editor
+
 ### 1.2.1 
 
 - Remove gulp, gulp-typescript from package.json and bundle
