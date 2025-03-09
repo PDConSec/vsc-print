@@ -34,10 +34,10 @@ export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>
       renderedCode = addCssColourSwatches(renderedCode);
     }
     renderedCode = fixMultilineSpans(renderedCode);
-    const printConfig = vscode.workspace.getConfiguration("print");
+    const sourcecodeConfig = vscode.workspace.getConfiguration("print.sourcecode");
     const pattern = /((?:(?:\w{40}|[\])},;]))(?![^<>]*>))/g;
     const replacement = "$1<wbr>";
-    logger.debug(`Line numbering: ${printConfig.lineNumbers} (resolves to ${options.lineNumbers})`)
+    logger.debug(`Line numbering: ${sourcecodeConfig.get("lineNumbers")} (resolves to ${options.lineNumbers})`)
     if (options.lineNumbers) {
       renderedCode = renderedCode
         .split("\n")
@@ -63,7 +63,8 @@ export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>
 }
 
 export function getCssUriStrings(uri: vscode.Uri): Array<string> {
-  const userSuppliedCssUrls: string[] = vscode.workspace.getConfiguration("print.stylesheets").sourcecode;
+  const sourcecodeConfig = vscode.workspace.getConfiguration("print.sourcecode");
+  const userSuppliedCssUrls: string[] = sourcecodeConfig.get("stylesheets") ?? [];
   return [
     "bundled/default.css",
     "bundled/line-numbers.css",

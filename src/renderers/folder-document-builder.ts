@@ -3,20 +3,16 @@ import * as vscode from 'vscode';
 import { AbstractDocumentBuilder } from './abstract-document-builder';
 import { DocumentRenderer } from './document-renderer';
 import Handlebars from "handlebars";
-import { Metadata } from '../metadata';
 import tildify from '../tildify';
 import { ResourceProxy } from './resource-proxy';
 import braces from 'braces';
 
 const hbMultiDocument = Handlebars.compile(require("../templates/multi-document.tpl").default.toString());
 const hbFolderItem = Handlebars.compile(require("../templates/multi-document-item.tpl").default.toString());
-const multifileCssRefs =
-`
-<link href="bundled/default.css" rel="stylesheet" />
+const multifileCssRefs = `<link href="bundled/default.css" rel="stylesheet" />
 <link href="bundled/line-numbers.css" rel="stylesheet" />
 <link href="bundled/colour-scheme.css" rel="stylesheet" />
-<link href="bundled/settings.css" rel="stylesheet" />
-`;
+<link href="bundled/settings.css" rel="stylesheet" />`;
 
 export class FolderDocumentBuilder extends AbstractDocumentBuilder {
   constructor(
@@ -33,16 +29,21 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
 
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
-    const printConfig = vscode.workspace.getConfiguration("print");
+    const generalConfig = vscode.workspace.getConfiguration("print.general");
+    const folderConfig = vscode.workspace.getConfiguration("print.folder");
 
     logger.debug(`Folder ${this.workspacePath(this.uri)}`);
     this.filepath = this.uri.fsPath;
     const docs = await this.docsInFolder();
-    const summary = printConfig.folder.includeFileList ?
-      `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>` :
+    const summary = folderConfig.includeFileList ?
+      `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d => 
+        generalConfig.get<string>("filepathStyleInHeadings") === "Relative"
+          ? this.workspacePath(d.uri)
+          : tildify(d.fileName)
+      ).join("\n")}</pre>` :
       `<h3 class="filepath">${docs.length} printable files</h3><p>(file list disabled)</p>`;
 
-    if (docs.length > printConfig.folder.maxFiles) {
+    if (docs.length > folderConfig.maxFiles) {
       const msgTooManyFiles =
         vscode.l10n.t("The selected directory contains too many files to print them all. Only the summary will be printed.");
       vscode.window.showWarningMessage(msgTooManyFiles);
@@ -57,17 +58,24 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
         scriptTags: "",
       });
     }
+
+    const cssSet = new Set<string>();
+
     const multiDocumentItems = await Promise.all(docs.map(async (doc) => {
       const renderer = DocumentRenderer.get(doc.languageId);
       const bodyText = doc.getText();
       const langId = doc.languageId;
       const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
+      cssSet.add(renderer.getCssLinks(doc.uri));
       const bodyHtml = await renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
       return hbFolderItem({
-        multiDocumentItemTitle: printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName),
+        multiDocumentItemTitle: generalConfig.get<string>("filepathStyleInHeadings") === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName),
         multiDocumentItemContent: `<table class="hljs">\n${bodyHtml}\n</table>\n`
       });
     }));
+
+    const multifileCssRefsExtended = `${multifileCssRefs}\n${Array.from(cssSet).join("\n")}\n`;
+ 
     return hbMultiDocument({
       baseUrl: this.baseUrl,
       documentTitle: this.workspacePath(this.uri),
@@ -75,20 +83,20 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
       printAndClose: printAndClose,
       summary: summary,
       items: multiDocumentItems,
-      stylesheetLinks: multifileCssRefs,
+      stylesheetLinks: multifileCssRefsExtended,
       scriptTags: "",
     });
   }
 
   async docsInFolder(): Promise<vscode.TextDocument[]> {
     logger.debug(`Enumerating the files in ${this.filepath}`);
-    const printConfig = vscode.workspace.getConfiguration("print", null);
+    const folderConfig = vscode.workspace.getConfiguration("print.folder", null);
     // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
-    let excludePatterns: string[] = printConfig.folder.exclude || [];
+    let excludePatterns: string[] = folderConfig.exclude || [];
     if (excludePatterns.length == 0) {
       excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp,design}");
     }
-    let includePatterns: string[] = printConfig.folder.include || [];
+    let includePatterns: string[] = folderConfig.include || [];
     if (includePatterns.length == 0) {
       includePatterns.push("**/*");
     }
@@ -102,7 +110,7 @@ export class FolderDocumentBuilder extends AbstractDocumentBuilder {
     includes = includePatterns.length == 1 ? includePatterns[0] : `{${includePatterns.join(",")}}`;
 
     let rel = new vscode.RelativePattern(this.filepath, includes);
-    const maxLineCount = printConfig.folder.maxLines;
+    const maxLineCount = folderConfig.maxLines;
     const matcher = (document: vscode.TextDocument): boolean => document.lineCount < maxLineCount;
     let fileUris = await vscode.workspace.findFiles(rel, excludes);
     logger.debug(`Includes: ${includes}`);

@@ -17,8 +17,8 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Translate",
-			"program": "${workspaceFolder}/app.js", 
+			"name": "Localise Walkthrough Media",
+			"program": "${workspaceFolder}/localise-walkthrough-media.js", 
 			"args": [],
 			"skipFiles": [
 				"<node_internals>/**",

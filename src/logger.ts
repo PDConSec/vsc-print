@@ -5,7 +5,7 @@ import * as path from "path";
 
 const logFileName = `vscode-print.log`;
 const logFileDir = path.resolve(path.join(`${Metadata.ExtensionPath}`, ".."));
-const logLevel = vscode.workspace.getConfiguration("print", null).logLevel;
+const logLevel = vscode.workspace.getConfiguration("print.general").get<string>("logLevel");
 
 const transports = [
 	new winston.transports.File({

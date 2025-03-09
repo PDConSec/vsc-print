@@ -106,8 +106,8 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
         logger.info("Configuration change detected, updating CSS file listeners and sending refreshPreview message");
         this.cssChangeHandlers.forEach(handler => handler.dispose());
         this.cssChangeHandlers = [];
-        const printConfig = vscode.workspace.getConfiguration("print");
-        const markdownStylesheets = printConfig.get<string[]>("stylesheets.markdown") || [];
+        const markdownConfig = vscode.workspace.getConfiguration("print.markdown");
+        const markdownStylesheets = markdownConfig.get<string[]>("stylesheets") || [];
         const documentDir = path.dirname(this.document.uri.fsPath);
 
         for (const stylesheet of markdownStylesheets) {
@@ -118,8 +118,8 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
       }
     });
 
-    const printConfig = vscode.workspace.getConfiguration("print");
-    const markdownStylesheets = printConfig.get<string[]>("stylesheets.markdown") || [];
+    const markdownConfig = vscode.workspace.getConfiguration("print.markdown");
+    const markdownStylesheets = markdownConfig.get<string[]>("stylesheets") || [];
     const documentDir = path.dirname(this.document.uri.fsPath);
 
     for (const stylesheet of markdownStylesheets) {
@@ -141,13 +141,14 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
 
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
+    const generalConfig = vscode.workspace.getConfiguration("print.general");
+    const sourcecodeConfig = vscode.workspace.getConfiguration("print.sourcecode");
     const documentRenderer = DocumentRenderer.get(this.language);
-    const printConfig = vscode.workspace.getConfiguration("print");
 
     logger.debug(`Printing ${this.filepath}`);
     let docHeading = "";
-    if (printConfig.filepathHeadingForIndividuallyPrintedDocuments) {
-      switch (printConfig.filepathAsDocumentHeading) {
+    if (generalConfig.filepathHeadingForIndividuallyPrintedDocuments) {
+      switch (generalConfig.filepathStyleInHeadings) {
         case "Absolute":
           docHeading = `<h3 class="filepath">${tildify(this.filepath).replace(/([\\/])/g, "$1<wbr />")}</h3>`;
           break;
@@ -160,8 +161,8 @@ export class EditorDocumentBuilder extends AbstractDocumentBuilder {
     }
 
     let thePath = "";
-    if (printConfig.filepathHeadingForIndividuallyPrintedDocuments)
-      switch (printConfig.filepathAsDocumentHeading) {
+    if (generalConfig.filepathHeadingForIndividuallyPrintedDocuments)
+      switch (generalConfig.filepathStyleInHeadings) {
         case "Absolute":
           thePath = `<h3 class="filepath">${tildify(this.uri.fsPath)}</h3>`;
           break;

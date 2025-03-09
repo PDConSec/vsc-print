@@ -3,7 +3,6 @@ import * as vscode from 'vscode';
 import { AbstractDocumentBuilder } from './abstract-document-builder';
 import { DocumentRenderer } from './document-renderer';
 import Handlebars from "handlebars";
-import { Metadata } from '../metadata';
 import tildify from '../tildify';
 import { ResourceProxy } from './resource-proxy';
 import micromatch from 'micromatch';
@@ -11,13 +10,10 @@ import braces from 'braces';
 
 const hbMultiDocument = Handlebars.compile(require("../templates/multi-document.tpl").default.toString());
 const hbFolderItem = Handlebars.compile(require("../templates/multi-document-item.tpl").default.toString());
-const multifileCssRefs =
-`
-<link href="bundled/default.css" rel="stylesheet" />
+const multifileCssRefs = `<link href="bundled/default.css" rel="stylesheet" />
 <link href="bundled/line-numbers.css" rel="stylesheet" />
 <link href="bundled/colour-scheme.css" rel="stylesheet" />
-<link href="bundled/settings.css" rel="stylesheet" />
-`;
+<link href="bundled/settings.css" rel="stylesheet" />`;
 
 export class FileselectionDocumentBuilder extends AbstractDocumentBuilder {
   constructor(
@@ -36,24 +32,35 @@ export class FileselectionDocumentBuilder extends AbstractDocumentBuilder {
 
   public async build(): Promise<string> {
     const printAndClose = (!this.isPreview).toString();
-    const printConfig = vscode.workspace.getConfiguration("print");
+    const generalConfig = vscode.workspace.getConfiguration("print.general");
 
     logger.debug(`Selected files`);
     const docs = await this.docsInFileselection();
     const summary =
-      `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d => printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(d.uri) : tildify(d.fileName)).join("\n")}</pre>\r`;
+      `<h3 class="filepath">${docs.length} printable files</h3><pre>${docs.map(d =>
+        generalConfig.get<string>("filepathStyleInHeadings") === "Relative"
+          ? this.workspacePath(d.uri)
+          : tildify(d.fileName)
+      ).join("\n")}</pre>\r`;
+    
+    const cssSet = new Set<string>();
+
     const folderItems = await Promise.all(docs.map(async (doc) => {
       const renderer = DocumentRenderer.get(doc.languageId);
       const bodyText = doc.getText();
       const langId = doc.languageId;
       const options = { startLine: 1, lineNumbers: this.printLineNumbers, uri: this.uri };
+      cssSet.add(renderer.getCssLinks(doc.uri));
       const bodyHtml = await renderer.getBodyHtml(this.generatedResources, bodyText, langId, options);
       const docHtml = hbFolderItem({
-        multiDocumentItemTitle: printConfig.filepathAsDocumentHeading === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName),
+        multiDocumentItemTitle: generalConfig.get<string>("filepathStyleInHeadings") === "Relative" ? this.workspacePath(doc.uri) : tildify(doc.fileName),
         multiDocumentItemContent: `<table class="hljs">\n${bodyHtml}\n</table>\n`
       });
       return docHtml;
     }));
+
+    const multifileCssRefsExtended = `${multifileCssRefs}\n${Array.from(cssSet).join("\n")}\n`;
+
     return hbMultiDocument({
       baseUrl: this.baseUrl,
       documentTitle: "Selected files",
@@ -61,15 +68,15 @@ export class FileselectionDocumentBuilder extends AbstractDocumentBuilder {
       printAndClose: !this.isPreview,
       summary: summary,
       items: folderItems,
-      stylesheetLinks: multifileCssRefs,
+      stylesheetLinks: multifileCssRefsExtended,
       scriptTags: "",
     });
   }
 
   async docsInFileselection() {
-    const printConfig = vscode.workspace.getConfiguration("print");
+    const folderConfig = vscode.workspace.getConfiguration("print.folder", null);
     // findFile can't cope with nested brace lists in globs but we can flatten them using the braces package
-    let excludePatterns: string[] = printConfig.folder.exclude || [];
+    let excludePatterns: string[] = folderConfig.exclude || [];
     if (excludePatterns.length == 0) {
       excludePatterns.push("**/{data,node_modules,out,bin,obj,.*},**/*.{bin,dll,exe,hex,pdb,pdf,pfx,jpg,jpeg,gif,png,bmp,design}");
     }

@@ -6,7 +6,8 @@ export async function getBodyHtml(_: Map<string, ResourceProxy>, raw: string): P
 }
 
 export function getCssUriStrings(uri: vscode.Uri): Array<string> {
-  const userSuppliedCssUrls: string[] = vscode.workspace.getConfiguration("print.stylesheets").plaintext;
+  const plaintextConfig = vscode.workspace.getConfiguration("print.plaintext");
+  const userSuppliedCssUrls: string[] = plaintextConfig.get("stylesheets") ?? [];
   return [
     "bundled/default.css",
     ...userSuppliedCssUrls,

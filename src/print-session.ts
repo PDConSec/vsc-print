@@ -35,8 +35,9 @@ export class PrintSession {
   public ready: Promise<void>;
   public sessionId = nodeCrypto.randomUUID();
   public source: any;
-  private printConfig = vscode.workspace.getConfiguration("print");
+  private browserConfig = vscode.workspace.getConfiguration("print.browser");
   private editorConfig = vscode.workspace.getConfiguration("editor");
+  private sourcecodeConfig = vscode.workspace.getConfiguration("print.sourcecode");
 
   constructor(source: any, isPreview: boolean = true) {
     logger.debug(`Creating a print session object for ${source}`);
@@ -45,7 +46,7 @@ export class PrintSession {
         const baseUrl = `http://localhost:${PrintSession.port}/${this.sessionId}/`;
         const editor = vscode.window.activeTextEditor;
         let document = editor?.document;
-        let printLineNumbers = this.printConfig.lineNumbers === "on" || (this.printConfig.lineNumbers === "inherit" && this.editorConfig.lineNumbers === "on");
+        let printLineNumbers = this.sourcecodeConfig.get("lineNumbers") === "on" || (this.sourcecodeConfig.get("lineNumbers") === "inherit" && this.editorConfig.get("lineNumbers") === "on");
         let rootDocumentContentSource = await this.rootDocumentContentSource(source!);
         if (rootDocumentContentSource === "file") {
           source = [source];
@@ -55,7 +56,7 @@ export class PrintSession {
           case "editor": // active editor
             logger.debug("Using the buffer of the active editor");
             logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
-            logger.debug(`Source code colour scheme is "${this.printConfig.colourScheme}"`);
+            logger.debug(`Source code colour scheme is "${this.sourcecodeConfig.get("colourScheme")}"`);
             if (!document) throw "This can't happen";
             this.source = document.uri;
             this.pageBuilder = new EditorDocumentBuilder(
@@ -69,7 +70,7 @@ export class PrintSession {
           case "selection": // active editor selection
             logger.debug("Printing the selection in the active editor");
             logger.debug(`Source code line numbers will ${printLineNumbers ? "" : "NOT "}be printed`);
-            logger.debug(`Source code colour scheme is "${this.printConfig.colourScheme}"`);
+            logger.debug(`Source code colour scheme is "${this.sourcecodeConfig.get("colourScheme")}"`);
             if (!document) throw "This can't happen";
             const selection = editor?.selection;
             if (!selection) throw "This can't happen";
@@ -88,7 +89,7 @@ export class PrintSession {
               isPreview,
               this.generatedResources,
               baseUrl,
-              source,
+              this.source = source,
               "",
               "folder",
               printLineNumbers
@@ -96,6 +97,7 @@ export class PrintSession {
             break;
           case "fileselection": // all the printable files in the selection
             logger.debug(`Printing fileselection`);
+            this.source = vscode.Uri.file(path.dirname(source[0].fsPath));
             let fileselectionPath = vscode.workspace.getWorkspaceFolder(source[0])?.uri;
             if (!fileselectionPath) {
               const dname = path.dirname(source[0].fsPath);
@@ -123,7 +125,7 @@ export class PrintSession {
             vscode.window.showErrorMessage(rootDocumentContentSource);
             break;
         }
-        if (this.printConfig.alternateBrowser) {
+        if (this.browserConfig.get<boolean>("useAlternate")) {
           launchAlternateBrowser(this.getUrl())
         } else {
           vscode.env.openExternal(vscode.Uri.parse(this.getUrl()));
@@ -136,7 +138,7 @@ export class PrintSession {
   }
 
   public configureWebsocket(ws: WebSocket) {
-    this.pageBuilder?.configureWebsocket(ws);    
+    this.pageBuilder?.configureWebsocket(ws);
   }
 
   public async respond(urlParts: string[], response: http.ServerResponse) {
@@ -176,7 +178,7 @@ export class PrintSession {
       logger.debug(`Responding to bundled request for ${urlParts[3]} in session ${urlParts[1]}`);
       switch (urlParts[3]) {
         case "colour-scheme.css":
-          let colourScheme = vscode.workspace.getConfiguration("print").colourScheme;
+          let colourScheme = this.sourcecodeConfig.get<string>("colourScheme") ?? "[none]";
           let colourSchemeName: string = filenameByCaption[colourScheme];
           logger.debug(`Loading colour scheme from ${colourSchemeName}`);
           let colourSchemeCss: string = colourScheme == "[none]" ?
@@ -189,13 +191,14 @@ export class PrintSession {
           });
           return response.end(colourSchemeCss);
         case "settings.css":
-          const printConfig = vscode.workspace.getConfiguration("print");
           const editorConfig = vscode.workspace.getConfiguration("editor");
+          const generalConfig = vscode.workspace.getConfiguration("print.general");
           const css = settingsCss
             .replace(/FONT_FAMILY/g, editorConfig.fontFamily)
-            .replace(/FONT_SIZE/g, printConfig.fontSize)
-            .replace(/LINE_SPACING/g, (1.3 * printConfig.lineSpacing).toString())
+            .replace(/FONT_SIZE/g, this.sourcecodeConfig.fontSize)
+            .replace(/LINE_SPACING/g, (1.3 * this.sourcecodeConfig.lineSpacing).toString())
             .replace(/TAB_SIZE/g, editorConfig.tabSize)
+            .replace(/PAGE_BREAK/g, generalConfig.get<boolean>("pageBreakBetweenFiles") ? "page" : "auto");
           response.writeHead(200, {
             "Content-Type": "text/css; charset=utf-8",
             "Content-Length": Buffer.byteLength(css, "utf-8")
@@ -311,11 +314,11 @@ export class PrintSession {
 
 async function launchAlternateBrowser(url: string) {
   logger.debug("Alternate browser is selected");
-  const printConfig = vscode.workspace.getConfiguration("print");
+  const browserConfig = vscode.workspace.getConfiguration("print.browser");
   const isRemoteWorkspace = !!vscode.env.remoteName;
   logger.debug(`Workspace is ${isRemoteWorkspace ? "remote" : "local"}`);
 
-  if (typeof printConfig.browserPath === "undefined") {
+  if (typeof browserConfig.alternateBrowserPath === "undefined") {
     const msg = "Alternate browser path not set. Default browser will be used.";
     logger.warn(msg);
     vscode.window.showWarningMessage(msg);
@@ -328,7 +331,7 @@ async function launchAlternateBrowser(url: string) {
       if (!cmds.includes("print.launchBrowser")) {
         throw new Error("The remote printing agent is not accessible");
       }
-      if (!!printConfig.browserPath) {
+      if (typeof browserConfig.alternateBrowserPath !== "undefined") {
         vscode.commands.executeCommand("print.launchBrowser", url);
       } else {
         vscode.env.openExternal(vscode.Uri.parse(url));
@@ -340,11 +343,11 @@ async function launchAlternateBrowser(url: string) {
       vscode.env.openExternal(vscode.Uri.parse(url));
     }
   } else {
-    let resolvedBrowserPath = Browsers.resolveBrowserPath(printConfig.browserPath);
+    let resolvedBrowserPath = Browsers.resolveBrowserPath(browserConfig.alternateBrowserPath);
     if (!resolvedBrowserPath) {
       const browserEntry = await Browsers.promptUserChoice();
       if (browserEntry) {
-        await printConfig.update('browserPath', browserEntry.path, vscode.ConfigurationTarget.Global);
+        await browserConfig.update('alternateBrowserPath', browserEntry.path, vscode.ConfigurationTarget.Global);
         var msg = vscode.l10n.t("has been set as the alternate browser for printing.");
         vscode.window.showInformationMessage(`"${browserEntry.name}" {msg}`);
       }

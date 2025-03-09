@@ -15,6 +15,7 @@ import WebSocket from 'ws';
 import { marked, Parser, Renderer, Tokens } from 'marked';
 import { at } from 'lodash';
 import Browsers from './browser-paths';
+import migrateSettings from './settings-migration';
 
 const markedRenderer = new Renderer();
 markedRenderer.parser = new Parser();
@@ -71,10 +72,12 @@ marked.use({
 
 let server: http.Server | undefined;
 const testFlags = new Set<string>();
-if (captionByFilename[vscode.workspace.getConfiguration("print").colourScheme]) {
+const sourceCodeConfig = vscode.workspace.getConfiguration("print.sourcecode");
+const colourScheme = sourceCodeConfig.get<string>("colourScheme") ?? "[none]";
+if (captionByFilename[colourScheme]) {
   // legacy value, convert
-  let cbf = captionByFilename[vscode.workspace.getConfiguration("print").colourScheme];
-  vscode.workspace.getConfiguration("print").update("colourScheme", cbf);
+  let cbf = captionByFilename[colourScheme];
+  vscode.workspace.getConfiguration("print.sourcecode").update("colourScheme", cbf);
 }
 const printSessions = new Map<string, PrintSession>();
 let _gc: NodeJS.Timeout;
@@ -92,10 +95,13 @@ function gc() {
 export async function activate(context: vscode.ExtensionContext) {
   Metadata.ExtensionContext = context;
   logger.debug("Print activated");
+  migrateSettings();
 
-  let ecmPrint = vscode.workspace.getConfiguration("print").editorContextMenuItemPosition;
-  let etmButtonPrint = vscode.workspace.getConfiguration("print").editorTitleMenuButtonPrint;
-  let etmButtonPreview = vscode.workspace.getConfiguration("print").editorTitleMenuButtonPreview;
+  const editorContextMenuConfig = vscode.workspace.getConfiguration("print.general.editorContextMenu");
+  let ecmPrint = editorContextMenuConfig.get<string>("itemPosition");
+  const editorTitleMenuConfig = vscode.workspace.getConfiguration("print.general.editorTitleMenu");
+  let etmButtonPrint = editorTitleMenuConfig.get<boolean>("showPrintIcon");
+  let etmButtonPreview = editorTitleMenuConfig.get<boolean>("showPreviewIcon");
   let disposable: vscode.Disposable;
   vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
   vscode.commands.executeCommand("setContext", "etmButtonPrint", etmButtonPrint);
@@ -297,21 +303,19 @@ function openDoc(doc: string) {
 }
 
 const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
-  if (e.affectsConfiguration('print.editorContextMenuItemPosition')) {
-    const ecmip = vscode.workspace.getConfiguration("print")
-      .editorContextMenuItemPosition as string;
+  const generalConfig = vscode.workspace.getConfiguration("print.general");
+  if (e.affectsConfiguration('print.general.editorContextMenuItemPosition')) {
+    const ecmip = generalConfig.get("editorContextMenuItemPosition") as string;
     logger.info(`editorContextMenuItemPosition set to ${ecmip}`)
     vscode.commands.executeCommand("setContext", "ecmPrint", ecmip);
   }
-  else if (e.affectsConfiguration('print.editorTitleMenuButtonPrint')) {
-    const etmb = vscode.workspace.getConfiguration("print", null)
-      .get<boolean>('editorTitleMenuButtonPrint');
+  else if (e.affectsConfiguration('print.general.editorTitleMenuButtonPrint')) {
+    const etmb = generalConfig.get<boolean>('editorTitleMenuButtonPrint');
     logger.info(`editorTitleMenuButtonPrint set to ${etmb}`);
     vscode.commands.executeCommand("setContext", "etmButtonPrint", etmb);
   }
-  else if (e.affectsConfiguration('print.editorTitleMenuButtonPreview')) {
-    const etmb = vscode.workspace.getConfiguration("print", null)
-      .get<boolean>('editorTitleMenuButtonPreview');
+  else if (e.affectsConfiguration('print.general.editorTitleMenuButtonPreview')) {
+    const etmb = generalConfig.get<boolean>('editorTitleMenuButtonPreview');
     logger.info(`editorTitleMenuButtonPreview set to ${etmb}`);
     vscode.commands.executeCommand("setContext", "etmButtonPreview", etmb);
   }
@@ -397,7 +401,7 @@ function dumpProperties(): any {
 async function setAlternateBrowser() {
   const browser = await Browsers.promptUserChoice();
   if (browser) {
-    await vscode.workspace.getConfiguration("print").update("browserPath", browser.path, vscode.ConfigurationTarget.Global);
+    await vscode.workspace.getConfiguration("print.general").update("browserPath", browser.path, vscode.ConfigurationTarget.Global);
     vscode.window.showInformationMessage(`Alternate browser set to ${browser.name}`);
   }
 }
