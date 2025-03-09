@@ -1,4 +1,4 @@
-![](./print-icon-appears-for-active-editor.png)
+![Illustration: icon appears for active editor](./print-icon-appears-for-active-editor.png)
 
 1. Open a file for editing and focus the editor. This will cause the Print icon to appear in the toolbar.
 2. Do not create a multi-line text selection. If one exists, remove it. 

@@ -7,3 +7,5 @@ node_modules
 vscode-print.log
 doc/manual-*.md
 bundle.*
+*[a-z\-]*.md
+assets/*.*.md
