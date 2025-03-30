@@ -5,7 +5,7 @@ import { Metadata } from '../metadata';
 import { ResourceProxy } from "./resource-proxy";
 import { processFencedBlocks as processMarkdown } from './processMarkdown';
 import { marked } from 'marked';
-import { JSDOM } from 'jsdom';
+import * as cheerio from 'cheerio';
 
 const resources = new Map<string, ResourceProxy>();
 
@@ -78,23 +78,17 @@ export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>
   if (watermarkConfig.get<boolean>("enable")) {
     const watermarkText = watermarkConfig.get<string>("text");
     if (watermarkText) {
-      const watermarkDiv = `<div class="watermark" >${watermarkText}</div>`;
-      //parse the html using jsdom and salt the watermark through the body after every block element
-      const dom = new JSDOM(html);
-      const document = dom.window.document;
-      const body = document.body;
+      const watermarkDiv = `<div style="display:none; user-select:none; pointer-events:none;">${watermarkText}</div>`;
+      // parse the html using cheerio and insert the watermark after every block element
+      const $ = cheerio.load(html);
       const blockElements = ["div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "pre"];
-      const children = Array.from(body.children);
-      for (const child of children) {
-        if (blockElements.includes(child.tagName.toLowerCase())) {
-          const watermark = document.createElement("div");
-          watermark.innerText = watermarkText;
-          watermark.className = "watermark";
-          watermark.style.display = "display: none; user-select: none; pointer-events: none;";
-          body.insertBefore(watermark, child.nextSibling);
-        }
+      for (let i = 0; i < blockElements.length; i++) {
+        const tag = blockElements[i];
+        $(tag).each((_, element) => {
+          $(element).after(watermarkDiv);
+        });
       }
-      html = document.body.innerHTML;
+      html = $.html();
     }
   }
   return html;
