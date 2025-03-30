@@ -504,7 +504,6 @@
     "workspace"
   ],
   "dependencies": {
-    "@types/jsdom": "^21.1.7",
     "@viz-js/viz": "^3.11.0",
     "axios": "^1.8.2",
     "braces": "^3.0.3",
@@ -538,7 +537,7 @@
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/braces": "^3.0.4",
-    "@types/cheerio": "^1.0.0",
+    "@types/cheerio": "^0.22.35",
     "@types/katex": "^0.16.7",
     "@types/lodash.merge": "^4.6.9",
     "@types/micromatch": "^4.0.6",
