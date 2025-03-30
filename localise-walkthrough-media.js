@@ -2,6 +2,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const axios = require('axios');
 const { log } = require('console');
+const crypto = require('crypto');
 
 const workspaceDir = __dirname;
 const nlsFilesPattern = /^package\.nls\.([^\.]+)\.json$/;
@@ -9,6 +10,7 @@ const baseNlsFile = path.join(workspaceDir, 'package.nls.json');
 const azureTranslateEndpoint = 'https://api.cognitive.microsofttranslator.com/translate';
 const azureTranslateKey = process.env.AZURE_TRANSLATOR_KEY;
 const azureTranslateRegion = process.env.AZURE_TRANSLATOR_REGION;
+const hashCacheFile = path.join(workspaceDir, '.translation-hashes.json');
 
 if (!azureTranslateKey || !azureTranslateRegion) {
   console.error('AZURE_TRANSLATOR_KEY and AZURE_TRANSLATOR_REGION environment variables must be set.');
@@ -19,15 +21,44 @@ console.log('Updating walkthrough media URLs...');
 console.log('Workspace directory:', workspaceDir);
 console.log('Base NLS file:', baseNlsFile);
 
+const hashFile = async (filePath) => {
+  const data = await fs.readFile(filePath, 'utf8');
+  return crypto.createHash('sha256').update(data).digest('hex');
+};
+
+const loadHashCache = async () => {
+  try {
+    const data = await fs.readFile(hashCacheFile, 'utf8');
+    return JSON.parse(data);
+  } catch {
+    return {};
+  }
+};
+
+const saveHashCache = async (hashCache) => {
+  await fs.writeFile(hashCacheFile, JSON.stringify(hashCache, null, 2), 'utf8');
+};
+
 async function updateWalkthroughMedia() {
   try {
+    const hashCache = await loadHashCache();
     const baseData = await fs.readFile(baseNlsFile, 'utf8');
     let baseJson = JSON.parse(baseData);
     for (const key in baseJson) {
-      if (!(baseJson[key].includes('{locale}'))) {
+      if ((baseJson[key].includes('{locale}'))) { 
+        const filePath = path.join(workspaceDir, baseJson[key]);
+        const fileHash = await hashFile(filePath);
+        if (hashCache[filePath] === fileHash) {
+          delete baseJson[key];
+          console.log(`No changes detected in ${filePath}. Skipping.`);
+        } else {
+          hashCache[filePath] = fileHash;
+        }
+      } else{
         delete baseJson[key];
       }
     }
+    saveHashCache(hashCache);
     console.log('Localisable paths:', JSON.stringify(baseJson, null, 2));
 
     const files = await fs.readdir(workspaceDir);

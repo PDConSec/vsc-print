@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "icon": "assets/vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
@@ -87,13 +87,28 @@
       {
         "title": "%configuration.title%",
         "properties": {
-          "print.browser.alternateBrowserPath": {
-            "type": "string",
-            "description": "%print.browser.alternateBrowserPath%"
+          "print.browser": {
+            "type": "object",
+            "title": "%print.alternateBrowser.title%",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "%print.alternateBrowser.path%"
+              },
+              "enable": {
+                "type": "boolean",
+                "description": "%print.alternateBrowser.enable%",
+                "default": false
+              }
+            }
           },
-          "print.browser.useAlternate": {
+          "print.alternateBrowser.path": {
+            "type": "string",
+            "description": "%print.alternateBrowser.path%"
+          },
+          "print.alternateBrowser.enable": {
             "type": "boolean",
-            "description": "%print.browser.useAlternate%",
+            "description": "%print.alternateBrowser.enable%",
             "default": false
           },
           "print.folder.exclude": {
@@ -246,10 +261,19 @@
             },
             "description": "%print.markdown.stylesheets%"
           },
-          "print.markdown.useSmartQuotes": {
+          "print.markdown.smartQuotes.enable": {
             "type": "boolean",
             "default": true,
-            "description": "%print.markdown.useSmartQuotes%"
+            "description": "%print.markdown.smartQuotes.enable%"
+          },
+          "print.markdown.watermark.text": {
+            "type": "string",
+            "description": "%print.markdown.watermark.text%"
+          },
+          "print.markdown.watermark.enable": {
+            "type": "boolean",
+            "description": "%print.markdown.watermark.enable%",
+            "default": false
           },
           "print.plaintext.stylesheets": {
             "type": "array",
@@ -450,17 +474,17 @@
           },
           {
             "id": "print-multiline-selection",
-            "title": "%walkthroughs.steps.printMultilineSelection.title%",
+            "title": "%walkthroughs.steps.printASelection.title%",
             "media": {
-              "markdown": "assets/print-a-selection.md"
+              "markdown": "%walkthroughs.steps.printASelection.media%"
             },
-            "description": "%walkthroughs.steps.printMultilineSelection.description%"
+            "description": "%walkthroughs.steps.printASelection.description%"
           },
           {
             "id": "print-markdown-rendered",
             "title": "%walkthroughs.steps.printMarkdownRendered.title%",
             "media": {
-              "markdown": "assets/print-md-as-pdf.md"
+              "markdown": "%walkthroughs.steps.printMarkdownRendered.media%"
             },
             "description": "%walkthroughs.steps.printMarkdownRendered.description%"
           },
@@ -468,7 +492,7 @@
             "id": "print-remote",
             "title": "%walkthroughs.steps.printRemote.title%",
             "media": {
-              "markdown": "assets/enable-remote-print.md"
+              "markdown": "%walkthroughs.steps.printRemote.media%"
             },
             "description": "%walkthroughs.steps.printRemote.description%"
           }
@@ -480,6 +504,7 @@
     "workspace"
   ],
   "dependencies": {
+    "@types/jsdom": "^21.1.7",
     "@viz-js/viz": "^3.11.0",
     "axios": "^1.8.2",
     "braces": "^3.0.3",
@@ -487,6 +512,7 @@
     "cors": "^2.8.5",
     "handlebars": "^4.7.8",
     "highlight.js": "^11.9.0",
+    "jsdom": "^26.0.0",
     "katex": "^0.16.21",
     "lodash": "^4.17.21",
     "marked": "^15.0.6",

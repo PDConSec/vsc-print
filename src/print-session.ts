@@ -125,7 +125,7 @@ export class PrintSession {
             vscode.window.showErrorMessage(rootDocumentContentSource);
             break;
         }
-        if (this.browserConfig.get<boolean>("useAlternate")) {
+        if (this.browserConfig.get<boolean>("enable")) {
           launchAlternateBrowser(this.getUrl())
         } else {
           vscode.env.openExternal(vscode.Uri.parse(this.getUrl()));
@@ -318,7 +318,7 @@ async function launchAlternateBrowser(url: string) {
   const isRemoteWorkspace = !!vscode.env.remoteName;
   logger.debug(`Workspace is ${isRemoteWorkspace ? "remote" : "local"}`);
 
-  if (typeof browserConfig.alternateBrowserPath === "undefined") {
+  if (typeof browserConfig.path === "undefined") {
     const msg = "Alternate browser path not set. Default browser will be used.";
     logger.warn(msg);
     vscode.window.showWarningMessage(msg);
@@ -331,7 +331,7 @@ async function launchAlternateBrowser(url: string) {
       if (!cmds.includes("print.launchBrowser")) {
         throw new Error("The remote printing agent is not accessible");
       }
-      if (typeof browserConfig.alternateBrowserPath !== "undefined") {
+      if (typeof browserConfig.path !== "undefined") {
         vscode.commands.executeCommand("print.launchBrowser", url);
       } else {
         vscode.env.openExternal(vscode.Uri.parse(url));
@@ -343,11 +343,11 @@ async function launchAlternateBrowser(url: string) {
       vscode.env.openExternal(vscode.Uri.parse(url));
     }
   } else {
-    let resolvedBrowserPath = Browsers.resolveBrowserPath(browserConfig.alternateBrowserPath);
+    let resolvedBrowserPath = Browsers.resolveBrowserPath(browserConfig.path);
     if (!resolvedBrowserPath) {
       const browserEntry = await Browsers.promptUserChoice();
       if (browserEntry) {
-        await browserConfig.update('alternateBrowserPath', browserEntry.path, vscode.ConfigurationTarget.Global);
+        await browserConfig.update('path', browserEntry.path, vscode.ConfigurationTarget.Global);
         var msg = vscode.l10n.t("has been set as the alternate browser for printing.");
         vscode.window.showInformationMessage(`"${browserEntry.name}" {msg}`);
       }

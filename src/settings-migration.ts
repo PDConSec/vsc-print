@@ -26,10 +26,15 @@ const settingsMigration = {
   "renderMarkdown": "markdown.enableRender",
   "stylesheets.markdown": "markdown.stylesheets",
   "documentSettleMilliseconds": "markdown.SettleMs",
-  "useSmartQuotes": "markdown.useSmartQuotes",
+  "useSmartQuotes": "markdown.smartQuotes.enable",
   "krokiUrl": "markdown.kroki.url",
   "includePaths": "markdown.kroki.includePaths",
-  "rejectUnauthorisedTls": "markdown.kroki.rejectUnauthorisedTls"
+  "rejectUnauthorisedTls": "markdown.kroki.rejectUnauthorisedTls",
+  //1.4.0
+  "browser.alternateBrowserPath": "alternateBrowser.path",
+  "browser.useAlternate": "alternateBrowser.enable",
+  "markdown.useSmartQuotes": "markdown.smartQuotes.enable",
+
 };
 
 export default async function migrateSettings() {

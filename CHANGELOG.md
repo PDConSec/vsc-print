@@ -1,5 +1,13 @@
 # Change Log
 
+### 1.4.0
+
+- Security updates
+- Rename browser settings
+- Finish localising walkthrough files
+- Watermark support
+- Prevent highlightjs from setting a background colour
+
 ### 1.3.0
 
 - [#378](https://github.com/PDConSec/vsc-print/issues/378)

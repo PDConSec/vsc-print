@@ -6,4 +6,4 @@
 	- Click on the Print icon in the toolbar.
 	- Right-click on the document and choose `Print` from the context menu.
 
-The file is printed _as it is in the editor,_ which may differ from the file on disk. You can print a file that has never been saved.
+When you print an open file, the content of the edit buffer is printed. This may differ from the file on disk. You can print a file that has never been saved.
