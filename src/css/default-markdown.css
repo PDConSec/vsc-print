@@ -13,6 +13,7 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: sans-serif;
   page-break-after: avoid;
   page-break-inside: avoid;
 }
@@ -99,3 +100,4 @@ pre.plaintext {
   border: thin solid silver;
   white-space: pre-wrap;
 }
+

@@ -25,3 +25,7 @@ pre.plaintext {
 .page-break-control {
   break-after: PAGE_BREAK;
 }
+
+.hljs {
+  background-color: transparent;
+}

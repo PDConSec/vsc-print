@@ -5,6 +5,7 @@ import { Metadata } from '../metadata';
 import { ResourceProxy } from "./resource-proxy";
 import { processFencedBlocks as processMarkdown } from './processMarkdown';
 import { marked } from 'marked';
+import { JSDOM } from 'jsdom';
 
 const resources = new Map<string, ResourceProxy>();
 
@@ -68,9 +69,33 @@ export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>
   const rootDocumentFolder = path.dirname(uri.fsPath);
   const updatedTokens = await processMarkdown({ LATEX: { displayMode: true } }, raw, generatedResources, rootDocumentFolder);
   let html = marked.parser(updatedTokens);
-  const markdownConfig = vscode.workspace.getConfiguration("print.markdown");
-  if (markdownConfig.get("useSmartQuotes")) {
+  const smartQuotesConfig = vscode.workspace.getConfiguration("print.markdown.smartQuotes");
+  if (smartQuotesConfig.get<boolean>("enable")) {
     html += "<script src='bundled/smartquotes.js'></script><script>smartquotes();</script>";
+  }
+  //insert watermark if enabled
+  const watermarkConfig = vscode.workspace.getConfiguration("print.markdown.watermark");
+  if (watermarkConfig.get<boolean>("enable")) {
+    const watermarkText = watermarkConfig.get<string>("text");
+    if (watermarkText) {
+      const watermarkDiv = `<div class="watermark" >${watermarkText}</div>`;
+      //parse the html using jsdom and salt the watermark through the body after every block element
+      const dom = new JSDOM(html);
+      const document = dom.window.document;
+      const body = document.body;
+      const blockElements = ["div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "pre"];
+      const children = Array.from(body.children);
+      for (const child of children) {
+        if (blockElements.includes(child.tagName.toLowerCase())) {
+          const watermark = document.createElement("div");
+          watermark.innerText = watermarkText;
+          watermark.className = "watermark";
+          watermark.style.display = "display: none; user-select: none; pointer-events: none;";
+          body.insertBefore(watermark, child.nextSibling);
+        }
+      }
+      html = document.body.innerHTML;
+    }
   }
   return html;
 }
