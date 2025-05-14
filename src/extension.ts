@@ -100,12 +100,12 @@ export async function activate(context: vscode.ExtensionContext) {
   const editorContextMenuConfig = vscode.workspace.getConfiguration("print.general.editorContextMenu");
   let ecmPrint = editorContextMenuConfig.get<string>("itemPosition");
   const editorTitleMenuConfig = vscode.workspace.getConfiguration("print.general.editorTitleMenu");
-  let etmButtonPrint = editorTitleMenuConfig.get<boolean>("showPrintIcon");
-  let etmButtonPreview = editorTitleMenuConfig.get<boolean>("showPreviewIcon");
+  let etmShowPrintIconSetting = editorTitleMenuConfig.get<boolean>("showPrintIcon");
+  let etmShowPreviewIconSetting = editorTitleMenuConfig.get<boolean>("showPreviewIcon");
   let disposable: vscode.Disposable;
-  vscode.commands.executeCommand("setContext", "ecmPrint", ecmPrint);
-  vscode.commands.executeCommand("setContext", "etmButtonPrint", etmButtonPrint);
-  vscode.commands.executeCommand("setContext", "etmButtonPreview", etmButtonPreview);
+  vscode.commands.executeCommand("setContext", "ecmPrintMenuItemPosition", ecmPrint);
+  vscode.commands.executeCommand("setContext", "editorTitleMenuPrintIconVisible", etmShowPrintIconSetting);
+  vscode.commands.executeCommand("setContext", "editorTitleMenuPreviewIconVisible", etmShowPreviewIconSetting);
 
   context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(checkConfigurationChange));
   context.subscriptions.push(vscode.commands.registerCommand("vsc-print.whatsnew", launchWhatsNew));
@@ -303,21 +303,23 @@ function openDoc(doc: string) {
 }
 
 const checkConfigurationChange = (e: vscode.ConfigurationChangeEvent) => {
-  const generalConfig = vscode.workspace.getConfiguration("print.general");
-  if (e.affectsConfiguration('print.general.editorContextMenuItemPosition')) {
-    const ecmip = generalConfig.get("editorContextMenuItemPosition") as string;
-    logger.info(`editorContextMenuItemPosition set to ${ecmip}`)
-    vscode.commands.executeCommand("setContext", "ecmPrint", ecmip);
+  if (e.affectsConfiguration('print.general.editorContextMenu.itemPosition')) {
+    const editorContextMenuConfig = vscode.workspace.getConfiguration("print.general.editorContextMenu");
+    const ecmip = editorContextMenuConfig.get<string>("itemPosition");
+    logger.info(`print.general.editorContextMenu.itemPosition set to ${ecmip}`)
+    vscode.commands.executeCommand("setContext", "ecmPrintMenuItemPosition", ecmip);
   }
-  else if (e.affectsConfiguration('print.general.editorTitleMenuButtonPrint')) {
-    const etmb = generalConfig.get<boolean>('editorTitleMenuButtonPrint');
-    logger.info(`editorTitleMenuButtonPrint set to ${etmb}`);
-    vscode.commands.executeCommand("setContext", "etmButtonPrint", etmb);
+  else if (e.affectsConfiguration('print.general.editorTitleMenu.showPrintIcon')) {
+    const editorTitleMenuConfig = vscode.workspace.getConfiguration("print.general.editorTitleMenu");
+    const etmShowPrintIconSetting = editorTitleMenuConfig.get<boolean>("showPrintIcon");
+    logger.info(`print.general.editorTitleMenu.showPrintIcon set to ${etmShowPrintIconSetting}`);
+    vscode.commands.executeCommand("setContext", "editorTitleMenuPrintIconVisible", etmShowPrintIconSetting);
   }
-  else if (e.affectsConfiguration('print.general.editorTitleMenuButtonPreview')) {
-    const etmb = generalConfig.get<boolean>('editorTitleMenuButtonPreview');
-    logger.info(`editorTitleMenuButtonPreview set to ${etmb}`);
-    vscode.commands.executeCommand("setContext", "etmButtonPreview", etmb);
+  else if (e.affectsConfiguration('print.general.editorTitleMenu.showPreviewIcon')) {
+    const editorTitleMenuConfig = vscode.workspace.getConfiguration("print.general.editorTitleMenu");
+    const etmShowPreviewIconSetting = editorTitleMenuConfig.get<boolean>("showPreviewIcon");
+    logger.info(`print.general.editorTitleMenu.showPreviewIcon set to ${etmShowPreviewIconSetting}`);
+    vscode.commands.executeCommand("setContext", "editorTitleMenuPreviewIconVisible", etmShowPreviewIconSetting);
   }
 };
 

@@ -2,7 +2,7 @@
   "name": "vscode-print",
   "displayName": "Print",
   "description": "Rendered Markdown, coloured code.",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "icon": "assets/vscode-print-128.png",
   "author": {
     "name": "Peter Wone",
@@ -212,7 +212,7 @@
           "print.general.useFilepathInDocumentTitle": {
             "type": "string",
             "default": "No path",
-            "description": "%print.useFilepathInDocumentTitle%",
+            "description": "%print.general.useFilepathInDocumentTitle%",
             "enum": [
               "No path",
               "Abbreviated path",
@@ -381,78 +381,78 @@
     "menus": {
       "explorer/context": [
         {
-          "when": "ecmPrint == Top",
+          "when": "ecmPrintMenuItemPosition == Top",
           "command": "vsc-print.print",
           "group": "navigation"
         },
         {
-          "when": "ecmPrint == Top",
+          "when": "ecmPrintMenuItemPosition == Top",
           "command": "vsc-print.preview",
           "group": "navigation"
         },
         {
-          "when": "ecmPrint == Bottom",
+          "when": "ecmPrintMenuItemPosition == Bottom",
           "command": "vsc-print.print",
           "group": "Z_commands"
         },
         {
-          "when": "ecmPrint == Bottom",
+          "when": "ecmPrintMenuItemPosition == Bottom",
           "command": "vsc-print.preview",
           "group": "Z_commands"
         }
       ],
       "editor/title": [
         {
-          "when": "editorLangId && etmButtonPrint",
+          "when": "editorLangId && editorTitleMenuPrintIconVisible",
           "command": "vsc-print.print",
           "group": "navigation"
         },
         {
-          "when": "editorLangId && etmButtonPreview",
+          "when": "editorLangId && editorTitleMenuPreviewIconVisible",
           "command": "vsc-print.preview",
           "group": "navigation"
         }
       ],
       "editor/title/context": [
         {
-          "when": "editorLangId && ecmPrint == Top",
+          "when": "editorLangId && ecmPrintMenuItemPosition == Top",
           "command": "vsc-print.print",
           "group": "navigation"
         },
         {
-          "when": "editorLangId && ecmPrint == Top",
+          "when": "editorLangId && ecmPrintMenuItemPosition == Top",
           "command": "vsc-print.preview",
           "group": "navigation"
         },
         {
-          "when": "editorLangId && ecmPrint == Bottom",
+          "when": "editorLangId && ecmPrintMenuItemPosition == Bottom",
           "command": "vsc-print.print",
           "group": "Z_commands"
         },
         {
-          "when": "editorLangId && ecmPrint == Bottom",
+          "when": "editorLangId && ecmPrintMenuItemPosition == Bottom",
           "command": "vsc-print.preview",
           "group": "Z_commands"
         }
       ],
       "editor/context": [
         {
-          "when": "editorLangId && ecmPrint == Top",
+          "when": "editorLangId && ecmPrintMenuItemPosition == Top",
           "command": "vsc-print.print",
           "group": "navigation"
         },
         {
-          "when": "editorLangId && ecmPrint == Top",
+          "when": "editorLangId && ecmPrintMenuItemPosition == Top",
           "command": "vsc-print.preview",
           "group": "navigation"
         },
         {
-          "when": "editorLangId && ecmPrint == Bottom",
+          "when": "editorLangId && ecmPrintMenuItemPosition == Bottom",
           "command": "vsc-print.print",
           "group": "Z_commands"
         },
         {
-          "when": "editorLangId && ecmPrint == Bottom",
+          "when": "editorLangId && ecmPrintMenuItemPosition == Bottom",
           "command": "vsc-print.preview",
           "group": "Z_commands"
         }
@@ -532,7 +532,7 @@
     "webpack-dev": "node gather.js && webpack --mode development --watch",
     "compile": "tsc -p ./",
     "lint": "eslint \"src/**/*.ts\"",
-    "localise": "npx @vscode/l10n-dev export --outDir ./l10n ./src && npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy && node scripts/localise-walkthrough-media.js"
+    "localise": "npx @vscode/l10n-dev export --outDir ./l10n ./src && npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy && node localise-walkthrough-media.js"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

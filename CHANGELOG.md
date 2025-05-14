@@ -1,5 +1,10 @@
 # Change Log
 
+### 1.4.1
+
+- fix [#386](https://github.com/PDConSec/vsc-print/issues/386)
+- fix [#387](https://github.com/PDConSec/vsc-print/issues/387)
+
 ### 1.4.0
 
 - Security updates
