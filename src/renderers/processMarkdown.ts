@@ -36,7 +36,7 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
     .replace(/\$\$(.+?)\$\$/gs, (_, capture) => katex.renderToString(capture, { displayMode: true, throwOnError: false }));
 
   const tokens = marked.lexer(katexed);
-  const krokiUrl = vscode.workspace.getConfiguration("print").krokiUrl;
+  const krokiUrl = vscode.workspace.getConfiguration("print.markdown.kroki").url;
   let activeConfigName = "DEFAULT";
   const namedConfigs: any = { DEFAULT: defaultConfig };
   const stack: any[] = [];
