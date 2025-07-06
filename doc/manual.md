@@ -151,6 +151,26 @@ In the fenced block for `Database` you supply a connection string and some setti
 
 Print has a persistent cache (similar to a browser) for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. Extending Kroki in the spirit of `jebb.plantUml` there is also support for recursive `!include filename.ext`.
 
+### SMILES
+
+You can supply just a SMILES string as the only content of the fenced block, or use YAML notation to specify image dimensions or SmilesDrawer config. Supported values are as follows.
+
+  - smiles: <string> (required)
+  - width: <number><px|em> (optional)
+  - height: <number><px|em> (optional)
+  - terminalCarbons: true|false (optional)
+  - compactDrawing: true|false (optional)
+  - explicitHydrogens: true|false (optional)
+  - kekulise: true|false (optional)
+  - aromatic: true|false (optional)
+  - showTitle: true|false|<string> (optional, true/false to show/hide; true shows the SMILES string as the title, string for custom title)
+  - showStereo: true|false (optional)
+  - showAtomIds: true|false (optional)
+  - showBondIds: true|false (optional)
+  - background: <color> (optional)
+  - colorAtoms: true|false (optional)
+  - colorBonds: true|false (optional)
+
 ### Database diagrams
 
 Like most diagrams you use a fenced block annotated with the diagram type. The content of this block must be valid YAML and the minimum you can specify is the `DatabaseType` and the `ConnectionString`.

@@ -10,8 +10,39 @@
   {{{scriptTags}}}
   <script type="application/javascript">
     function printAndClose(enabled) {
-      if (typeof SmiDrawer === "object") {
-        SmiDrawer.apply();
+      if (typeof SmiDrawer === "function") {
+        var moleculeOptions = {};
+        var reactionOptions = {};
+        var svgs = document.querySelectorAll('svg[data-smiles]');
+        svgs.forEach(function(svg) {
+          var smiles = svg.getAttribute('data-smiles');
+          var parent = svg.parentNode;
+          var errorDiv = document.createElement('div');
+          errorDiv.style.color = 'red';
+          errorDiv.style.fontFamily = 'monospace';
+          errorDiv.style.background = '#fff0f0';
+          errorDiv.style.border = '1px solid #f88';
+          errorDiv.style.padding = '0.5em 1em';
+          errorDiv.style.margin = '0.5em 0';
+          function showError(msg) {
+            if (parent) {
+              var pre = document.createElement('pre');
+              pre.textContent = msg;
+              errorDiv.appendChild(pre);
+              parent.replaceChild(errorDiv, svg);
+            }
+          }
+          try {
+            var drawer = new SmiDrawer(moleculeOptions, reactionOptions);
+            SmilesDrawer.parse(smiles, function(tree) {
+              drawer.draw(smiles, svg);
+            }, function(err) {
+              showError('Invalid SMILES: ' + smiles + (err ? '\n' + err : ''));
+            });
+          } catch (err) {
+            showError('Invalid SMILES: ' + smiles + (err ? '\n' + err : ''));
+          }
+        });
       }
       if (enabled) {
         window.addEventListener("afterprint", (event) => {

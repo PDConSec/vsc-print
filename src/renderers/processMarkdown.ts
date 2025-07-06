@@ -89,6 +89,94 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
               updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: errorText });
             }
             break;
+          case "SMILES": {
+            // Parse as YAML, support both single unnamed value and named values
+            let smiles = "";
+            let width = undefined;
+            let height = undefined;
+            // Commonly used config for SMILES rendering
+            let config: Record<string, any> = {};
+            let parsed: any = undefined;
+            let parseError: any = undefined;
+            try {
+              parsed = yaml.parse(token.text);
+            } catch (e) {
+              parseError = e;
+            }
+            if (parseError) {
+              // Show error in fenced block, with supported values
+              const supported = [
+                'smiles: <string> (required)',
+                'width: <number><px|em> (optional)',
+                'height: <number><px|em> (optional)',
+                'terminalCarbons: true|false (optional)',
+                'compactDrawing: true|false (optional)',
+                'explicitHydrogens: true|false (optional)',
+                'kekulise: true|false (optional)',
+                'aromatic: true|false (optional)',
+                'showTitle: true|false|<string> (optional, true/false to show/hide; true shows the SMILES string as the title, string for custom title)',
+                'showStereo: true|false (optional)',
+                'showAtomIds: true|false (optional)',
+                'showBondIds: true|false (optional)',
+                'background: <color> (optional)',
+                'colorAtoms: true|false (optional)',
+                'colorBonds: true|false (optional)'
+              ];
+              updatedTokens.push({
+                block: true,
+                type: "code",
+                lang: token.lang,
+                raw: token.raw,
+                text: `YAML parse error: ${parseError.message || parseError}` +
+                  `\n\nSupported values:` +
+                  `\n  - ${supported.join("\n  - ")}` +
+                  `\n\n${token.text}`
+              });
+              break;
+            }
+            if (typeof parsed === "string") {
+              smiles = parsed;
+            } else if (typeof parsed === "object" && parsed !== null) {
+              // Normalize keys to lower-case for SMILES, width, height
+              const norm = Object.create(null);
+              for (const k of Object.keys(parsed)) {
+                norm[k.toLowerCase()] = parsed[k];
+              }
+              // If only one key and it's not named, treat as smiles string
+              const keys = Object.keys(norm);
+              if (keys.length === 1 && !keys[0]) {
+                smiles = norm[""];
+              } else {
+                if (norm.smiles) smiles = norm.smiles;
+                if (norm.width) width = norm.width;
+                if (norm.height) height = norm.height;
+                // Collect all other config options (case-sensitive for config keys)
+                const configKeys = [
+                  'terminalCarbons', 'compactDrawing', 'explicitHydrogens', 'kekulise', 'aromatic',
+                  'showTitle', 'showStereo', 'showAtomIds', 'showBondIds', 'background', 'colorAtoms', 'colorBonds'
+                ];
+                for (const key of configKeys) {
+                  if (parsed[key] !== undefined) config[key] = parsed[key];
+                }
+              }
+            }
+            // Sanitize SMILES string
+            const smilesSanitized = (smiles || "").trim().replace(/[^A-Za-z0-9@+=#\-\(\)\[\]/\\.%*:$]/g, "");
+            // Build SVG tag with optional width/height and config as data attributes
+            let svgAttrs = `data-smiles=\"${smilesSanitized}\"`;
+            if (width) svgAttrs += ` width=\"${String(width)}\"`;
+            if (height) svgAttrs += ` height=\"${String(height)}\"`;
+            for (const [k, v] of Object.entries(config)) {
+              svgAttrs += ` data-${k.replace(/([A-Z])/g, '-$1').toLowerCase()}=\"${String(v)}\"`;
+            }
+            updatedTokens.push({
+              block: true,
+              type: "html",
+              raw: token.raw,
+              text: `<svg ${svgAttrs}/>`
+            });
+            break;
+          }
           case "LATEX":
             updatedTokens.push({ block: true, type: "html", raw: token.raw, text: katex.renderToString(token.text, getConfig(LANG)) });
             break;
