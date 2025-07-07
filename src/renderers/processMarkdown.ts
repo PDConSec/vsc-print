@@ -109,18 +109,6 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
                 'smiles: <string> (required)',
                 'width: <number><px|em> (optional)',
                 'height: <number><px|em> (optional)',
-                'terminalCarbons: true|false (optional)',
-                'compactDrawing: true|false (optional)',
-                'explicitHydrogens: true|false (optional)',
-                'kekulise: true|false (optional)',
-                'aromatic: true|false (optional)',
-                'showTitle: true|false|<string> (optional, true/false to show/hide; true shows the SMILES string as the title, string for custom title)',
-                'showStereo: true|false (optional)',
-                'showAtomIds: true|false (optional)',
-                'showBondIds: true|false (optional)',
-                'background: <color> (optional)',
-                'colorAtoms: true|false (optional)',
-                'colorBonds: true|false (optional)'
               ];
               updatedTokens.push({
                 block: true,
@@ -150,13 +138,11 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
                 if (norm.smiles) smiles = norm.smiles;
                 if (norm.width) width = norm.width;
                 if (norm.height) height = norm.height;
-                // Collect all other config options (case-sensitive for config keys)
-                const configKeys = [
-                  'terminalCarbons', 'compactDrawing', 'explicitHydrogens', 'kekulise', 'aromatic',
-                  'showTitle', 'showStereo', 'showAtomIds', 'showBondIds', 'background', 'colorAtoms', 'colorBonds'
-                ];
-                for (const key of configKeys) {
-                  if (parsed[key] !== undefined) config[key] = parsed[key];
+                // Pass all other keys except smiles, width, height as config options
+                for (const key of Object.keys(parsed)) {
+                  if (!['smiles', 'width', 'height'].includes(key.toLowerCase())) {
+                    config[key] = parsed[key];
+                  }
                 }
               }
             }
@@ -166,14 +152,17 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
             let svgAttrs = `data-smiles=\"${smilesSanitized}\"`;
             if (width) svgAttrs += ` width=\"${String(width)}\"`;
             if (height) svgAttrs += ` height=\"${String(height)}\"`;
-            for (const [k, v] of Object.entries(config)) {
-              svgAttrs += ` data-${k.replace(/([A-Z])/g, '-$1').toLowerCase()}=\"${String(v)}\"`;
+            if (Object.keys(config).length > 0) {
+              // Use encodeURIComponent to preserve case and special characters
+              svgAttrs += ` data-smiles-config=\"${encodeURIComponent(JSON.stringify(config))}\"`;
             }
+            const svgString = `<svg ${svgAttrs}/>`;
+            logger.debug(`SMILES rendering with attributes: ${svgAttrs}`);
             updatedTokens.push({
               block: true,
               type: "html",
               raw: token.raw,
-              text: `<svg ${svgAttrs}/>`
+              text: svgString
             });
             break;
           }

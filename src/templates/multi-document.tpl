@@ -11,11 +11,22 @@
   <script type="application/javascript">
     function printAndClose(enabled) {
       if (typeof SmiDrawer === "function") {
-        var moleculeOptions = {};
-        var reactionOptions = {};
         var svgs = document.querySelectorAll('svg[data-smiles]');
         svgs.forEach(function(svg) {
           var smiles = svg.getAttribute('data-smiles');
+          var configJson = svg.getAttribute('data-smiles-config');
+          let moleculeOptions;
+          let reactionOptions;
+          if (configJson) {
+            try {
+              // decodeURIComponent to match encodeURIComponent in processMarkdown.ts
+              var parsedConfig = JSON.parse(decodeURIComponent(configJson));
+              moleculeOptions = parsedConfig.moleculeOptions ?? {};
+              reactionOptions = parsedConfig.reactionOptions ?? {};
+            } catch (e) {
+              // ignore, fallback to empty options
+            }
+          }
           var parent = svg.parentNode;
           var errorDiv = document.createElement('div');
           errorDiv.style.color = 'red';
