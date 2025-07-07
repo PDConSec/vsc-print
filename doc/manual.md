@@ -158,18 +158,10 @@ You can supply just a SMILES string as the only content of the fenced block, or 
   - smiles: <string> (required)
   - width: <number><px|em> (optional)
   - height: <number><px|em> (optional)
-  - terminalCarbons: true|false (optional)
-  - compactDrawing: true|false (optional)
-  - explicitHydrogens: true|false (optional)
-  - kekulise: true|false (optional)
-  - aromatic: true|false (optional)
-  - showTitle: true|false|<string> (optional, true/false to show/hide; true shows the SMILES string as the title, string for custom title)
-  - showStereo: true|false (optional)
-  - showAtomIds: true|false (optional)
-  - showBondIds: true|false (optional)
-  - background: <color> (optional)
-  - colorAtoms: true|false (optional)
-  - colorBonds: true|false (optional)
+  - moleculeOptions:
+    - as defined by SmilesDrawer
+  - reactionOptions:
+    - as defined by SmilesDrawer
 
 ### Database diagrams
 

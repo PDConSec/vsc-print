@@ -1,5 +1,9 @@
 # Change Log
 
+### 1.5.1
+
+- fix marshalling of options to SMILES
+
 ### 1.5.0
 
 - fix [#387](https://github.com/PDConSec/vsc-print/issues/387)
