@@ -89,6 +89,83 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
               updatedTokens.push({ block: true, type: "code", lang: token.lang, raw: token.raw, text: errorText });
             }
             break;
+          case "SMILES": {
+            // Parse as YAML, support both single unnamed value and named values
+            let smiles = "";
+            let width = undefined;
+            let height = undefined;
+            // Commonly used config for SMILES rendering
+            let config: Record<string, any> = {};
+            let parsed: any = undefined;
+            let parseError: any = undefined;
+            try {
+              parsed = yaml.parse(token.text);
+            } catch (e) {
+              parseError = e;
+            }
+            if (parseError) {
+              // Show error in fenced block, with supported values
+              const supported = [
+                'smiles: <string> (required)',
+                'width: <number><px|em> (optional)',
+                'height: <number><px|em> (optional)',
+              ];
+              updatedTokens.push({
+                block: true,
+                type: "code",
+                lang: token.lang,
+                raw: token.raw,
+                text: `YAML parse error: ${parseError.message || parseError}` +
+                  `\n\nSupported values:` +
+                  `\n  - ${supported.join("\n  - ")}` +
+                  `\n\n${token.text}`
+              });
+              break;
+            }
+            if (typeof parsed === "string") {
+              smiles = parsed;
+            } else if (typeof parsed === "object" && parsed !== null) {
+              // Normalize keys to lower-case for SMILES, width, height
+              const norm = Object.create(null);
+              for (const k of Object.keys(parsed)) {
+                norm[k.toLowerCase()] = parsed[k];
+              }
+              // If only one key and it's not named, treat as smiles string
+              const keys = Object.keys(norm);
+              if (keys.length === 1 && !keys[0]) {
+                smiles = norm[""];
+              } else {
+                if (norm.smiles) smiles = norm.smiles;
+                if (norm.width) width = norm.width;
+                if (norm.height) height = norm.height;
+                // Pass all other keys except smiles, width, height as config options
+                for (const key of Object.keys(parsed)) {
+                  if (!['smiles', 'width', 'height'].includes(key.toLowerCase())) {
+                    config[key] = parsed[key];
+                  }
+                }
+              }
+            }
+            // Sanitize SMILES string
+            const smilesSanitized = (smiles || "").trim().replace(/[^A-Za-z0-9@+=#\-\(\)\[\]/\\.%*:$]/g, "");
+            // Build SVG tag with optional width/height and config as data attributes
+            let svgAttrs = `data-smiles=\"${smilesSanitized}\"`;
+            if (width) svgAttrs += ` width=\"${String(width)}\"`;
+            if (height) svgAttrs += ` height=\"${String(height)}\"`;
+            if (Object.keys(config).length > 0) {
+              // Use encodeURIComponent to preserve case and special characters
+              svgAttrs += ` data-smiles-config=\"${encodeURIComponent(JSON.stringify(config))}\"`;
+            }
+            const svgString = `<svg ${svgAttrs}/>`;
+            logger.debug(`SMILES rendering with attributes: ${svgAttrs}`);
+            updatedTokens.push({
+              block: true,
+              type: "html",
+              raw: token.raw,
+              text: svgString
+            });
+            break;
+          }
           case "LATEX":
             updatedTokens.push({ block: true, type: "html", raw: token.raw, text: katex.renderToString(token.text, getConfig(LANG)) });
             break;
