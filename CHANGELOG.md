@@ -1,5 +1,13 @@
 # Change Log
 
+### 1.6.0
+
+- Add support for absolute filesystem paths with special path symbol 'absolute/path/to/file.css'
+
+### 1.5.2
+
+- settings should be print.alternateBrowser.path and print.alternateBrowser.enable
+
 ### 1.5.1
 
 - fix marshalling of options to SMILES

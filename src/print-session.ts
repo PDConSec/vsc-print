@@ -35,7 +35,7 @@ export class PrintSession {
   public ready: Promise<void>;
   public sessionId = nodeCrypto.randomUUID();
   public source: any;
-  private browserConfig = vscode.workspace.getConfiguration("print.browser");
+  private browserConfig = vscode.workspace.getConfiguration("print.alternateBrowser");
   private editorConfig = vscode.workspace.getConfiguration("editor");
   private sourcecodeConfig = vscode.workspace.getConfiguration("print.sourcecode");
 
@@ -159,9 +159,13 @@ export class PrintSession {
         "Content-Length": 2
       });
       return response.end("OK");
-    } else if (urlParts.length === 4 && urlParts[2] === "workspace.resource") {
+    } else if (urlParts[2] === "absolute") {
+      logger.debug(`Responding to absolute path resource request for session ${urlParts[1]}`);
+      const resourcePath = path.join("/", ...urlParts.slice(3));
+      return await relativeResource(resourcePath);
+    } else if (urlParts[2] === "workspace.resource") {
       logger.debug(`Responding to workspace.resource request for session ${urlParts[1]}`);
-      const basePath = vscode.workspace.getWorkspaceFolder(this.source!)?.uri.fsPath!;
+      const basePath = vscode.workspace.getWorkspaceFolder(this.source)?.uri.fsPath!;
       const resourcePath = path.join(basePath, ...urlParts.slice(3));
       return await relativeResource(resourcePath);
     } else if (urlParts.length > 3 && urlParts[2] === "generated") {
@@ -314,7 +318,7 @@ export class PrintSession {
 
 async function launchAlternateBrowser(url: string) {
   logger.debug("Alternate browser is selected");
-  const browserConfig = vscode.workspace.getConfiguration("print.browser");
+  const browserConfig = vscode.workspace.getConfiguration("print.alternateBrowser");
   const isRemoteWorkspace = !!vscode.env.remoteName;
   logger.debug(`Workspace is ${isRemoteWorkspace ? "remote" : "local"}`);
 

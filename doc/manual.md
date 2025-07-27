@@ -230,11 +230,12 @@ Detail: keys
 ### Apply CSS files to a Markdown document 
 
  - You can embed a stylesheet link tag directly into the Markdown. This is specific to the document.  
- - There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLS, or document  relative URLs, as shown in the following example.
+ - There's a setting called `markdown.styles`. This is a list of URLs. Both the built in Markdown preview and Print will honour this list. You can use absolute URLs, workspace relative URLs, absolute filesystem paths, or document relative URLs, as shown in the following examples.
 
 ```json
 "markdown.styles": [
-  "workspace.resource/path/to/stylesheet.css"
+  "workspace.resource/path/to/stylesheet.css",
+  "absolute/path/to/stylesheet.css"
 ]
 ```
 
