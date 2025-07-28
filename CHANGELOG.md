@@ -3,6 +3,7 @@
 ### 1.6.0
 
 - Add support for absolute filesystem paths with special path symbol 'absolute/path/to/file.css'
+- Show warning with help link when CSS, image, or SVG file resolution fails
 
 ### 1.5.2
 

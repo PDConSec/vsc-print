@@ -10,7 +10,7 @@ import {MySqlRepository} from "./repositories/mySqlRepository";
 export class databaseFencedLanguageService {
     // https://mermaid.js.org/syntax/entityRelationshipDiagram.html
     createKrokiMarkup(databaseInformation: DatabaseModel, detail: "tables" | "keys" | "columns" | "types"): DatabaseDiagramResponse {
-        let mermaid = 'erDiagram\n';
+        let mermaid = '%%{init: {"er": {"layoutDirection": "TB", "useMaxWidth": true }}}%%\nerDiagram\n';
 
         // Generate table definitions
         const tables = new Map<string, Set<string>>();

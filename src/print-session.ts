@@ -245,31 +245,87 @@ export class PrintSession {
         case ".gif":
         case ".png":
         case ".webp":
-          response.writeHead(200, {
-            "Content-Type": `image/${fileExt.substring(1).toLowerCase()}`,
-            "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
-          });
-          return response.end(await vscode.workspace.fs.readFile(fileUri));
-        case ".svg":
-          response.writeHead(200, {
-            "Content-Type": `image/svg+xml`,
-            "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
-          });
-          return response.end(await vscode.workspace.fs.readFile(fileUri));
-        case ".css":
-          if (editor) {
-            const content = editor.document.getText();
+          try {
             response.writeHead(200, {
-              "Content-Type": "text/css",
-              "Content-Length": Buffer.byteLength(content, "utf-8")
-            });
-            return response.end(content);
-          } else {
-            response.writeHead(200, {
-              "Content-Type": "text/css",
+              "Content-Type": `image/${fileExt.substring(1).toLowerCase()}`,
               "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
             });
             return response.end(await vscode.workspace.fs.readFile(fileUri));
+          } catch (error) {
+            logger.error(`Failed to resolve image file: ${resourcePath}`, error);
+            vscode.window.showWarningMessage(
+              `Not found: ${resourcePath}`, 
+              { modal: false },
+              { title: "Help with Image Resolution" }
+            ).then(selection => {
+              if (selection) {
+                vscode.env.openExternal(vscode.Uri.parse("https://github.com/PDConSec/vsc-print/discussions/395"));
+              }
+            });
+            response.writeHead(404, {
+              "Content-Type": "text/plain",
+              "Content-Length": 19
+            });
+            return response.end("Image file not found");
+          }
+        case ".svg":
+          try {
+            response.writeHead(200, {
+              "Content-Type": `image/svg+xml`,
+              "Content-Length": (await vscode.workspace.fs.stat(fileUri)).size
+            });
+            return response.end(await vscode.workspace.fs.readFile(fileUri));
+          } catch (error) {
+            logger.error(`Failed to resolve SVG file: ${resourcePath}`, error);
+            vscode.window.showWarningMessage(
+              `Not found: ${resourcePath}`, 
+              { modal: false },
+              { title: "Help with SVG Resolution" }
+            ).then(selection => {
+              if (selection) {
+                vscode.env.openExternal(vscode.Uri.parse("https://github.com/PDConSec/vsc-print/discussions/395"));
+              }
+            });
+            response.writeHead(404, {
+              "Content-Type": "text/plain",
+              "Content-Length": 18
+            });
+            return response.end("SVG file not found");
+          }
+        case ".css":
+          try {
+            if (editor) {
+              const content = editor.document.getText();
+              response.writeHead(200, {
+                "Content-Type": "text/css",
+                "Content-Length": Buffer.byteLength(content, "utf-8")
+              });
+              return response.end(content);
+            } else {
+              const fileSize = (await vscode.workspace.fs.stat(fileUri)).size;
+              const fileContent = await vscode.workspace.fs.readFile(fileUri);
+              response.writeHead(200, {
+                "Content-Type": "text/css",
+                "Content-Length": fileSize
+              });
+              return response.end(fileContent);
+            }
+          } catch (error) {
+            logger.error(`Failed to resolve CSS file: ${resourcePath}`, error);
+            vscode.window.showWarningMessage(
+              `Not found: ${resourcePath}`, 
+              { modal: false },
+              { title: "Help with CSS Resolution" } // This will appear as a clickable button
+            ).then(selection => {
+              if (selection) {
+                vscode.env.openExternal(vscode.Uri.parse("https://github.com/PDConSec/vsc-print/discussions/395"));
+              }
+            });
+            response.writeHead(404, {
+              "Content-Type": "text/plain",
+              "Content-Length": 18
+            });
+            return response.end("CSS file not found");
           }
         default:
           response.writeHead(403, {

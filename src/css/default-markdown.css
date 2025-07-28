@@ -101,3 +101,35 @@ pre.plaintext {
   white-space: pre-wrap;
 }
 
+/* Database diagram styling for better print layout */
+img.DATABASE {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0.5em auto; /* Center the diagram */
+}
+
+@media print {
+  img.DATABASE {
+    /* Remove aggressive width constraints to prevent illegible scaling */
+    max-width: none !important;
+    width: auto !important;
+    height: auto !important;
+    /* Allow breaking across pages for wide diagrams */
+    page-break-inside: auto;
+    /* Ensure full diagram is visible, not cropped */
+    overflow: visible !important;
+  }
+  
+  /* For print, allow horizontal overflow if needed for readability */
+  .DATABASE {
+    overflow: visible !important;
+    width: auto !important;
+  }
+  
+  /* Ensure container doesn't crop the diagram */
+  body {
+    overflow: visible !important;
+  }
+}
+
