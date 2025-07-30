@@ -2,10 +2,6 @@
 
 Print code. Print rendered Markdown. Local or remote. Windows, Mac or Linux.
 
-Print is more or less feature complete and has been fairly stable for a long time, so we've bumped the version to 1.0.0 and henceforth will use semantic versioning.
-
-This release adds a convenience for those using alternate browser path - if you enable `Use alternate browser` and you don't set the path, Print will probe a list of the standard installation paths for common browsers and offer you a pick list for the browsers it finds installed. If it doesn't work for your browser on your platform, gather up the details (platform and actual path on your system) and log an issue so we can expand the list. It should work for current versions of Chrome, Chromium, Brave, Firefox, Opera, Vivaldi and Microsoft Edge on all three platforms.
-
 ## Hot preview 
 
 When you launch a preview of a Markdown document from the active editor, if you edit that file and stop making changes for three seconds, the proview will update in the browser. Hot preview also supports find-in-source. If you're proof-reading the rendered document and you find an error, double-clicking the paragraph will find and highlight the first line in the editor. You can adjust the settling delay in settings.
