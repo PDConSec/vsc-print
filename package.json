@@ -497,7 +497,7 @@
     "cors": "^2.8.5",
     "handlebars": "^4.7.8",
     "highlight.js": "^11.9.0",
-    "katex": "^0.16.21",
+    "katex": "^0.16.22",
     "lodash": "^4.17.21",
     "marked": "^15.0.6",
     "micromatch": "^4.0.8",
@@ -517,6 +517,7 @@
     "webpack-dev": "node gather.js && webpack --mode development --watch",
     "compile": "tsc -p ./",
     "lint": "eslint \"src/**/*.ts\"",
+    "test": "npm run compile && node dist/tests/unit/colour-scheme-validation.test.js",
     "localise": "npx @vscode/l10n-dev export --outDir ./l10n ./src && npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy && node localise-walkthrough-media.js"
   },
   "devDependencies": {

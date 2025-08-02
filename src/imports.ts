@@ -3,16 +3,16 @@ export const filenameByCaption: any = {
 	"Arduino": "arduino-light",
 	"Ascetic": "ascetic",
 	"Atom One": "atom-one-light",
-	"Atelier Cave": "base16-atelier-cave-light",
-	"Atelier Dune": "base16-atelier-dune-light",
-	"Atelier Estuary": "base16-atelier-estuary-light",
-	"Atelier Forest": "base16-atelier-forest-light",
-	"Atelier Heath": "base16-atelier-heath-light",
-	"Atelier Lakeside": "base16-atelier-lakeside-light",
-	"Atelier Plateau": "base16-atelier-plateau-light",
-	"Atelier Savanna": "base16-atelier-savanna-light",
-	"Atelier Seaside": "base16-atelier-seaside-light",
-	"Atelier Sulphur Pool": "base16-atelier-sulphurpool-light",
+	"Atelier Cave": "base16/atelier-cave-light",
+	"Atelier Dune": "base16/atelier-dune-light",
+	"Atelier Estuary": "base16/atelier-estuary-light",
+	"Atelier Forest": "base16/atelier-forest-light",
+	"Atelier Heath": "base16/atelier-heath-light",
+	"Atelier Lakeside": "base16/atelier-lakeside-light",
+	"Atelier Plateau": "base16/atelier-plateau-light",
+	"Atelier Savanna": "base16/atelier-savanna-light",
+	"Atelier Seaside": "base16/atelier-seaside-light",
+	"Atelier Sulphur Pool": "base16/atelier-sulphurpool-light",
 	"Color Brewer": "color-brewer",
 	"Docco": "docco",
 	"Foundation": "foundation",
@@ -42,16 +42,16 @@ export const captionByFilename: any = {
 	"arduino-light": "Arduino",
 	"ascetic": "Ascetic",
 	"atom-one-light": "Atom One",
-	"atelier-cave-light": "Atelier Cave",
-	"atelier-dune-light": "Atelier Dune",
-	"atelier-estuary-light": "Atelier Estuary",
-	"atelier-forest-light": "Atelier Forest",
-	"atelier-heath-light": "Atelier Heath",
-	"atelier-lakeside-light": "Atelier Lakeside",
-	"atelier-plateau-light": "Atelier Plateau",
-	"atelier-savanna-light": "Atelier Savanna",
-	"atelier-seaside-light": "Atelier Seaside",
-	"atelier-sulphurpool-light": "Atelier Suplhur Pool",
+	"base16/atelier-cave-light": "Atelier Cave",
+	"base16/atelier-dune-light": "Atelier Dune",
+	"base16/atelier-estuary-light": "Atelier Estuary",
+	"base16/atelier-forest-light": "Atelier Forest",
+	"base16/atelier-heath-light": "Atelier Heath",
+	"base16/atelier-lakeside-light": "Atelier Lakeside",
+	"base16/atelier-plateau-light": "Atelier Plateau",
+	"base16/atelier-savanna-light": "Atelier Savanna",
+	"base16/atelier-seaside-light": "Atelier Seaside",
+	"base16/atelier-sulphurpool-light": "Atelier Suplhur Pool",
 	"color-brewer": "Color Brewer",
 	"docco": "Docco",
 	"foundation": "Foundation",
@@ -75,4 +75,16 @@ export const captionByFilename: any = {
 	"vs": "Visual Studio",
 	"xcode": "XCode"
 }
-export const defaultCss: string = require("highlight.js/styles/default.css").default.toString();
+
+export function getDefaultCss(): string {
+    try {
+        return require("highlight.js/styles/default.css").default.toString();
+    } catch (error) {
+        // Fallback CSS if default.css can't be loaded
+        return `
+.hljs, .hljs-keyword, .hljs-number, .hljs-property, .hljs-title, .hljs-string, .hljs-variable {
+    background: white;
+    color: black;
+}`;
+    }
+}

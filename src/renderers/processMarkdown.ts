@@ -28,14 +28,16 @@ const KROKI_SUPPORT = [
 const CACHE_PATH = path.join(os.homedir(), ".vscode-print-resource-cache");
 if (!fs.existsSync(CACHE_PATH)) fs.mkdirSync(CACHE_PATH);
 
+// HTML escaping utility function
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 // import { fixFalsePrecision, formatXml, applyDiagramStyle, stripPreamble } from './svg-tools';
 
 export async function processFencedBlocks(defaultConfig: any, raw: string, generatedResources: Map<string, ResourceProxy>, rootDocFolder: string) {
-  const katexed = raw
-    .replace(/\$\$(.+?)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false, throwOnError: false }))
-    .replace(/\$\$(.+?)\$\$/gs, (_, capture) => katex.renderToString(capture, { displayMode: true, throwOnError: false }));
 
-  const tokens = marked.lexer(katexed);
+  const tokens = marked.lexer(raw);
   const krokiUrl = vscode.workspace.getConfiguration("print.markdown.kroki").url;
   let activeConfigName = "DEFAULT";
   const namedConfigs: any = { DEFAULT: defaultConfig };
@@ -169,6 +171,90 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
           case "LATEX":
             updatedTokens.push({ block: true, type: "html", raw: token.raw, text: katex.renderToString(token.text, getConfig(LANG)) });
             break;
+          case "SPOILER": {
+            // Parse as YAML with show and hide values (case insensitive)
+            let showText = "";
+            let hideText = "";
+            let parsed: any = undefined;
+            let parseError: any = undefined;
+            
+            try {
+              parsed = yaml.parse(token.text);
+            } catch (e) {
+              parseError = e;
+            }
+            
+            if (parseError) {
+              // Show error in fenced block, with supported values
+              const supported = [
+                'show: <string> (content to display)',
+                'hide: <string> (content to hide behind spoiler)',
+              ];
+              updatedTokens.push({
+                block: true,
+                type: "code",
+                lang: token.lang,
+                raw: token.raw,
+                text: `YAML parse error: ${parseError.message || parseError}` +
+                  `\n\nSupported values:` +
+                  `\n  - ${supported.join("\n  - ")}` +
+                  `\n\n${token.text}`
+              });
+              break;
+            }
+            
+            if (typeof parsed === "object" && parsed !== null) {
+              // Normalize keys to lower-case for case-insensitive matching
+              const norm = Object.create(null);
+              for (const k of Object.keys(parsed)) {
+                norm[k.toLowerCase()] = parsed[k];
+              }
+              
+              // Extract show and hide values
+              if (norm.show !== undefined) showText = String(norm.show);
+              if (norm.hide !== undefined) hideText = String(norm.hide);
+              
+              // Validate that only show and hide keys are present
+              const validKeys = ['show', 'hide'];
+              const invalidKeys = Object.keys(norm).filter(key => !validKeys.includes(key));
+              if (invalidKeys.length > 0) {
+                updatedTokens.push({
+                  block: true,
+                  type: "code",
+                  lang: token.lang,
+                  raw: token.raw,
+                  text: `Invalid keys in SPOILER block: ${invalidKeys.join(', ')}` +
+                    `\n\nOnly 'show' and 'hide' keys are supported (case insensitive)` +
+                    `\n\n${token.text}`
+                });
+                break;
+              }
+            } else {
+              updatedTokens.push({
+                block: true,
+                type: "code",
+                lang: token.lang,
+                raw: token.raw,
+                text: `SPOILER block must contain a YAML object with 'show' and 'hide' properties` +
+                  `\n\n${token.text}`
+              });
+              break;
+            }
+            
+            const spoilerHtml = `<details class="spoiler">
+  <summary>${escapeHtml(showText)}</summary>
+  <div class="spoiler-content">${escapeHtml(hideText)}</div>
+</details>`;
+            
+            logger.debug(`SPOILER rendering: show="${showText}", hide="${hideText}"`);
+            updatedTokens.push({
+              block: true,
+              type: "html",
+              raw: token.raw,
+              text: spoilerHtml
+            });
+            break;
+          }
           //#region config management
           case "USE":
             if (namedConfigs[token.text]) {
