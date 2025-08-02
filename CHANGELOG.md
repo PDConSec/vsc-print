@@ -1,5 +1,12 @@
 # Change Log
 
+### 1.7.0
+
+- Add support for SPOILER fenced code blocks with YAML configuration (show/hide values)
+- Enhanced settings migration with type checking and old key cleanup
+- Added CSS file path validation test for highlight.js themes
+- Fixed color scheme mappings to handle highlight.js package updates
+
 ### 1.6.0
 
 - Add support for absolute filesystem paths with special path symbol 'absolute/path/to/file.css'

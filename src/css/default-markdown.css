@@ -166,9 +166,45 @@ img.DATABASE {
 }
 
 @media print {
-  /* For print, hide spoiler blocks entirely */
+  /* For print, show spoiler content in a print-friendly format */
   .spoiler {
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 1em 0;
+    page-break-inside: avoid;
+  }
+  
+  .spoiler > summary {
+    display: block;
+    cursor: default;
+    padding: 0.5em 1em;
+    background-color: #f0f0f0;
+    border-radius: 4px 4px 0 0;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .spoiler > summary::-webkit-details-marker {
     display: none;
+  }
+  
+  .spoiler-content {
+    display: block !important;
+    padding: 1em;
+    background-color: white;
+    border-radius: 0 0 4px 4px;
+  }
+  
+  /* Show both show and hide text in print */
+  .spoiler::before {
+    content: "Spoiler Content: ";
+    display: block;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    border-radius: 4px 4px 0 0;
   }
 }
 
