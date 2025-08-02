@@ -14,6 +14,18 @@ Print-jobs are rendered as styled HTML and served from an embedded webserver. Yo
 
 So if you have a local browser that can print, and VS Code can launch it, you can print.
 
+## Interactive Markdown content
+
+SPOILER fenced code blocks let you create interactive content that hides answers, explanations, or solutions until clicked. Perfect for tutorials, exercises, and educational materials.
+
+```spoiler
+show: Teaser, label or spoiler warning here
+hide: Hidden content goes here. The butler did it!
+```
+Your hidden content goes here - code examples, explanations, or any markdown content.
+
+When printing, spoiler content is displayed with clear labeling so nothing is lost in the printed output.
+
 ## Source code
 
 ![source](assets/source.png)

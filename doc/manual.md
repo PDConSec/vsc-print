@@ -1,5 +1,14 @@
 # Using the Print extension
 
+## Quick Start
+
+1. **Print a file**: Click the printer icon in the editor toolbar, or right-click and select "Print"
+2. **Print a selection**: Select multiple lines of text, then click the printer icon or right-click → "Print"
+3. **Preview before printing**: Use the preview icon or command to see how your document will look
+4. **Print multiple files**: Right-click on a folder in the Explorer panel and select "Print"
+
+For Markdown documents, content is automatically rendered with syntax highlighting, diagrams, and formatting.
+
 # Contents
 
 1. [General use](#1)
@@ -15,7 +24,7 @@ There are a couple of ways you can print or preview.
 
 * You can print or preview the active document, by icon or context menu.
 * You can print or preview a selection from the active document, by icon or context menu.
-* You can print one or preview or more filse directly from the file explorer panel, by context menu on a folder, file or multi-selection of files.
+* You can print one or more files directly from the file explorer panel, by context menu on a folder, file or multi-selection of files.
 * Files can be titled with their filepath. The title does not appear in the document but may be used in headers by some browsers.
   - You can choose from the following formats. 
     - No path
@@ -54,26 +63,37 @@ If you press `F1` and type `print folder` you will find that you can print all t
 
 Most of these settings customise the user experience (icon, menu location etc). To find these settings, open VS Code's settings pane and either navigate to Extensions/Printing or just search for "printing".
 
-Here is a list of available setting names as they appear in the configuration file.
+Here is a list of available setting names as they appear in the configuration file:
 
-* `print.alternateBrowser` : enable/disable an alternate browser
+**Core Settings:**
+* `print.formatMarkdown` : render Markdown as styled HTML when printing (default: true)
+* `print.colourScheme` : the stylesheet used for colouring syntax (default: "atelier-dune-light")
+* `print.fontSize` : the font size, options from 6 to 13 pt (default: 10)
+* `print.lineNumbers` : on, off or inherit (from editor) (default: "inherit")
+* `print.lineSpacing` : single, line-and-a-half or double spaced (default: "single")
+
+**Browser Settings:**
+* `print.alternateBrowser` : enable/disable an alternate browser (default: false)
 * `print.browserPath` : the path to a web browser
-* `print.colourScheme` : the stylesheet used for colouring syntax
-* `print.editorContextMenuItemPosition` : the position of `Print` in the editor context menu
-* `print.editorTitleMenuButtonPrint` : show print button in the editor title menu
-* `print.editorTitleMenuButtonPreview` : show preview button in the editor title menu
-* `print.fontSize` : the font size (options from 6 to 13 pt)
-* `print.formatMarkdown` : render Markdown as styled HTML when printing
-* `print.lineNumbers` : on, off or inherit (from editor)
-* `print.lineSpacing` : single, line-and-a-half or double spaced
-* `print.folder.include`: pattern for files to include. Empty matches everything.
-* `print.folder.exclude`: patterns to exclude
-* `print.folder.maxFiles`: the maximum number of files for which content is rendered when printing a folder
+
+**UI Settings:**
+* `print.editorContextMenuItemPosition` : position of `Print` in the editor context menu
+* `print.editorTitleMenuButtonPrint` : show print button in the editor title menu (default: true)
+* `print.editorTitleMenuButtonPreview` : show preview button in the editor title menu (default: true)
+
+**File Processing Settings:**
+* `print.folder.include`: pattern for files to include. Empty matches everything
+* `print.folder.exclude`: patterns to exclude (default excludes binary files)
+* `print.folder.maxFiles`: maximum number of files for which content is rendered when printing a folder
 * `print.folder.maxLines`: files containing more lines than this threshold will be ignored
-* `print.logLevel`: controls the level of detail going into the log file
+
+**Document Settings:**
 * `print.filepathAsDocumentHeading`: controls use of the file path as a heading at the start of a document
 * `print.filepathAsDocumentTitle`: controls use of the file path as a document title (used by some browsers in the page header)
 * `print.filepathHeadingForIndividuallyPrintedDocuments`: controls whether the file path header appears at the start of individually printed documents
+
+**Advanced Settings:**
+* `print.logLevel`: controls the level of detail going into the log file (default: "error")
 
 ## Customising the user interface
 
@@ -164,7 +184,16 @@ hide: Click to hide the answer
 ```
 Your hidden content goes here. This can be multiple lines,
 code examples, or any markdown content.
+
+You can include:
+- Lists and bullet points
+- **Bold** and *italic* text
+- `Code snippets`
+- Links and images
+- Even nested spoilers!
 ````
+
+Example output: The button will initially display "Click to reveal the answer". When clicked, it shows the hidden content and the button text changes to "Click to hide the answer".
 
 The YAML configuration supports:
 - `show`: The text displayed on the button when content is hidden (required)
@@ -173,6 +202,19 @@ The YAML configuration supports:
 Both `show` and `hide` values are case-insensitive and support all permutations. The hidden content appears below the YAML configuration and can include any markdown content including code, lists, or other formatting.
 
 **Note:** When printing, SPOILER blocks are displayed as regular content blocks with a "Spoiler Content" header, making the hidden content visible in the printed output.
+
+#### Styling SPOILER blocks
+
+SPOILER blocks can be customized using CSS with these classes:
+- `.spoiler` - The main container
+- `.spoiler > summary` - The clickable button/header  
+- `.spoiler-content` - The hidden content area
+
+Add custom CSS via the `markdown.styles` setting (see [Styling your markdown](#styling-your-markdown) section below) or embed `<style>` tags in your markdown to customize colors, fonts, spacing, and appearance for both screen and print output.
+
+**Common Issues:**
+- If SPOILER blocks don't appear interactive, ensure your YAML is properly formatted with correct indentation
+- Both `show` and `hide` values are required - the block won't render without both
 
 ### SMILES
 
@@ -289,6 +331,17 @@ The embedded web server binds only to the loopback address and accepts only conn
 * Nothing seems to happen &mdash; restart VS Code.
 * Browser launches but no page loads &mdash; check networking permissions.
 * Browser shows an error message about not finding a CSS file &mdash; you installed from a VSIX that wasn't prepared by us. Get the [official package](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print) and try again.
+
+## SPOILER blocks not working
+
+* **SPOILER block shows raw code instead of interactive content**:
+  - Check that your YAML is properly formatted with exact indentation
+  - Ensure both `show:` and `hide:` keys are present
+  - Verify there's no extra text before the opening ``` spoiler
+* **Content doesn't hide/show when clicked**:
+  - Make sure `markdown.formatMarkdown` setting is enabled
+  - Check browser console for JavaScript errors
+  - Try refreshing the preview
 
 If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
 
