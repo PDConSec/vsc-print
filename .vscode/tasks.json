@@ -37,6 +37,14 @@
       "problemMatcher": [],
       "label": "npm: localise",
       "detail": "npx @vscode/l10n-dev export --outDir ./l10n ./src && npx @vscode/l10n-dev generate-azure -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json -l zh-Hans ja es ru pt fr ko zh-Hant it pl hu cs bg tr my ca lt hy && node localise-walkthrough-media.js"
+    },
+    {
+      "type": "npm",
+      "script": "test",
+      "group": "test",
+      "problemMatcher": [],
+      "label": "npm: test",
+      "detail": "npm run compile && node src/tests/unit/colour-scheme-validation.test.js"
     }
   ]
 }
