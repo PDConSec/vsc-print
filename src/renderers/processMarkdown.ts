@@ -3,10 +3,10 @@ import { Token, Tokens, marked } from 'marked';
 import * as yaml from "yaml";
 import { merge } from "lodash";
 import * as katex from "katex";
+import 'katex/dist/contrib/mhchem';
 import crypto from "crypto";
 import { deflate } from "pako";
 import * as vscode from 'vscode';
-import 'katex/dist/contrib/mhchem';
 import hljs from 'highlight.js';
 import { logger } from '../logger';
 import * as https from 'https';
@@ -171,90 +171,20 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
           case "LATEX":
             updatedTokens.push({ block: true, type: "html", raw: token.raw, text: katex.renderToString(token.text, getConfig(LANG)) });
             break;
-          case "SPOILER": {
-            // Parse as YAML with show and hide values (case insensitive)
-            let showText = "";
-            let hideText = "";
-            let parsed: any = undefined;
-            let parseError: any = undefined;
-            
-            try {
-              parsed = yaml.parse(token.text);
-            } catch (e) {
-              parseError = e;
-            }
-            
-            if (parseError) {
-              // Show error in fenced block, with supported values
-              const supported = [
-                'show: <string> (content to display)',
-                'hide: <string> (content to hide behind spoiler)',
-              ];
-              updatedTokens.push({
-                block: true,
-                type: "code",
-                lang: token.lang,
-                raw: token.raw,
-                text: `YAML parse error: ${parseError.message || parseError}` +
-                  `\n\nSupported values:` +
-                  `\n  - ${supported.join("\n  - ")}` +
-                  `\n\n${token.text}`
-              });
-              break;
-            }
-            
-            if (typeof parsed === "object" && parsed !== null) {
-              // Normalize keys to lower-case for case-insensitive matching
-              const norm = Object.create(null);
-              for (const k of Object.keys(parsed)) {
-                norm[k.toLowerCase()] = parsed[k];
-              }
-              
-              // Extract show and hide values
-              if (norm.show !== undefined) showText = String(norm.show);
-              if (norm.hide !== undefined) hideText = String(norm.hide);
-              
-              // Validate that only show and hide keys are present
-              const validKeys = ['show', 'hide'];
-              const invalidKeys = Object.keys(norm).filter(key => !validKeys.includes(key));
-              if (invalidKeys.length > 0) {
-                updatedTokens.push({
-                  block: true,
-                  type: "code",
-                  lang: token.lang,
-                  raw: token.raw,
-                  text: `Invalid keys in SPOILER block: ${invalidKeys.join(', ')}` +
-                    `\n\nOnly 'show' and 'hide' keys are supported (case insensitive)` +
-                    `\n\n${token.text}`
-                });
-                break;
-              }
-            } else {
-              updatedTokens.push({
-                block: true,
-                type: "code",
-                lang: token.lang,
-                raw: token.raw,
-                text: `SPOILER block must contain a YAML object with 'show' and 'hide' properties` +
-                  `\n\n${token.text}`
-              });
-              break;
-            }
-            
-            const spoilerHtml = `<details class="spoiler">
-  <summary>${escapeHtml(showText)}</summary>
-  <div class="spoiler-content">${escapeHtml(hideText)}</div>
-</details>`;
-            
-            logger.debug(`SPOILER rendering: show="${showText}", hide="${hideText}"`);
-            updatedTokens.push({
-              block: true,
-              type: "html",
-              raw: token.raw,
-              text: spoilerHtml
-            });
-            break;
-          }
+          // SPOILER support removed.
+          //
+          // Fenced blocks cannot be nested in Markdown, so supporting a custom SPOILER block is limiting and error-prone.
+          //
+          // If you need collapsible/hidden content, use embedded HTML <details> and <summary> blocks directly in your Markdown.
+          // This allows for much more sophisticated and deeply nested spoiler structures, including code blocks and other spoilers.
+          //
+          // Example:
+          // <details>
+          //   <summary>Click to reveal</summary>
+          //   <p>Hidden content, including <code>code blocks</code> and even <details>nested spoilers</details>.</p>
+          // </details>
+          //
+          // See documentation for more details.
           //#region config management
           case "USE":
             if (namedConfigs[token.text]) {

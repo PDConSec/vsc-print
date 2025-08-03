@@ -1,8 +1,7 @@
 # Change Log
 
-### 1.7.0
+### 1.6.1
 
-- Add support for SPOILER fenced code blocks with YAML configuration (show/hide values)
 - Enhanced settings migration with type checking and old key cleanup
 - Added CSS file path validation test for highlight.js themes
 - Fixed color scheme mappings to handle highlight.js package updates
@@ -234,16 +233,16 @@
 ### 0.11.0
 
 - #187 bugfixes
-	- don't force alternate browser on
-	- fix alternate browser path check logic
+  - don't force alternate browser on
+  - fix alternate browser path check logic
 - #194 add a renderer for plaintext documents so they aren't treated as source code
 - #184 filepath as header at start of document (controlled by a setting)
 - #184 format control for file paths in headings of documents
-	- Relative
-	- Absolute, with tilde pathing for paths in the user's home directory
+  - Relative
+  - Absolute, with tilde pathing for paths in the user's home directory
 - #188 format control for file paths in document titles (used in page headers by some browsers)
-	- No path
-	- Relative
+  - No path
+  - Relative
 
 Please note that localisation has not been done for these UI changes due to delays in development of localisation management toolchain.
 
@@ -286,8 +285,8 @@ Pool colour scheme
 - `Print: Open the manual` is now localised, falling back to English
 - `Print: Open the log` opens the log file in VS Code for inspection
 - New settings
-	- `Log Level` controls the minimum severity for log messages
-	- `Max Files` limits the number of files that printing a folder can render into a single print job
+  - `Log Level` controls the minimum severity for log messages
+  - `Max Files` limits the number of files that printing a folder can render into a single print job
 
 ### 0.9.31
 

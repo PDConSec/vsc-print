@@ -6,6 +6,8 @@ import { ResourceProxy } from "./resource-proxy";
 import { processFencedBlocks as processMarkdown } from './processMarkdown';
 import { marked } from 'marked';
 import * as cheerio from 'cheerio';
+import * as katex from "katex";
+import 'katex/dist/contrib/mhchem';
 
 const resources = new Map<string, ResourceProxy>();
 
@@ -68,7 +70,10 @@ export async function getBodyHtml(generatedResources: Map<string, ResourceProxy>
   const uri: vscode.Uri = options.uri;
   const rootDocumentFolder = path.dirname(uri.fsPath);
   const updatedTokens = await processMarkdown({ LATEX: { displayMode: true } }, raw, generatedResources, rootDocumentFolder);
-  let html = marked.parser(updatedTokens);
+  let html = marked
+    .parser(updatedTokens)
+    .replace(/\$\$(.+?)\$\$/g, (_, capture) => katex.renderToString(capture, { displayMode: false, throwOnError: false }))
+    .replace(/\$\$(.+?)\$\$/gs, (_, capture) => katex.renderToString(capture, { displayMode: true, throwOnError: false }));
   const smartQuotesConfig = vscode.workspace.getConfiguration("print.markdown.smartQuotes");
   if (smartQuotesConfig.get<boolean>("enable")) {
     html += "<script src='bundled/smartquotes.js'></script><script>smartquotes();</script>";

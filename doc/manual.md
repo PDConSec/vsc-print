@@ -171,51 +171,6 @@ In the fenced block for `Database` you supply a connection string and some setti
 
 Print has a persistent cache (similar to a browser) for diagrams embedded in Markdown. Diagrams are rendered once, until you change them. Extending Kroki in the spirit of `jebb.plantUml` there is also support for recursive `!include filename.ext`.
 
-### SPOILER blocks
-
-SPOILER fenced code blocks allow you to hide content that can be revealed when clicked. This is useful for tutorials, exercises, or any content where you want to initially hide answers or explanations.
-
-You use a fenced block annotated with `spoiler` (case insensitive) and provide YAML configuration:
-
-````
-```spoiler
-show: Click to reveal the answer
-hide: Click to hide the answer
-```
-Your hidden content goes here. This can be multiple lines,
-code examples, or any markdown content.
-
-You can include:
-- Lists and bullet points
-- **Bold** and *italic* text
-- `Code snippets`
-- Links and images
-- Even nested spoilers!
-````
-
-Example output: The button will initially display "Click to reveal the answer". When clicked, it shows the hidden content and the button text changes to "Click to hide the answer".
-
-The YAML configuration supports:
-- `show`: The text displayed on the button when content is hidden (required)
-- `hide`: The text displayed on the button when content is visible (required)
-
-Both `show` and `hide` values are case-insensitive and support all permutations. The hidden content appears below the YAML configuration and can include any markdown content including code, lists, or other formatting.
-
-**Note:** When printing, SPOILER blocks are displayed as regular content blocks with a "Spoiler Content" header, making the hidden content visible in the printed output.
-
-#### Styling SPOILER blocks
-
-SPOILER blocks can be customized using CSS with these classes:
-- `.spoiler` - The main container
-- `.spoiler > summary` - The clickable button/header  
-- `.spoiler-content` - The hidden content area
-
-Add custom CSS via the `markdown.styles` setting (see [Styling your markdown](#styling-your-markdown) section below) or embed `<style>` tags in your markdown to customize colors, fonts, spacing, and appearance for both screen and print output.
-
-**Common Issues:**
-- If SPOILER blocks don't appear interactive, ensure your YAML is properly formatted with correct indentation
-- Both `show` and `hide` values are required - the block won't render without both
-
 ### SMILES
 
 You can supply just a SMILES string as the only content of the fenced block, or use YAML notation to specify image dimensions or SmilesDrawer config. Supported values are as follows.
@@ -331,17 +286,6 @@ The embedded web server binds only to the loopback address and accepts only conn
 * Nothing seems to happen &mdash; restart VS Code.
 * Browser launches but no page loads &mdash; check networking permissions.
 * Browser shows an error message about not finding a CSS file &mdash; you installed from a VSIX that wasn't prepared by us. Get the [official package](https://marketplace.visualstudio.com/items?itemName=pdconsec.vscode-print) and try again.
-
-## SPOILER blocks not working
-
-* **SPOILER block shows raw code instead of interactive content**:
-  - Check that your YAML is properly formatted with exact indentation
-  - Ensure both `show:` and `hide:` keys are present
-  - Verify there's no extra text before the opening ``` spoiler
-* **Content doesn't hide/show when clicked**:
-  - Make sure `markdown.formatMarkdown` setting is enabled
-  - Check browser console for JavaScript errors
-  - Try refreshing the preview
 
 If something else is wrong, or you have an improvement idea, we invite you to log an issue on the GitHub repository.
 
