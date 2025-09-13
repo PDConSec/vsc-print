@@ -490,7 +490,7 @@
   ],
   "dependencies": {
     "@viz-js/viz": "^3.11.0",
-    "axios": "^1.8.2",
+    "axios": "^1.12.1",
     "braces": "^3.0.3",
     "bufferutil": "^4.0.8",
     "cheerio": "^1.0.0-rc.12",
