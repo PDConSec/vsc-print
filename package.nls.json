@@ -34,6 +34,7 @@
   "print.markdown.stylesheets": "URLs or paths for CSS for rendered Markdown. For workspace relative paths, use 'workspace.resource/path/to/your.css'. For absolute filesystem paths, use 'absolute/path/to/your.css'. Otherwise, paths are relative to the base document ('./my.css' would be in the same folder as the document), or absolute URLs (https://...). For folders or multi-file selections use absolute, absolute filesystem paths, or workspace-relative paths.",
   "print.markdown.smartQuotes.enable": "Enable the use of smart quotes in rendered Markdown.",
   "print.markdown.watermark.enable": "Enable embedded watermark text",
+  "print.markdown.showFrontmatter": "Show frontmatter metadata as a table at the top of printed documents",
   "print.markdown.watermark.text": "Watermark text to be periodically embedded in the rendered document",
   "print.plaintext.stylesheets": "URLs or paths for extra CSS to be applied to plaintext. For workspace relative paths, use 'workspace.resource/path/to/your.css'. For absolute filesystem paths, use 'absolute/path/to/your.css'. Otherwise, paths are relative to the base document ('./my.css' would be in the same folder as the document), or absolute URLs (https://...). For folders or multi-file selections use absolute, absolute filesystem paths, or workspace-relative paths.",
   "print.sourcecode.colourScheme.markdownDescription": "[Stylesheet preview is available online](https://highlightjs.org/demo/). Only 'light' versions are offered because paper is white.",

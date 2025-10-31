@@ -260,6 +260,11 @@
             "description": "%print.markdown.watermark.enable%",
             "default": false
           },
+          "print.markdown.showFrontmatter": {
+            "type": "boolean",
+            "description": "%print.markdown.showFrontmatter%",
+            "default": true
+          },
           "print.plaintext.stylesheets": {
             "type": "array",
             "items": {
