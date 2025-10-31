@@ -228,9 +228,11 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
       updatedTokens.push(token);
     };
   }
+
+  const showFrontmatter = vscode.workspace.getConfiguration("print.markdown").get<boolean>("showFrontmatter", true);
   
   // If frontmatter exists, add it as an HTML table at the beginning
-  if (frontmatter) {
+  if (showFrontmatter && frontmatter) {
     const frontmatterTableHtml = frontmatterToTable(frontmatter);
     if (frontmatterTableHtml) {
       const frontmatterToken: Token = {
