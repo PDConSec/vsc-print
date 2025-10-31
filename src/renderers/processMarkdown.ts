@@ -17,6 +17,7 @@ import * as fs from "fs";
 import { resolveRootDoc } from './includes';
 import { databaseFencedLanguageService } from "./database-fenced-language/databaseFencedLanguageService";
 import { DatabaseDiagramRequest } from "./database-fenced-language/models/request/databaseDiagramRequest";
+import { extractFrontmatter, frontmatterToTable } from './frontmatter';
 
 const HIGHLIGHTJS_LANGS = hljs.listLanguages().map(s => s.toUpperCase());
 const KROKI_SUPPORT = [
@@ -37,7 +38,10 @@ function escapeHtml(text: string): string {
 
 export async function processFencedBlocks(defaultConfig: any, raw: string, generatedResources: Map<string, ResourceProxy>, rootDocFolder: string) {
 
-  const tokens = marked.lexer(raw);
+  // Extract frontmatter first
+  const { frontmatter, content } = extractFrontmatter(raw);
+  
+  const tokens = marked.lexer(content);
   const krokiUrl = vscode.workspace.getConfiguration("print.markdown.kroki").url;
   let activeConfigName = "DEFAULT";
   const namedConfigs: any = { DEFAULT: defaultConfig };
@@ -224,6 +228,21 @@ export async function processFencedBlocks(defaultConfig: any, raw: string, gener
       updatedTokens.push(token);
     };
   }
+  
+  // If frontmatter exists, add it as an HTML table at the beginning
+  if (frontmatter) {
+    const frontmatterTableHtml = frontmatterToTable(frontmatter);
+    if (frontmatterTableHtml) {
+      const frontmatterToken: Token = {
+        type: 'html',
+        raw: '',
+        text: frontmatterTableHtml,
+        block: true
+      };
+      updatedTokens.unshift(frontmatterToken);
+    }
+  }
+  
   return updatedTokens;
 }
 
