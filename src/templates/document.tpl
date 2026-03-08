@@ -9,6 +9,8 @@
   {{{stylesheetLinks}}}
   {{{scriptTags}}}
   <script type="application/javascript">
+    const sourceDocumentUri = {{{sourceDocumentUriJson}}};
+
     function printAndClose(enabled) {
       if (typeof SmiDrawer === "function") {
         const svgs = document.querySelectorAll('svg[data-smiles]');
@@ -105,7 +107,7 @@
           element.addEventListener('click', () => document.querySelector('.xref-highlight')?.classList.remove('xref-highlight'));
           element.addEventListener('dblclick', () => {
             const text = element.getAttribute('data-source-map');
-            ws.send(JSON.stringify({ type: 'findInEditor', value: text }));
+            ws.send(JSON.stringify({ type: 'findInEditor', value: text, documentUri: sourceDocumentUri }));
             element.classList.add('xref-highlight');
           });
         });

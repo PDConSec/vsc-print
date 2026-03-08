@@ -15,10 +15,12 @@ import { filenameByCaption } from './imports';
 import { ResourceProxy } from './renderers/resource-proxy';
 import tildify from './tildify';
 import { Metadata } from './metadata';
+import Handlebars from 'handlebars';
 import './browser-paths';
 import Browsers from './browser-paths';
 
 let settingsCss: string = require("./css/settings.css").default.toString();
+const hbDocument = Handlebars.compile(require("./templates/document.tpl").default.toString());
 
 export class PrintSession {
   dispose() {
@@ -143,6 +145,7 @@ export class PrintSession {
 
   public async respond(urlParts: string[], response: http.ServerResponse) {
     await this.ready;
+    const currentSession = this;
     if (urlParts.length === 3 && urlParts[2] === "") {
       logger.debug(`Responding to base document request for session ${urlParts[1]}`)
       const html = await this.pageBuilder!.build();
@@ -162,12 +165,12 @@ export class PrintSession {
     } else if (urlParts[2] === "absolute") {
       logger.debug(`Responding to absolute path resource request for session ${urlParts[1]}`);
       const resourcePath = path.join("/", ...urlParts.slice(3));
-      return await relativeResource(resourcePath);
+      return await relativeResource(resourcePath, urlParts.slice(2));
     } else if (urlParts[2] === "workspace.resource") {
       logger.debug(`Responding to workspace.resource request for session ${urlParts[1]}`);
       const basePath = vscode.workspace.getWorkspaceFolder(this.source)?.uri.fsPath!;
       const resourcePath = path.join(basePath, ...urlParts.slice(3));
-      return await relativeResource(resourcePath);
+      return await relativeResource(resourcePath, urlParts.slice(2));
     } else if (urlParts.length > 3 && urlParts[2] === "generated") {
       logger.debug(`Responding to request for generated resource ${urlParts[3]} in session ${urlParts[1]}`);
       const resourceDescriptor = this.generatedResources.get(urlParts[3])!;
@@ -232,15 +235,68 @@ export class PrintSession {
     } else {
       const basePath = path.dirname(this.source!.fsPath);
       const resourcePath = path.join(basePath, ...urlParts.slice(2));
-      return await relativeResource(resourcePath);
+      return await relativeResource(resourcePath, urlParts.slice(2));
     }
 
-    async function relativeResource(resourcePath: string) {
+    async function relativeResource(resourcePath: string, requestPathParts: string[]) {
       const fileUri: vscode.Uri = vscode.Uri.file(resourcePath);
       const fileExt = path.extname(resourcePath);
       const editor = vscode.window.visibleTextEditors.find(editor => editor.document.uri.toString() === fileUri.toString());
 
       switch (fileExt.toLowerCase()) {
+        case ".md":
+        case ".markdown":
+          // This branch intentionally assembles a single-document page inline at request time.
+          // The session builder is rooted on the original source document (`/`), but linked
+          // markdown targets (e.g. `/another.md`) need their own request-relative base URL,
+          // heading/title context, and source-document URI for xref navigation.
+          try {
+            const content = editor ? editor.document.getText() : Buffer.from(await vscode.workspace.fs.readFile(fileUri)).toString("utf-8");
+            const documentRenderer = DocumentRenderer.get("markdown");
+            const bodyHtml = await documentRenderer.getBodyHtml(currentSession.generatedResources, content, "markdown", { uri: fileUri });
+            const cssLinks = documentRenderer.getCssLinks(fileUri);
+            const scriptTags = documentRenderer.getScriptTags(fileUri);
+            const documentTitle = documentRenderer.getTitle(fileUri);
+            const generalConfig = vscode.workspace.getConfiguration("print.general");
+            let documentHeading = "";
+            if (generalConfig.filepathHeadingForIndividuallyPrintedDocuments) {
+              switch (generalConfig.filepathStyleInHeadings) {
+                case "Absolute":
+                  documentHeading = `<h3 class="filepath">${tildify(fileUri.fsPath).replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+                  break;
+                case "Relative":
+                  const wf = vscode.workspace.getWorkspaceFolder(fileUri);
+                  const relativePath = wf ? path.relative(wf.uri.fsPath, fileUri.fsPath) : fileUri.fsPath;
+                  documentHeading = `<h3 class="filepath">${relativePath.replace(/([\\/])/g, "$1<wbr />")}</h3>`;
+                  break;
+              }
+            }
+            const requestedDirectoryParts = requestPathParts.slice(0, -1);
+            const requestBasePath = requestedDirectoryParts.length > 0 ? `${requestedDirectoryParts.join("/")}/` : "";
+            const baseUrl = `http://localhost:${PrintSession.port}/${currentSession.sessionId}/${requestBasePath}`;
+            const page = hbDocument({
+              baseUrl,
+              documentTitle,
+              documentHeading,
+              sourceDocumentUriJson: JSON.stringify(fileUri.toString()),
+              printAndClose: (!currentSession.pageBuilder!.isPreview).toString(),
+              content: bodyHtml,
+              stylesheetLinks: cssLinks,
+              scriptTags
+            });
+            response.writeHead(200, {
+              "Content-Type": "text/html; charset=utf-8",
+              "Content-Length": Buffer.byteLength(page, "utf-8")
+            });
+            return response.end(page);
+          } catch (error) {
+            logger.error(`Failed to resolve Markdown file: ${resourcePath}`, error);
+            response.writeHead(404, {
+              "Content-Type": "text/plain",
+              "Content-Length": 23
+            });
+            return response.end("Markdown file not found");
+          }
         case ".jpg":
         case ".gif":
         case ".png":

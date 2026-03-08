@@ -195,7 +195,7 @@ export async function activate(context: vscode.ExtensionContext) {
   interface SessionData { sessionid: string;[key: string]: any; }
   websocketServer.on('connection', (ws) => {
     console.log('New client connected');
-    ws.on('message', (message: string) => {
+    ws.on('message', async (message: string) => {
       const data: SessionData = JSON.parse(message);
       if (data.sessionId) {
         const printSession = printSessions.get(data.sessionId);
@@ -203,7 +203,8 @@ export async function activate(context: vscode.ExtensionContext) {
       }
       if (data.type === 'findInEditor') {
         const text = data.value;
-        findAndHighlightText(text);
+        const documentUri = data.documentUri;
+        await findAndHighlightText(text, documentUri);
       }
     });
     ws.on('close', () => {
@@ -211,9 +212,18 @@ export async function activate(context: vscode.ExtensionContext) {
     });
   });
 
-  function findAndHighlightText(text: string) {
+  async function findAndHighlightText(text: string, documentUri?: string) {
     text = base64Decode(text);
-    const editor = vscode.window.activeTextEditor;
+    let editor = vscode.window.activeTextEditor;
+    if (documentUri) {
+      try {
+        const uri = vscode.Uri.parse(documentUri);
+        const targetDocument = await vscode.workspace.openTextDocument(uri);
+        editor = await vscode.window.showTextDocument(targetDocument, { preview: false, preserveFocus: false });
+      } catch (error) {
+        logger.warn(`Could not activate source document ${documentUri}`, error);
+      }
+    }
     if (editor) {
       const document = editor.document;
       const fullText = document.getText();
