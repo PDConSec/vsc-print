@@ -79,6 +79,7 @@ export class TextSelectionDocumentBuilder extends AbstractDocumentBuilder {
       baseUrl: this.baseUrl,
       documentTitle: documentTitle,
       documentHeading: thePath,
+      sourceDocumentUriJson: JSON.stringify(this.uri.toString()),
       printAndClose: printAndClose,
       content: bodyHtml,
       stylesheetLinks: cssLinks,

@@ -261,6 +261,28 @@ Detail: keys
 
 Workspace relative URLs are the best way to share resources between documents. They are in the workspace so they can be source controlled along with the documents, and because the URL is relative to the workspace rather than the document you can organise (and reorganise) documents in folders without breaking the URLs. Note that this applies not only to stylesheets but also to image file resources.
 
+### How relative resource paths are resolved
+
+Print serves document content from a session URL and applies a `<base>` tag, so relative links in Markdown/HTML are resolved by the embedded server.
+
+- Links to another Markdown file in the workspace (for example `another.md` or `docs/another.md`) load that document through the same print session and render it as Markdown.
+- Plain relative paths (for example `images/logo.png` or `../styles/print.css`) are resolved relative to the folder of the source document.
+- `workspace.resource/...` is resolved from the current workspace root.
+- `absolute/...` is treated as an absolute filesystem path.
+
+Double-click source lookup uses the currently rendered document as context. If the linked Markdown target is not already active in VS Code, Print opens it and makes it active before locating the source text.
+
+For safety, only these resource file types are served from disk:
+
+- `.css`
+- `.svg`
+- `.png`
+- `.jpg`
+- `.gif`
+- `.webp`
+
+Other file extensions are rejected.
+
 ### Associating a style with Markdown
 
 Mapping from Markdown to generated HTML is obvious. Tables become `table`, `th` and `td` elements. Headings are `H1` to `H9`. Paragraphs are `P` elements, bullets and numbers are `ul` and `ol` elements. 
