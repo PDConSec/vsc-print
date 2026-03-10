@@ -413,7 +413,7 @@ function dumpProperties(): any {
 async function setAlternateBrowser() {
   const browser = await Browsers.promptUserChoice();
   if (browser) {
-    await vscode.workspace.getConfiguration("print.alternatBrowser").update("path", browser.path, vscode.ConfigurationTarget.Global);
+    await vscode.workspace.getConfiguration("print.alternateBrowser").update("path", browser.path, vscode.ConfigurationTarget.Global);
     vscode.window.showInformationMessage(`Alternate browser set to ${browser.name}`);
   }
 }
