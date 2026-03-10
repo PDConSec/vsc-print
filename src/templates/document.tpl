@@ -64,6 +64,16 @@
         setTimeout(window.print, 500);
       }
     }
+    function fixAnchorLinks() {
+      var pageUrl = window.location.href.split('#')[0];
+      document.querySelectorAll('a[href]').forEach(function(a) {
+        var href = a.href;
+        var hashIndex = href.indexOf('#');
+        if (hashIndex !== -1 && href.substring(0, hashIndex) === pageUrl) {
+          a.setAttribute('href', href.substring(hashIndex));
+        }
+      });
+    }
     function listenForUpdates() {
       const ws = new WebSocket(`ws://localhost:${window.location.port}`);
       ws.onopen = function () {
@@ -115,7 +125,7 @@
   </script>
 </head>
 
-<body onload="listenForUpdates();printAndClose({{printAndClose}});">
+<body onload="fixAnchorLinks();listenForUpdates();printAndClose({{printAndClose}});">
   {{{documentHeading}}}
   <div>
     {{{content}}}
