@@ -1,5 +1,10 @@
 # Change Log
 
+### 1.6.2
+
+- Added Print... and Print Preview... to the File menu
+- File menu commands use the same handlers as the editor toolbar buttons
+
 ### 1.6.1
 
 - Enhanced settings migration with type checking and old key cleanup
