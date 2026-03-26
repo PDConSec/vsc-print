@@ -509,7 +509,7 @@
     "uuid": "^10.0.0",
     "winston": "^3.11.0",
     "ws": "^8.18.0",
-    "yaml": "^2.4.5"
+    "yaml": "^2.8.3"
   },
   "scripts": {
     "vscode:prepublish": "node gather.js && webpack --mode production",
