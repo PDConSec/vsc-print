@@ -209,6 +209,11 @@
               "%print.general.useFilepathInDocumentTitle.markdownEnumDescription3%"
             ]
           },
+          "print.general.copyUrlInsteadOfOpen": {
+            "type": "boolean",
+            "default": false,
+            "description": "When enabled, copies the generated print URL to the clipboard instead of opening it in the default browser."
+          },
           "print.markdown.SettleMs": {
             "type": "number",
             "default": 3000,
