@@ -127,7 +127,11 @@ export class PrintSession {
             vscode.window.showErrorMessage(rootDocumentContentSource);
             break;
         }
-        if (this.browserConfig.get<boolean>("enable")) {
+        const generalConfig = vscode.workspace.getConfiguration("print.general");
+        if (generalConfig.get<boolean>("copyUrlInsteadOfOpen")) {
+          await vscode.env.clipboard.writeText(this.getUrl());
+          vscode.window.showInformationMessage("Print URL copied to clipboard!");
+        } else if (this.browserConfig.get<boolean>("enable")) {
           launchAlternateBrowser(this.getUrl())
         } else {
           vscode.env.openExternal(vscode.Uri.parse(this.getUrl()));
