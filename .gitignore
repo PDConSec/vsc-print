@@ -9,3 +9,4 @@ doc/manual-*.md
 bundle.*
 *[a-z\-]*.md
 assets/*.*.md
+CLAUDE.md

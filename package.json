@@ -502,7 +502,7 @@
     "cors": "^2.8.5",
     "handlebars": "^4.7.8",
     "highlight.js": "^11.9.0",
-    "katex": "^0.16.33",
+    "katex": "^0.16.45",
     "lodash": "^4.17.21",
     "marked": "^15.0.6",
     "micromatch": "^4.0.8",
