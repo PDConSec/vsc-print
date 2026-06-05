@@ -87,6 +87,15 @@
       {
         "title": "%configuration.title%",
         "properties": {
+          "print.browser.useAlternate": {
+            "type": "boolean",
+            "deprecationMessage": "Use print.alternateBrowser.enable instead.",
+            "default": false
+          },
+          "print.browser.alternateBrowserPath": {
+            "type": "string",
+            "deprecationMessage": "Use print.alternateBrowser.path instead."
+          },
           "print.alternateBrowser.path": {
             "type": "string",
             "description": "%print.alternateBrowser.path%"
